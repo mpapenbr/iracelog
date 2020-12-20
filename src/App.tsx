@@ -4,6 +4,7 @@ import { Provider } from "react-redux";
 import { BrowserRouter as Router, Link, Route, Switch } from "react-router-dom";
 import { Store } from "redux";
 import "./App.css";
+import RaceDetailsFrame from "./components/raceDetails";
 import { RaceEventListPage } from "./pages/raceEventListPage";
 import { ApplicationState } from "./stores";
 
@@ -38,7 +39,7 @@ const App: React.FC<AppProps> = (props: AppProps) => {
           <Content style={{ padding: "0 50px" }}>
             <div className="site-layout-content">
               <Switch>
-                <Route path="/events">
+                <Route exact path="/events">
                   <RaceEventListPage />
                 </Route>
                 <Route path="/live">
@@ -47,6 +48,7 @@ const App: React.FC<AppProps> = (props: AppProps) => {
                 <Route path="/other">
                   <OtherContent />
                 </Route>
+                <Route path="/events/details/:id" component={RaceDetailsFrame} />
               </Switch>
             </div>
           </Content>
