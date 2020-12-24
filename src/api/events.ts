@@ -20,4 +20,16 @@ export default class RaceEventService {
       });
     });
   }
+  public static deleteEvent(token: string, id: string): Promise<{}> {
+    return new Promise((resolve, reject) => {
+      fetch(API_BASE_URL + "/raceevents/" + id, {
+        method: "DELETE",
+
+        // headers: { Authorization: "Bearer " + token }
+      }).then((res: Response) => {
+        // console.log("delete done " + res.status);
+        resolve({});
+      });
+    });
+  }
 }

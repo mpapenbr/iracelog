@@ -57,6 +57,10 @@
   margin: 16px 0 16px 24px;
 }
 
+.race-sidebar:hover {
+  background: #24c6f3;
+}
+
 #components-layout-demo-top .logo {
   float: left;
   width: 120px;

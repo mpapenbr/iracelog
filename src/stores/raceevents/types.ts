@@ -1,14 +1,16 @@
 export interface IRaceEvent {
   id: string;
   name: string;
-  trackName: string;
+  trackNameShort: string;
+  trackNameLong: string;
   lastModified: Date;
 }
 
 const defaultRaceEvent: IRaceEvent = {
   id: "",
   name: "",
-  trackName: "",
+  trackNameShort: "",
+  trackNameLong: "",
   lastModified: new Date(),
 };
 
