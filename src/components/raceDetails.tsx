@@ -1,6 +1,9 @@
 import { Layout, Menu } from "antd";
-import React from "react";
-import { Link, RouteComponentProps } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { useDispatch } from "react-redux";
+import { Link, Route, RouteComponentProps, Switch } from "react-router-dom";
+import { loadEventDrivers } from "../stores/drivers/actions";
+import MyTry from "./myTry";
 
 const { Header, Sider, Content } = Layout;
 
@@ -10,9 +13,19 @@ interface IDispachProps {
 }
 type MyProps = IStateProps & IDispachProps;
 
-type TParams = { id: string };
+function MyPlaceholder() {
+  return <div>Nothing</div>;
+}
 
+type TParams = { id: string };
 function RaceDetailsFrame({ match }: RouteComponentProps<TParams>) {
+  const [loadTrigger, setLoadTrigger] = useState(0);
+  const dispatch = useDispatch();
+  useEffect(() => {
+    console.log("Now trigger load event details for " + match.params.id);
+    //delegate();
+    dispatch(loadEventDrivers(match.params.id));
+  }, [loadTrigger]);
   return (
     <Layout>
       <Sider theme="light" width={200}>
@@ -26,9 +39,17 @@ function RaceDetailsFrame({ match }: RouteComponentProps<TParams>) {
           <Menu.Item key="summary" className="race-sidebar">
             <Link to={`${match.url}/summary`}>Summary</Link>
           </Menu.Item>
+          <Menu.Item key="try" className="race-sidebar">
+            <Link to={`${match.url}/try`}>Try it</Link>
+          </Menu.Item>
         </Menu>
       </Sider>
-      <Content>Content</Content>
+      <Content>
+        <Switch>
+          <Route path={`${match.url}`} exact component={MyPlaceholder} />
+          <Route path={`${match.url}/try`} component={MyTry} />
+        </Switch>
+      </Content>
     </Layout>
   );
 }
