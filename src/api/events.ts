@@ -1,6 +1,6 @@
 import { API_BASE_URL } from "../constants";
 import { IDriverMeta } from "../stores/drivers/types";
-import { IRaceLogMeta } from "../stores/raceevents/types";
+import { IEventSummary, IRaceLogMeta } from "../stores/raceevents/types";
 import { jsonDateEnhancer } from "../utils/jsonUtils";
 
 export interface RaceEvent {}
@@ -66,6 +66,20 @@ export default class RaceEventService {
             .then((j) =>
               resolve(j._embedded !== undefined ? jsonDateEnhancer(JSON.stringify(j._embedded.raceLogMetaDatas)) : [])
             );
+        }
+      });
+    });
+  }
+
+  public static eventSummary(token: string, id: string): Promise<IEventSummary> {
+    return new Promise((resolve, reject) => {
+      fetch(API_BASE_URL + "/raceevents/" + id + "/summary", {
+        method: "GET",
+
+        // headers: { Authorization: "Bearer " + token }
+      }).then((res: Response) => {
+        if (res.ok) {
+          res.json().then((j) => resolve(j));
         }
       });
     });

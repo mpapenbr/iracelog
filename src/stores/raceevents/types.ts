@@ -14,6 +14,11 @@ const defaultRaceEvent: IRaceEvent = {
   lastModified: new Date(),
 };
 
+export interface IRaceContainer {
+  eventData: IRaceEvent;
+  summary: IEventSummary;
+}
+
 export interface IRaceLogData {
   carIdxPosition: number[];
   carIdxClassPosition: number[];
@@ -38,8 +43,28 @@ export interface IRaceLogMeta {
   data: IRaceLogData;
 }
 
+export interface ISessionSummary {
+  sessionNum: number;
+  minTime: number;
+  maxTime: number;
+  minTick: number;
+  maxTick: number;
+  count: number;
+}
+export interface IEventSummary {
+  sessionSummaries: ISessionSummary[];
+}
+
+const defaultEventSummary: IEventSummary = {
+  sessionSummaries: [],
+};
+export const defaultRaceContainer: IRaceContainer = {
+  eventData: defaultRaceEvent,
+  summary: defaultEventSummary,
+};
 export interface IRaceEventsState {
   readonly data: IRaceEvent[];
+  readonly current: IRaceContainer;
 }
 
 const defaultRaceLogData = (): IRaceLogData => ({

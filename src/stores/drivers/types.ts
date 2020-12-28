@@ -22,7 +22,7 @@ export interface IDriverMeta {
   data: IDriver;
 }
 
-const defaultDriverData = (): IDriver => ({
+export const defaultDriverData = (): IDriver => ({
   carIdx: 0,
   carId: 0,
   carClassId: 0,
@@ -37,7 +37,7 @@ const defaultDriverData = (): IDriver => ({
   irating: 0,
 });
 
-const defaultDriverMetaD: IDriverMeta = {
+export const defaultDriverMeta: IDriverMeta = {
   id: "",
   sessionNum: 0,
   sessionTime: 0,

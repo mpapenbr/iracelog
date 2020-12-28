@@ -1,8 +1,8 @@
 import { all, put, takeLatest } from "redux-saga/effects";
 import RaceEventService from "../../api/events";
 import { IBaseAction } from "../../commons";
-import { RaceEventActionTypes, setRaceEvents } from "./actions";
-import { IRaceEvent } from "./types";
+import { RaceEventActionTypes, setEventSummary, setRaceEvents } from "./actions";
+import { IEventSummary, IRaceEvent } from "./types";
 
 function* fetchRaceEvents(
   action: IBaseAction
@@ -37,9 +37,24 @@ Generator {
   }
 }
 
+function* fetchEventData(
+  action: IBaseAction
+): //: Generator<StrictEffect,void, Stint[]>
+Generator {
+  try {
+    const { token, id } = action.payload;
+    console.log("piep");
+    const summary = yield RaceEventService.eventSummary(token, id);
+    yield put(setEventSummary(summary as IEventSummary));
+  } catch (e) {
+    console.log(e);
+  }
+}
+
 export default function* raceEventsSaga() {
   yield all([
     yield takeLatest(RaceEventActionTypes.SAGA_LOAD_EVENTS, fetchRaceEvents),
     yield takeLatest(RaceEventActionTypes.SAGA_DELETE_EVENT, deleteRaceEvent),
+    yield takeLatest(RaceEventActionTypes.SAGA_LOAD_EVENT_DATA, fetchEventData),
   ]);
 }

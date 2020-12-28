@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { Link, Route, RouteComponentProps, Switch } from "react-router-dom";
 import { loadEventDrivers } from "../stores/drivers/actions";
+import { loadEventData } from "../stores/raceevents/actions";
 import MyTry from "./myTry";
 
 const { Header, Sider, Content } = Layout;
@@ -25,6 +26,7 @@ function RaceDetailsFrame({ match }: RouteComponentProps<TParams>) {
     console.log("Now trigger load event details for " + match.params.id);
     //delegate();
     dispatch(loadEventDrivers(match.params.id));
+    dispatch(loadEventData("tbd_token", match.params.id));
   }, [loadTrigger]);
   return (
     <Layout>
