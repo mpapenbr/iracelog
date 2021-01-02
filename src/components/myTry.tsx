@@ -1,13 +1,14 @@
-import { Col, Row, Select, Slider, Space, Statistic, Table } from "antd";
+import { Col, Row, Select, Slider, Space, Spin, Statistic, Table } from "antd";
 import { ColumnsType } from "antd/lib/table";
 import { range } from "lodash";
-import React, { useState } from "react";
-import { useSelector } from "react-redux";
+import React, { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { RouteComponentProps, useLocation } from "react-router-dom";
 import { sprintf } from "sprintf-js";
 import RaceEventService from "../api/events";
 import { ApplicationState } from "../stores";
 import { defaultDriverData, IDriver, IDriverMeta } from "../stores/drivers/types";
+import { ensureEventData } from "../stores/raceevents/actions";
 import { defaultRaceLogMeta, IRaceLogMeta } from "../stores/raceevents/types";
 import { lapTimeString, secAsString } from "../utils/output";
 
@@ -15,8 +16,20 @@ const { Option } = Select;
 
 type TParams = { id: string };
 function MyTry({ match }: RouteComponentProps<TParams>) {
+  const [loadTrigger, setLoadTrigger] = useState(0);
+  const location = useLocation();
+  const regex = /.*?\/details\/(?<myId>.*?)\/try$/;
+  const { myId } = location.pathname.match(regex)?.groups!;
+  const dispatch = useDispatch();
+  useEffect(() => {
+    console.log("Now trigger load event details for " + myId);
+    //delegate();
+    dispatch(ensureEventData("TBD_TOKEN_FOR_ENSURE_DATA", myId));
+  }, [loadTrigger]);
+
   const raceContainer = useSelector((state: ApplicationState) => state.raceEvents.current);
-  const driverData = useSelector((state: ApplicationState) => state.eventDrivers.data);
+
+  const driverData = raceContainer.drivers;
 
   const [currentSessionNum, setCurrentSessionNum] = useState(0);
 
@@ -36,10 +49,12 @@ function MyTry({ match }: RouteComponentProps<TParams>) {
 
   const currentSession = raceContainer.summary.sessionSummaries[currentSessionNum];
 
-  const location = useLocation();
+  if (!raceContainer.loaded) {
+    return <Spin />;
+  }
+
   // console.log(location.pathname);
-  const regex = /.*?\/details\/(?<myId>.*?)\/try$/;
-  const { myId } = location.pathname.match(regex)?.groups!;
+
   // console.log(myId);
   const byResultPos = buildRaceEntriesByPosition(current, driverData);
   const byTrackPos = buildRaceEntriesByPosition(current, driverData).sort((a, b) =>
@@ -48,8 +63,8 @@ function MyTry({ match }: RouteComponentProps<TParams>) {
   return (
     <div>
       <Select defaultValue={currentSessionNum} onChange={(d) => setCurrentSessionNum(d)}>
-        {raceContainer.summary.sessionSummaries.map((item) => (
-          <Option value={item.sessionNum}>Session {item.sessionNum}</Option>
+        {raceContainer.eventData.sessions.map((item) => (
+          <Option value={item.num}>Session {item.name}</Option>
         ))}
       </Select>
       <Slider min={currentSession.minTime} max={currentSession.maxTime} step={1} onAfterChange={afterChangeHandler} />
@@ -64,7 +79,7 @@ function MyTry({ match }: RouteComponentProps<TParams>) {
         <Col>
           <RaceByResultPosition
             entries={byTrackPos}
-            selectColumns={["pos", "carIdx", "currentLap", "trackPos", "pit"]}
+            selectColumns={["pos", "carIdx", "currentLap", "trackPos", "dist", "speed", "delta", "pit"]}
           />
         </Col>
         <Col>
@@ -119,6 +134,9 @@ interface MyRaceEntry {
   lastLapTime: number;
   lapsComplete: number;
   currentLap: number;
+  speed: number;
+  delta: number;
+  dist: number;
 }
 
 const buildRaceEntriesByPosition = (raceLog: IRaceLogMeta, driverData: IDriverMeta[]): MyRaceEntry[] => {
@@ -151,6 +169,9 @@ const buildRaceEntriesByPosition = (raceLog: IRaceLogMeta, driverData: IDriverMe
       lapsComplete: raceLog.data.carIdxLapCompleted[idx],
       currentLap: raceLog.data.carIdxLap[idx],
       pit: raceLog.data.carIdxOnPitRoad[idx],
+      speed: raceLog.data.carIdxSpeed[idx],
+      delta: raceLog.data.carIdxDelta[idx],
+      dist: raceLog.data.carIdxDistMeters[idx],
     }))
     .filter((v) => v.position > 0)
     .sort((a, b) => a.position - b.position);
@@ -174,6 +195,9 @@ const RaceByResultPosition: React.FC<RaceEntryTableProps> = (props: RaceEntryTab
     { key: "lastLapTime", title: "Laptime", dataIndex: "lastLapTime", render: (d) => lapTimeString(d) },
     { key: "lap", title: "Lap", dataIndex: "lapsComplete" },
     { key: "currentLap", title: "Lap", dataIndex: "currentLap" },
+    { key: "speed", title: "Speed", dataIndex: "speed", render: (d) => sprintf("%d", d) },
+    { key: "delta", title: "Delta", dataIndex: "delta", render: (d) => sprintf("%.2f", d) },
+    { key: "dist", title: "Dist", dataIndex: "dist", render: (d) => sprintf("%d", d) },
     { key: "pit", title: "InPit", dataIndex: "pit", render: (p) => (p ? "yes" : "") },
   ];
   var showCols: ColumnsType<MyRaceEntry>;

@@ -2,8 +2,6 @@ import { Layout, Menu } from "antd";
 import React, { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { Link, Route, RouteComponentProps, Switch } from "react-router-dom";
-import { loadEventDrivers } from "../stores/drivers/actions";
-import { loadEventData } from "../stores/raceevents/actions";
 import MyTry from "./myTry";
 
 const { Header, Sider, Content } = Layout;
@@ -23,10 +21,11 @@ function RaceDetailsFrame({ match }: RouteComponentProps<TParams>) {
   const [loadTrigger, setLoadTrigger] = useState(0);
   const dispatch = useDispatch();
   useEffect(() => {
-    console.log("Now trigger load event details for " + match.params.id);
+    // console.log("Now trigger load event details for " + match.params.id);
     //delegate();
-    dispatch(loadEventDrivers(match.params.id));
-    dispatch(loadEventData("tbd_token", match.params.id));
+    // dispatch(loadEventDrivers(match.params.id));
+    // dispatch(loadEventData("tbd_token", match.params.id));
+    // dispatch(ensureEventData("tbd_token_race_details", match.params.id));
   }, [loadTrigger]);
   return (
     <Layout>
@@ -42,7 +41,7 @@ function RaceDetailsFrame({ match }: RouteComponentProps<TParams>) {
             <Link to={`${match.url}/summary`}>Summary</Link>
           </Menu.Item>
           <Menu.Item key="try" className="race-sidebar">
-            <Link to={`${match.url}/try`}>Try it</Link>
+            <Link to={`${match.url}/try`}>Experimental</Link>
           </Menu.Item>
         </Menu>
       </Sider>
