@@ -1,6 +1,9 @@
+import { sprintf } from "sprintf-js";
 import { API_BASE_URL } from "../constants";
 import { IDriverMeta } from "../stores/drivers/types";
 import { IEventSummary, IRaceEvent, IRaceLogMeta } from "../stores/raceevents/types";
+import { ILaptimeMeta } from "../stores/types/laptimes";
+import { IPitstopMeta } from "../stores/types/pitstops";
 import { jsonDateEnhancer } from "../utils/jsonUtils";
 
 export interface RaceEvent {}
@@ -94,6 +97,42 @@ export default class RaceEventService {
       }).then((res: Response) => {
         if (res.ok) {
           res.json().then((j) => resolve(j));
+        }
+      });
+    });
+  }
+
+  public static pitStops(token: string, id: string): Promise<IPitstopMeta[]> {
+    return new Promise((resolve, reject) => {
+      fetch(API_BASE_URL + "/raceevents/" + id + "/pitstops", {
+        method: "GET",
+
+        // headers: { Authorization: "Bearer " + token }
+      }).then((res: Response) => {
+        if (res.ok) {
+          res
+            .json()
+            .then((j) =>
+              resolve(j._embedded !== undefined ? jsonDateEnhancer(JSON.stringify(j._embedded.pitStopMetaDatas)) : [])
+            );
+        }
+      });
+    });
+  }
+
+  public static laptimes(token: string, id: string, sessionNum: number, carIdx: number): Promise<ILaptimeMeta[]> {
+    return new Promise((resolve, reject) => {
+      fetch(sprintf("%s/raceevents/%s/%d/%d/laptimes", API_BASE_URL, id, sessionNum, carIdx), {
+        method: "GET",
+
+        // headers: { Authorization: "Bearer " + token }
+      }).then((res: Response) => {
+        if (res.ok) {
+          res
+            .json()
+            .then((j) =>
+              resolve(j._embedded !== undefined ? jsonDateEnhancer(JSON.stringify(j._embedded.lapDataMetaDatas)) : [])
+            );
         }
       });
     });

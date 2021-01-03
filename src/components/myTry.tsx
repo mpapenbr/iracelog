@@ -1,6 +1,6 @@
 import { Col, Row, Select, Slider, Space, Spin, Statistic, Table } from "antd";
 import { ColumnsType } from "antd/lib/table";
-import { range } from "lodash";
+import { range, uniqueId } from "lodash";
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { RouteComponentProps, useLocation } from "react-router-dom";
@@ -37,9 +37,6 @@ function MyTry({ match }: RouteComponentProps<TParams>) {
   const afterChangeHandler = (arg: number) => {
     RaceEventService.logData("TBD_TOKEN", myId, currentSessionNum, arg).then((v: IRaceLogMeta[]) => {
       if (v && v.length > 0) {
-        // console.log(v[0].sessionTime);
-        // console.log(v[0].data.carIdxPosition);
-
         setCurrent(v[0]);
       } else {
         console.log("No data");
@@ -47,26 +44,53 @@ function MyTry({ match }: RouteComponentProps<TParams>) {
     });
   };
 
-  const currentSession = raceContainer.summary.sessionSummaries[currentSessionNum];
-
+  var currentSession = raceContainer.summary.sessionSummaries.find((item) => item.sessionNum === currentSessionNum);
+  if (currentSession === undefined) {
+    currentSession = { sessionNum: currentSessionNum, minTime: 0, maxTime: 0, minTick: 0, maxTick: 0, count: 0 };
+  }
   if (!raceContainer.loaded) {
     return <Spin />;
   }
 
-  // console.log(location.pathname);
-
-  // console.log(myId);
   const byResultPos = buildRaceEntriesByPosition(current, driverData);
   const byTrackPos = buildRaceEntriesByPosition(current, driverData).sort((a, b) =>
     a.lapsComplete === b.lapsComplete ? b.trackPos - a.trackPos : b.lapsComplete - a.lapsComplete
   );
+
+  const renderSessionOptions = () => {
+    if (raceContainer.eventData.sessions !== null) {
+      return (
+        <>
+          {raceContainer.eventData.sessions.map((item) => (
+            <Option value={item.num}>Session {item.name}</Option>
+          ))}
+        </>
+      );
+    } else {
+      return (
+        <>
+          {raceContainer.summary.sessionSummaries.map((item) => (
+            <Option value={item.sessionNum}>Session {item.sessionNum}</Option>
+          ))}
+        </>
+      );
+    }
+  };
   return (
     <div>
-      <Select defaultValue={currentSessionNum} onChange={(d) => setCurrentSessionNum(d)}>
-        {raceContainer.eventData.sessions.map((item) => (
+      <Row gutter={8}>
+        <Col>
+          <Select defaultValue={currentSessionNum} onChange={(d) => setCurrentSessionNum(d)}>
+            {renderSessionOptions()}
+            {/* {raceContainer.eventData.sessions.map((item) => (
           <Option value={item.num}>Session {item.name}</Option>
-        ))}
-      </Select>
+        ))} */}
+          </Select>
+        </Col>
+        <Col>
+          <Info raceLog={current} />
+        </Col>
+      </Row>
       <Slider min={currentSession.minTime} max={currentSession.maxTime} step={1} onAfterChange={afterChangeHandler} />
 
       <Row gutter={8}>
@@ -81,9 +105,6 @@ function MyTry({ match }: RouteComponentProps<TParams>) {
             entries={byTrackPos}
             selectColumns={["pos", "carIdx", "currentLap", "trackPos", "dist", "speed", "delta", "pit"]}
           />
-        </Col>
-        <Col>
-          <Info raceLog={current} />
         </Col>
       </Row>
     </div>
@@ -169,9 +190,9 @@ const buildRaceEntriesByPosition = (raceLog: IRaceLogMeta, driverData: IDriverMe
       lapsComplete: raceLog.data.carIdxLapCompleted[idx],
       currentLap: raceLog.data.carIdxLap[idx],
       pit: raceLog.data.carIdxOnPitRoad[idx],
-      speed: raceLog.data.carIdxSpeed[idx],
-      delta: raceLog.data.carIdxDelta[idx],
-      dist: raceLog.data.carIdxDistMeters[idx],
+      speed: raceLog.data.carIdxSpeed !== null ? raceLog.data.carIdxSpeed[idx] : -1,
+      delta: raceLog.data.carIdxDelta !== null ? raceLog.data.carIdxDelta[idx] : -1,
+      dist: raceLog.data.carIdxDistMeters !== null ? raceLog.data.carIdxDistMeters[idx] : -1,
     }))
     .filter((v) => v.position > 0)
     .sort((a, b) => a.position - b.position);
@@ -184,7 +205,7 @@ interface RaceEntryTableProps {
 const RaceByResultPosition: React.FC<RaceEntryTableProps> = (props: RaceEntryTableProps) => {
   const dataSource = props.entries;
   // console.log(dataSource);
-
+  const localId = uniqueId();
   const columns: ColumnsType<MyRaceEntry> = [
     { key: "pos", title: "Pos", dataIndex: "position" },
     { key: "carIdx", title: "CarIdx", dataIndex: "carIdx" },
@@ -207,7 +228,13 @@ const RaceByResultPosition: React.FC<RaceEntryTableProps> = (props: RaceEntryTab
     showCols = columns;
   }
   return (
-    <Table size="small" pagination={false} dataSource={dataSource} columns={showCols} rowKey={(d) => d.position} />
+    <Table
+      size="small"
+      pagination={false}
+      dataSource={dataSource}
+      columns={showCols}
+      rowKey={(d) => sprintf("%s-%d", localId, d.position)}
+    />
   );
 };
 

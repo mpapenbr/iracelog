@@ -39,3 +39,13 @@ export const secAsHHMMSS = (t: number): string => {
   const seconds = Math.trunc(work);
   return sprintf("%d:%02d:%02d", hours, minutes, seconds);
 };
+
+/**
+ * zero-leading numbers are coded this way:
+ * 3007 -> 007
+ * 2001 -> 01
+ * @param raw
+ */
+export const adjustRawNumber = (raw: string): string => {
+  return raw.length === 4 ? raw.slice(raw.length - parseInt(raw[0])) : raw;
+};
