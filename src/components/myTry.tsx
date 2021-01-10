@@ -103,7 +103,7 @@ function MyTry({ match }: RouteComponentProps<TParams>) {
         <Col>
           <RaceByResultPosition
             entries={byTrackPos}
-            selectColumns={["pos", "carIdx", "currentLap", "trackPos", "dist", "speed", "delta", "pit"]}
+            selectColumns={["pos", "carIdx", "carNumberRaw", "currentLap", "trackPos", "dist", "speed", "delta", "pit"]}
           />
         </Col>
       </Row>

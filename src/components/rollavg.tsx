@@ -14,7 +14,7 @@ import { ILaptimeMeta } from "../stores/types/laptimes";
 import { IPitstopMeta } from "../stores/types/pitstops";
 import { adjustRawNumber, lapTimeString } from "../utils/output";
 
-const PitStops: React.FC<{}> = () => {
+const RollingAverages: React.FC<{}> = () => {
   const [loadTrigger, setLoadTrigger] = useState(0);
   const location = useLocation();
   const regex = /.*?\/details\/(?<myId>.*?)\/.*$/;
@@ -92,7 +92,7 @@ const PitStops: React.FC<{}> = () => {
   const columns: ColumnsType<IDriverMeta> = [
     { key: "carNum", title: "#", dataIndex: ["data", "carNumberRaw"], render: (d) => adjustRawNumber(d) },
     { key: "name", title: "Name", dataIndex: ["data", "userName"] },
-    { key: "stops", title: "Stops", dataIndex: ["data", "carIdx"], render: (d) => pitstopsShort(d) },
+
     { key: "action", title: "Action", dataIndex: ["data", "carIdx"], render: (d) => extraButtons(d) },
   ];
 
@@ -181,4 +181,4 @@ const Laptimes: React.FC<ILaptimesProps> = (props: ILaptimesProps) => {
     />
   );
 };
-export default PitStops;
+export default RollingAverages;
