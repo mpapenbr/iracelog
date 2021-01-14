@@ -4,7 +4,7 @@ import { useDispatch } from "react-redux";
 import { Link, Route, RouteComponentProps, Switch } from "react-router-dom";
 import MyTry from "./myTry";
 import PitStops from "./pitstops";
-import RollingAverages from "./rollavg";
+import Stints from "./stints";
 
 const { Header, Sider, Content } = Layout;
 
@@ -30,8 +30,8 @@ function RaceDetailsFrame({ match }: RouteComponentProps<TParams>) {
           <Menu.Item key="drivers" className="race-sidebar">
             <Link to={`${match.url}/drivers`}>Drivers</Link>
           </Menu.Item>
-          <Menu.Item key="rollavg" className="race-sidebar">
-            <Link to={`${match.url}/rollavg`}>Rolling avg</Link>
+          <Menu.Item key="stints" className="race-sidebar">
+            <Link to={`${match.url}/stints`}>Stints</Link>
           </Menu.Item>
           <Menu.Item key="pitstops" className="race-sidebar">
             <Link to={`${match.url}/pitstops`}>Pitstop</Link>
@@ -49,7 +49,7 @@ function RaceDetailsFrame({ match }: RouteComponentProps<TParams>) {
           <Route path={`${match.url}`} exact component={MyPlaceholder} />
           <Route path={`${match.url}/try`} component={MyTry} />
           <Route path={`${match.url}/pitstops`} component={PitStops} />
-          <Route path={`${match.url}/rollavg`} component={RollingAverages} />
+          <Route path={`${match.url}/stints`} component={Stints} />
         </Switch>
       </Content>
     </Layout>

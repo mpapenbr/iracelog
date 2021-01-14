@@ -14,6 +14,16 @@ export interface ILaptime {
   incomplete: boolean;
 }
 
+export interface ILaptimeExtended {
+  sessionTime: number;
+  sessionTick: number;
+  sessionNum: number;
+  lapData: ILaptime;
+  filtered: boolean;
+  rollAvg: number;
+  rollAvgFiltered: number;
+}
+
 const defaultLaptime: ILaptime = {
   carIdx: 0,
   lapNo: 0,

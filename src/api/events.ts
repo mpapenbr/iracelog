@@ -4,6 +4,7 @@ import { IDriverMeta } from "../stores/drivers/types";
 import { IEventSummary, IRaceEvent, IRaceLogMeta } from "../stores/raceevents/types";
 import { ILaptimeMeta } from "../stores/types/laptimes";
 import { IPitstopMeta } from "../stores/types/pitstops";
+import { IStintData } from "../stores/types/stints";
 import { jsonDateEnhancer } from "../utils/jsonUtils";
 
 export interface RaceEvent {}
@@ -132,6 +133,23 @@ export default class RaceEventService {
             .json()
             .then((j) =>
               resolve(j._embedded !== undefined ? jsonDateEnhancer(JSON.stringify(j._embedded.lapDataMetaDatas)) : [])
+            );
+        }
+      });
+    });
+  }
+  public static stints(token: string, id: string, sessionNum: number, carIdx: number): Promise<IStintData[]> {
+    return new Promise((resolve, reject) => {
+      fetch(sprintf("%s/raceevents/%s/%d/%d/stints", API_BASE_URL, id, sessionNum, carIdx), {
+        method: "GET",
+
+        // headers: { Authorization: "Bearer " + token }
+      }).then((res: Response) => {
+        if (res.ok) {
+          res
+            .json()
+            .then((j) =>
+              resolve(j._embedded !== undefined ? jsonDateEnhancer(JSON.stringify(j._embedded.stintDatas)) : [])
             );
         }
       });
