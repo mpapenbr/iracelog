@@ -14,6 +14,7 @@ import { IRaceContainer } from "../stores/raceevents/types";
 import { ILaptimeExtended } from "../stores/types/laptimes";
 import { IPitstopMeta } from "../stores/types/pitstops";
 import { IStintData } from "../stores/types/stints";
+import { uiSetStintNo } from "../stores/ui/actions";
 import { adjustRawNumber, lapTimeString } from "../utils/output";
 
 // some helper
@@ -40,6 +41,31 @@ const closestDriverEntryByTime = (
     .sort((a, b) => b.sessionTime - a.sessionTime);
   // console.log(invSortedByTime);
   return invSortedByTime.length > 0 ? invSortedByTime[0].data : defaultDriverData();
+};
+
+const teamDrivers = (carIdx: number, rc: IRaceContainer) => {
+  const rawNames = rc.drivers.filter((d) => d.data.carIdx === carIdx).map((d) => d.data.userName);
+  const nameSet = _.uniq(rawNames);
+  return nameSet;
+};
+export interface ICarUserProps {
+  driverData: IDriverMeta;
+  teamRacing: boolean;
+  raceContainer: IRaceContainer;
+}
+const CarDriver: React.FC<ICarUserProps> = (props: ICarUserProps) => {
+  if (props.teamRacing) {
+    const x = (
+      <Tooltip
+        title={teamDrivers(props.driverData.data.carIdx, props.raceContainer).map((n) => (
+          <p key={_.uniqueId()}>{n}</p>
+        ))}
+      >
+        {props.driverData.data.teamName}
+      </Tooltip>
+    );
+    return x;
+  } else return <>{props.driverData.data.userName}</>;
 };
 
 const Stints: React.FC<{}> = () => {
@@ -103,6 +129,7 @@ const Stints: React.FC<{}> = () => {
   const onLoadStints = (e: React.MouseEvent<HTMLButtonElement>) => {
     // dispatch(deleteRaceEvent(e.currentTarget.value, "authTokenTBD"));
     console.log("shouldLoad stints for " + e.currentTarget.value);
+    dispatch(uiSetStintNo(0));
     const carIdx = parseInt(e.currentTarget.value);
     RaceEventService.stints("TBD_TOKEN_PITSTOPS", myId, raceSession, carIdx).then((v) => {
       setStints(v);
@@ -119,7 +146,13 @@ const Stints: React.FC<{}> = () => {
 
   const columns: ColumnsType<IDriverMeta> = [
     { key: "carNum", title: "#", dataIndex: ["data", "carNumberRaw"], render: (d) => adjustRawNumber(d) },
-    { key: "name", title: "Name", dataIndex: ["data", "userName"] },
+    {
+      key: "name",
+      title: "Name",
+      render: (d) => (
+        <CarDriver raceContainer={raceContainer} teamRacing={raceContainer.eventData.teamRacing != 0} driverData={d} />
+      ),
+    },
 
     { key: "action", title: "Action", dataIndex: ["data", "carIdx"], render: (d) => extraButtons(d) },
   ];
@@ -162,16 +195,19 @@ const StintDetails: React.FC<IStintProps> = (props: IStintProps) => {
       d.laps[0].sessionTime
     ).userName;
   };
-  const [stintLapsToShow, setStintLapsToShow] = useState(0);
+  const dispatch = useDispatch();
+  // const [stintLapsToShow, setStintLapsToShow] = useState(0);
+  const stintLapsToShow = useSelector((state: ApplicationState) => state.ui.data.stint.stintNo);
   const onSelectStintLapsToShow = (e: React.MouseEvent<HTMLButtonElement>) => {
     // dispatch(deleteRaceEvent(e.currentTarget.value, "authTokenTBD"));
     console.log("should show laps for stint  " + e.currentTarget.value);
     const stintNo = parseInt(e.currentTarget.value);
-    setStintLapsToShow(stintNo);
+    // setStintLapsToShow(stintNo);
+    dispatch(uiSetStintNo(stintNo));
   };
   const extraButtons = (d: number) => (
     <div>
-      <Tooltip title="Stints">
+      <Tooltip title="Laps">
         <Button icon={<InfoCircleOutlined />} value={d} onClick={onSelectStintLapsToShow} />
       </Tooltip>
     </div>

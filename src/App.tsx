@@ -52,7 +52,7 @@ const App: React.FC<AppProps> = (props: AppProps) => {
               </Switch>
             </div>
           </Content>
-          <Footer style={{ textAlign: "center" }}>iRacelog ©2020 Markus Papenbrock</Footer>
+          <Footer style={{ textAlign: "center" }}>iRacelog ©2021 Markus Papenbrock</Footer>
         </Layout>
       </Router>
     </Provider>
