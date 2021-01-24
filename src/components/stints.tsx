@@ -1,5 +1,5 @@
-import { InfoCircleOutlined } from "@ant-design/icons";
-import { Button, Col, Row, Spin, Tooltip } from "antd";
+import { InfoCircleOutlined, ReloadOutlined } from "@ant-design/icons";
+import { Button, Card, Col, Descriptions, Empty, Row, Spin, Tooltip } from "antd";
 import Table, { ColumnsType } from "antd/lib/table";
 import _ from "lodash";
 import React, { useEffect, useState } from "react";
@@ -9,13 +9,13 @@ import { sprintf } from "sprintf-js";
 import RaceEventService from "../api/events";
 import { ApplicationState } from "../stores";
 import { defaultDriverData, IDriver, IDriverMeta } from "../stores/drivers/types";
-import { ensureEventData } from "../stores/raceevents/actions";
+import { ensureEventData, loadEventData } from "../stores/raceevents/actions";
 import { IRaceContainer } from "../stores/raceevents/types";
 import { ILaptimeExtended } from "../stores/types/laptimes";
 import { IPitstopMeta } from "../stores/types/pitstops";
 import { IStintData } from "../stores/types/stints";
 import { uiSetStintNo } from "../stores/ui/actions";
-import { adjustRawNumber, lapTimeString } from "../utils/output";
+import { adjustRawNumber, lapTimeString, secAsMMSS } from "../utils/output";
 
 // some helper
 // TODO: move this to a more common location. we need this very often
@@ -43,6 +43,14 @@ const closestDriverEntryByTime = (
   return invSortedByTime.length > 0 ? invSortedByTime[0].data : defaultDriverData();
 };
 
+const stintDuration = (d: IStintData): string => {
+  if (d.laps.length === 0) {
+    return "n.a.";
+  }
+  const dur = _.last(d.laps)!.sessionTime + _.last(d.laps)!.lapData.lapTime - d.laps[0].sessionTime;
+  return secAsMMSS(dur);
+};
+
 const teamDrivers = (carIdx: number, rc: IRaceContainer) => {
   const rawNames = rc.drivers.filter((d) => d.data.carIdx === carIdx).map((d) => d.data.userName);
   const nameSet = _.uniq(rawNames);
@@ -68,6 +76,20 @@ const CarDriver: React.FC<ICarUserProps> = (props: ICarUserProps) => {
   } else return <>{props.driverData.data.userName}</>;
 };
 
+interface CarClass {
+  id: number;
+  name: string;
+}
+
+const collectCarClasses = (data: IDriverMeta[]): CarClass[] => {
+  return data.reduce((a: CarClass[], b: IDriverMeta) => {
+    if (a.findIndex((d) => d.id === b.data.carClassId) === -1) {
+      a.push({ id: b.data.carClassId, name: b.data.carClassShortName });
+    }
+    return a;
+  }, []);
+};
+
 const Stints: React.FC<{}> = () => {
   const [loadTrigger, setLoadTrigger] = useState(0);
   const location = useLocation();
@@ -89,6 +111,11 @@ const Stints: React.FC<{}> = () => {
   if (!raceContainer.loaded) {
     return <Spin />;
   }
+
+  const onReloadRequested = () => {
+    dispatch(loadEventData("TBD_TOKEN_FOR_ENSURE_DATA", myId));
+  };
+
   let tmpMarkCarIdx: number[] = [];
   const driverData = raceContainer.drivers
     .filter((v) => {
@@ -143,37 +170,50 @@ const Stints: React.FC<{}> = () => {
       </Tooltip>
     </div>
   );
-
+  const carClasses = collectCarClasses(raceContainer.drivers);
+  const filterItems = carClasses.map((v) => ({ text: v.name, value: v.id }));
   const columns: ColumnsType<IDriverMeta> = [
     { key: "carNum", title: "#", dataIndex: ["data", "carNumberRaw"], render: (d) => adjustRawNumber(d) },
     {
       key: "name",
       title: "Name",
+      onFilter: (value, record: IDriverMeta) =>
+        raceContainer.eventData.teamRacing
+          ? record.data.teamName.includes(value as string)
+          : record.data.userName.includes(value as string),
       render: (d) => (
         <CarDriver raceContainer={raceContainer} teamRacing={raceContainer.eventData.teamRacing != 0} driverData={d} />
       ),
     },
 
+    {
+      key: "carClass",
+      title: "Class",
+      dataIndex: ["data", "carClassId"],
+      filters: carClasses.map((v) => ({ text: v.name, value: v.id })),
+      onFilter: (value, record: IDriverMeta) => record.data.carClassId === (value as number),
+      render: (d) => carClasses.find((v) => v.id === d)?.name,
+    },
     { key: "action", title: "Action", dataIndex: ["data", "carIdx"], render: (d) => extraButtons(d) },
   ];
 
   return (
     <Row gutter={16}>
-      <Col>
-        <Table
-          size="small"
-          pagination={false}
-          dataSource={driverData}
-          columns={columns}
-          rowKey={(d) => d.data.carIdx}
-        />
+      <Col span={8}>
+        <Card title="Entries" extra={<Button icon={<ReloadOutlined />} onClick={onReloadRequested} />}>
+          <Table
+            size="small"
+            pagination={false}
+            dataSource={driverData}
+            columns={columns}
+            rowKey={(d) => d.data.carIdx}
+          />
+        </Card>
       </Col>
       {stints !== undefined && stints.length > 0 ? (
-        <Row>
-          <Col>
-            <StintDetails stints={stints} raceContainer={raceContainer} />
-          </Col>
-        </Row>
+        <Col span={16}>
+          <StintDetails stints={stints} raceContainer={raceContainer} />
+        </Col>
       ) : (
         <div />
       )}
@@ -188,13 +228,27 @@ interface IStintProps {
 
 const StintDetails: React.FC<IStintProps> = (props: IStintProps) => {
   const dings = (d: IStintData): string => {
+    if (d.laps.length > 0) {
+      return closestDriverEntryByTime(
+        props.raceContainer.drivers,
+        d.laps[0].lapData.carIdx,
+        d.laps[0].sessionNum,
+        d.laps[0].sessionTime
+      ).userName;
+    } else {
+      return "Unknown ";
+    }
+  };
+
+  const driverData = (d: IStintData): IDriver => {
     return closestDriverEntryByTime(
       props.raceContainer.drivers,
       d.laps[0].lapData.carIdx,
       d.laps[0].sessionNum,
       d.laps[0].sessionTime
-    ).userName;
+    );
   };
+
   const dispatch = useDispatch();
   // const [stintLapsToShow, setStintLapsToShow] = useState(0);
   const stintLapsToShow = useSelector((state: ApplicationState) => state.ui.data.stint.stintNo);
@@ -204,6 +258,13 @@ const StintDetails: React.FC<IStintProps> = (props: IStintProps) => {
     const stintNo = parseInt(e.currentTarget.value);
     // setStintLapsToShow(stintNo);
     dispatch(uiSetStintNo(stintNo));
+  };
+
+  const stintRange = (d: IStintData): string => {
+    if (d.laps.length === 0) {
+      return "n.a. " + d.stintNo;
+    }
+    return sprintf("%d - %d", d.laps[0].lapData.lapNo, _.last(d.laps)!.lapData.lapNo);
   };
   const extraButtons = (d: number) => (
     <div>
@@ -228,7 +289,7 @@ const StintDetails: React.FC<IStintProps> = (props: IStintProps) => {
     {
       title: "Filtered",
       children: [
-        { key: "filteredLaps", title: "In Range", align: "right", dataIndex: ["ranged", "count"], render: (d) => d },
+        // { key: "filteredLaps", title: "In Range", align: "right", dataIndex: ["ranged", "count"], render: (d) => d },
         {
           key: "filteredMin",
           title: "Min",
@@ -252,26 +313,49 @@ const StintDetails: React.FC<IStintProps> = (props: IStintProps) => {
         },
       ],
     },
+
+    { key: "stintTime", title: "Duration", render: (d) => stintDuration(d) },
+    { key: "stintRange", align: "center", title: "Range", render: (d) => stintRange(d) },
     { key: "action", title: "Action", dataIndex: ["stintNo"], render: (d) => extraButtons(d) },
     // { key: "rollAvg", title: "Roll AvgTime", dataIndex: ["data"], render: (d, v) => lapTimeString(rollingAvg(v)) },
   ];
-
+  const header = () => {
+    const dd = driverData(props.stints[0]);
+    const title = sprintf(
+      "#%s %s",
+      adjustRawNumber(dd.carNumberRaw),
+      props.raceContainer.eventData.teamRacing ? dd.teamName : dd.userName
+    );
+    return (
+      <Descriptions column={{ xxl: 4, xl: 3, lg: 3, md: 3, sm: 2, xs: 1 }} size="small" title={title}>
+        <Descriptions.Item label="Car">{dd.carName}</Descriptions.Item>
+        <Descriptions.Item label="Car class">{dd.carClassShortName}</Descriptions.Item>
+      </Descriptions>
+    );
+  };
   return (
     <>
+      {/* <Row>
+        <Col>{header()}</Col>
+      </Row> */}
+
       <Row>
-        <Table
-          size="small"
-          pagination={false}
-          dataSource={props.stints}
-          columns={columns}
-          rowKey={(d) => sprintf("lt-%d", _.uniqueId())}
-        />
+        <Col span={24}>
+          <Table
+            size="small"
+            pagination={false}
+            dataSource={props.stints}
+            columns={columns}
+            title={header}
+            rowKey={(d) => sprintf("lt-%d", _.uniqueId())}
+          />
+        </Col>
       </Row>
       <Row>
         {stintLapsToShow > 0 ? (
           <StintLaps raceContainer={props.raceContainer} stint={props.stints[stintLapsToShow - 1]} />
         ) : (
-          <p>Nothing to show</p>
+          <Empty />
         )}
       </Row>
     </>
@@ -347,11 +431,25 @@ const StintLaps: React.FC<IStintLapsProps> = (props: IStintLapsProps) => {
     },
   ];
 
+  const header = () => {
+    const title = sprintf("Stint #%d", props.stint.stintNo);
+    return props.stint.laps.length > 0 ? (
+      <Descriptions column={{ xxl: 4, xl: 3, lg: 3, md: 3, sm: 2, xs: 1 }} size="small" title={title}>
+        <Descriptions.Item label="Out">{props.stint.laps[0].lapData.lapNo}</Descriptions.Item>
+        <Descriptions.Item label="In">{_.last(props.stint.laps)!.lapData.lapNo}</Descriptions.Item>
+        <Descriptions.Item label="Duration">{stintDuration(props.stint)}</Descriptions.Item>
+        <Descriptions.Item label="Avg">{lapTimeString(props.stint.ranged.avg)}</Descriptions.Item>
+      </Descriptions>
+    ) : (
+      <Descriptions column={{ xxl: 4, xl: 3, lg: 3, md: 3, sm: 2, xs: 1 }} size="small" title={title} />
+    );
+  };
   return (
     <Table
       size="small"
       pagination={false}
       dataSource={props.stint.laps}
+      title={header}
       columns={columns}
       rowKey={(d) => sprintf("sll-%d", _.uniqueId())}
     />

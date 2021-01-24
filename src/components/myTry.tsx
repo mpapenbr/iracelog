@@ -1,4 +1,5 @@
-import { Col, Row, Select, Slider, Space, Spin, Statistic, Table } from "antd";
+import { ReloadOutlined } from "@ant-design/icons";
+import { Button, Col, Row, Select, Slider, Space, Spin, Statistic, Table } from "antd";
 import { ColumnsType } from "antd/lib/table";
 import { range, uniqueId } from "lodash";
 import React, { useEffect, useState } from "react";
@@ -8,7 +9,7 @@ import { sprintf } from "sprintf-js";
 import RaceEventService from "../api/events";
 import { ApplicationState } from "../stores";
 import { defaultDriverData, IDriver, IDriverMeta } from "../stores/drivers/types";
-import { ensureEventData } from "../stores/raceevents/actions";
+import { ensureEventData, loadEventData } from "../stores/raceevents/actions";
 import { defaultRaceLogMeta, IRaceLogMeta } from "../stores/raceevents/types";
 import { lapTimeString, secAsString } from "../utils/output";
 
@@ -42,6 +43,10 @@ function MyTry({ match }: RouteComponentProps<TParams>) {
         console.log("No data");
       }
     });
+  };
+
+  const onReloadRequested = () => {
+    dispatch(loadEventData("TBD_TOKEN_FOR_ENSURE_DATA", myId));
   };
 
   var currentSession = raceContainer.summary.sessionSummaries.find((item) => item.sessionNum === currentSessionNum);
@@ -89,6 +94,9 @@ function MyTry({ match }: RouteComponentProps<TParams>) {
         </Col>
         <Col>
           <Info raceLog={current} />
+        </Col>
+        <Col>
+          <Button icon={<ReloadOutlined />} onClick={onReloadRequested} />
         </Col>
       </Row>
       <Slider min={currentSession.minTime} max={currentSession.maxTime} step={1} onAfterChange={afterChangeHandler} />
