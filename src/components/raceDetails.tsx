@@ -4,6 +4,7 @@ import { useDispatch } from "react-redux";
 import { Link, Route, RouteComponentProps, Switch } from "react-router-dom";
 import MyTry from "./myTry";
 import PitStops from "./pitstops";
+import RaceEntries from "./raceEntries";
 import Stints from "./stints";
 
 const { Header, Sider, Content } = Layout;
@@ -28,7 +29,7 @@ function RaceDetailsFrame({ match }: RouteComponentProps<TParams>) {
       <Sider theme="light" width={200}>
         <Menu theme="light" mode="inline">
           <Menu.Item key="drivers" className="race-sidebar">
-            <Link to={`${match.url}/drivers`}>Drivers</Link>
+            <Link to={`${match.url}/entries`}>Entries</Link>
           </Menu.Item>
           <Menu.Item key="stints" className="race-sidebar">
             <Link to={`${match.url}/stints`}>Stints</Link>
@@ -50,6 +51,7 @@ function RaceDetailsFrame({ match }: RouteComponentProps<TParams>) {
           <Route path={`${match.url}/try`} component={MyTry} />
           <Route path={`${match.url}/pitstops`} component={PitStops} />
           <Route path={`${match.url}/stints`} component={Stints} />
+          <Route path={`${match.url}/entries`} component={RaceEntries} />
         </Switch>
       </Content>
     </Layout>
