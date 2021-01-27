@@ -10,7 +10,7 @@ export interface IDriver {
   userName: string;
   teamId: number;
   teamName: string;
-  irating: number;
+  iRating: number;
 }
 
 export interface IDriverMeta {
@@ -34,7 +34,7 @@ export const defaultDriverData = (): IDriver => ({
   userName: "",
   teamId: 0,
   teamName: "",
-  irating: 0,
+  iRating: 0,
 });
 
 export const defaultDriverMeta: IDriverMeta = {

@@ -3,8 +3,10 @@ import { ApplicationState } from "..";
 import RaceEventService from "../../api/events";
 import { IBaseAction } from "../../commons";
 import { IDriverMeta } from "../drivers/types";
+import { uiSetStintNo, uiShowEntryDetails } from "../ui/actions";
 import {
   RaceEventActionTypes,
+  resetEventData,
   setEventDrivers,
   setEventLoaded,
   setEventMain,
@@ -56,10 +58,14 @@ Generator {
     const mainData = yield RaceEventService.raceEvent(token, id);
     const summary = yield RaceEventService.eventSummary(token, id);
     const drivers = yield RaceEventService.eventDrivers(token, id);
+    yield put(resetEventData());
     yield put(setEventMain(mainData as IRaceEvent));
     yield put(setEventSummary(summary as IEventSummary));
     yield put(setEventDrivers(drivers as IDriverMeta[]));
     yield put(setEventLoaded(id));
+    // reset UI-Settings
+    yield put(uiSetStintNo(0));
+    yield put(uiShowEntryDetails(-1));
   } catch (e) {
     console.log(e);
   }

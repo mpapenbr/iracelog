@@ -8,8 +8,8 @@ import { ApplicationState } from "../stores";
 import { IDriverMeta } from "../stores/drivers/types";
 import { ensureEventData } from "../stores/raceevents/actions";
 import { IRaceContainer } from "../stores/raceevents/types";
-import { extractRaceUUID } from "../utils/common";
 import { adjustRawNumber } from "../utils/output";
+import { extractRaceUUID, teamDrivers } from "./util/common";
 
 interface IStateProps {
   raceContainer: IRaceContainer;
@@ -22,18 +22,6 @@ interface IDispatchProps {
 }
 
 type MyProps = IStateProps & IDispatchProps;
-
-const teamDrivers = (carIdx: number, rc: IRaceContainer) => {
-  const rawNames = rc.drivers.filter((d) => d.data.carIdx === carIdx).map((d) => d.data.userName);
-  const nameSet = _.uniq(rawNames);
-  return nameSet;
-};
-
-const teamNames = (carIdx: number, rc: IRaceContainer) => {
-  const rawNames = rc.drivers.filter((d) => d.data.carIdx === carIdx).map((d) => d.data.userName);
-  const nameSet = _.uniq(rawNames);
-  return nameSet;
-};
 
 interface IKey {
   key: string;
