@@ -24,7 +24,12 @@ const RaceEventList: React.FC<{}> = () => {
   const raceEventsData = useSelector((state: ApplicationState) => state.raceEvents.data);
 
   const columns: ColumnsType<IRaceEvent> = [
-    { key: "id", title: "Id", dataIndex: "id", render: (d) => <Link to={`${match.url}/details/${d}`}>{d}</Link> },
+    {
+      key: "id",
+      title: "Id",
+      dataIndex: "id",
+      render: (d) => <Link to={`${match.url}/details/${d}`}>{d}</Link>,
+    },
     { key: "ownerId", title: "ownerId", dataIndex: "ownerId" },
     { key: "trackNameShort", title: "Track", dataIndex: "trackNameShort" },
     {

@@ -1,7 +1,6 @@
 import { Layout, Menu } from "antd";
 import React, { useState } from "react";
-import { useDispatch } from "react-redux";
-import { Link, Route, RouteComponentProps, Switch } from "react-router-dom";
+import { Link, Redirect, Route, RouteComponentProps, Switch } from "react-router-dom";
 import MyTry from "./myTry";
 import PitStops from "./pitstops";
 import RaceEntries from "./raceEntries";
@@ -22,7 +21,6 @@ function MyPlaceholder() {
 type TParams = { id: string };
 function RaceDetailsFrame({ match }: RouteComponentProps<TParams>) {
   const [loadTrigger, setLoadTrigger] = useState(0);
-  const dispatch = useDispatch();
 
   return (
     <Layout>
@@ -47,7 +45,9 @@ function RaceDetailsFrame({ match }: RouteComponentProps<TParams>) {
       </Sider>
       <Content>
         <Switch>
-          <Route path={`${match.url}`} exact component={MyPlaceholder} />
+          <Route path={`${match.url}`} exact>
+            <Redirect to={`${match.url}/entries`} />
+          </Route>
           <Route path={`${match.url}/try`} component={MyTry} />
           <Route path={`${match.url}/pitstops`} component={PitStops} />
           <Route path={`${match.url}/stints`} component={Stints} />

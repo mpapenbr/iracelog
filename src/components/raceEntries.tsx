@@ -1,5 +1,5 @@
 import { InfoCircleOutlined } from "@ant-design/icons";
-import { Button, Col, Empty, Row, Spin, Table, Tooltip } from "antd";
+import { Button, Col, Empty, Row, Space, Spin, Statistic, Table, Tooltip } from "antd";
 import { ColumnsType } from "antd/lib/table";
 import _ from "lodash";
 import React, { useEffect, useState } from "react";
@@ -13,7 +13,15 @@ import { IRaceContainer, IRaceEvent } from "../stores/raceevents/types";
 import { uiShowEntryDetails } from "../stores/ui/actions";
 import { adjustRawNumber } from "../utils/output";
 import RaceEntriesList from "./raceEntriesList";
-import { extractRaceUUID, teamDriverData } from "./util/common";
+import {
+  carNames,
+  collectCarClassesIratingAvg,
+  driverNames,
+  extractRaceUUID,
+  iRatingAvg,
+  teamDriverData,
+  teamNames,
+} from "./util/common";
 
 interface IStateProps {
   events: IRaceEvent[];
@@ -58,14 +66,45 @@ const RaceEntries: React.FC<{}> = () => {
   );
 
   return (
-    <Row gutter={4}>
-      <Col span={12}>
-        <RaceEntriesList raceContainer={raceContainer} extraButtons={extraButtons} />;
-      </Col>
-      <Col span={12}>
-        {showEntryDetails > -1 ? <TeamDetails raceContainer={raceContainer} idx={showEntryDetails} /> : <Empty />}
-      </Col>
-    </Row>
+    <>
+      <Row>
+        <Space size={12}>
+          <Statistic title="Date" value={raceContainer.eventData.lastModified.toLocaleDateString()} />
+          <Statistic title="Track" value={raceContainer.eventData.trackNameLong} />
+          <Statistic title="Length" value={raceContainer.eventData.trackLength} />
+          {raceContainer.eventData.numCarClasses > 0 ? (
+            <Statistic title="Classes" value={raceContainer.eventData.numCarClasses} />
+          ) : (
+            <div />
+          )}
+
+          <Statistic title="Cars" value={carNames(raceContainer).length} />
+
+          {raceContainer.eventData.teamRacing > 0 ? (
+            <Statistic title="Teams" value={teamNames(raceContainer).length} />
+          ) : (
+            <div />
+          )}
+          <Statistic title="Drivers" value={driverNames(raceContainer).length} />
+          <Statistic title="Ø iRating" precision={0} value={iRatingAvg(raceContainer)} />
+          {raceContainer.eventData.numCarClasses > 0 ? (
+            collectCarClassesIratingAvg(raceContainer).map((d) => (
+              <Statistic title={d.name} precision={0} value={d.avg} />
+            ))
+          ) : (
+            <div />
+          )}
+        </Space>
+      </Row>
+      <Row gutter={4}>
+        <Col span={12}>
+          <RaceEntriesList raceContainer={raceContainer} extraButtons={extraButtons} />;
+        </Col>
+        <Col span={12}>
+          {showEntryDetails > -1 ? <TeamDetails raceContainer={raceContainer} idx={showEntryDetails} /> : <Empty />}
+        </Col>
+      </Row>
+    </>
   );
 };
 

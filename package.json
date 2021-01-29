@@ -15,7 +15,7 @@
     "@types/react-router-dom": "^5.1.6",
     "@types/sprintf-js": "^1.1.2",
     "@types/uuid": "^8.3.0",
-    "antd": "^4.10.3",
+    "antd": "^4.11.2",
     "json-url": "^2.6.0",
     "lodash": "^4.17.20",
     "react": "^17.0.1",
