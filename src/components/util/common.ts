@@ -1,6 +1,8 @@
 import _ from "lodash";
-import { IDriverMeta } from "../../stores/drivers/types";
+import { defaultDriverData, IDriver, IDriverMeta } from "../../stores/drivers/types";
 import { IRaceContainer } from "../../stores/raceevents/types";
+import { IStintData } from "../../stores/types/stints";
+import { secAsMMSS } from "../../utils/output";
 
 export function extractRaceUUID(pathname: string): string {
   const regex = /.*?\/details\/(?<myId>.*?)(\/.*)?$/;
@@ -72,4 +74,54 @@ export const collectCarClassesIratingAvg = (data: IRaceContainer): CarClassAvg[]
     .sort((a, b) => a.name.localeCompare(b.name));
   ret.forEach((d) => (d.avg = d.value / d.count));
   return ret;
+};
+
+interface IdName {
+  id: number;
+  name: string;
+}
+
+export const collectCarClasses = (data: IDriverMeta[]): IdName[] => {
+  return data
+    .reduce((a: IdName[], b: IDriverMeta) => {
+      if (a.findIndex((d) => d.id === b.data.carClassId) === -1) {
+        a.push({ id: b.data.carClassId, name: b.data.carClassShortName });
+      }
+      return a;
+    }, [])
+    .sort((a, b) => a.name.localeCompare(b.name));
+};
+
+export const collectCars = (data: IDriverMeta[]): IdName[] => {
+  return data
+    .reduce((a: IdName[], b: IDriverMeta) => {
+      if (a.findIndex((d) => d.id === b.data.carId) === -1) {
+        a.push({ id: b.data.carId, name: b.data.carName });
+      }
+      return a;
+    }, [])
+    .sort((a, b) => a.name.localeCompare(b.name));
+};
+
+export const closestDriverEntryByTime = (
+  driverData: IDriverMeta[],
+  carIdx: number,
+  sessionNum: number,
+  sessionTime: number
+): IDriver => {
+  const invSortedByTime = driverData
+    .filter((d) => d.data.carIdx === carIdx)
+    .filter((d) => d.sessionNum == sessionNum)
+    .filter((d) => d.sessionTime <= sessionTime)
+    .sort((a, b) => b.sessionTime - a.sessionTime);
+  // console.log(invSortedByTime);
+  return invSortedByTime.length > 0 ? invSortedByTime[0].data : defaultDriverData();
+};
+
+export const stintDuration = (d: IStintData): string => {
+  if (d.laps.length === 0) {
+    return "n.a.";
+  }
+  const dur = _.last(d.laps)!.sessionTime + _.last(d.laps)!.lapData.lapTime - d.laps[0].sessionTime;
+  return secAsMMSS(dur);
 };

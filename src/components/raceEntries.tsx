@@ -15,6 +15,7 @@ import { adjustRawNumber } from "../utils/output";
 import RaceEntriesList from "./raceEntriesList";
 import {
   carNames,
+  collectCarClasses,
   collectCarClassesIratingAvg,
   driverNames,
   extractRaceUUID,
@@ -65,18 +66,15 @@ const RaceEntries: React.FC<{}> = () => {
     </div>
   );
 
+  const carClasses = collectCarClasses(raceContainer.drivers);
   return (
     <>
       <Row>
         <Space size={12}>
           <Statistic title="Date" value={raceContainer.eventData.lastModified.toLocaleDateString()} />
           <Statistic title="Track" value={raceContainer.eventData.trackNameLong} />
-          <Statistic title="Length" value={raceContainer.eventData.trackLength} />
-          {raceContainer.eventData.numCarClasses > 0 ? (
-            <Statistic title="Classes" value={raceContainer.eventData.numCarClasses} />
-          ) : (
-            <div />
-          )}
+          <Statistic title="Length" groupSeparator="." value={raceContainer.eventData.trackLength} />
+          {carClasses.length > 1 ? <Statistic title="Classes" value={carClasses.length} /> : <div />}
 
           <Statistic title="Cars" value={carNames(raceContainer).length} />
 
@@ -86,10 +84,10 @@ const RaceEntries: React.FC<{}> = () => {
             <div />
           )}
           <Statistic title="Drivers" value={driverNames(raceContainer).length} />
-          <Statistic title="Ø iRating" precision={0} value={iRatingAvg(raceContainer)} />
-          {raceContainer.eventData.numCarClasses > 0 ? (
+          <Statistic title="Ø iRating" precision={0} groupSeparator="." value={iRatingAvg(raceContainer)} />
+          {carClasses.length > 1 ? (
             collectCarClassesIratingAvg(raceContainer).map((d) => (
-              <Statistic title={d.name} precision={0} value={d.avg} />
+              <Statistic title={d.name} precision={0} groupSeparator="." value={d.avg} />
             ))
           ) : (
             <div />

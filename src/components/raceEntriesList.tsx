@@ -9,13 +9,14 @@ import { IDriverMeta } from "../stores/drivers/types";
 import { ensureEventData } from "../stores/raceevents/actions";
 import { IRaceContainer } from "../stores/raceevents/types";
 import { adjustRawNumber } from "../utils/output";
-import { extractRaceUUID, teamDrivers } from "./util/common";
+import { collectCarClasses, collectCars, extractRaceUUID, teamDrivers } from "./util/common";
 
 interface IStateProps {
   raceContainer: IRaceContainer;
   autoDetect?: boolean;
   showColums?: string[];
   extraButtons?: (carIdx: number) => JSX.Element;
+  tableProps?: any;
 }
 interface IDispatchProps {
   // deleteEvent: (id: string) => any;
@@ -38,32 +39,14 @@ function removeCols(current: IKey[], removeKeys: string[]): IKey[] {
   }, current);
 }
 
-interface IdName {
-  id: number;
-  name: string;
+function keepCols(current: IKey[], keepKeys: string[]): IKey[] {
+  return current.reduce((a, b) => {
+    if (keepKeys.indexOf(b.key) === -1) {
+      a.splice(a.indexOf(b), 1);
+    }
+    return a;
+  }, current);
 }
-
-const collectCarClasses = (data: IDriverMeta[]): IdName[] => {
-  return data
-    .reduce((a: IdName[], b: IDriverMeta) => {
-      if (a.findIndex((d) => d.id === b.data.carClassId) === -1) {
-        a.push({ id: b.data.carClassId, name: b.data.carClassShortName });
-      }
-      return a;
-    }, [])
-    .sort((a, b) => a.name.localeCompare(b.name));
-};
-
-const collectCars = (data: IDriverMeta[]): IdName[] => {
-  return data
-    .reduce((a: IdName[], b: IDriverMeta) => {
-      if (a.findIndex((d) => d.id === b.data.carId) === -1) {
-        a.push({ id: b.data.carId, name: b.data.carName });
-      }
-      return a;
-    }, [])
-    .sort((a, b) => a.name.localeCompare(b.name));
-};
 
 /**
  * shows entries for a race. Columns can be set manually or we can let this method detect which columns are useful.
@@ -96,6 +79,7 @@ const RaceEntriesList: React.FC<MyProps> = (props: MyProps) => {
     {
       key: "carNo",
       title: "#",
+      align: "right",
       dataIndex: ["data", "carNumberRaw"],
       render: (d) => adjustRawNumber(d),
       sorter: (a, b) => a.data.carNumber - b.data.carNumber,
@@ -146,23 +130,35 @@ const RaceEntriesList: React.FC<MyProps> = (props: MyProps) => {
   ];
   var columns = [...rawColumns];
 
-  const autoDetect = props.autoDetect !== undefined ? props.autoDetect : true;
+  const autoDetect = props.autoDetect !== undefined ? props.autoDetect : props.showColums === undefined ? true : false;
   if (autoDetect) {
+    columns = removeCols(columns as IKey[], ["carIdx"]);
     if (props.raceContainer.eventData.teamRacing) {
       columns = removeCols(columns as IKey[], ["driverName"]);
     } else {
       columns = removeCols(columns as IKey[], ["teamName"]);
     }
-    if (props.raceContainer.eventData.numCarClasses === 1) {
+    if (collectCarClasses(props.raceContainer.drivers).length === 1) {
       columns = removeCols(columns as IKey[], ["carClass"]);
     }
     if (props.raceContainer.eventData.numCarTypes === 1) {
       columns = removeCols(columns as IKey[], ["carName"]);
     }
   }
+  if (props.showColums !== undefined) {
+    columns = keepCols(columns as IKey[], props.showColums);
+  }
   if (props.extraButtons === undefined) {
     columns = removeCols(columns as IKey[], ["action"]);
   }
-  return <Table dataSource={drivers} columns={columns} pagination={false} rowKey={(d) => _.uniqueId()} />;
+  return (
+    <Table
+      {...props.tableProps}
+      dataSource={drivers}
+      columns={columns}
+      pagination={false}
+      rowKey={(d) => _.uniqueId()}
+    />
+  );
 };
 export default RaceEntriesList;
