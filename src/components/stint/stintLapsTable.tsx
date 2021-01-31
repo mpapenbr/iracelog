@@ -21,6 +21,7 @@ const StintLapsTable: React.FC<IStintLapsProps> = (props: IStintLapsProps) => {
   };
   const columns: ColumnsType<ILaptimeExtended> = [
     { key: "lapNo", title: "Lap", align: "right", dataIndex: ["lapData", "lapNo"], render: (d) => d },
+    { key: "stintLap", title: "StintLap", align: "right", render: (d) => props.stint.laps.indexOf(d) + 1 },
     { key: "driver", title: "Driver", align: "left", render: (d) => dings(d) },
     {
       key: "laptime",
