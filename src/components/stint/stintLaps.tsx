@@ -1,83 +1,21 @@
-import { Descriptions } from "antd";
-import Table, { ColumnsType } from "antd/lib/table";
+import { Descriptions, Tabs } from "antd";
 import _ from "lodash";
 import React from "react";
 import { sprintf } from "sprintf-js";
 import { IRaceContainer } from "../../stores/raceevents/types";
-import { ILaptimeExtended } from "../../stores/types/laptimes";
 import { IStintData } from "../../stores/types/stints";
 import { lapTimeString } from "../../utils/output";
-import { closestDriverEntryByTime, stintDuration } from "../util/common";
+import { stintDuration } from "../util/common";
+import StintLapsGraph from "./stintLapsGraph";
+import StintLapsTable from "./stintLapsTable";
 
 interface IStintLapsProps {
   stint: IStintData;
   raceContainer: IRaceContainer;
 }
+const { TabPane } = Tabs;
 
 const StintLaps: React.FC<IStintLapsProps> = (props: IStintLapsProps) => {
-  const dings = (d: ILaptimeExtended): string => {
-    return closestDriverEntryByTime(props.raceContainer.drivers, d.lapData.carIdx, d.sessionNum, d.sessionTime)
-      .userName;
-  };
-  const columns: ColumnsType<ILaptimeExtended> = [
-    { key: "lapNo", title: "Lap", align: "right", dataIndex: ["lapData", "lapNo"], render: (d) => d },
-    { key: "driver", title: "Driver", align: "left", render: (d) => dings(d) },
-    {
-      key: "laptime",
-      title: "Laptime",
-      align: "right",
-      dataIndex: ["lapData", "lapTime"],
-      render: (d) => lapTimeString(d),
-    },
-    {
-      title: "Averages",
-      children: [
-        {
-          key: "rollAvg",
-          title: "Overall",
-          align: "right",
-          dataIndex: ["rollAvg"],
-          render: (d) => lapTimeString(d),
-        },
-        {
-          key: "rollAvgFiltered",
-          title: "Filtered",
-          align: "right",
-          dataIndex: ["rollAvgFiltered"],
-          render: (d) => lapTimeString(d),
-        },
-      ],
-    },
-    {
-      key: "filter",
-      title: "Filtered",
-      align: "left",
-      dataIndex: ["filtered"],
-      render: (d) => (d ? "yes" : ""),
-    },
-    {
-      key: "in",
-      title: "Inlap",
-      align: "left",
-      dataIndex: ["lapData", "inLap"],
-      render: (d) => (d ? "yes" : ""),
-    },
-    {
-      key: "out",
-      title: "Outlap",
-      align: "left",
-      dataIndex: ["lapData", "outLap"],
-      render: (d) => (d ? "yes" : ""),
-    },
-    {
-      key: "incomplete",
-      title: "Incomplete",
-      align: "left",
-      dataIndex: ["lapData", "incomplete"],
-      render: (d) => (d ? "yes" : ""),
-    },
-  ];
-
   const header = () => {
     const title = sprintf("Stint #%d", props.stint.stintNo);
     return props.stint.laps.length > 0 ? (
@@ -92,14 +30,17 @@ const StintLaps: React.FC<IStintLapsProps> = (props: IStintLapsProps) => {
     );
   };
   return (
-    <Table
-      size="small"
-      pagination={false}
-      dataSource={props.stint.laps}
-      title={header}
-      columns={columns}
-      rowKey={(d) => sprintf("sll-%d", _.uniqueId())}
-    />
+    <>
+      {header()}
+      <Tabs defaultActiveKey="1">
+        <TabPane tab="Table" key="1">
+          <StintLapsTable {...props} />
+        </TabPane>
+        <TabPane tab="Graph" key="2">
+          <StintLapsGraph {...props} />
+        </TabPane>
+      </Tabs>
+    </>
   );
 };
 export default StintLaps;
