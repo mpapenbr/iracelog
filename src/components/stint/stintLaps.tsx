@@ -5,7 +5,7 @@ import { sprintf } from "sprintf-js";
 import { IRaceContainer } from "../../stores/raceevents/types";
 import { IStintData } from "../../stores/types/stints";
 import { lapTimeString } from "../../utils/output";
-import { stintDuration } from "../util/common";
+import { closestDriverEntryByTime, stintDuration } from "../util/common";
 import StintLapsCompareGraph from "./stintLapsCompareGraph";
 import StintLapsCumCompareGraph from "./stintLapsCumCompareGraph";
 import StintLapsGraph from "./stintLapsGraph";
@@ -16,16 +16,40 @@ interface IStintLapsProps {
   stints: IStintData[];
   raceContainer: IRaceContainer;
 }
+interface NameCount {
+  name: string;
+  num: number;
+}
 const { TabPane } = Tabs;
-
 const StintLaps: React.FC<IStintLapsProps> = (props: IStintLapsProps) => {
   const [filterMode, setFilterMode] = useState(true);
+
+  const outLapData = props.stint.laps[0];
+  const inLapData = _.last(props.stint.laps)!;
+
+  const driversInStint = props.stint.laps
+    .map((d) => closestDriverEntryByTime(props.raceContainer.drivers, d.lapData.carIdx, d.sessionNum, d.sessionTime))
+    .reduce((a: NameCount[], b) => {
+      const found = a.find((d) => d.name === b.userName);
+      if (found !== undefined) {
+        found.num += 1;
+      } else {
+        a.push({ name: b.userName, num: 1 });
+      }
+      return a;
+    }, [])
+    .sort((a, b) => b.num - a.num);
+
   const header = () => {
-    const title = sprintf("Stint #%d", props.stint.stintNo);
+    const title = sprintf("Stint #%d %s", props.stint.stintNo, driversInStint[0].name);
+    // const title = sprintf("Stint #%d ", props.stint.stintNo);
+    const inLap = inLapData.lapData.lapNo;
+    const outLap = outLapData.lapData.lapNo;
     return props.stint.laps.length > 0 ? (
-      <Descriptions column={{ xxl: 4, xl: 3, lg: 3, md: 3, sm: 2, xs: 1 }} size="small" title={title}>
-        <Descriptions.Item label="Out">{props.stint.laps[0].lapData.lapNo}</Descriptions.Item>
-        <Descriptions.Item label="In">{_.last(props.stint.laps)!.lapData.lapNo}</Descriptions.Item>
+      <Descriptions column={{ xxl: 6, xl: 6, lg: 3, md: 3, sm: 2, xs: 1 }} size="small" title={title}>
+        <Descriptions.Item label="Out">{outLap}</Descriptions.Item>
+        <Descriptions.Item label="In">{inLap}</Descriptions.Item>
+        <Descriptions.Item label="Laps">{inLap - outLap + 1}</Descriptions.Item>
         <Descriptions.Item label="Duration">{stintDuration(props.stint)}</Descriptions.Item>
         <Descriptions.Item label="Avg">{lapTimeString(props.stint.ranged.avg)}</Descriptions.Item>
       </Descriptions>

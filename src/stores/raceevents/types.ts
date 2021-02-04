@@ -1,4 +1,5 @@
 import { IDriverMeta } from "../drivers/types";
+import { ICarStintData } from "../types/stints";
 
 export interface IRaceSession {
   num: number;
@@ -42,10 +43,12 @@ const defaultRaceEvent: IRaceEvent = {
 
 export interface IRaceContainer {
   id: string;
-  loaded: boolean;
+  eventLoaded: boolean;
+  carStintsLoaded: boolean;
   eventData: IRaceEvent;
   summary: IEventSummary;
   drivers: IDriverMeta[];
+  carStints: ICarStintData[];
 }
 
 export interface IRaceLogData {
@@ -135,10 +138,12 @@ const defaultEventSummary: IEventSummary = {
 };
 export const defaultRaceContainer: IRaceContainer = {
   id: "",
-  loaded: false,
+  eventLoaded: false,
+  carStintsLoaded: false,
   eventData: defaultRaceEvent,
   summary: defaultEventSummary,
   drivers: [],
+  carStints: [],
 };
 export interface IRaceEventsState {
   /**

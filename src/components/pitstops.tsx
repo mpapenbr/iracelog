@@ -32,7 +32,7 @@ const PitStops: React.FC<{}> = () => {
     });
   }, [loadTrigger]);
   const raceContainer = useSelector((state: ApplicationState) => state.raceEvents.current);
-  if (!raceContainer.loaded) {
+  if (!raceContainer.eventLoaded) {
     return <Spin />;
   }
   let tmpMarkCarIdx: number[] = [];

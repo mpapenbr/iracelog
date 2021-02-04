@@ -53,7 +53,7 @@ function MyTry({ match }: RouteComponentProps<TParams>) {
   if (currentSession === undefined) {
     currentSession = { sessionNum: currentSessionNum, minTime: 0, maxTime: 0, minTick: 0, maxTick: 0, count: 0 };
   }
-  if (!raceContainer.loaded) {
+  if (!raceContainer.eventLoaded) {
     return <Spin />;
   }
 

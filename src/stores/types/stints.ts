@@ -13,3 +13,7 @@ export interface IStintData {
   ranged: IMinMaxAvg;
   laps: ILaptimeExtended[];
 }
+export interface ICarStintData {
+  carIdx: number;
+  stints: IStintData[];
+}

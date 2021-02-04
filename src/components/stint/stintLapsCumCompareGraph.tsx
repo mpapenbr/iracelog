@@ -2,7 +2,15 @@ import { Empty } from "antd";
 import _ from "lodash";
 import React, { useEffect } from "react";
 import { sprintf } from "sprintf-js";
-import { DomainTuple, VictoryBar, VictoryChart, VictoryTheme, VictoryTooltip, VictoryVoronoiContainer } from "victory";
+import {
+  DomainTuple,
+  VictoryBar,
+  VictoryChart,
+  VictoryLine,
+  VictoryTheme,
+  VictoryTooltip,
+  VictoryVoronoiContainer,
+} from "victory";
 import { ILaptimeExtended } from "../../stores/types/laptimes";
 import { ignoreLap, IStintCompareProps } from "./stintCommon";
 
@@ -68,6 +76,7 @@ const StintLapsCumCompareGraph: React.FC<IStintCompareProps> = (props: IStintCom
       labelComponent={tt}
     />
   );
+  const wantBar = true;
   return (
     <VictoryChart
       standalone={true}
@@ -78,14 +87,18 @@ const StintLapsCumCompareGraph: React.FC<IStintCompareProps> = (props: IStintCom
     >
       {/* <VictoryAxis dependentAxis={true} tickFormat={(t) => lapTimeStringTenths(t)} fixLabelOverlap />
       <VictoryAxis />       */}
-      <VictoryBar
-        data={data}
-        style={{
-          data: {
-            fill: ({ datum }) => (datum.y < 0 ? "red" : "green"),
-          },
-        }}
-      />
+      {wantBar ? (
+        <VictoryBar
+          data={data}
+          style={{
+            data: {
+              fill: ({ datum }) => (datum.y < 0 ? "red" : "green"),
+            },
+          }}
+        />
+      ) : (
+        <VictoryLine data={data} />
+      )}
     </VictoryChart>
   );
 };

@@ -6,23 +6,11 @@ import { useDispatch, useSelector } from "react-redux";
 import { useLocation } from "react-router";
 import RaceEventService from "../api/events";
 import { ApplicationState } from "../stores";
-import { defaultDriverData, IDriver, IDriverMeta } from "../stores/drivers/types";
 import { ensureEventData, loadEventData } from "../stores/raceevents/actions";
 import { IStintData } from "../stores/types/stints";
 import { uiSetStintNo } from "../stores/ui/actions";
 import RaceEntriesList from "./raceEntriesList";
 import StintDetails from "./stint/stintDetails";
-
-// some helper
-// TODO: move this to a more common location. we need this very often
-const closestDriverEntry = (driverData: IDriverMeta[], carIdx: number, sessionTick: number): IDriver => {
-  const invSortedByTime = driverData
-    .filter((d) => d.data.carIdx === carIdx)
-    .filter((d) => d.sessionTick <= sessionTick)
-    .sort((a, b) => b.sessionTime - a.sessionTime);
-  // console.log(invSortedByTime);
-  return invSortedByTime.length > 0 ? invSortedByTime[0].data : defaultDriverData();
-};
 
 const Stints: React.FC<{}> = () => {
   const [loadTrigger, setLoadTrigger] = useState(0);
@@ -38,7 +26,7 @@ const Stints: React.FC<{}> = () => {
     dispatch(ensureEventData("TBD_TOKEN_FOR_ENSURE_DATA", myId));
   }, [loadTrigger]);
   const raceContainer = useSelector((state: ApplicationState) => state.raceEvents.current);
-  if (!raceContainer.loaded) {
+  if (!raceContainer.eventLoaded) {
     return <Spin />;
   }
 
