@@ -1,9 +1,9 @@
 name: Node.JS CI
 on:
   push:
-    branches: [master]
+    branches: [main]
   pull_request:
-    branches: [master]
+    branches: [main]
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -28,7 +28,7 @@ jobs:
       - name: Install dependencies
         run: yarn install
       - name: Test
-        run: yarn test
+        run: yarn test --passWithNoTests
         env:
           CI: true
           RUN_SLOW_TESTS: true

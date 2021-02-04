@@ -64,7 +64,7 @@ const RaceEntriesList: React.FC<MyProps> = (props: MyProps) => {
     dispatch(ensureEventData("TBD_TOKEN_FOR_ENSURE_DATA", myId));
   }, [loadTrigger]);
   const raceContainer = useSelector((state: ApplicationState) => state.raceEvents.current);
-  if (!raceContainer.loaded) {
+  if (!raceContainer.eventLoaded) {
     return <Spin />;
   }
 

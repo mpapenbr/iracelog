@@ -147,7 +147,11 @@ const StintDetails: React.FC<IStintProps> = (props: IStintProps) => {
       <Row>
         <Col span={24}>
           {stintLapsToShow > 0 ? (
-            <StintLaps raceContainer={props.raceContainer} stint={props.stints[stintLapsToShow - 1]} />
+            <StintLaps
+              raceContainer={props.raceContainer}
+              stints={props.stints}
+              stint={props.stints[stintLapsToShow - 1]}
+            />
           ) : (
             <Empty />
           )}

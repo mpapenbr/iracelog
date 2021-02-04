@@ -62,7 +62,7 @@ interface CarClassAvg {
 export const collectCarClassesIratingAvg = (data: IRaceContainer): CarClassAvg[] => {
   const ret = data.drivers
     .reduce((a: CarClassAvg[], b: IDriverMeta) => {
-      const work = a.find((d) => d.id == b.data.carClassId);
+      const work = a.find((d) => d.id === b.data.carClassId);
       if (work === undefined) {
         a.push({ id: b.data.carClassId, name: b.data.carClassShortName, value: b.data.iRating, count: 1, avg: 0 });
       } else {
@@ -80,6 +80,44 @@ interface IdName {
   id: number;
   name: string;
 }
+interface IEntry extends IdName {
+  carNumber: number;
+  carNumberRaw: string;
+  carClassId: number;
+}
+
+export const collectCompactDriverNames = (data: IDriverMeta[]): IEntry[] => {
+  return data
+    .reduce((a: IEntry[], b: IDriverMeta) => {
+      if (a.findIndex((d) => d.id === b.data.carIdx) === -1) {
+        a.push({
+          id: b.data.carIdx,
+          name: b.data.userName,
+          carNumberRaw: b.data.carNumberRaw,
+          carNumber: b.data.carNumber,
+          carClassId: b.data.carClassId,
+        });
+      }
+      return a;
+    }, [])
+    .sort((a, b) => a.name.localeCompare(b.name));
+};
+export const collectCompactTeamNames = (data: IDriverMeta[]): IEntry[] => {
+  return data
+    .reduce((a: IEntry[], b: IDriverMeta) => {
+      if (a.findIndex((d) => d.id === b.data.carIdx) === -1) {
+        a.push({
+          id: b.data.carIdx,
+          name: b.data.teamName,
+          carNumberRaw: b.data.carNumberRaw,
+          carNumber: b.data.carNumber,
+          carClassId: b.data.carClassId,
+        });
+      }
+      return a;
+    }, [])
+    .sort((a, b) => a.name.localeCompare(b.name));
+};
 
 export const collectCarClasses = (data: IDriverMeta[]): IdName[] => {
   return data
@@ -111,7 +149,7 @@ export const closestDriverEntryByTime = (
 ): IDriver => {
   const invSortedByTime = driverData
     .filter((d) => d.data.carIdx === carIdx)
-    .filter((d) => d.sessionNum == sessionNum)
+    .filter((d) => d.sessionNum === sessionNum)
     .filter((d) => d.sessionTime <= sessionTime)
     .sort((a, b) => b.sessionTime - a.sessionTime);
   // console.log(invSortedByTime);

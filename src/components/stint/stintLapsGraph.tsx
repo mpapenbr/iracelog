@@ -16,10 +16,12 @@ import { IRaceContainer } from "../../stores/raceevents/types";
 import { ILaptimeExtended } from "../../stores/types/laptimes";
 import { IStintData } from "../../stores/types/stints";
 import { lapTimeString, lapTimeStringTenths } from "../../utils/output";
+import { ignoreLap } from "./stintCommon";
 
 interface IStintLapsProps {
   stint: IStintData;
   raceContainer: IRaceContainer;
+  filterLaps: boolean;
 }
 
 const StintLapsGraph: React.FC<IStintLapsProps> = (props: IStintLapsProps) => {
@@ -32,13 +34,15 @@ const StintLapsGraph: React.FC<IStintLapsProps> = (props: IStintLapsProps) => {
     return [laps[0].lapData.lapNo, _.last(laps)!.lapData.lapNo];
   };
   const calcYDom = (stint: IStintData): DomainTuple => {
-    return [stint.ranged.avg * 0.98, stint.ranged.avg * 1.02]; // TODO: sync the 2% with server call ;)
+    return props.filterLaps ? [stint.ranged.avg * 0.98, stint.ranged.avg * 1.02] : [stint.all.min, stint.all.max]; // TODO: sync the 2% with server call ;)
   };
 
   if (props.stint.laps.length < 2) {
     return <Empty description="Not enough data" />;
   }
-  const data = props.stint.laps.filter((d) => !d.filtered).map((d) => ({ x: d.lapData.lapNo, y: d.lapData.lapTime }));
+  const data = props.stint.laps
+    .filter((d) => (!ignoreLap(d) && props.filterLaps ? !d.filtered : true))
+    .map((d) => ({ x: d.lapData.lapNo, y: d.lapData.lapTime }));
   const moveAvg = props.stint.laps.map((d) => ({ x: d.lapData.lapNo, y: d.rollAvgFiltered }));
 
   const graphDomain = { x: calcXDom(props.stint.laps), y: calcYDom(props.stint) };

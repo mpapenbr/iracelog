@@ -17,8 +17,12 @@ const reducer: Reducer<IRaceEventsState> = (state = initialState, action) => {
       return { ...state, current: { ...state.current, summary: action.payload } };
     case RaceEventActionTypes.SET_EVENT_DRIVERS:
       return { ...state, current: { ...state.current, drivers: action.payload } };
+    case RaceEventActionTypes.SET_EVENT_STINTS:
+      return { ...state, current: { ...state.current, carStints: action.payload } };
     case RaceEventActionTypes.SET_EVENT_LOADED:
-      return { ...state, current: { ...state.current, loaded: true, id: action.payload } };
+      return { ...state, current: { ...state.current, eventLoaded: true, id: action.payload } };
+    case RaceEventActionTypes.SET_EVENT_STINTS_LOADED:
+      return { ...state, current: { ...state.current, carStintsLoaded: true, id: action.payload } };
     case RaceEventActionTypes.RESET_EVENT_DATA:
       return { ...state, current: defaultRaceContainer };
 

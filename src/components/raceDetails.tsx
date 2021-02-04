@@ -5,6 +5,7 @@ import MyTry from "./myTry";
 import PitStops from "./pitstops";
 import RaceEntries from "./raceEntries";
 import Stints from "./stints";
+import StintCompare from "./stintSelectCompare";
 
 const { Header, Sider, Content } = Layout;
 
@@ -32,6 +33,9 @@ function RaceDetailsFrame({ match }: RouteComponentProps<TParams>) {
           <Menu.Item key="stints" className="race-sidebar">
             <Link to={`${match.url}/stints`}>Stints</Link>
           </Menu.Item>
+          <Menu.Item key="stintCompare" className="race-sidebar">
+            <Link to={`${match.url}/compareStints`}>Compare stints</Link>
+          </Menu.Item>
           <Menu.Item key="pitstops" className="race-sidebar">
             <Link to={`${match.url}/pitstops`}>Pitstop</Link>
           </Menu.Item>
@@ -51,6 +55,7 @@ function RaceDetailsFrame({ match }: RouteComponentProps<TParams>) {
           <Route path={`${match.url}/try`} component={MyTry} />
           <Route path={`${match.url}/pitstops`} component={PitStops} />
           <Route path={`${match.url}/stints`} component={Stints} />
+          <Route path={`${match.url}/compareStints`} component={StintCompare} />
           <Route path={`${match.url}/entries`} component={RaceEntries} />
         </Switch>
       </Content>

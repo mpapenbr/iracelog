@@ -46,7 +46,7 @@ const RaceEntries: React.FC<{}> = () => {
   }, [loadTrigger]);
   const raceContainer = useSelector((state: ApplicationState) => state.raceEvents.current);
   const showEntryDetails = useSelector((state: ApplicationState) => state.ui.data.entries.entryDetails);
-  if (!raceContainer.loaded) {
+  if (!raceContainer.eventLoaded) {
     return <Spin />;
   }
 
