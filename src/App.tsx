@@ -28,12 +28,12 @@ const App: React.FC<AppProps> = (props: AppProps) => {
               <Menu.Item key="1">
                 <Link to="/events">Events</Link>
               </Menu.Item>
-              <Menu.Item key="2">
+              {/* <Menu.Item key="2">
                 <Link to="/live">Live</Link>
               </Menu.Item>
               <Menu.Item key="3">
                 <Link to="/other">Other</Link>
-              </Menu.Item>
+              </Menu.Item> */}
             </Menu>
           </Header>
           <Content style={{ padding: "0 50px" }}>

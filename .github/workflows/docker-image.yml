@@ -28,7 +28,7 @@ jobs:
       - name: Install dependencies
         run: yarn install
       - name: Test
-        run: yarn test
+        run: yarn test --passWithNoTests
         env:
           CI: true
           RUN_SLOW_TESTS: true
