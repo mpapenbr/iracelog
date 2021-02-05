@@ -96,7 +96,7 @@ const RaceEntries: React.FC<{}> = () => {
       </Row>
       <Row gutter={4}>
         <Col span={12}>
-          <RaceEntriesList raceContainer={raceContainer} extraButtons={extraButtons} />;
+          <RaceEntriesList raceContainer={raceContainer} extraButtons={extraButtons} />
         </Col>
         <Col span={12}>
           {showEntryDetails > -1 ? <TeamDetails raceContainer={raceContainer} idx={showEntryDetails} /> : <Empty />}

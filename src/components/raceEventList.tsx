@@ -40,13 +40,13 @@ const RaceEventList: React.FC<{}> = () => {
       defaultSortOrder: "descend",
       render: (d: Date) => d.toLocaleString(),
     },
-    {
-      title: "Action",
-      dataIndex: "id",
-      key: "action",
+    // {
+    //   title: "Action",
+    //   dataIndex: "id",
+    //   key: "action",
 
-      render: (no: number, record: IRaceEvent) => extraButtons(record),
-    },
+    //   render: (no: number, record: IRaceEvent) => extraButtons(record),
+    // },
   ];
 
   const cbDeleteEvent = useCallback((eventId: string) => dispatch(deleteRaceEvent("authTokenTBD", eventId)), [
