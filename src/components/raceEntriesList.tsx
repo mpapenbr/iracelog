@@ -68,12 +68,14 @@ const RaceEntriesList: React.FC<MyProps> = (props: MyProps) => {
     return <Spin />;
   }
 
-  const drivers = raceContainer.drivers.reduce((prev: IDriverMeta[], current: IDriverMeta) => {
-    if (prev.findIndex((v) => v.data.carIdx === current.data.carIdx) == -1) {
-      prev.push(current);
-    }
-    return prev;
-  }, []);
+  const drivers = raceContainer.drivers
+    .reduce((prev: IDriverMeta[], current: IDriverMeta) => {
+      if (prev.findIndex((v) => v.data.carIdx === current.data.carIdx) == -1) {
+        prev.push(current);
+      }
+      return prev;
+    }, [])
+    .sort((a, b) => a.data.carNumber - b.data.carNumber);
   const rawColumns: ColumnsType<IDriverMeta> = [
     { key: "carIdx", title: "CarIdx", dataIndex: ["data", "carIdx"], sorter: (a, b) => a.data.carIdx - b.data.carIdx },
     {
@@ -157,6 +159,7 @@ const RaceEntriesList: React.FC<MyProps> = (props: MyProps) => {
       dataSource={drivers}
       columns={columns}
       pagination={false}
+      def
       rowKey={(d) => _.uniqueId()}
     />
   );
