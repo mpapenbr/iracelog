@@ -60,21 +60,21 @@ const StintLapsTable: React.FC<IStintLapsProps> = (props: IStintLapsProps) => {
       title: "Inlap",
       align: "left",
       dataIndex: ["lapData", "inLap"],
-      render: (d) => (d ? "yes" : ""),
+      render: (d) => (d ? "in" : ""),
     },
     {
       key: "out",
       title: "Outlap",
       align: "left",
       dataIndex: ["lapData", "outLap"],
-      render: (d) => (d ? "yes" : ""),
+      render: (d) => (d ? "out" : ""),
     },
     {
       key: "incomplete",
       title: "Incomplete",
       align: "left",
       dataIndex: ["lapData", "incomplete"],
-      render: (d) => (d ? "yes" : ""),
+      render: (d) => (d ? "inc" : ""),
     },
   ];
 
