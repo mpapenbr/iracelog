@@ -5,6 +5,7 @@ import { BrowserRouter as Router, Link, Route, Switch } from "react-router-dom";
 import { Store } from "redux";
 import "./App.css";
 import RaceDetailsFrame from "./components/raceDetails";
+import LiveContent from "./pages/liveContent";
 import { RaceEventListPage } from "./pages/raceEventListPage";
 import { ApplicationState } from "./stores";
 
@@ -14,7 +15,6 @@ interface AppProps {
   store: Store<ApplicationState>;
 }
 
-const LiveContent: React.FC<{}> = () => <div>Here goes live content</div>;
 const OtherContent: React.FC<{}> = () => <div>Here goes other content</div>;
 
 const App: React.FC<AppProps> = (props: AppProps) => {
@@ -28,10 +28,10 @@ const App: React.FC<AppProps> = (props: AppProps) => {
               <Menu.Item key="1">
                 <Link to="/events">Events</Link>
               </Menu.Item>
-              {/* <Menu.Item key="2">
+              <Menu.Item key="2">
                 <Link to="/live">Live</Link>
               </Menu.Item>
-              <Menu.Item key="3">
+              {/* <Menu.Item key="3">
                 <Link to="/other">Other</Link>
               </Menu.Item> */}
             </Menu>
