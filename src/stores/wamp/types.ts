@@ -74,6 +74,20 @@ export const PitManifest: IDataEntrySpec[] = [
   { name: "lapExit", type: "numeric", info: "lap when exiting pit" },
 ];
 
+export interface IManifests {
+  car: IDataEntrySpec[];
+  session: IDataEntrySpec[];
+  pit: IDataEntrySpec[];
+  message: IDataEntrySpec[];
+}
+
+const defaultManifests: IManifests = {
+  car: CarManifest,
+  session: SessionManifest,
+  pit: SessionManifest,
+  message: InfoMsgManifest,
+};
+
 export interface IPitInfo {
   carNum: string;
   enterTime: number;
@@ -102,6 +116,7 @@ export interface ICarPitInfo {
 export interface IWampData {
   connected: boolean;
   session: IMessage;
+  manifests: IManifests;
   infoMsgs: IMessage[];
   cars: IMessage;
   carPits: ICarPitInfo[];
@@ -114,10 +129,12 @@ export const emptyMessage: IMessage = {
 };
 export const defaultWampData: IWampData = {
   connected: false,
+
   session: emptyMessage,
   cars: emptyMessage,
   infoMsgs: [],
   carPits: [],
+  manifests: defaultManifests,
   dummy: "no content yet",
 };
 export interface IWampState {

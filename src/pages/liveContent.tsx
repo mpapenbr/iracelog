@@ -11,6 +11,7 @@ import {
   connectedToServer,
   updateCars,
   updateDummy,
+  updateManifests,
   updateMessages,
   updatePitstops,
   updateSession,
@@ -37,21 +38,31 @@ const LiveContent: React.FC<{}> = () => {
     console.log("Now connect to wamp server");
     var conn = new autobahn.Connection({ url: API_CROSSBAR_URL + "/ws", realm: "racelog" });
     conn.onopen = (s: Session) => {
-      dispatch(connectedToServer());
-      s.subscribe("dummy", (data) => {
-        dispatch(updateDummy(data));
-      });
-      s.subscribe("session", (data) => {
-        dispatch(updateSession(data));
-      });
-      s.subscribe("messages", (data) => {
-        dispatch(updateMessages(data));
-      });
-      s.subscribe("cars", (data) => {
-        dispatch(updateCars(data));
-      });
-      s.subscribe("pits", (data) => {
-        dispatch(updatePitstops(data));
+      s.call("racelog.list_providers").then((data: any) => {
+        console.log(data);
+        const id = data[0].key;
+        console.log(data[0].name);
+        console.log(data[0].description);
+        s.call("racelog.get_manifests", [id]).then((data: any) => {
+          console.log(data);
+          dispatch(updateManifests(data));
+        });
+        dispatch(connectedToServer());
+        s.subscribe("dummy", (data) => {
+          dispatch(updateDummy(data));
+        });
+        s.subscribe(sprintf("session.%s", id), (data) => {
+          dispatch(updateSession(data));
+        });
+        s.subscribe(sprintf("messages.%s", id), (data) => {
+          dispatch(updateMessages(data));
+        });
+        s.subscribe(sprintf("cars.%s", id), (data) => {
+          dispatch(updateCars(data));
+        });
+        s.subscribe(sprintf("pits.%s", id), (data) => {
+          dispatch(updatePitstops(data));
+        });
       });
     };
     conn.open();
@@ -140,6 +151,9 @@ const DummyStandings: React.FC<{}> = () => {
     { key: "last", title: "Last", render: (d) => lapTimeString(getValue(d, "last")) },
     { key: "best", title: "Best", render: (d) => lapTimeString(getValue(d, "best")) },
     { key: "trackPos", title: "CurPos", render: (d) => sprintf("%.4f", getValue(d, "trackPos")) },
+    { key: "dist", title: "Dist", render: (d) => sprintf("%.0f", getValue(d, "dist")) },
+    { key: "gap", title: "Gap", render: (d) => sprintf("%.0f", getValue(d, "gap")) },
+    { key: "interval", title: "Int", render: (d) => sprintf("%.1f", getValue(d, "interval")) },
     { key: "speed", title: "Speed", render: (d) => sprintf("%.0f", getValue(d, "speed")) },
   ];
   // console.log(data);
@@ -182,7 +196,7 @@ const getValueViaSpec = (data: [], spec: IDataEntrySpec[], key: string): any => 
 
 const DummySessionInfoData: React.FC<{}> = () => {
   const sessionData = useSelector((state: ApplicationState) => state.wamp.data.session);
-
+  // console.log(sessionData);
   const getValue = (key: string) => getValueViaSpec(sessionData.data, SessionManifest, key);
   const gridStyle = { width: "25%" };
   return (
@@ -210,7 +224,7 @@ const DummySessionInfoData: React.FC<{}> = () => {
               <Statistic title="Track temp" precision={1} value={getValue("trackTemp")} />
             </Card.Grid>
             <Card.Grid style={gridStyle}>
-              <Statistic title="Track temp" precision={1} value={getValue("airTemp")} />
+              <Statistic title="Air temp" precision={1} value={getValue("airTemp")} />
             </Card.Grid>
             <Card.Grid style={gridStyle}>
               <Statistic title="Wind direction" precision={1} value={getValue("windDir")} />

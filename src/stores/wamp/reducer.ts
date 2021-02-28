@@ -19,6 +19,11 @@ const reducer: Reducer<IWampState> = (state = initialState, action) => {
     case WampActionTypes.UPDATE_DUMMY: {
       return { ...state, data: { ...state.data, dummy: action.payload } };
     }
+    case WampActionTypes.UPDATE_MANIFESTS: {
+      if (Array.isArray(action.payload)) {
+        return { ...state, data: { ...state.data, manifests: action.payload[0] } };
+      } else return state;
+    }
     case WampActionTypes.UPDATE_SESSION: {
       if (Array.isArray(action.payload)) {
         return { ...state, data: { ...state.data, session: action.payload[0] } };
@@ -47,6 +52,7 @@ const reducer: Reducer<IWampState> = (state = initialState, action) => {
         return { ...state, data: { ...state.data, infoMsgs: newData } };
       } else return state;
     }
+
     default:
       return state;
   }
@@ -62,11 +68,11 @@ const getValueViaSpec = (data: [], spec: IDataEntrySpec[], key: string): any => 
 };
 
 const processPitData = (payloadData: any, currentStateData: ICarPitInfo[]): ICarPitInfo[] => {
-  console.log({ payloadData });
+  // console.log({ payloadData });
   let workData = [...currentStateData];
   payloadData.data.forEach((e: []) => {
     const num = getValueViaSpec(e, PitManifest, "carNum");
-    console.log(num);
+    // console.log(num);
     let found = workData.find((d) => d.carNum === num);
     if (found === undefined) {
       found = { carNum: num, current: { ...defaultPitInfo, carNum: num }, history: [] };
