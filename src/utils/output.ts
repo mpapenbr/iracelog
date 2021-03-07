@@ -14,7 +14,7 @@ export const lapTimeString = (t: number): string => {
   const seconds = Math.trunc(work);
   work -= seconds;
   const hundrets = Math.trunc(work * 100);
-  return sprintf("%d:%02d.%02d", minutes, seconds, hundrets);
+  return minutes > 0 ? sprintf("%d:%02d.%02d", minutes, seconds, hundrets) : sprintf("%02d.%02d", seconds, hundrets);
 };
 
 export const lapTimeStringTenths = (t: number): string => {

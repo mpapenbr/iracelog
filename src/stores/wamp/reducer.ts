@@ -1,6 +1,14 @@
 import { Reducer } from "redux";
 import { WampActionTypes } from "./actions";
-import { defaultPitInfo, defaultWampData, ICarPitInfo, IDataEntrySpec, IWampState, PitManifest } from "./types";
+import {
+  defaultPitInfo,
+  defaultWampData,
+  ICarPitInfo,
+  IDataEntrySpec,
+  IManifests,
+  IWampState,
+  PitManifest,
+} from "./types";
 
 const initialState: IWampState = {
   data: defaultWampData,
@@ -21,7 +29,7 @@ const reducer: Reducer<IWampState> = (state = initialState, action) => {
     }
     case WampActionTypes.UPDATE_MANIFESTS: {
       if (Array.isArray(action.payload)) {
-        return { ...state, data: { ...state.data, manifests: action.payload[0] } };
+        return { ...state, data: { ...state.data, manifests: postProcessManifest(action.payload[0]) } };
       } else return state;
     }
     case WampActionTypes.UPDATE_SESSION: {
@@ -56,6 +64,22 @@ const reducer: Reducer<IWampState> = (state = initialState, action) => {
     default:
       return state;
   }
+};
+
+interface TmpManifestInboundData {
+  car: string[];
+  session: string[];
+  pit: string[];
+  message: string[];
+}
+const postProcessManifest = (data: TmpManifestInboundData): IManifests => {
+  const toDataSpec = (d: string[]): IDataEntrySpec[] => d.map((v) => ({ name: v, type: "string" }));
+  return {
+    car: toDataSpec(data.car),
+    session: toDataSpec(data.session),
+    pit: toDataSpec(data.pit),
+    message: toDataSpec(data.message),
+  };
 };
 
 const getValueViaSpec = (data: [], spec: IDataEntrySpec[], key: string): any => {

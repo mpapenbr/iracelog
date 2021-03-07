@@ -72,9 +72,17 @@ const LiveContent: React.FC<{}> = () => {
     <>
       <DummySessionInfoData />
       <DummyStandings />
-      <DummyPitstops />
-      <DummyPitstopHistory />
-      <DummyMessages />
+      <Row gutter={12}>
+        <Col span={6}>
+          <DummyPitstops />
+        </Col>
+        <Col span={8}>
+          <DummyMessages />
+        </Col>
+        <Col span={8}>
+          <DummyPitstopHistory />
+        </Col>
+      </Row>
     </>
   ) : (
     <Spin />
@@ -141,21 +149,52 @@ const DummyPitstopHistory: React.FC<{}> = () => {
 
 const DummyStandings: React.FC<{}> = () => {
   const carsRaw = useSelector((state: ApplicationState) => state.wamp.data.cars.data);
-  const getValue = (d: [], key: string) => getValueViaSpec(d, CarManifest, key);
+  const stateCarManifest = useSelector((state: ApplicationState) => state.wamp.data.manifests.car);
+  const getValue = (d: [], key: string) => getValueViaSpec(d, stateCarManifest, key);
+
+  const coloredTimeData = (d: [], key: string) => {
+    const value = getValueViaSpec(d, stateCarManifest, key);
+    if (typeof value === "number") {
+      return value > 0 ? lapTimeString(value) : "";
+    } else {
+      const [v, info] = value;
+      if (info === "old") {
+        return <span style={{ color: "lightgrey" }}>{lapTimeString(v)}</span>;
+      }
+      if (info === "ob") {
+        return <span style={{ color: "purple", fontWeight: 500 }}>{lapTimeString(v)}</span>;
+      }
+      if (info === "pb") {
+        return <span style={{ color: "green", fontWeight: 500 }}>{lapTimeString(v)}</span>;
+      }
+      return v > 0 ? lapTimeString(v) : "";
+    }
+  };
   const columns: ColumnsType<{}> = [
     { key: "pos", title: "Pos", render: (d) => getValue(d, "pos") },
+    { key: "pic", title: "PIC", render: (d) => getValue(d, "pic") },
     { key: "carNum", title: "Num", render: (d) => getValue(d, "carNum") },
+    { key: "carClass", title: "Class", render: (d) => getValue(d, "carClass") },
     { key: "state", title: "State", render: (d) => getValue(d, "state") },
     { key: "userName", title: "Driver", render: (d) => getValue(d, "userName") },
     { key: "laps", title: "Lap", render: (d) => getValue(d, "lap") },
-    { key: "last", title: "Last", render: (d) => lapTimeString(getValue(d, "last")) },
+    { key: "last", title: "Last", render: (d) => coloredTimeData(d, "last") },
     { key: "best", title: "Best", render: (d) => lapTimeString(getValue(d, "best")) },
     { key: "trackPos", title: "CurPos", render: (d) => sprintf("%.4f", getValue(d, "trackPos")) },
     { key: "dist", title: "Dist", render: (d) => sprintf("%.0f", getValue(d, "dist")) },
-    { key: "gap", title: "Gap", render: (d) => sprintf("%.0f", getValue(d, "gap")) },
+    { key: "gap", title: "Gap", render: (d) => sprintf("%.1f", getValue(d, "gap")) },
     { key: "interval", title: "Int", render: (d) => sprintf("%.1f", getValue(d, "interval")) },
     { key: "speed", title: "Speed", render: (d) => sprintf("%.0f", getValue(d, "speed")) },
   ];
+  stateCarManifest
+    .filter((v) => /^s\d+$/.test(v.name))
+    .forEach((v) =>
+      columns.push({
+        key: v.name,
+        title: v.name.toLocaleUpperCase(),
+        render: (d) => coloredTimeData(d, v.name),
+      })
+    );
   // console.log(data);
   return <Table columns={columns} dataSource={carsRaw} rowKey={() => _.uniqueId()} />;
 };
@@ -172,6 +211,7 @@ const DummyMessages: React.FC<{}> = () => {
       current.data.map((v: any) => ({
         timestamp: new Date(current.timestamp * 1000),
         type: getValueViaSpec(v, InfoMsgManifest, "type"),
+        carClass: getValueViaSpec(v, InfoMsgManifest, "carClass"),
         msg: getValueViaSpec(v, InfoMsgManifest, "msg"),
       }))
     );
@@ -179,6 +219,7 @@ const DummyMessages: React.FC<{}> = () => {
   const columns: ColumnsType<IInfoMsgData> = [
     { key: "timestamp", title: "Time", dataIndex: "timestamp", render: (d: Date) => d.toLocaleTimeString() },
     { key: "type", title: "Type", dataIndex: "type" },
+    { key: "carClass", title: "CarClass", dataIndex: "carClass" },
     { key: "msg", title: "Message", dataIndex: "msg" },
   ];
 
