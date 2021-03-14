@@ -1,5 +1,6 @@
 import { Reducer } from "redux";
 import { WampActionTypes } from "./actions";
+import { processForRaceGraph } from "./compute/raceGraph";
 import {
   defaultPitInfo,
   defaultWampData,
@@ -39,7 +40,8 @@ const reducer: Reducer<IWampState> = (state = initialState, action) => {
     }
     case WampActionTypes.UPDATE_CARS: {
       if (Array.isArray(action.payload)) {
-        return { ...state, data: { ...state.data, cars: action.payload[0] } };
+        const raceGraph = processForRaceGraph(state.data, action.payload[0].data);
+        return { ...state, data: { ...state.data, cars: action.payload[0], raceGraph: raceGraph } };
       } else return state;
     }
     case WampActionTypes.UPDATE_PITSTOPS: {

@@ -113,6 +113,17 @@ export interface ICarPitInfo {
   history: IPitInfo[];
 }
 
+export interface IGapInfo {
+  carNum: string;
+  lapNo: number;
+  gap: number;
+}
+
+export interface IRaceGraph {
+  lapNo: number;
+  gaps: IGapInfo[];
+}
+
 export interface IWampData {
   connected: boolean;
   session: IMessage;
@@ -120,6 +131,7 @@ export interface IWampData {
   infoMsgs: IMessage[];
   cars: IMessage;
   carPits: ICarPitInfo[];
+  raceGraph: IRaceGraph[];
   dummy: any;
 }
 export const emptyMessage: IMessage = {
@@ -135,6 +147,7 @@ export const defaultWampData: IWampData = {
   infoMsgs: [],
   carPits: [],
   manifests: defaultManifests,
+  raceGraph: [],
   dummy: "no content yet",
 };
 export interface IWampState {
