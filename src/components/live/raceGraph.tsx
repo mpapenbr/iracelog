@@ -5,6 +5,7 @@ import React, { useState } from "react";
 import { useSelector } from "react-redux";
 import { VictoryChart, VictoryLine, VictoryTheme } from "victory";
 import { ApplicationState } from "../../stores";
+import { strokeColors } from "./colors";
 
 interface IVicData {
   x: number;
@@ -53,24 +54,7 @@ const RaceGraph: React.FC<{}> = () => {
       }
     }
   };
-  // from https://www.w3schools.com/lib/w3-colors-2021.css
-  const strokeColors = [
-    "#FDAC53",
-    "#9BB7D4",
-    "#B55A30",
-    "#F5DF4D",
-    "#0072B5",
-    "#A0DAA9",
-    "#E9897E",
-    "#00A170",
-    "#926AA6",
-    "#D2386C",
-    "#363945",
-    "#939597",
-    "#EFE1CE",
-    "#E0B589",
-    "#9A8B4F",
-  ];
+
   return (
     <Row gutter={16}>
       <Col span={22}>

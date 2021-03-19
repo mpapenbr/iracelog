@@ -1,15 +1,9 @@
 import { Reducer } from "redux";
 import { WampActionTypes } from "./actions";
+import { processForLapGraph } from "./compute/lapGraph";
 import { processForRaceGraph } from "./compute/raceGraph";
-import {
-  defaultPitInfo,
-  defaultWampData,
-  ICarPitInfo,
-  IDataEntrySpec,
-  IManifests,
-  IWampState,
-  PitManifest,
-} from "./types";
+import { processForCurrentStint, processPitData, processStintData } from "./compute/stints";
+import { defaultWampData, IDataEntrySpec, IManifests, IWampState } from "./types";
 
 const initialState: IWampState = {
   data: defaultWampData,
@@ -24,6 +18,9 @@ const reducer: Reducer<IWampState> = (state = initialState, action) => {
 
     case WampActionTypes.CONNECTED:
       return { ...state, data: { ...state.data, connected: true } };
+
+    case WampActionTypes.RESET:
+      return { ...state, data: defaultWampData };
 
     case WampActionTypes.UPDATE_DUMMY: {
       return { ...state, data: { ...state.data, dummy: action.payload } };
@@ -41,14 +38,24 @@ const reducer: Reducer<IWampState> = (state = initialState, action) => {
     case WampActionTypes.UPDATE_CARS: {
       if (Array.isArray(action.payload)) {
         const raceGraph = processForRaceGraph(state.data, action.payload[0].data);
-        return { ...state, data: { ...state.data, cars: action.payload[0], raceGraph: raceGraph } };
+        const carLaps = processForLapGraph(state.data, action.payload[0].data);
+        return { ...state, data: { ...state.data, cars: action.payload[0], raceGraph: raceGraph, carLaps: carLaps } };
       } else return state;
     }
+
+    case WampActionTypes.UPDATE_FROM_STATE: {
+      // payload is the big state message
+      const sessionTime = getValueViaSpec(action.payload.session, state.data.manifests.session, "sessionTime");
+      const newCarStints = processForCurrentStint(state.data, sessionTime, action.payload.cars);
+      return { ...state, data: { ...state.data, carStints: newCarStints } };
+    }
+
     case WampActionTypes.UPDATE_PITSTOPS: {
       if (Array.isArray(action.payload)) {
         if (action.payload[0].data.length === 0) return state;
-        const newPitData = processPitData(action.payload[0], state.data.carPits);
-        return { ...state, data: { ...state.data, carPits: newPitData } };
+        const newPitData = processPitData(action.payload[0].data, state.data.carPits);
+        const newStintData = processStintData(action.payload[0].data, state.data.carStints);
+        return { ...state, data: { ...state.data, carPits: newPitData, carStints: newStintData } };
       } else return state;
     }
 
@@ -91,33 +98,6 @@ const getValueViaSpec = (data: [], spec: IDataEntrySpec[], key: string): any => 
   } else {
     return data[idx];
   }
-};
-
-const processPitData = (payloadData: any, currentStateData: ICarPitInfo[]): ICarPitInfo[] => {
-  // console.log({ payloadData });
-  let workData = [...currentStateData];
-  payloadData.data.forEach((e: []) => {
-    const num = getValueViaSpec(e, PitManifest, "carNum");
-    // console.log(num);
-    let found = workData.find((d) => d.carNum === num);
-    if (found === undefined) {
-      found = { carNum: num, current: { ...defaultPitInfo, carNum: num }, history: [] };
-      workData.push(found);
-    }
-    const what = getValueViaSpec(e, PitManifest, "type");
-    if (what === "enter") {
-      found.current.enterTime = getValueViaSpec(e, PitManifest, "enterTime");
-      found.current.stintTime = getValueViaSpec(e, PitManifest, "stintTime");
-      found.current.lapEnter = getValueViaSpec(e, PitManifest, "lapEnter");
-    }
-    if (what === "exit") {
-      found.current.laneTime = getValueViaSpec(e, PitManifest, "laneTime");
-      found.history.push({ ...found.current });
-      found.current.exitTime = getValueViaSpec(e, PitManifest, "exitTime");
-      found.current.lapExit = getValueViaSpec(e, PitManifest, "lapExit");
-    }
-  });
-  return workData;
 };
 
 export { reducer as wampReducer, initialState as wampInitialState };

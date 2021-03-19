@@ -96,6 +96,7 @@ export interface IPitInfo {
   lapExit: number;
   stintTime: number;
   laneTime: number;
+  numLaps: number;
 }
 
 export const defaultPitInfo: IPitInfo = {
@@ -106,11 +107,43 @@ export const defaultPitInfo: IPitInfo = {
   lapExit: 0,
   stintTime: 0,
   laneTime: 0,
+  numLaps: 0,
 };
 export interface ICarPitInfo {
   carNum: string;
   current: IPitInfo;
   history: IPitInfo[];
+}
+export interface IStintInfo {
+  carNum: string;
+  enterTime: number;
+  exitTime: number;
+  lapEnter: number;
+  lapExit: number;
+  stintTime: number;
+  numLaps: number;
+  isCurrentStint: boolean; // true if this is the current stint
+}
+
+export const defaultStintInfo: IStintInfo = {
+  carNum: "",
+  enterTime: 0,
+  exitTime: 0,
+  lapEnter: 0,
+  lapExit: 0,
+  stintTime: 0,
+  numLaps: 0,
+  isCurrentStint: false,
+};
+export interface ICarPitInfo {
+  carNum: string;
+  current: IPitInfo;
+  history: IPitInfo[];
+}
+export interface ICarStintInfo {
+  carNum: string;
+  current: IStintInfo;
+  history: IStintInfo[];
 }
 
 export interface IGapInfo {
@@ -124,6 +157,15 @@ export interface IRaceGraph {
   gaps: IGapInfo[];
 }
 
+export interface ILapInfo {
+  lapNo: number;
+  lapTime: number;
+}
+export interface ICarLaps {
+  carNum: string;
+  laps: ILapInfo[];
+}
+
 export interface IWampData {
   connected: boolean;
   session: IMessage;
@@ -131,7 +173,9 @@ export interface IWampData {
   infoMsgs: IMessage[];
   cars: IMessage;
   carPits: ICarPitInfo[];
+  carStints: ICarStintInfo[];
   raceGraph: IRaceGraph[];
+  carLaps: ICarLaps[];
   dummy: any;
 }
 export const emptyMessage: IMessage = {
@@ -146,8 +190,10 @@ export const defaultWampData: IWampData = {
   cars: emptyMessage,
   infoMsgs: [],
   carPits: [],
+  carStints: [],
   manifests: defaultManifests,
   raceGraph: [],
+  carLaps: [],
   dummy: "no content yet",
 };
 export interface IWampState {

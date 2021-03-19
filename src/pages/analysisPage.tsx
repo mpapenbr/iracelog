@@ -1,6 +1,13 @@
-import { Col, Row } from "antd";
+import { Layout, Menu } from "antd";
 import React from "react";
+import { Route, Switch } from "react-router";
+import { Link } from "react-router-dom";
+import CarPitstops from "../components/live/carPitstops";
+import DriverLaps from "../components/live/driverLaps";
+import RaceGraph from "../components/live/raceGraph";
 import RaceGraphByReference from "../components/live/raceGraphRelative";
+import StintDuration from "../components/live/stintDuration";
+import StintLaps from "../components/live/stintLaps";
 
 interface IStateProps {}
 interface IDispachProps {
@@ -8,14 +15,49 @@ interface IDispachProps {
 }
 type MyProps = IStateProps & IDispachProps;
 
+const { Header, Sider, Content } = Layout;
+
+const OtherContent: React.FC<{}> = () => <div>Here goes other content</div>;
+
 export const AnalysisMainPage: React.FC<MyProps> = (props: MyProps) => {
   return (
-    <>
-      <Row>
-        <Col span={24}>
-          <RaceGraphByReference />
-        </Col>
-      </Row>
-    </>
+    <Layout>
+      <Sider theme="light" width={200}>
+        <Menu theme="light" mode="inline">
+          <Menu.Item key="raceGraphA" className="race-sidebar">
+            <Link to="/analysis/raceGraphA">Race graph A</Link>
+          </Menu.Item>
+          <Menu.Item key="raceGraphB" className="race-sidebar">
+            <Link to="/analysis/raceGraphB">Race graph B</Link>
+          </Menu.Item>
+          <Menu.Item key="driverLaps" className="race-sidebar">
+            <Link to="/analysis/driverLaps">Driver laps</Link>
+          </Menu.Item>
+          <Menu.Item key="carPitstops" className="race-sidebar">
+            <Link to="/analysis/carPitstops">Pitstops</Link>
+          </Menu.Item>
+          <Menu.Item key="stintDurations" className="race-sidebar">
+            <Link to="/analysis/stintDurations">Stint Durations</Link>
+          </Menu.Item>
+          <Menu.Item key="stintLaps" className="race-sidebar">
+            <Link to="/analysis/stintLaps">Stint Laps</Link>
+          </Menu.Item>
+          <Menu.Item key="test" className="race-sidebar">
+            <Link to="test">test</Link>
+          </Menu.Item>
+        </Menu>
+      </Sider>
+      <Content>
+        <Switch>
+          <Route path="/analysis/raceGraphA" component={RaceGraph} />
+          <Route path="/analysis/raceGraphB" component={RaceGraphByReference} />
+          <Route path="/analysis/driverLaps" component={DriverLaps} />
+          <Route path="/analysis/carPitstops" component={CarPitstops} />
+          <Route path="/analysis/stintDurations" component={StintDuration} />
+          <Route path="/analysis/stintLaps" component={StintLaps} />
+          <Route path="/analysis/test" component={OtherContent} />
+        </Switch>
+      </Content>
+    </Layout>
   );
 };

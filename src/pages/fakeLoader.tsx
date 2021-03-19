@@ -3,7 +3,7 @@ import Search from "antd/lib/input/Search";
 import React from "react";
 import { useDispatch } from "react-redux";
 import { API_CROSSBAR_URL_HTTP } from "../constants";
-import { updateCars, updateManifests } from "../stores/wamp/actions";
+import { reset, updateCars, updateFromStateMessage, updateManifests, updatePitstops } from "../stores/wamp/actions";
 
 interface IStateProps {}
 interface IDispachProps {
@@ -23,13 +23,22 @@ export const FakeLoaderPage: React.FC<MyProps> = (props: MyProps) => {
           if (res.ok) {
             res.text().then((data) => {
               console.log(data.length);
+              dispatch(reset());
               var lines = data.split("\n");
               for (var line = 0; line < lines.length; line++) {
                 // for (var line = 0; line < 5; line++) {
                 // console.log(lines[line]);
-                const rowData = { data: JSON.parse(lines[line]).payload.cars };
+
+                const x = JSON.parse(lines[line]).payload;
+                dispatch(updateFromStateMessage(x));
+
+                const carsRowData = { data: JSON.parse(lines[line]).payload.cars };
                 // console.log(rowData);
-                dispatch(updateCars([rowData]));
+                dispatch(updateCars([carsRowData]));
+
+                const pitsRowData = { data: JSON.parse(lines[line]).payload.pits };
+                // console.log(rowData);
+                dispatch(updatePitstops([pitsRowData]));
                 // dispatch(updateCars(JSON.parse(lines[line]).data));
               }
               console.log(line);

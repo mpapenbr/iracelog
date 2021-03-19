@@ -1,12 +1,11 @@
 import { Checkbox, Col, Empty, InputNumber, List, Row, Select } from "antd";
 import { CheckboxChangeEvent } from "antd/lib/checkbox";
-import _, { isNumber } from "lodash";
+import _ from "lodash";
 import React, { useState } from "react";
 import { useSelector } from "react-redux";
 import { sprintf } from "sprintf-js";
-import { DomainTuple, VictoryChart, VictoryLine, VictoryTheme } from "victory";
+import { VictoryChart, VictoryScatter, VictoryTheme } from "victory";
 import { ApplicationState } from "../../stores";
-import { IRaceGraph } from "../../stores/wamp/types";
 import { strokeColors } from "./colors";
 
 interface IVicData {
@@ -15,25 +14,29 @@ interface IVicData {
 }
 
 const { Option } = Select;
-
-const RaceGraphByReference: React.FC<{}> = () => {
+interface IColData {
+  value: number | [number, string];
+}
+const DriverLaps: React.FC<{}> = () => {
   const wamp = useSelector((state: ApplicationState) => state.wamp.data);
-  const raceGraph = useSelector((state: ApplicationState) => state.wamp.data.raceGraph);
-  const allCarNums = raceGraph.length > 0 ? wamp.raceGraph[0].gaps.map((v) => v.carNum).sort() : [];
+  const carLaps = useSelector((state: ApplicationState) => state.wamp.data.carLaps);
+  const allCarNums = carLaps.length > 0 ? wamp.carLaps.map((v) => v.carNum).sort() : [];
   const [referenceCar, setReferenceCar] = useState();
   const [showCars, setShowCars] = useState([] as string[]);
   const [filterSecs, setFilterSecs] = useState(20);
-  const dataForCar = (carNum: string) => {
-    return wamp.raceGraph.reduce((prev, current) => {
-      const refCarEntry = current.gaps.find((gi) => gi.carNum === referenceCar);
-      const carEntry = current.gaps.find((gi) => gi.carNum === carNum);
-      if (carEntry !== undefined && refCarEntry !== undefined) {
-        if (isNumber(carEntry.gap) && !isNaN(carEntry.gap)) {
-          prev.push({ x: current.lapNo, y: carEntry.gap - refCarEntry.gap });
+  const dataForCar = (carNum: string): IVicData[] => {
+    const found = carLaps.find((v) => v.carNum === carNum);
+    if (found !== undefined) {
+      const getValue = (v: any): number => {
+        if (typeof v === "number") return v;
+        else {
+          const [vx, info] = v;
+          return vx;
         }
-      }
-      return prev;
-    }, [] as IVicData[]);
+      };
+
+      return found.laps.map((v) => ({ x: v.lapNo, y: getValue(v.lapTime) }));
+    } else return [];
   };
 
   const isShowCar = (s: string): boolean => {
@@ -88,15 +91,15 @@ const RaceGraphByReference: React.FC<{}> = () => {
     setFilterSecs(value as number);
   };
 
-  const calcXDom = (rg: IRaceGraph[]): DomainTuple => {
-    if (rg.length === 0) return [0, 0];
+  // const calcXDom = (rg: ICarLaps): DomainTuple => {
+  //   if (rg.length === 0) return [0, 0];
 
-    return [rg[0].lapNo, _.last(rg)?.lapNo || 0];
-  };
-  const graphDomain = {
-    x: calcXDom(raceGraph),
-    y: [-filterSecs, filterSecs] as DomainTuple,
-  };
+  //   return [rg[0], _.last(rg)?.lapNo || 0];
+  // };
+  // const graphDomain = {
+  //   x: calcXDom(carLaps),
+  //   y: [-filterSecs, filterSecs] as DomainTuple,
+  // };
   // from https://www.w3schools.com/lib/w3-colors-2021.css
 
   return (
@@ -120,16 +123,16 @@ const RaceGraphByReference: React.FC<{}> = () => {
       </Row>
       <Row gutter={16}>
         {referenceCar === undefined ? (
-          <Empty description="Select reference car" />
+          <Empty description="Select car" />
         ) : (
           <>
             <Col span={22}>
               <VictoryChart
-                width={1000}
-                height={500}
+                width={1500}
+                height={750}
                 standalone={true}
                 theme={VictoryTheme.grayscale}
-                domain={graphDomain}
+                // domain={graphDomain}
                 domainPadding={{ x: [10, 0] }}
                 // containerComponent={vvc}
               >
@@ -137,7 +140,11 @@ const RaceGraphByReference: React.FC<{}> = () => {
       <VictoryAxis />       */}
 
                 {allCarNums.filter(isShowCar).map((carNum, idx) => (
-                  <VictoryLine data={dataForCar(carNum)} style={{ data: { stroke: colorCode(carNum) } }} />
+                  <VictoryScatter
+                    key={_.uniqueId()}
+                    data={dataForCar(carNum)}
+                    style={{ data: { fill: colorCode(carNum) } }}
+                  />
                 ))}
               </VictoryChart>
             </Col>
@@ -166,4 +173,4 @@ const RaceGraphByReference: React.FC<{}> = () => {
   );
 };
 
-export default RaceGraphByReference;
+export default DriverLaps;
