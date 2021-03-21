@@ -166,6 +166,22 @@ export interface ICarLaps {
   laps: ILapInfo[];
 }
 
+export interface ISeatTime {
+  enterCarTime: number;
+  leaveCarTime: number;
+}
+export interface IDriverInfo {
+  driverName: string;
+  seatTime: ISeatTime[];
+}
+
+export interface ICarInfo {
+  carNum: string;
+  name: string;
+  drivers: IDriverInfo[];
+  current: IDriverInfo;
+}
+
 export interface IWampData {
   connected: boolean;
   session: IMessage;
@@ -176,6 +192,8 @@ export interface IWampData {
   carStints: ICarStintInfo[];
   raceGraph: IRaceGraph[];
   carLaps: ICarLaps[];
+  carInfo: ICarInfo[];
+  raceOrder: string[]; // contains car numbers by current race order (last processed packet)
   dummy: any;
 }
 export const emptyMessage: IMessage = {
@@ -194,6 +212,8 @@ export const defaultWampData: IWampData = {
   manifests: defaultManifests,
   raceGraph: [],
   carLaps: [],
+  carInfo: [],
+  raceOrder: [],
   dummy: "no content yet",
 };
 export interface IWampState {

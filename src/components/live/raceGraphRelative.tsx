@@ -7,6 +7,7 @@ import { sprintf } from "sprintf-js";
 import { DomainTuple, VictoryChart, VictoryLine, VictoryTheme } from "victory";
 import { ApplicationState } from "../../stores";
 import { IRaceGraph } from "../../stores/wamp/types";
+import { sortCarNumberStr } from "../../utils/output";
 import { strokeColors } from "./colors";
 
 interface IVicData {
@@ -19,7 +20,8 @@ const { Option } = Select;
 const RaceGraphByReference: React.FC<{}> = () => {
   const wamp = useSelector((state: ApplicationState) => state.wamp.data);
   const raceGraph = useSelector((state: ApplicationState) => state.wamp.data.raceGraph);
-  const allCarNums = raceGraph.length > 0 ? wamp.raceGraph[0].gaps.map((v) => v.carNum).sort() : [];
+  const raceOrder = useSelector((state: ApplicationState) => state.wamp.data.raceOrder);
+  const allCarNums = raceGraph.length > 0 ? wamp.raceGraph[0].gaps.map((v) => v.carNum).sort(sortCarNumberStr) : [];
   const [referenceCar, setReferenceCar] = useState();
   const [showCars, setShowCars] = useState([] as string[]);
   const [filterSecs, setFilterSecs] = useState(20);
@@ -68,15 +70,22 @@ const RaceGraphByReference: React.FC<{}> = () => {
     if (value !== undefined) {
       setReferenceCar(value);
       if (showCars.length == 0) {
-        const idx = allCarNums.findIndex((v) => v === value);
+        const idx = raceOrder.findIndex((v) => v === value);
+
         if (idx !== -1) {
           let work = [];
-          if (idx - 1 >= 0) {
-            work.push(allCarNums[idx - 1]);
+          let leftSide = idx - 2;
+          let rightSide = idx + 2;
+          if (leftSide < 0) {
+            rightSide = Math.min(raceOrder.length - 1, rightSide + Math.abs(leftSide));
+            leftSide = 0;
           }
-          if (idx + 1 <= allCarNums.length) {
-            work.push(allCarNums[idx + 1]);
+          if (rightSide > raceOrder.length - 1) {
+            leftSide = Math.max(0, leftSide - (rightSide - raceOrder.length));
+            rightSide = raceOrder.length - 1;
           }
+          console.log("leftSide: " + leftSide + " rightSide: " + rightSide);
+          work = raceOrder.slice(leftSide, rightSide + 1);
           setShowCars(work);
         }
       }

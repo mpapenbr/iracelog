@@ -58,7 +58,8 @@ export const processForCurrentStint = (current: IWampData, sessionTime: number, 
     } else {
       if (csEntry.current.isCurrentStint) {
         csEntry.current.stintTime = sessionTime - csEntry.current.exitTime;
-        csEntry.current.numLaps = currentCarLap - csEntry.current.lapExit;
+        csEntry.current.numLaps = currentCarLap - csEntry.current.lapExit + 1;
+        csEntry.current.lapEnter = currentCarLap;
       }
     }
     newCarStints.push(csEntry);
@@ -85,16 +86,20 @@ export const processStintData = (payloadData: [][], currentStateData: ICarStintI
     }
     const what = getValueViaSpec(e, PitManifest, "type");
     if (what === "enter") {
+      // found.current.exitTime = getValueViaSpec(e, PitManifest, "exitTime");
       found.current.enterTime = getValueViaSpec(e, PitManifest, "enterTime");
       found.current.stintTime = getValueViaSpec(e, PitManifest, "stintTime");
-      found.current.numLaps = getValueViaSpec(e, PitManifest, "lapEnter") - found.current.lapExit;
+      found.current.numLaps = getValueViaSpec(e, PitManifest, "lapEnter") - found.current.lapExit + 1;
       found.current.lapEnter = getValueViaSpec(e, PitManifest, "lapEnter");
+      // found.current.lapExit = getValueViaSpec(e, PitManifest, "lapExit");
       found.current.isCurrentStint = false;
       found.history.push({ ...found.current });
     }
     if (what === "exit") {
       found.current.stintTime = 0;
       found.current.numLaps = 0;
+      found.current.lapEnter = 0;
+      found.current.enterTime = 0;
       found.current.isCurrentStint = true;
       found.current.exitTime = getValueViaSpec(e, PitManifest, "exitTime");
       found.current.lapExit = getValueViaSpec(e, PitManifest, "lapExit");

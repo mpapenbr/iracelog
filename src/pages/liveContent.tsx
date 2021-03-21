@@ -12,6 +12,7 @@ import {
   connectedToServer,
   updateCars,
   updateDummy,
+  updateFromStateMessage,
   updateManifests,
   updateMessages,
   updatePitstops,
@@ -51,6 +52,13 @@ const LiveContent: React.FC<{}> = () => {
         dispatch(connectedToServer());
         s.subscribe("dummy", (data) => {
           dispatch(updateDummy(data));
+        });
+        s.subscribe(sprintf("racelog.state.%s", id), (data) => {
+          dispatch(updateFromStateMessage(data[0].payload));
+          // dispatch(updateSession([data[0].payload.session]));
+          // dispatch(updateMessages([data[0].payload.messages]));
+          // dispatch(updateCars([data[0].payload.cars]));
+          // dispatch(updatePitstops([data[0].payload.pitstops]));
         });
         s.subscribe(sprintf("session.%s", id), (data) => {
           dispatch(updateSession(data));

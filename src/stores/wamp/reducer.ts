@@ -1,7 +1,9 @@
 import { Reducer } from "redux";
 import { WampActionTypes } from "./actions";
+import { processForCarInfo } from "./compute/drivers";
 import { processForLapGraph } from "./compute/lapGraph";
 import { processForRaceGraph } from "./compute/raceGraph";
+import { processForRaceOrder } from "./compute/raceOrder";
 import { processForCurrentStint, processPitData, processStintData } from "./compute/stints";
 import { defaultWampData, IDataEntrySpec, IManifests, IWampState } from "./types";
 
@@ -39,7 +41,17 @@ const reducer: Reducer<IWampState> = (state = initialState, action) => {
       if (Array.isArray(action.payload)) {
         const raceGraph = processForRaceGraph(state.data, action.payload[0].data);
         const carLaps = processForLapGraph(state.data, action.payload[0].data);
-        return { ...state, data: { ...state.data, cars: action.payload[0], raceGraph: raceGraph, carLaps: carLaps } };
+        const raceOrder = processForRaceOrder(state.data, action.payload[0].data);
+        return {
+          ...state,
+          data: {
+            ...state.data,
+            cars: action.payload[0],
+            raceGraph: raceGraph,
+            carLaps: carLaps,
+            raceOrder: raceOrder,
+          },
+        };
       } else return state;
     }
 
@@ -47,7 +59,8 @@ const reducer: Reducer<IWampState> = (state = initialState, action) => {
       // payload is the big state message
       const sessionTime = getValueViaSpec(action.payload.session, state.data.manifests.session, "sessionTime");
       const newCarStints = processForCurrentStint(state.data, sessionTime, action.payload.cars);
-      return { ...state, data: { ...state.data, carStints: newCarStints } };
+      const newCarInfo = processForCarInfo(state.data, sessionTime, action.payload.cars);
+      return { ...state, data: { ...state.data, carStints: newCarStints, carInfo: newCarInfo } };
     }
 
     case WampActionTypes.UPDATE_PITSTOPS: {

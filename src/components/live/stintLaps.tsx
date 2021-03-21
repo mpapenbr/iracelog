@@ -2,8 +2,19 @@ import { Col, Row, Select } from "antd";
 import _ from "lodash";
 import React from "react";
 import { useSelector } from "react-redux";
-import { VictoryAxis, VictoryBar, VictoryChart, VictoryStack, VictoryTheme } from "victory";
+import { sprintf } from "sprintf-js";
+import {
+  VictoryAxis,
+  VictoryBar,
+  VictoryChart,
+  VictoryLabel,
+  VictoryStack,
+  VictoryTheme,
+  VictoryThemeDefinition,
+} from "victory";
 import { ApplicationState } from "../../stores";
+import { IStintInfo } from "../../stores/wamp/types";
+import { sortCarNumberStr } from "../../utils/output";
 
 interface IVicData {
   x: string;
@@ -16,37 +27,57 @@ interface IColData {
 }
 const StintLaps: React.FC<{}> = () => {
   const wamp = useSelector((state: ApplicationState) => state.wamp.data);
-  const carPits = useSelector((state: ApplicationState) => state.wamp.data.carPits);
-  const carLaps = useSelector((state: ApplicationState) => state.wamp.data.carLaps);
-  const allCarNums = carPits.length > 0 ? wamp.carPits.map((v) => v.carNum).sort() : [];
+  const carStints = useSelector((state: ApplicationState) => state.wamp.data.carStints);
 
-  const maxPitstops = carPits.reduce((a, b) => (b.history.length > a ? b.history.length : a), 0);
+  const allCarNums =
+    carStints.length > 0
+      ? wamp.carStints
+          .map((v) => v.carNum)
+          .sort(sortCarNumberStr)
+          .reverse() // we want the lowest number to be at the top
+      : [];
+  // console.log(allCarNums);
+  const maxPitstops = carStints.reduce((a, b) => (b.history.length > a ? b.history.length : a), 0);
+
+  let lookup = new Map<string, IStintInfo>();
 
   const stackerData = _.range(maxPitstops).map((idx) => {
     return allCarNums.map((carNum) => {
-      const found = carPits.find((v) => v.carNum === carNum);
+      const found = carStints.find((v) => v.carNum === carNum);
       if (idx < found!.history.length) {
-        return found!.history[idx];
-      } else return { carNum: carNum, numLaps: 0 };
+        const id = _.uniqueId();
+        lookup.set(id, found!.history[idx]);
+        return { id: id, carNum: carNum, numLaps: found!.history[idx].numLaps };
+      } else return { id: "", carNum: carNum, numLaps: 0 };
     });
   });
   const lastStint = allCarNums.map((carNum, idx) => {
-    const foundPit = carPits.find((v) => v.carNum === carNum);
-    const foundLaps = carLaps.find((v) => v.carNum === carNum);
-    const lastStintLaps = _.last(foundLaps?.laps)!.lapNo - foundPit!.current.lapExit;
-    return { carNum: carNum, numLaps: lastStintLaps };
+    const foundStint = carStints.find((v) => v.carNum === carNum);
+    if (foundStint?.current.isCurrentStint) {
+      const id = _.uniqueId();
+      lookup.set(id, foundStint!.current);
+      return { id: id, carNum: carNum, numLaps: foundStint!.current.numLaps };
+    } else return { id: "", carNum: carNum, numLaps: 0 };
   });
 
   stackerData.push(lastStint);
+
+  const myTheme: VictoryThemeDefinition = {
+    ...VictoryTheme.material,
+    stack: {
+      //colorScale: ["#f7b792", "#f28b50"],
+      colorScale: ["lightgreen", "SandyBrown", "lightyellow"],
+    },
+  };
   return (
     <>
       <Row gutter={16}>
         <Col span={22}>
           <VictoryChart
             width={1500}
-            height={750}
+            height={200 + allCarNums.length * 20}
             standalone={true}
-            theme={VictoryTheme.grayscale}
+            theme={myTheme}
             // domain={graphDomain}
             domainPadding={{ x: [20, 10], y: [0, 0] }}
             // containerComponent={vvc}
@@ -55,7 +86,22 @@ const StintLaps: React.FC<{}> = () => {
             <VictoryAxis dependentAxis />
             <VictoryStack>
               {stackerData.map((item, idx) => (
-                <VictoryBar horizontal key={_.uniqueId()} x="carNum" y="numLaps" data={item} />
+                <VictoryBar
+                  horizontal
+                  key={_.uniqueId()}
+                  x="carNum"
+                  y="numLaps"
+                  data={item}
+                  labels={({ datum }) => sprintf("%d", datum.numLaps)}
+                  labelComponent={
+                    <VictoryLabel
+                      dx={-20}
+                      textAnchor="middle"
+                      verticalAnchor="middle"
+                      // text={({ datum }) => sprintf("%d", idx)}
+                    />
+                  }
+                />
               ))}
             </VictoryStack>
           </VictoryChart>

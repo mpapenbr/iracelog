@@ -2,8 +2,18 @@ import { Col, Row, Select } from "antd";
 import _ from "lodash";
 import React from "react";
 import { useSelector } from "react-redux";
-import { VictoryAxis, VictoryBar, VictoryChart, VictoryStack, VictoryTheme } from "victory";
+import { sprintf } from "sprintf-js";
+import {
+  VictoryAxis,
+  VictoryBar,
+  VictoryChart,
+  VictoryLabel,
+  VictoryStack,
+  VictoryTheme,
+  VictoryThemeDefinition,
+} from "victory";
 import { ApplicationState } from "../../stores";
+import { secAsString, sortCarNumberStr } from "../../utils/output";
 
 interface IVicData {
   x: string;
@@ -17,8 +27,14 @@ interface IColData {
 const CarPitstops: React.FC<{}> = () => {
   const wamp = useSelector((state: ApplicationState) => state.wamp.data);
   const carPits = useSelector((state: ApplicationState) => state.wamp.data.carPits);
-  const allCarNums = carPits.length > 0 ? wamp.carPits.map((v) => v.carNum).sort() : [];
-  console.log(allCarNums);
+  const allCarNums =
+    carPits.length > 0
+      ? wamp.carPits
+          .map((v) => v.carNum)
+          .sort(sortCarNumberStr)
+          .reverse()
+      : [];
+
   const maxPitstops = carPits.reduce((a, b) => (b.history.length > a ? b.history.length : a), 0);
 
   const dataForCar = (carNum: string): any => {
@@ -33,7 +49,7 @@ const CarPitstops: React.FC<{}> = () => {
       };
 
       const ret = found.history.map((v, idx) => ({ x: carNum, y: v.laneTime }));
-      console.log(ret);
+      // console.log(ret);
     } else return [];
   };
 
@@ -45,7 +61,7 @@ const CarPitstops: React.FC<{}> = () => {
       } else return { carNum: carNum, laneTime: 0, stintTime: 0 };
     });
   });
-  console.log(x);
+  // console.log(x);
   allCarNums.map((carNum) => dataForCar(carNum));
   const dataForCar2 = (carNum: string): any => {
     const found = carPits.find((v) => v.carNum === carNum);
@@ -62,16 +78,23 @@ const CarPitstops: React.FC<{}> = () => {
   //   y: [-filterSecs, filterSecs] as DomainTuple,
   // };
   // from https://www.w3schools.com/lib/w3-colors-2021.css
-
+  const myTheme: VictoryThemeDefinition = {
+    ...VictoryTheme.material,
+    stack: {
+      // colorScale: ["#68af60", "#86be83"],
+      colorScale: ["Pink", "PaleGoldenrod", "LightGreen"],
+    },
+  };
   return (
     <>
       <Row gutter={16}>
         <Col span={22}>
           <VictoryChart
             width={1500}
-            height={750}
+            height={200 + allCarNums.length * 25}
             standalone={true}
-            theme={VictoryTheme.grayscale}
+            // theme={VictoryTheme.material}
+            theme={myTheme}
             // domain={graphDomain}
             domainPadding={{ x: [10, 0] }}
             // containerComponent={vvc}
@@ -80,31 +103,23 @@ const CarPitstops: React.FC<{}> = () => {
             <VictoryAxis dependentAxis />
             <VictoryStack>
               {x.map((item, idx) => (
-                <VictoryBar horizontal key={_.uniqueId()} x="carNum" y="laneTime" data={item} />
+                <VictoryBar
+                  horizontal
+                  key={_.uniqueId()}
+                  x="carNum"
+                  y="laneTime"
+                  data={item}
+                  labels={({ datum }) => sprintf("%s", secAsString(datum.laneTime))}
+                  labelComponent={
+                    <VictoryLabel
+                      dx={-20}
+                      textAnchor="middle"
+                      verticalAnchor="middle"
+                      // text={({ datum }) => sprintf("%s", secAsString(datum.laneTime))}
+                    />
+                  }
+                />
               ))}
-              {/* <VictoryBar
-                key={_.uniqueId()}
-                x="p"
-                y="laneTime"
-                data={[
-                  { p: 1, laneTime: 10 },
-                  { p: 2, laneTime: 20 },
-                  { p: 4, laneTime: 40 },
-                ]}
-              />
-              <VictoryBar
-                key={_.uniqueId()}
-                x="p"
-                y="laneTime"
-                data={[
-                  { p: 1, laneTime: 40 },
-                  { p: 2, laneTime: 10 },
-                  { p: 3, laneTime: 10 },
-                  { p: 4, laneTime: 40 },
-                ]}
-              /> */}
-              {/* <VictoryBar key={_.uniqueId()} x="p" y="laneTime" data={dataForCar2("02")} /> */}
-              {/* <VictoryBar key={_.uniqueId()} x={2} y="laneTime" data={dataForCar2("1")} /> */}
             </VictoryStack>
           </VictoryChart>
         </Col>

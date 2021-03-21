@@ -6,6 +6,7 @@ import { useSelector } from "react-redux";
 import { sprintf } from "sprintf-js";
 import { VictoryChart, VictoryScatter, VictoryTheme } from "victory";
 import { ApplicationState } from "../../stores";
+import { sortCarNumberStr } from "../../utils/output";
 import { strokeColors } from "./colors";
 
 interface IVicData {
@@ -20,7 +21,7 @@ interface IColData {
 const DriverLaps: React.FC<{}> = () => {
   const wamp = useSelector((state: ApplicationState) => state.wamp.data);
   const carLaps = useSelector((state: ApplicationState) => state.wamp.data.carLaps);
-  const allCarNums = carLaps.length > 0 ? wamp.carLaps.map((v) => v.carNum).sort() : [];
+  const allCarNums = carLaps.length > 0 ? wamp.carLaps.map((v) => v.carNum).sort(sortCarNumberStr) : [];
   const [referenceCar, setReferenceCar] = useState();
   const [showCars, setShowCars] = useState([] as string[]);
   const [filterSecs, setFilterSecs] = useState(20);

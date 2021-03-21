@@ -5,6 +5,7 @@ import React, { useState } from "react";
 import { useSelector } from "react-redux";
 import { VictoryChart, VictoryLine, VictoryTheme } from "victory";
 import { ApplicationState } from "../../stores";
+import { sortCarNumberStr } from "../../utils/output";
 import { strokeColors } from "./colors";
 
 interface IVicData {
@@ -15,7 +16,7 @@ interface IVicData {
 const RaceGraph: React.FC<{}> = () => {
   const wamp = useSelector((state: ApplicationState) => state.wamp.data);
   const raceGraph = useSelector((state: ApplicationState) => state.wamp.data.raceGraph);
-  const allCarNums = raceGraph.length > 0 ? wamp.raceGraph[0].gaps.map((v) => v.carNum).sort() : [];
+  const allCarNums = raceGraph.length > 0 ? wamp.raceGraph[0].gaps.map((v) => v.carNum).sort(sortCarNumberStr) : [];
   const [showCars, setShowCars] = useState(allCarNums);
   if (wamp.raceGraph.length === 0) {
     return <Spin />;
