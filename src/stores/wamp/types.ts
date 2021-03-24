@@ -182,6 +182,16 @@ export interface ICarInfo {
   current: IDriverInfo;
 }
 
+export enum CarComputeState {
+  INIT,
+  RUN,
+  PIT,
+  OUT,
+}
+export interface ICarComputeState {
+  carNum: string;
+  state: CarComputeState;
+}
 export interface IWampData {
   connected: boolean;
   session: IMessage;
@@ -193,6 +203,7 @@ export interface IWampData {
   raceGraph: IRaceGraph[];
   carLaps: ICarLaps[];
   carInfo: ICarInfo[];
+  carComputeState: ICarComputeState[];
   raceOrder: string[]; // contains car numbers by current race order (last processed packet)
   dummy: any;
 }
@@ -213,7 +224,9 @@ export const defaultWampData: IWampData = {
   raceGraph: [],
   carLaps: [],
   carInfo: [],
+  carComputeState: [],
   raceOrder: [],
+
   dummy: "no content yet",
 };
 export interface IWampState {

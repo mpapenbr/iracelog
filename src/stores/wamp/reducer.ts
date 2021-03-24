@@ -4,7 +4,7 @@ import { processForCarInfo } from "./compute/drivers";
 import { processForLapGraph } from "./compute/lapGraph";
 import { processForRaceGraph } from "./compute/raceGraph";
 import { processForRaceOrder } from "./compute/raceOrder";
-import { processForCurrentStint, processPitData, processStintData } from "./compute/stints";
+import { processForStint2 } from "./compute/stints";
 import { defaultWampData, IDataEntrySpec, IManifests, IWampState } from "./types";
 
 const initialState: IWampState = {
@@ -58,17 +58,30 @@ const reducer: Reducer<IWampState> = (state = initialState, action) => {
     case WampActionTypes.UPDATE_FROM_STATE: {
       // payload is the big state message
       const sessionTime = getValueViaSpec(action.payload.session, state.data.manifests.session, "sessionTime");
-      const newCarStints = processForCurrentStint(state.data, sessionTime, action.payload.cars);
+      // const newCarStints = processForCurrentStint(state.data, sessionTime, action.payload.cars);
+      const { carStints, carPits, carComputeState } = processForStint2(state.data, sessionTime, action.payload.cars);
+
       const newCarInfo = processForCarInfo(state.data, sessionTime, action.payload.cars);
-      return { ...state, data: { ...state.data, carStints: newCarStints, carInfo: newCarInfo } };
+      return {
+        ...state,
+        data: {
+          ...state.data,
+          carStints: carStints,
+          carPits: carPits,
+          carComputeState: carComputeState,
+          carInfo: newCarInfo,
+        },
+      };
     }
 
     case WampActionTypes.UPDATE_PITSTOPS: {
       if (Array.isArray(action.payload)) {
         if (action.payload[0].data.length === 0) return state;
-        const newPitData = processPitData(action.payload[0].data, state.data.carPits);
-        const newStintData = processStintData(action.payload[0].data, state.data.carStints);
-        return { ...state, data: { ...state.data, carPits: newPitData, carStints: newStintData } };
+        return state;
+        // const newPitData = processPitData(action.payload[0].data, state.data.carPits);
+        // return { ...state, data: { ...state.data, carPits: newPitData } };
+        // const newStintData = processStintData(action.payload[0].data, state.data.carStints);
+        // return { ...state, data: { ...state.data, carPits: newPitData, carStints: newStintData } };
       } else return state;
     }
 
