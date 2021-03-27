@@ -23,6 +23,7 @@ export const processForCarInfo = (current: IWampData, sessionTime: number, carsD
       csEntry = {
         carNum: currentCarNum,
         name: currentTeamName,
+        carClass: getValueViaSpec(carEntry, current.manifests.car, "carClass"),
         drivers: [currentEntry],
         current: newDriverEntry(),
       };

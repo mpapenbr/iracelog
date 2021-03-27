@@ -178,6 +178,7 @@ export interface IDriverInfo {
 export interface ICarInfo {
   carNum: string;
   name: string;
+  carClass: string;
   drivers: IDriverInfo[];
   current: IDriverInfo;
 }

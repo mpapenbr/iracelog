@@ -23,8 +23,8 @@ export const lapTimeStringTenths = (t: number): string => {
   work -= minutes * 60;
   const seconds = Math.trunc(work);
   work -= seconds;
-  const hundrets = Math.trunc(work * 100);
-  return sprintf("%d:%02d.%01d", minutes, seconds, hundrets);
+  const tenths = Math.trunc(work * 10);
+  return sprintf("%d:%02d.%1d", minutes, seconds, tenths);
 };
 /**
  * converts sec value in human readable string presentation MM:SS

@@ -1,7 +1,7 @@
 import { Col, Empty, InputNumber, List, Row, Select } from "antd";
 import _ from "lodash";
-import React, { useState } from "react";
-import { useSelector } from "react-redux";
+import React from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { sprintf } from "sprintf-js";
 import {
   createContainer,
@@ -16,9 +16,11 @@ import {
   VictoryZoomContainer,
 } from "victory";
 import { ApplicationState } from "../../stores";
-import { ICarInfo } from "../../stores/wamp/types";
-import { lapTimeString, lapTimeStringTenths, sortCarNumberStr } from "../../utils/output";
+import { uiDriverLapsSettings } from "../../stores/ui/actions";
+import { lapTimeString, lapTimeStringTenths } from "../../utils/output";
+import CarFilter from "./carFilter";
 import { strokeColors } from "./colors";
+import { computeAvailableCars, extractSomeCarData } from "./util";
 
 interface IVicData {
   x: number;
@@ -31,14 +33,12 @@ const DriverLaps: React.FC<{}> = () => {
   const wamp = useSelector((state: ApplicationState) => state.wamp.data);
   const carLaps = useSelector((state: ApplicationState) => state.wamp.data.carLaps);
   const carInfo = useSelector((state: ApplicationState) => state.wamp.data.carInfo);
-  const carInfoLookup = carInfo.reduce((m, cur) => {
-    return m.set(cur.carNum, cur);
-  }, new Map<string, ICarInfo>());
+  const uiSettings = useSelector((state: ApplicationState) => state.ui.data.driverLapsSettings);
+  const dispatch = useDispatch();
 
-  const allCarNums = carLaps.length > 0 ? wamp.carLaps.map((v) => v.carNum).sort(sortCarNumberStr) : [];
-  const [referenceCar, setReferenceCar] = useState();
-  const [showCars, setShowCars] = useState([] as string[]);
-  const [filterSecs, setFilterSecs] = useState(2);
+  const carDataContainer = extractSomeCarData(wamp);
+  const { carInfoLookup, allCarNums, allCarClasses } = carDataContainer;
+  const availableCars = computeAvailableCars(carDataContainer, uiSettings.filterCarClasses);
   const dataForCar = (carNum: string): IVicData[] => {
     const found = carLaps.find((v) => v.carNum === carNum);
     if (found !== undefined) {
@@ -55,29 +55,26 @@ const DriverLaps: React.FC<{}> = () => {
   };
 
   let carDataLookup = new Map<string, IVicData[]>();
-  showCars.forEach((carNum) => carDataLookup.set(carNum, dataForCar(carNum)));
+  uiSettings.showCars.forEach((carNum) => carDataLookup.set(carNum, dataForCar(carNum)));
 
   const colorCode = (carNum: string): string => {
     return strokeColors[allCarNums.indexOf(carNum) % strokeColors.length];
   };
 
-  const referenceOptions = allCarNums.map((d) => (
-    <Option key={_.uniqueId()} value={d}>
-      #{d} {carInfoLookup.get(d)?.name}
-    </Option>
-  ));
+  const onSelectReferenceByTags = (value: any) => {
+    dispatch(uiDriverLapsSettings({ ...uiSettings, showCars: value as string[] }));
+  };
 
-  const onSelectReferenceByTags = (value: any, option: any) => {
-    setShowCars(value as string[]);
+  const onSelectCarClassChange = (value: any) => {
+    dispatch(uiDriverLapsSettings({ ...uiSettings, filterCarClasses: value as string[] }));
   };
 
   const onFilterSecsChange = (value: any) => {
-    console.log(value);
-    setFilterSecs(value as number);
+    dispatch(uiDriverLapsSettings({ ...uiSettings, filterSecs: value }));
   };
 
   const calcXDom = (): DomainTuple => {
-    const ret = showCars.reduce(
+    const ret = uiSettings.showCars.reduce(
       (prev, cur) => {
         const data = carDataLookup.get(cur)!;
         const lMin = Math.min(...data.map((v) => v.x));
@@ -90,21 +87,18 @@ const DriverLaps: React.FC<{}> = () => {
   };
 
   const calcYDom = (): DomainTuple => {
-    const ret = showCars.reduce(
-      (prev, cur) => {
-        const data = carDataLookup.get(cur)!;
-        const lMin = Math.min(...data.map((v) => v.y));
-        const lMax = Math.max(...data.map((v) => v.y));
-        const sum = data.reduce((prev, cur) => {
-          return prev + cur.y;
-        }, 0);
+    const cur = uiSettings.showCars.reduce((prev, cur) => {
+      const data = carDataLookup.get(cur)!;
+      return prev.concat(data.map((v) => v.y));
+    }, [] as number[]);
 
-        return [prev[0] + sum, prev[1] + data.length];
-      },
-      [0, 0]
-    );
-    const avg = ret[0] / ret[1];
-    return [avg - filterSecs, avg + filterSecs];
+    if (cur.length > 0) {
+      cur.sort();
+      const median = cur[cur.length >> 1];
+      return [cur[0], median + uiSettings.filterSecs];
+    } else {
+      return [0, 0];
+    }
   };
 
   const graphDomain = {
@@ -116,7 +110,7 @@ const DriverLaps: React.FC<{}> = () => {
   const vvc = (
     <VictoryVoronoiContainer
       labels={({ datum }) => {
-        return sprintf("Lap %d, Time: %s", _.round(datum.x), lapTimeString(datum.y));
+        return sprintf("L%d, %s", _.round(datum.x), lapTimeString(datum.y));
       }}
     />
   );
@@ -131,35 +125,34 @@ const DriverLaps: React.FC<{}> = () => {
   );
 
   // TS-Probs? If not any I can't add it as containerComponent. Properties are also a problem! (see (d:any) in labels)
-  const CombinedContainer: any = createContainer<VictoryVoronoiContainer, VictoryZoomContainer>("voronoi", "zoom");
+  const CombinedContainer = createContainer<VictoryVoronoiContainer, VictoryZoomContainer>("voronoi", "brush");
 
+  const cc = vvc;
   return (
     <>
       <Row gutter={16}>
-        <Col span={10}>
-          <Select
-            style={{ width: "100%" }}
-            mode="tags"
-            allowClear
-            placeholder="Select reference car"
-            onChange={onSelectReferenceByTags}
-          >
-            {referenceOptions}
-          </Select>
-        </Col>
+        <CarFilter
+          availableCars={availableCars}
+          availableClasses={allCarClasses}
+          selectedCars={uiSettings.showCars}
+          selectedCarClasses={uiSettings.filterCarClasses}
+          onSelectCarFilter={onSelectReferenceByTags}
+          onSelectCarClassFilter={onSelectCarClassChange}
+        />
         <Col span={4}>
           <InputNumber
-            defaultValue={filterSecs}
+            defaultValue={uiSettings.filterSecs}
             precision={0}
             step={1}
+            min={0}
             formatter={(v) => sprintf("%d sec", v)}
-            parser={(v) => (v !== undefined ? v.replace("sec", "") : "")}
+            parser={(v) => (v !== undefined ? parseInt(v.replace("sec", "")) : 0)}
             onChange={onFilterSecsChange}
           />
         </Col>
       </Row>
       <Row gutter={16}>
-        {showCars.length === 0 ? (
+        {uiSettings.showCars.length === 0 ? (
           <Empty description="Select car" />
         ) : (
           <>
@@ -171,19 +164,13 @@ const DriverLaps: React.FC<{}> = () => {
                 theme={VictoryTheme.grayscale}
                 domain={graphDomain}
                 domainPadding={{ x: [10, 0], y: [10, 0] }}
-                containerComponent={
-                  <CombinedContainer
-                    labels={(d: any) => {
-                      return sprintf("Lap %d, Time: %s", _.round(d.datum.x), lapTimeString(d.datum.y));
-                    }}
-                  />
-                }
+                containerComponent={cc}
                 // containerComponent={vvc}
               >
                 <VictoryAxis dependentAxis={true} tickFormat={(t) => lapTimeStringTenths(t)} fixLabelOverlap />
                 <VictoryAxis />
 
-                {showCars.map((carNum, idx) => (
+                {uiSettings.showCars.map((carNum, idx) => (
                   <VictoryScatter
                     key={_.uniqueId()}
                     data={carDataLookup.get(carNum)}
@@ -195,7 +182,7 @@ const DriverLaps: React.FC<{}> = () => {
             <Col>
               <List
                 size="small"
-                dataSource={showCars}
+                dataSource={uiSettings.showCars}
                 renderItem={(item, idx) => <List.Item style={{ color: colorCode(item) }}>#{item}</List.Item>}
               />
             </Col>

@@ -8,10 +8,18 @@ const initialState: IUiState = {
 
 const reducer: Reducer<IUiState> = (state = initialState, action) => {
   switch (action.type) {
+    case UiActionTypes.RESET:
+      return { ...state, data: { ...defaultUiData } };
     case UiActionTypes.SET_STINT_NO:
       return { ...state, data: { ...state.data, stint: { ...state.data.stint, stintNo: action.payload } } };
     case UiActionTypes.SHOW_ENTRY_DETAILS:
       return { ...state, data: { ...state.data, entries: { ...state.data.entries, entryDetails: action.payload } } };
+    case UiActionTypes.DRIVER_LAPS_SETTINGS:
+      return { ...state, data: { ...state.data, driverLapsSettings: { ...action.payload } } };
+    case UiActionTypes.RACE_GRAPH_SETTINGS:
+      return { ...state, data: { ...state.data, raceGraphSettings: { ...action.payload } } };
+    case UiActionTypes.RACE_GRAPH_RELATIVE_SETTINGS:
+      return { ...state, data: { ...state.data, raceGraphRelativeSettings: { ...action.payload } } };
     default:
       return state;
   }

@@ -1,14 +1,15 @@
-import { Checkbox, Col, Empty, InputNumber, List, Row, Select } from "antd";
-import { CheckboxChangeEvent } from "antd/lib/checkbox";
+import { Col, Empty, InputNumber, List, Row, Select } from "antd";
 import _, { isNumber } from "lodash";
-import React, { useState } from "react";
-import { useSelector } from "react-redux";
+import React from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { sprintf } from "sprintf-js";
 import { DomainTuple, VictoryChart, VictoryLine, VictoryTheme } from "victory";
 import { ApplicationState } from "../../stores";
+import { uiRaceGraphRelativeSettings } from "../../stores/ui/actions";
 import { IRaceGraph } from "../../stores/wamp/types";
-import { sortCarNumberStr } from "../../utils/output";
+import CarFilter from "./carFilter";
 import { strokeColors } from "./colors";
+import { computeAvailableCars, extractSomeCarData } from "./util";
 
 interface IVicData {
   x: number;
@@ -21,13 +22,16 @@ const RaceGraphByReference: React.FC<{}> = () => {
   const wamp = useSelector((state: ApplicationState) => state.wamp.data);
   const raceGraph = useSelector((state: ApplicationState) => state.wamp.data.raceGraph);
   const raceOrder = useSelector((state: ApplicationState) => state.wamp.data.raceOrder);
-  const allCarNums = raceGraph.length > 0 ? wamp.raceGraph[0].gaps.map((v) => v.carNum).sort(sortCarNumberStr) : [];
-  const [referenceCar, setReferenceCar] = useState();
-  const [showCars, setShowCars] = useState([] as string[]);
-  const [filterSecs, setFilterSecs] = useState(20);
+  const uiSettings = useSelector((state: ApplicationState) => state.ui.data.raceGraphRelativeSettings);
+  const dispatch = useDispatch();
+
+  const carDataContainer = extractSomeCarData(wamp);
+  const { carInfoLookup, allCarNums, allCarClasses } = carDataContainer;
+  const availableCars = computeAvailableCars(carDataContainer, uiSettings.filterCarClasses);
+
   const dataForCar = (carNum: string) => {
     return wamp.raceGraph.reduce((prev, current) => {
-      const refCarEntry = current.gaps.find((gi) => gi.carNum === referenceCar);
+      const refCarEntry = current.gaps.find((gi) => gi.carNum === uiSettings.referenceCarNum);
       const carEntry = current.gaps.find((gi) => gi.carNum === carNum);
       if (carEntry !== undefined && refCarEntry !== undefined) {
         if (isNumber(carEntry.gap) && !isNaN(carEntry.gap)) {
@@ -38,34 +42,32 @@ const RaceGraphByReference: React.FC<{}> = () => {
     }, [] as IVicData[]);
   };
 
-  const isShowCar = (s: string): boolean => {
-    return showCars.findIndex((v) => s === v) !== -1;
-  };
   const colorCode = (carNum: string): string => {
     return strokeColors[allCarNums.indexOf(carNum) % strokeColors.length];
   };
 
-  const toggleShowCar = (e: CheckboxChangeEvent) => {
-    if (e.target.checked) {
-      const work = showCars.slice();
-      work.push(e.target.value!);
-      setShowCars(work);
-    } else {
-      const idx = showCars.findIndex((v) => v == e.target.value);
-      if (idx !== -1) {
-        const work = showCars.slice();
-        work.splice(idx, 1);
-        setShowCars(work);
-      }
-    }
-  };
-
-  const referenceOptions = allCarNums.map((d) => (
-    <Option key={_.uniqueId()} value={d}>
-      #{d}
+  const referenceOptions = availableCars.map((d) => (
+    <Option key={_.uniqueId()} value={d.carNum}>
+      #{d.carNum} {d.name}
     </Option>
   ));
+  const onSelectReferenceCar = (value: any) => {
+    dispatch(uiRaceGraphRelativeSettings({ ...uiSettings, referenceCarNum: value as string }));
+  };
 
+  const onSelectCompareCars = (value: any) => {
+    dispatch(uiRaceGraphRelativeSettings({ ...uiSettings, showCars: value as string[] }));
+  };
+
+  const onSelectCarClassChange = (value: any) => {
+    dispatch(uiRaceGraphRelativeSettings({ ...uiSettings, filterCarClasses: value as string[] }));
+  };
+
+  const onFilterSecsChange = (value: any) => {
+    dispatch(uiRaceGraphRelativeSettings({ ...uiSettings, deltaRange: value }));
+  };
+
+  /*
   const onSelectReference = (value: any) => {
     if (value !== undefined) {
       setReferenceCar(value);
@@ -91,11 +93,7 @@ const RaceGraphByReference: React.FC<{}> = () => {
       }
     }
   };
-
-  const onFilterSecsChange = (value: any) => {
-    console.log(value);
-    setFilterSecs(value as number);
-  };
+*/
 
   const calcXDom = (rg: IRaceGraph[]): DomainTuple => {
     if (rg.length === 0) return [0, 0];
@@ -104,31 +102,46 @@ const RaceGraphByReference: React.FC<{}> = () => {
   };
   const graphDomain = {
     x: calcXDom(raceGraph),
-    y: [-filterSecs, filterSecs] as DomainTuple,
+    y: [-uiSettings.deltaRange, uiSettings.deltaRange] as DomainTuple,
   };
   // from https://www.w3schools.com/lib/w3-colors-2021.css
 
   return (
     <>
       <Row gutter={16}>
-        <Col span={10}>
-          <Select style={{ width: "100%" }} allowClear placeholder="Select reference car" onChange={onSelectReference}>
+        <Col span={4}>
+          <Select
+            style={{ width: "100%" }}
+            allowClear
+            value={uiSettings.referenceCarNum}
+            placeholder="Select reference car"
+            onChange={onSelectReferenceCar}
+            maxTagCount="responsive"
+          >
             {referenceOptions}
           </Select>
         </Col>
+        <CarFilter
+          availableCars={availableCars}
+          availableClasses={allCarClasses}
+          selectedCars={uiSettings.showCars}
+          selectedCarClasses={uiSettings.filterCarClasses}
+          onSelectCarFilter={onSelectCompareCars}
+          onSelectCarClassFilter={onSelectCarClassChange}
+        />
         <Col span={4}>
           <InputNumber
-            defaultValue={filterSecs}
+            defaultValue={uiSettings.deltaRange}
             precision={0}
             step={10}
             formatter={(v) => sprintf("%d sec", v)}
-            parser={(v) => (v !== undefined ? v.replace("sec", "") : "")}
+            parser={(v) => (v !== undefined ? parseInt(v.replace("sec", "")) : 0)}
             onChange={onFilterSecsChange}
           />
         </Col>
       </Row>
       <Row gutter={16}>
-        {referenceCar === undefined ? (
+        {uiSettings.referenceCarNum === "" ? (
           <Empty description="Select reference car" />
         ) : (
           <>
@@ -145,7 +158,7 @@ const RaceGraphByReference: React.FC<{}> = () => {
                 {/* <VictoryAxis dependentAxis={true} tickFormat={(t) => lapTimeStringTenths(t)} fixLabelOverlap />
       <VictoryAxis />       */}
 
-                {allCarNums.filter(isShowCar).map((carNum, idx) => (
+                {uiSettings.showCars.map((carNum, idx) => (
                   <VictoryLine data={dataForCar(carNum)} style={{ data: { stroke: colorCode(carNum) } }} />
                 ))}
               </VictoryChart>
@@ -153,19 +166,8 @@ const RaceGraphByReference: React.FC<{}> = () => {
             <Col>
               <List
                 size="small"
-                dataSource={allCarNums}
-                renderItem={(item, idx) => (
-                  <List.Item>
-                    <Checkbox
-                      value={item}
-                      checked={isShowCar(item)}
-                      onChange={toggleShowCar}
-                      style={{ color: colorCode(item) }}
-                    >
-                      #{item}
-                    </Checkbox>
-                  </List.Item>
-                )}
+                dataSource={uiSettings.showCars}
+                renderItem={(item, idx) => <List.Item style={{ color: colorCode(item) }}>#{item}</List.Item>}
               />
             </Col>
           </>

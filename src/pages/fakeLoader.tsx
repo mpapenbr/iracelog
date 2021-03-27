@@ -5,6 +5,7 @@ import React from "react";
 import { useDispatch } from "react-redux";
 import { sprintf } from "sprintf-js";
 import { API_CROSSBAR_URL, API_CROSSBAR_URL_HTTP } from "../constants";
+import { uiReset } from "../stores/ui/actions";
 import {
   connectedToServer,
   reset,
@@ -64,6 +65,7 @@ export const FakeLoaderPage: React.FC<MyProps> = (props: MyProps) => {
             res.text().then((data) => {
               console.log(data.length);
               dispatch(reset());
+              dispatch(uiReset());
               const { processed, timestamp } = processJsonFromArchive(data);
             });
           }
@@ -82,6 +84,7 @@ export const FakeLoaderPage: React.FC<MyProps> = (props: MyProps) => {
         s.call("racelog.archive.get_data", [eventId, 0]).then((data: any) => {
           console.log(data.length);
           dispatch(reset());
+          dispatch(uiReset());
           const { processed, timestamp } = processJsonFromArchive(data);
           console.log("processed " + processed + ". now fetch data after " + timestamp);
           s.call("racelog.archive.get_data", [eventId, timestamp]).then((data: any) => {
