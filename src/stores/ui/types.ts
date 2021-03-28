@@ -25,6 +25,10 @@ export interface IRacePositionSettings {
   filterCarClasses: string[]; // empty = all classes, otherwise only selected
   showPosInClass: boolean; // if true, show position in class
 }
+export interface IRaceStintSharedSettings {
+  showCars: string[];
+  filterCarClasses: string[]; // empty = all classes, otherwise only selected
+}
 export interface IUiData {
   stint: IUiStints;
   entries: IUiEntries;
@@ -34,6 +38,7 @@ export interface IUiData {
   raceGraphRelativeSettings: IRaceGraphRelativeSettings;
   raceGraphSettings: IRaceGraphSettings;
   racePositionSettings: IRacePositionSettings;
+  raceStintSharedSettings: IRaceStintSharedSettings;
 }
 
 export const defaultUiData: IUiData = {
@@ -61,6 +66,10 @@ export const defaultUiData: IUiData = {
     showCars: [],
     filterCarClasses: [],
     showPosInClass: false,
+  },
+  raceStintSharedSettings: {
+    showCars: [],
+    filterCarClasses: [],
   },
 };
 export interface IUiState {

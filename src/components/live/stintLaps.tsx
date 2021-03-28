@@ -1,7 +1,7 @@
 import { Col, Row, Select } from "antd";
 import _ from "lodash";
 import React from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { sprintf } from "sprintf-js";
 import {
   VictoryAxis,
@@ -13,8 +13,11 @@ import {
   VictoryThemeDefinition,
 } from "victory";
 import { ApplicationState } from "../../stores";
+import { uiRaceStintSharedSettings } from "../../stores/ui/actions";
 import { IStintInfo } from "../../stores/wamp/types";
 import { sortCarNumberStr } from "../../utils/output";
+import CarFilter from "./carFilter";
+import { computeAvailableCars, extractSomeCarData } from "./util";
 
 interface IVicData {
   x: string;
@@ -28,21 +31,27 @@ interface IColData {
 const StintLaps: React.FC<{}> = () => {
   const wamp = useSelector((state: ApplicationState) => state.wamp.data);
   const carStints = useSelector((state: ApplicationState) => state.wamp.data.carStints);
+  const uiSettings = useSelector((state: ApplicationState) => state.ui.data.raceStintSharedSettings);
+  const dispatch = useDispatch();
+  const carDataContainer = extractSomeCarData(wamp);
+  const { carInfoLookup, allCarNums, allCarClasses } = carDataContainer;
+  const availableCars = computeAvailableCars(carDataContainer, uiSettings.filterCarClasses);
 
-  const allCarNums =
-    carStints.length > 0
-      ? wamp.carStints
-          .map((v) => v.carNum)
-          .sort(sortCarNumberStr)
-          .reverse() // we want the lowest number to be at the top
-      : [];
+  // const allCarNums =
+  //   carStints.length > 0
+  //     ? wamp.carStints
+  //         .map((v) => v.carNum)
+  //         .sort(sortCarNumberStr)
+  //         .reverse() // we want the lowest number to be at the top
+  //     : [];
   // console.log(allCarNums);
   const maxPitstops = carStints.reduce((a, b) => (b.history.length > a ? b.history.length : a), 0);
 
   let lookup = new Map<string, IStintInfo>();
 
+  const carOrder = [...uiSettings.showCars].sort().reverse();
   const stackerData = _.range(maxPitstops).map((idx) => {
-    return allCarNums.map((carNum) => {
+    return carOrder.map((carNum) => {
       const found = carStints.find((v) => v.carNum === carNum);
       if (idx < found!.history.length) {
         const id = _.uniqueId();
@@ -51,7 +60,7 @@ const StintLaps: React.FC<{}> = () => {
       } else return { id: "", carNum: carNum, numLaps: 0 };
     });
   });
-  const lastStint = allCarNums.map((carNum, idx) => {
+  const lastStint = uiSettings.showCars.map((carNum, idx) => {
     const foundStint = carStints.find((v) => v.carNum === carNum);
     if (foundStint?.current.isCurrentStint) {
       const id = _.uniqueId();
@@ -62,6 +71,27 @@ const StintLaps: React.FC<{}> = () => {
 
   stackerData.push(lastStint);
 
+  const onSelectShowCars = (value: any) => {
+    dispatch(uiRaceStintSharedSettings({ ...uiSettings, showCars: value as string[] }));
+  };
+
+  const onSelectCarClassChange = (value: string[]) => {
+    // get removed car classes
+
+    const removedClasses = new Set(_.difference(uiSettings.filterCarClasses, value));
+    _.remove(uiSettings.showCars, (carNum) => removedClasses.has(carDataContainer.carInfoLookup.get(carNum)!.carClass));
+    // get added car classes
+    const addedClasses = new Set(_.difference(value, uiSettings.filterCarClasses));
+    let newShowcars = _.concat(
+      uiSettings.showCars,
+      carDataContainer.allCarNums.filter((carNum) =>
+        addedClasses.has(carDataContainer.carInfoLookup.get(carNum)!.carClass)
+      )
+    );
+    newShowcars = _.uniq(newShowcars).sort(sortCarNumberStr);
+    dispatch(uiRaceStintSharedSettings({ ...uiSettings, filterCarClasses: value, showCars: newShowcars }));
+  };
+
   const myTheme: VictoryThemeDefinition = {
     ...VictoryTheme.material,
     stack: {
@@ -71,18 +101,28 @@ const StintLaps: React.FC<{}> = () => {
   };
   return (
     <>
+      <Row>
+        <CarFilter
+          availableCars={availableCars}
+          availableClasses={allCarClasses}
+          selectedCars={uiSettings.showCars}
+          selectedCarClasses={uiSettings.filterCarClasses}
+          onSelectCarFilter={onSelectShowCars}
+          onSelectCarClassFilter={onSelectCarClassChange}
+        />
+      </Row>
       <Row gutter={16}>
         <Col span={22}>
           <VictoryChart
             width={1500}
-            height={200 + allCarNums.length * 20}
+            height={300 + uiSettings.showCars.length * 20}
             standalone={true}
             theme={myTheme}
             // domain={graphDomain}
             domainPadding={{ x: [20, 10], y: [0, 0] }}
             // containerComponent={vvc}
           >
-            <VictoryAxis tickValues={allCarNums} />
+            <VictoryAxis tickValues={carOrder} />
             <VictoryAxis dependentAxis />
             <VictoryStack>
               {stackerData.map((item, idx) => (
@@ -92,7 +132,7 @@ const StintLaps: React.FC<{}> = () => {
                   x="carNum"
                   y="numLaps"
                   data={item}
-                  labels={({ datum }) => sprintf("%d", datum.numLaps)}
+                  labels={({ datum }) => sprintf("%d", datum.numLaps !== undefined ? datum.numLaps : 0)}
                   labelComponent={
                     <VictoryLabel
                       dx={-20}

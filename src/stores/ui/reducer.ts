@@ -22,6 +22,8 @@ const reducer: Reducer<IUiState> = (state = initialState, action) => {
       return { ...state, data: { ...state.data, raceGraphRelativeSettings: { ...action.payload } } };
     case UiActionTypes.RACE_POSITION_SETTINGS:
       return { ...state, data: { ...state.data, racePositionSettings: { ...action.payload } } };
+    case UiActionTypes.RACE_STINT_SHARED_SETTINGS:
+      return { ...state, data: { ...state.data, raceStintSharedSettings: { ...action.payload } } };
     default:
       return state;
   }
