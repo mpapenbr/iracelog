@@ -18,6 +18,12 @@ export interface IRaceGraphRelativeSettings {
 export interface IRaceGraphSettings {
   showCars: string[];
   filterCarClasses: string[]; // empty = all classes, otherwise only selected
+  gapRelativeToClassLeader: boolean; // if true, compute gap relative to class leader
+}
+export interface IRacePositionSettings {
+  showCars: string[];
+  filterCarClasses: string[]; // empty = all classes, otherwise only selected
+  showPosInClass: boolean; // if true, show position in class
 }
 export interface IUiData {
   stint: IUiStints;
@@ -27,6 +33,7 @@ export interface IUiData {
   driverLapsSettings: IDriverLapsSettings;
   raceGraphRelativeSettings: IRaceGraphRelativeSettings;
   raceGraphSettings: IRaceGraphSettings;
+  racePositionSettings: IRacePositionSettings;
 }
 
 export const defaultUiData: IUiData = {
@@ -48,6 +55,12 @@ export const defaultUiData: IUiData = {
   raceGraphSettings: {
     showCars: [],
     filterCarClasses: [],
+    gapRelativeToClassLeader: false,
+  },
+  racePositionSettings: {
+    showCars: [],
+    filterCarClasses: [],
+    showPosInClass: false,
   },
 };
 export interface IUiState {

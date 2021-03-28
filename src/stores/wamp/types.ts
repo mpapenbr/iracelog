@@ -150,10 +150,13 @@ export interface IGapInfo {
   carNum: string;
   lapNo: number;
   gap: number;
+  pos: number;
+  pic: number;
 }
 
 export interface IRaceGraph {
   lapNo: number;
+  carClass: string; // "overall", or car class name provided by incoming
   gaps: IGapInfo[];
 }
 

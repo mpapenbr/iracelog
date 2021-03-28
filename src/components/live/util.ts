@@ -34,7 +34,9 @@ export const extractSomeCarData = (wampData: IWampData): IExtractedCarData => {
   const carInfoLookup = wampData.carInfo.reduce((m, cur) => {
     return m.set(cur.carNum, cur);
   }, new Map<string, ICarInfo>());
-  const carClasses = _.uniq(wampData.carInfo.map((v) => v.carClass));
+  const carClasses = _.uniq(
+    wampData.carInfo.filter((v) => "".localeCompare(v.carClass || "") != 0).map((v) => v.carClass)
+  ).sort();
 
   const allCarNums = wampData.carLaps.length > 0 ? wampData.carLaps.map((v) => v.carNum).sort(sortCarNumberStr) : [];
   return { carInfoLookup: carInfoLookup, allCarNums: allCarNums, allCarClasses: carClasses };

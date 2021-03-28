@@ -1,11 +1,11 @@
 import { Checkbox, Col, Empty, List, Row, Spin } from "antd";
-import _, { isNumber } from "lodash";
+import _ from "lodash";
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { sprintf } from "sprintf-js";
 import { VictoryChart, VictoryLine, VictoryTheme, VictoryVoronoiContainer } from "victory";
 import { ApplicationState } from "../../stores";
-import { uiRaceGraphSettings } from "../../stores/ui/actions";
+import { uiRacePositionSettings } from "../../stores/ui/actions";
 import { IRaceGraph } from "../../stores/wamp/types";
 import { sortCarNumberStr } from "../../utils/output";
 import CarFilter from "./carFilter";
@@ -17,9 +17,9 @@ interface IVicData {
   y: number;
 }
 
-const RaceGraph: React.FC<{}> = () => {
+const RacePositionGraph: React.FC<{}> = () => {
   const wamp = useSelector((state: ApplicationState) => state.wamp.data);
-  const uiSettings = useSelector((state: ApplicationState) => state.ui.data.raceGraphSettings);
+  const uiSettings = useSelector((state: ApplicationState) => state.ui.data.racePositionSettings);
   const raceGraph = useSelector((state: ApplicationState) => state.wamp.data.raceGraph);
   const dispatch = useDispatch();
 
@@ -48,18 +48,13 @@ const RaceGraph: React.FC<{}> = () => {
   }, new Map<string, IRaceGraph[]>());
 
   const dataForCar = (carNum: string) => {
-    const source: IRaceGraph[] =
-      uiSettings.gapRelativeToClassLeader && allCarClasses.length > 0
-        ? dataLookup.get(carInfoLookup.get(carNum)!.carClass)!
-        : dataLookup.get("overall")!;
+    const source: IRaceGraph[] = dataLookup.get("overall")!;
     return source.reduce((prev, current) => {
       const carEntry = current.gaps.find((gi) => gi.carNum === carNum);
 
       // const refCarEntry = current.gaps.find((gi) => gi.carNum === uiSettings.referenceCarNum);
-      if (carEntry !== undefined) {
-        if (isNumber(carEntry.gap) && !isNaN(carEntry.gap)) {
-          prev.push({ x: current.lapNo, y: carEntry.gap });
-        }
+      if (carEntry !== undefined && carEntry.pos > 0 && carEntry.lapNo > 0) {
+        prev.push({ x: current.lapNo, y: uiSettings.showPosInClass ? carEntry.pic : carEntry.pos });
       }
       return prev;
     }, [] as IVicData[]);
@@ -70,7 +65,7 @@ const RaceGraph: React.FC<{}> = () => {
   };
 
   const onSelectShowCars = (value: any) => {
-    dispatch(uiRaceGraphSettings({ ...uiSettings, showCars: value as string[] }));
+    dispatch(uiRacePositionSettings({ ...uiSettings, showCars: value as string[] }));
   };
 
   const onSelectCarClassChange = (value: string[]) => {
@@ -87,7 +82,7 @@ const RaceGraph: React.FC<{}> = () => {
       )
     );
     newShowcars = _.uniq(newShowcars).sort(sortCarNumberStr);
-    dispatch(uiRaceGraphSettings({ ...uiSettings, filterCarClasses: value, showCars: newShowcars }));
+    dispatch(uiRacePositionSettings({ ...uiSettings, filterCarClasses: value, showCars: newShowcars }));
   };
 
   const onFilterSecsChange = (value: any) => {
@@ -95,13 +90,13 @@ const RaceGraph: React.FC<{}> = () => {
   };
 
   const onCheckboxChange = () => {
-    dispatch(uiRaceGraphSettings({ ...uiSettings, gapRelativeToClassLeader: !uiSettings.gapRelativeToClassLeader }));
+    dispatch(uiRacePositionSettings({ ...uiSettings, showPosInClass: !uiSettings.showPosInClass }));
   };
 
   const vvc = (
     <VictoryVoronoiContainer
       labels={({ datum }) => {
-        return sprintf("L%d, Delta: %.02f", _.round(datum.x), datum.y);
+        return sprintf("L%d, Pos: %d", _.round(datum.x), datum.y);
       }}
     />
   );
@@ -149,11 +144,11 @@ const RaceGraph: React.FC<{}> = () => {
         />
         <Col span={3}>
           <Checkbox
-            defaultChecked={uiSettings.gapRelativeToClassLeader}
-            checked={uiSettings.gapRelativeToClassLeader}
+            defaultChecked={uiSettings.showPosInClass}
+            checked={uiSettings.showPosInClass}
             onChange={onCheckboxChange}
           >
-            Gaps relative to class leader
+            Show position in class
           </Checkbox>
         </Col>
       </Row>
@@ -166,4 +161,4 @@ const RaceGraph: React.FC<{}> = () => {
   );
 };
 
-export default RaceGraph;
+export default RacePositionGraph;

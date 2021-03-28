@@ -6,6 +6,7 @@ import CarPitstops from "../components/live/carPitstops";
 import DriverLaps from "../components/live/driverLaps";
 import RaceGraph from "../components/live/raceGraph";
 import RaceGraphByReference from "../components/live/raceGraphRelative";
+import RacePositionGraph from "../components/live/racePositionGraph";
 import StintDuration from "../components/live/stintDuration";
 import StintLaps from "../components/live/stintLaps";
 
@@ -30,6 +31,9 @@ export const AnalysisMainPage: React.FC<MyProps> = (props: MyProps) => {
           <Menu.Item key="raceGraphB" className="race-sidebar">
             <Link to="/analysis/raceGraphB">Race graph B</Link>
           </Menu.Item>
+          <Menu.Item key="racePositions" className="race-sidebar">
+            <Link to="/analysis/racePositions">Race positions</Link>
+          </Menu.Item>
           <Menu.Item key="driverLaps" className="race-sidebar">
             <Link to="/analysis/driverLaps">Driver laps</Link>
           </Menu.Item>
@@ -51,6 +55,7 @@ export const AnalysisMainPage: React.FC<MyProps> = (props: MyProps) => {
         <Switch>
           <Route path="/analysis/raceGraphA" component={RaceGraph} />
           <Route path="/analysis/raceGraphB" component={RaceGraphByReference} />
+          <Route path="/analysis/racePositions" component={RacePositionGraph} />
           <Route path="/analysis/driverLaps" component={DriverLaps} />
           <Route path="/analysis/carPitstops" component={CarPitstops} />
           <Route path="/analysis/stintDurations" component={StintDuration} />

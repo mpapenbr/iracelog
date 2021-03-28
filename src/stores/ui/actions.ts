@@ -1,6 +1,6 @@
 import { action } from "typesafe-actions";
 import { IBaseAction } from "../../commons";
-import { IDriverLapsSettings, IRaceGraphRelativeSettings, IRaceGraphSettings } from "./types";
+import { IDriverLapsSettings, IRaceGraphRelativeSettings, IRaceGraphSettings, IRacePositionSettings } from "./types";
 
 export enum UiActionTypes {
   RESET = "@@ui/RESET",
@@ -9,6 +9,7 @@ export enum UiActionTypes {
   DRIVER_LAPS_SETTINGS = "@@ui/DRIVER_LAPS_SETTINGS",
   RACE_GRAPH_SETTINGS = "@@ui/RACE_GRAPH_SETTINGS",
   RACE_GRAPH_RELATIVE_SETTINGS = "@@ui/RACE_GRAPH_RELATIVE_SETTINGS",
+  RACE_POSITION_SETTINGS = "@@ui/RACE_POSITION_SETTINGS",
 }
 
 export const uiReset = (): IBaseAction => action(UiActionTypes.RESET, {});
@@ -21,3 +22,5 @@ export const uiRaceGraphSettings = (settings: IRaceGraphSettings): IBaseAction =
   action(UiActionTypes.RACE_GRAPH_SETTINGS, settings);
 export const uiRaceGraphRelativeSettings = (settings: IRaceGraphRelativeSettings): IBaseAction =>
   action(UiActionTypes.RACE_GRAPH_RELATIVE_SETTINGS, settings);
+export const uiRacePositionSettings = (settings: IRacePositionSettings): IBaseAction =>
+  action(UiActionTypes.RACE_POSITION_SETTINGS, settings);

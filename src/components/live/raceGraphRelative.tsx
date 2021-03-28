@@ -159,7 +159,11 @@ const RaceGraphByReference: React.FC<{}> = () => {
       <VictoryAxis />       */}
 
                 {uiSettings.showCars.map((carNum, idx) => (
-                  <VictoryLine data={dataForCar(carNum)} style={{ data: { stroke: colorCode(carNum) } }} />
+                  <VictoryLine
+                    key={_.uniqueId()}
+                    data={dataForCar(carNum)}
+                    style={{ data: { stroke: colorCode(carNum) } }}
+                  />
                 ))}
               </VictoryChart>
             </Col>
