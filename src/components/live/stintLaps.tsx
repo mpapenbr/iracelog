@@ -17,7 +17,7 @@ import { uiRaceStintSharedSettings } from "../../stores/ui/actions";
 import { IStintInfo } from "../../stores/wamp/types";
 import { sortCarNumberStr } from "../../utils/output";
 import CarFilter from "./carFilter";
-import { computeAvailableCars, extractSomeCarData } from "./util";
+import { computeAvailableCars, extractSomeCarData, processCarClassSelection } from "./util";
 
 interface IVicData {
   x: string;
@@ -49,7 +49,7 @@ const StintLaps: React.FC<{}> = () => {
 
   let lookup = new Map<string, IStintInfo>();
 
-  const carOrder = [...uiSettings.showCars].sort().reverse();
+  const carOrder = [...uiSettings.showCars].sort(sortCarNumberStr).reverse();
   const stackerData = _.range(maxPitstops).map((idx) => {
     return carOrder.map((carNum) => {
       const found = carStints.find((v) => v.carNum === carNum);
@@ -78,17 +78,12 @@ const StintLaps: React.FC<{}> = () => {
   const onSelectCarClassChange = (value: string[]) => {
     // get removed car classes
 
-    const removedClasses = new Set(_.difference(uiSettings.filterCarClasses, value));
-    _.remove(uiSettings.showCars, (carNum) => removedClasses.has(carDataContainer.carInfoLookup.get(carNum)!.carClass));
-    // get added car classes
-    const addedClasses = new Set(_.difference(value, uiSettings.filterCarClasses));
-    let newShowcars = _.concat(
-      uiSettings.showCars,
-      carDataContainer.allCarNums.filter((carNum) =>
-        addedClasses.has(carDataContainer.carInfoLookup.get(carNum)!.carClass)
-      )
-    );
-    newShowcars = _.uniq(newShowcars).sort(sortCarNumberStr);
+    const newShowcars = processCarClassSelection({
+      carDataContainer: carDataContainer,
+      currentFilter: uiSettings.filterCarClasses,
+      currentShowCars: uiSettings.showCars,
+      newSelection: value,
+    });
     dispatch(uiRaceStintSharedSettings({ ...uiSettings, filterCarClasses: value, showCars: newShowcars }));
   };
 

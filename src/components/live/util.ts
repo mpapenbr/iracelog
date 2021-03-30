@@ -50,10 +50,53 @@ export const extractSomeCarData = (wampData: IWampData): IExtractedCarData => {
  */
 export const computeAvailableCars = (baseData: IExtractedCarData, filterCarClasses: string[]): ICarFilterData[] => {
   return baseData.allCarNums
-    .filter((v) =>
-      filterCarClasses.length === 0
-        ? true
-        : filterCarClasses.findIndex((fcc) => fcc === baseData.carInfoLookup.get(v)?.carClass) !== -1
-    )
+    .filter((v) => {
+      if (filterCarClasses.length === 0) {
+        return true;
+      } else {
+        if (filterCarClasses.find((v) => "All".localeCompare(v) === 0) !== undefined) {
+          return true;
+        } else return filterCarClasses.findIndex((fcc) => fcc === baseData.carInfoLookup.get(v)?.carClass) !== -1;
+      }
+    })
+    .sort(sortCarNumberStr)
     .map((v) => ({ carNum: v, name: baseData.carInfoLookup.get(v)!.name }));
+};
+
+/**
+ * Arguments for processCarClassSelection
+ */
+interface ICarClassProcessorArgs {
+  newSelection: string[];
+  currentFilter: string[];
+  currentShowCars: string[];
+  carDataContainer: IExtractedCarData;
+}
+
+/**
+ * can be called when the user changes the car class filter.
+ * @param args
+ * @returns
+ */
+export const processCarClassSelection = (args: ICarClassProcessorArgs): string[] => {
+  if (args.newSelection.findIndex((v) => "All".localeCompare(v) === 0) !== -1) {
+    const ret = [...args.carDataContainer.allCarNums];
+    ret.sort(sortCarNumberStr);
+    return ret;
+  } else {
+    const removedClasses = new Set(_.difference(args.currentFilter, args.newSelection));
+    _.remove(args.currentShowCars, (carNum) =>
+      removedClasses.has(args.carDataContainer.carInfoLookup.get(carNum)!.carClass)
+    );
+    // get added car classes
+    const addedClasses = new Set(_.difference(args.newSelection, args.currentFilter));
+    let newShowcars = _.concat(
+      args.currentShowCars,
+      args.carDataContainer.allCarNums.filter((carNum) =>
+        addedClasses.has(args.carDataContainer.carInfoLookup.get(carNum)!.carClass)
+      )
+    );
+    newShowcars = _.uniq(newShowcars).sort(sortCarNumberStr);
+    return newShowcars;
+  }
 };

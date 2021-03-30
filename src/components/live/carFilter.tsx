@@ -23,7 +23,7 @@ const CarFilter: React.FC<MyProps> = (props: MyProps) => {
       #{d.carNum} {d.name}
     </Option>
   ));
-  const carClassOptions = props.availableClasses.map((d) => (
+  const carClassOptions = _.concat(props.availableClasses, "All").map((d) => (
     <Option key={_.uniqueId()} value={d}>
       {d}
     </Option>
@@ -50,7 +50,7 @@ const CarFilter: React.FC<MyProps> = (props: MyProps) => {
           {referenceOptions}
         </Select>
       </Col>
-      {props.availableClasses.length > 0 ? (
+      {props.availableClasses.length > -1 ? (
         <Col span={4}>
           <Select
             style={{ width: "100%" }}
