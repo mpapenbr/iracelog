@@ -1,7 +1,7 @@
 import { Col, Row, Select } from "antd";
 import _ from "lodash";
 import React from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { sprintf } from "sprintf-js";
 import {
   VictoryAxis,
@@ -13,7 +13,10 @@ import {
   VictoryThemeDefinition,
 } from "victory";
 import { ApplicationState } from "../../stores";
+import { uiRaceStintSharedSettings } from "../../stores/ui/actions";
 import { secAsString, sortCarNumberStr } from "../../utils/output";
+import CarFilter from "./carFilter";
+import { computeAvailableCars, extractSomeCarData, processCarClassSelection } from "./util";
 
 interface IVicData {
   x: string;
@@ -27,13 +30,13 @@ interface IColData {
 const CarPitstops: React.FC<{}> = () => {
   const wamp = useSelector((state: ApplicationState) => state.wamp.data);
   const carPits = useSelector((state: ApplicationState) => state.wamp.data.carPits);
-  const allCarNums =
-    carPits.length > 0
-      ? wamp.carPits
-          .map((v) => v.carNum)
-          .sort(sortCarNumberStr)
-          .reverse()
-      : [];
+  const uiSettings = useSelector((state: ApplicationState) => state.ui.data.raceStintSharedSettings);
+  const dispatch = useDispatch();
+  const carDataContainer = extractSomeCarData(wamp);
+  const { carInfoLookup, allCarNums, allCarClasses } = carDataContainer;
+  const availableCars = computeAvailableCars(carDataContainer, uiSettings.filterCarClasses);
+
+  const carOrder = [...uiSettings.showCars].sort(sortCarNumberStr).reverse();
 
   const maxPitstops = carPits.reduce((a, b) => (b.history.length > a ? b.history.length : a), 0);
 
@@ -54,7 +57,7 @@ const CarPitstops: React.FC<{}> = () => {
   };
 
   const x = _.range(maxPitstops).map((idx) => {
-    return allCarNums.map((carNum) => {
+    return carOrder.map((carNum) => {
       const found = carPits.find((v) => v.carNum === carNum);
       if (idx < found!.history.length) {
         return found!.history[idx];
@@ -62,10 +65,26 @@ const CarPitstops: React.FC<{}> = () => {
     });
   });
   // console.log(x);
-  allCarNums.map((carNum) => dataForCar(carNum));
+  carOrder.map((carNum) => dataForCar(carNum));
   const dataForCar2 = (carNum: string): any => {
     const found = carPits.find((v) => v.carNum === carNum);
     return found != undefined ? found.history.map((v, idx) => ({ p: idx, ...v })) : [];
+  };
+
+  const onSelectShowCars = (value: any) => {
+    dispatch(uiRaceStintSharedSettings({ ...uiSettings, showCars: value as string[] }));
+  };
+
+  const onSelectCarClassChange = (value: string[]) => {
+    // get removed car classes
+
+    const newShowcars = processCarClassSelection({
+      carDataContainer: carDataContainer,
+      currentFilter: uiSettings.filterCarClasses,
+      currentShowCars: uiSettings.showCars,
+      newSelection: value,
+    });
+    dispatch(uiRaceStintSharedSettings({ ...uiSettings, filterCarClasses: value, showCars: newShowcars }));
   };
 
   // const calcXDom = (rg: ICarLaps): DomainTuple => {
@@ -87,11 +106,21 @@ const CarPitstops: React.FC<{}> = () => {
   };
   return (
     <>
+      <Row>
+        <CarFilter
+          availableCars={availableCars}
+          availableClasses={allCarClasses}
+          selectedCars={uiSettings.showCars}
+          selectedCarClasses={uiSettings.filterCarClasses}
+          onSelectCarFilter={onSelectShowCars}
+          onSelectCarClassFilter={onSelectCarClassChange}
+        />
+      </Row>
       <Row gutter={16}>
         <Col span={22}>
           <VictoryChart
             width={1500}
-            height={200 + allCarNums.length * 25}
+            height={200 + carOrder.length * 25}
             standalone={true}
             // theme={VictoryTheme.material}
             theme={myTheme}
@@ -99,7 +128,7 @@ const CarPitstops: React.FC<{}> = () => {
             domainPadding={{ x: [10, 0] }}
             // containerComponent={vvc}
           >
-            <VictoryAxis tickValues={allCarNums} />
+            <VictoryAxis tickValues={carOrder} />
             <VictoryAxis dependentAxis />
             <VictoryStack>
               {x.map((item, idx) => (

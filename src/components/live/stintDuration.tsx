@@ -1,12 +1,15 @@
 import { Col, Row, Select } from "antd";
 import _ from "lodash";
 import React from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { sprintf } from "sprintf-js";
 import { VictoryAxis, VictoryBar, VictoryChart, VictoryStack, VictoryTheme, VictoryTooltip } from "victory";
 import { ApplicationState } from "../../stores";
+import { uiRaceStintSharedSettings } from "../../stores/ui/actions";
 import { IStintInfo } from "../../stores/wamp/types";
 import { secAsString, sortCarNumberStr } from "../../utils/output";
+import CarFilter from "./carFilter";
+import { computeAvailableCars, extractSomeCarData, processCarClassSelection } from "./util";
 
 interface IVicData {
   x: string;
@@ -21,14 +24,13 @@ const StintDuration: React.FC<{}> = () => {
   const wamp = useSelector((state: ApplicationState) => state.wamp.data);
   const carStints = useSelector((state: ApplicationState) => state.wamp.data.carStints);
 
-  const allCarNums =
-    carStints.length > 0
-      ? wamp.carStints
-          .map((v) => v.carNum)
-          .sort(sortCarNumberStr)
-          .reverse()
-      : [];
+  const uiSettings = useSelector((state: ApplicationState) => state.ui.data.raceStintSharedSettings);
+  const dispatch = useDispatch();
+  const carDataContainer = extractSomeCarData(wamp);
+  const { carInfoLookup, allCarNums, allCarClasses } = carDataContainer;
+  const availableCars = computeAvailableCars(carDataContainer, uiSettings.filterCarClasses);
 
+  const carOrder = [...uiSettings.showCars].sort(sortCarNumberStr).reverse();
   interface ILookup<T> {
     id: string;
     value: T;
@@ -40,7 +42,7 @@ const StintDuration: React.FC<{}> = () => {
   const maxPitstops = carStints.reduce((a, b) => (b.history.length > a ? b.history.length : a), 0);
 
   const x = _.range(maxPitstops).map((idx) => {
-    return allCarNums.map((carNum) => {
+    return carOrder.map((carNum) => {
       const found = carStints.find((v) => v.carNum === carNum);
       if (idx < found!.history.length) {
         const id = _.uniqueId();
@@ -50,7 +52,7 @@ const StintDuration: React.FC<{}> = () => {
     });
   });
   // console.log(x);
-  const lastStint = allCarNums.map((carNum, idx) => {
+  const lastStint = carOrder.map((carNum, idx) => {
     const foundPit = carStints.find((v) => v.carNum === carNum);
     if (foundPit?.current.isCurrentStint) {
       const id = _.uniqueId();
@@ -69,8 +71,35 @@ const StintDuration: React.FC<{}> = () => {
       ];
     } else return [];
   };
+
+  const onSelectShowCars = (value: any) => {
+    dispatch(uiRaceStintSharedSettings({ ...uiSettings, showCars: value as string[] }));
+  };
+
+  const onSelectCarClassChange = (value: string[]) => {
+    // get removed car classes
+
+    const newShowcars = processCarClassSelection({
+      carDataContainer: carDataContainer,
+      currentFilter: uiSettings.filterCarClasses,
+      currentShowCars: uiSettings.showCars,
+      newSelection: value,
+    });
+    dispatch(uiRaceStintSharedSettings({ ...uiSettings, filterCarClasses: value, showCars: newShowcars }));
+  };
+
   return (
     <>
+      <Row>
+        <CarFilter
+          availableCars={availableCars}
+          availableClasses={allCarClasses}
+          selectedCars={uiSettings.showCars}
+          selectedCarClasses={uiSettings.filterCarClasses}
+          onSelectCarFilter={onSelectShowCars}
+          onSelectCarClassFilter={onSelectCarClassChange}
+        />
+      </Row>
       <Row gutter={16}>
         <Col span={22}>
           <VictoryChart
@@ -82,7 +111,7 @@ const StintDuration: React.FC<{}> = () => {
             domainPadding={{ x: [20, 10], y: [50, 0] }}
             // containerComponent={vvc}
           >
-            <VictoryAxis tickValues={allCarNums} />
+            <VictoryAxis tickValues={carOrder} />
             <VictoryAxis dependentAxis />
             <VictoryStack>
               {x.map((item, idx) => (
