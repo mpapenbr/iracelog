@@ -9,6 +9,7 @@ import RaceGraphByReference from "../components/live/raceGraphRelative";
 import RacePositionGraph from "../components/live/racePositionGraph";
 import StintDuration from "../components/live/stintDuration";
 import StintLaps from "../components/live/stintLaps";
+import RaceGraphRecharts from "../components/recharts/raceGraphRecharts";
 
 interface IStateProps {}
 interface IDispachProps {
@@ -26,7 +27,10 @@ export const AnalysisMainPage: React.FC<MyProps> = (props: MyProps) => {
       <Sider theme="light" width={200}>
         <Menu theme="light" mode="inline">
           <Menu.Item key="raceGraphA" className="race-sidebar">
-            <Link to="/analysis/raceGraphA">Race graph A</Link>
+            <Link to="/analysis/raceGraphA">Race graph A (victory)</Link>
+          </Menu.Item>
+          <Menu.Item key="raceGraphARecharts" className="race-sidebar">
+            <Link to="/analysis/raceGraphARecharts">Race graph A (recharts)</Link>
           </Menu.Item>
           <Menu.Item key="raceGraphB" className="race-sidebar">
             <Link to="/analysis/raceGraphB">Race graph B</Link>
@@ -54,6 +58,7 @@ export const AnalysisMainPage: React.FC<MyProps> = (props: MyProps) => {
       <Content>
         <Switch>
           <Route path="/analysis/raceGraphA" component={RaceGraph} />
+          <Route path="/analysis/raceGraphARecharts" component={RaceGraphRecharts} />
           <Route path="/analysis/raceGraphB" component={RaceGraphByReference} />
           <Route path="/analysis/racePositions" component={RacePositionGraph} />
           <Route path="/analysis/driverLaps" component={DriverLaps} />

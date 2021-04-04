@@ -59,6 +59,9 @@ const CarPitstops: React.FC<{}> = () => {
   const x = _.range(maxPitstops).map((idx) => {
     return carOrder.map((carNum) => {
       const found = carPits.find((v) => v.carNum === carNum);
+      if (found === undefined) {
+        return { carNum: carNum, laneTime: 0, stintTime: 0 };
+      }
       if (idx < found!.history.length) {
         return found!.history[idx];
       } else return { carNum: carNum, laneTime: 0, stintTime: 0 };

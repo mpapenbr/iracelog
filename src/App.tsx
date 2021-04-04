@@ -5,6 +5,7 @@ import { BrowserRouter as Router, Link, Route, Switch } from "react-router-dom";
 import { Store } from "redux";
 import "./App.css";
 import RaceDetailsFrame from "./components/raceDetails";
+import { API_LOCAL_DEV_MODE } from "./constants";
 import { AnalysisMainPage } from "./pages/analysisPage";
 import { FakeLoaderPage } from "./pages/fakeLoader";
 import LiveContent from "./pages/liveContent";
@@ -36,9 +37,13 @@ const App: React.FC<AppProps> = (props: AppProps) => {
               <Menu.Item key="3">
                 <Link to="/analysis">Analysis</Link>
               </Menu.Item>
-              <Menu.Item key="4">
-                <Link to="/devloader">DevLoader</Link>
-              </Menu.Item>
+              {API_LOCAL_DEV_MODE ? (
+                <Menu.Item key="4">
+                  <Link to="/devloader">DevLoader</Link>
+                </Menu.Item>
+              ) : (
+                <></>
+              )}
             </Menu>
           </Header>
           <Content style={{ padding: "0 50px" }}>
@@ -53,9 +58,13 @@ const App: React.FC<AppProps> = (props: AppProps) => {
                 <Route path="/analysis">
                   <AnalysisMainPage />
                 </Route>
-                <Route path="/devloader">
-                  <FakeLoaderPage />
-                </Route>
+                {API_LOCAL_DEV_MODE ? (
+                  <Route path="/devloader">
+                    <FakeLoaderPage />
+                  </Route>
+                ) : (
+                  <></>
+                )}
                 <Route path="/events/details/:id" component={RaceDetailsFrame} />
               </Switch>
             </div>
