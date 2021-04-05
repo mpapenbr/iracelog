@@ -6,10 +6,14 @@ import _ from "lodash";
 import { ICarInfo, IRaceGraph, IWampData } from "../types";
 import { getValueViaSpec } from "./util";
 
-export const processForRaceGraph = (current: IWampData, newData: [][]): IRaceGraph[] => {
+export const processForRaceGraph = (
+  current: IWampData,
+  currentRaceGraph: IRaceGraph[],
+  newData: [][]
+): IRaceGraph[] => {
   const leaderEntry = newData.find((dataRow) => getValueViaSpec(dataRow, current.manifests.car, "pos") === 1);
   if (leaderEntry === undefined) return current.raceGraph;
-  let work = [...current.raceGraph];
+  let work = [...currentRaceGraph];
   const picLookup = computePicLookup(current, newData);
   work = processForRaceGraphForOverall(current, newData, work, picLookup);
   work = processForRaceGraphForClass(current, newData, work, picLookup);
@@ -24,7 +28,7 @@ const computePicLookup = (current: IWampData, newData: [][]) => {
     return (getValueViaSpec(dataRow, current.manifests.car, "carClass") as string).localeCompare(carClass) === 0;
   };
   let picLookup = new Map<string, number>();
-  const carClasses = computeCarClasses(current.carInfo);
+  const carClasses = computeCarClasses(current, newData);
   if (carClasses.length > 0) {
     carClasses.forEach((curCarClass) => {
       const classResorted = newData
@@ -86,8 +90,16 @@ export const processForRaceGraphForOverall = (
   }
 };
 
-const computeCarClasses = (carInfos: ICarInfo[]) => {
+const computeCarClassesX = (carInfos: ICarInfo[]) => {
   return _.uniq(carInfos.filter((v) => "".localeCompare(v.carClass || "") !== 0).map((v) => v.carClass)).sort();
+};
+
+const computeCarClasses = (current: IWampData, data: [][]) => {
+  return _.uniq(
+    data
+      .map((dataRow) => getValueViaSpec(dataRow, current.manifests.car, "carClass") as string)
+      .filter((v) => (v || "").localeCompare("") !== 0)
+  ).sort();
 };
 
 const processForRaceGraphForClass = (
@@ -96,7 +108,7 @@ const processForRaceGraphForClass = (
   currentRaceGraph: IRaceGraph[],
   picLookup: Map<string, number>
 ): IRaceGraph[] => {
-  const carClasses = computeCarClasses(current.carInfo);
+  const carClasses = computeCarClasses(current, newData);
   if (carClasses.length === 0) return currentRaceGraph;
 
   let carClassAdditions = [...currentRaceGraph];

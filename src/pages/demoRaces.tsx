@@ -1,5 +1,5 @@
 import { ReloadOutlined } from "@ant-design/icons";
-import { Button, Col, List, Row } from "antd";
+import { Button, Col, List, Modal, Row } from "antd";
 import autobahn, { Session } from "autobahn";
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
@@ -37,7 +37,7 @@ export const DemoRaces: React.FC<MyProps> = (props: MyProps) => {
   const [livedata, setLivedata] = useState([] as any[]);
 
   useEffect(() => {
-    // onReloadRequested();
+    onReloadRequested();
   }, [loadTrigger]);
 
   const onButtonClicked = (e: React.MouseEvent<HTMLButtonElement>) => {
@@ -150,7 +150,7 @@ export const DemoRaces: React.FC<MyProps> = (props: MyProps) => {
     },
   ];
   return (
-    <Row>
+    <Row gutter={16}>
       <Col span={6}>
         <List
           header={<h3>Demo races</h3>}
@@ -167,9 +167,9 @@ export const DemoRaces: React.FC<MyProps> = (props: MyProps) => {
             </List.Item>
           )}
         />
-        {/* <Modal title="Loading" visible={loading} closable={false} footer={<></>}>
+        <Modal title="Loading" visible={loading} closable={false} footer={<></>}>
           {info}
-        </Modal> */}
+        </Modal>
       </Col>
       <Col span={6}>
         <List

@@ -1,6 +1,9 @@
 import { Dispatch } from "redux";
 import { API_DATA_HOST } from "../constants";
-import { reset, updateCars, updateFromStateMessage, updateManifests, updatePitstops } from "../stores/wamp/actions";
+import { reset, setData, updateCars, updateFromStateMessage, updatePitstops } from "../stores/wamp/actions";
+import { bulkProcess } from "../stores/wamp/compute/bulkProcessing";
+import { postProcessManifest } from "../stores/wamp/reducer";
+import { defaultWampData, IManifests } from "../stores/wamp/types";
 
 const processJsonFromArchive = (data: string, dispatch: Dispatch<any>) => {
   var lines = data.split("\n");
@@ -16,21 +19,47 @@ const processJsonFromArchive = (data: string, dispatch: Dispatch<any>) => {
     const { payload, timestamp } = JSON.parse(lines[line]);
 
     const x = JSON.parse(lines[line]).payload;
-    dispatch(updateFromStateMessage(x));
+    if (true) dispatch(updateFromStateMessage(x));
 
     const carsRowData = { data: JSON.parse(lines[line]).payload.cars };
     // console.log(rowData);
-    dispatch(updateCars([carsRowData]));
+    if (false) dispatch(updateCars([carsRowData]));
 
     const pitsRowData = { data: JSON.parse(lines[line]).payload.pits };
     // console.log(rowData);
-    dispatch(updatePitstops([pitsRowData]));
+    if (true) dispatch(updatePitstops([pitsRowData]));
     // dispatch(updateCars(JSON.parse(lines[line]).data));
     processed++;
     lastTimestamp = timestamp;
   }
   console.log("processed " + processed + " entries till timestamp " + lastTimestamp);
   return { processed: processed, timestamp: lastTimestamp };
+};
+
+const processJsonFromArchiveInOneGo = (data: string, manifests: IManifests) => {
+  const wamp = { ...defaultWampData, manifests: manifests };
+  var lines = data.split("\n");
+  let processed = 0;
+  let lastTimestamp = 0;
+  let collectJson = [];
+  for (var line = 0; line < lines.length; line++) {
+    if (lines[line].trim().length == 0) continue;
+    // for (var line = 0; line < 5; line++) {
+    // console.log(lines[line]);
+    // if (line % 100 === 0) {
+    //   console.log(line);
+    // }
+    const { payload, timestamp } = JSON.parse(lines[line]);
+
+    const x = JSON.parse(lines[line]).payload;
+    collectJson.push(x);
+    processed++;
+    lastTimestamp = timestamp;
+  }
+  // const carsData = collectJson.map((item) => item.cars);
+  const ret = { ...wamp, ...bulkProcess(wamp, collectJson) };
+  console.log("processed " + processed + " entries till timestamp " + lastTimestamp);
+  return { processed: processed, timestamp: lastTimestamp, newStateData: ret };
 };
 
 export const readData = (e: string, dispatch: Dispatch<any>, callback?: (msg: string) => void) => {
@@ -41,19 +70,20 @@ export const readData = (e: string, dispatch: Dispatch<any>, callback?: (msg: st
   console.log(url);
   caller("load manifest");
   const x = fetch(API_DATA_HOST + "/manifest-" + e + ".json").then((res: Response) => {
-    // const x = fetch("https://data.juelps.de/huhu.txt").then((res: Response) => {
     if (res.ok) {
-      res.json().then((j) => dispatch(updateManifests(j)));
-      // caller("load main data");
+      var manis: IManifests;
+      res.json().then((j) => (manis = postProcessManifest(j[0])));
+      caller("load main data");
       fetch(API_DATA_HOST + "/data-" + e + ".json").then((res: Response) => {
         if (res.ok) {
           res.text().then((data) => {
             console.log(data.length);
-            // caller("data loaded (" + data.length + " bytes)");
+            caller("data loaded (" + data.length + " bytes)");
             dispatch(reset());
             // dispatch(uiReset());
-            // caller("Processing....");
-            const { processed, timestamp } = processJsonFromArchive(data, dispatch);
+            caller("Processing....");
+            const { processed, timestamp, newStateData } = processJsonFromArchiveInOneGo(data, manis);
+            dispatch(setData(newStateData));
             caller("done");
           });
         }

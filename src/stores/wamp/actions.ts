@@ -14,6 +14,7 @@ export enum WampActionTypes {
 
   UPDATE_FROM_STATE = "@@wamp/UPDATE_FROM_STATE", // contains data for session,messages,cars,pitstops (the big one)
 
+  SET = "@@wamp/SET",
   RESET = "@@wamp/RESET",
 
   UPDATE_DUMMY = "@@wamp/UPDATE_DUMMY", // just for testing!
@@ -31,6 +32,7 @@ export const updatePitstops = (data: any): IBaseAction => action(WampActionTypes
 
 export const updateFromStateMessage = (data: any): IBaseAction => action(WampActionTypes.UPDATE_FROM_STATE, data);
 
+export const setData = (data: any): IBaseAction => action(WampActionTypes.SET, data);
 export const reset = (): IBaseAction => action(WampActionTypes.RESET);
 
 export const updateDummy = (data: any): IBaseAction => action(WampActionTypes.UPDATE_DUMMY, data);

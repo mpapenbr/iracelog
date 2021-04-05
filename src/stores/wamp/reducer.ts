@@ -23,6 +23,8 @@ const reducer: Reducer<IWampState> = (state = initialState, action) => {
 
     case WampActionTypes.RESET:
       return { ...state, data: defaultWampData };
+    case WampActionTypes.SET:
+      return { ...state, data: { ...action.payload, dummy: "Hallo" } };
 
     case WampActionTypes.UPDATE_DUMMY: {
       return { ...state, data: { ...state.data, dummy: action.payload } };
@@ -39,7 +41,7 @@ const reducer: Reducer<IWampState> = (state = initialState, action) => {
     }
     case WampActionTypes.UPDATE_CARS: {
       if (Array.isArray(action.payload)) {
-        const raceGraph = processForRaceGraph(state.data, action.payload[0].data);
+        const raceGraph = processForRaceGraph(state.data, state.data.raceGraph, action.payload[0].data);
         const carLaps = processForLapGraph(state.data, action.payload[0].data);
         const raceOrder = processForRaceOrder(state.data, action.payload[0].data);
         return {
@@ -107,7 +109,7 @@ interface TmpManifestInboundData {
   pit: string[];
   message: string[];
 }
-const postProcessManifest = (data: TmpManifestInboundData): IManifests => {
+export const postProcessManifest = (data: TmpManifestInboundData): IManifests => {
   const toDataSpec = (d: string[]): IDataEntrySpec[] => d.map((v) => ({ name: v, type: "string" }));
   return {
     car: toDataSpec(data.car),
