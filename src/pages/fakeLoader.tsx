@@ -95,16 +95,16 @@ export const FakeLoaderPage: React.FC<MyProps> = (props: MyProps) => {
             s.subscribe(sprintf("racelog.state.%s", eventId), (data) => {
               dispatch(updateFromStateMessage(data[0].payload));
             });
-            s.subscribe(sprintf("session.%s", eventId), (data) => {
+            s.subscribe(sprintf("racelog.session.%s", eventId), (data) => {
               dispatch(updateSession(data));
             });
-            s.subscribe(sprintf("messages.%s", eventId), (data) => {
+            s.subscribe(sprintf("racelog.messages.%s", eventId), (data) => {
               dispatch(updateMessages(data));
             });
-            s.subscribe(sprintf("cars.%s", eventId), (data) => {
+            s.subscribe(sprintf("racelog.cars.%s", eventId), (data) => {
               dispatch(updateCars(data));
             });
-            s.subscribe(sprintf("pits.%s", eventId), (data) => {
+            s.subscribe(sprintf("racelog.pits.%s", eventId), (data) => {
               dispatch(updatePitstops(data));
             });
           });

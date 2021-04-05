@@ -1,5 +1,5 @@
 import { Checkbox, Col, Empty, Row, Spin } from "antd";
-import { isNumber } from "lodash";
+import _, { isNumber } from "lodash";
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { CartesianGrid, Legend, Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
@@ -85,21 +85,6 @@ const RaceGraphRecharts: React.FC<{}> = () => {
     );
   });
 
-  console.log(gaps);
-
-  const graphData = [
-    { carNum: "12", lapNo: 1, gap: 10 },
-    { carNum: "20", lapNo: 1, gap: 20 },
-    { carNum: "12", lapNo: 2, gap: 5 },
-    { carNum: "20", lapNo: 2, gap: 30 },
-  ];
-
-  const graphData2 = [
-    { lapNo: 1, car12: 10, car20: 20, "#45": 30 },
-    { lapNo: 2, car12: 5, car20: 30, "#45": 40 },
-    { lapNo: 3, car12: 7, car20: 40, "#45": 5 },
-  ];
-
   const colorCode = (carNum: string): string => {
     return strokeColors[allCarNums.indexOf(carNum) % strokeColors.length];
   };
@@ -151,6 +136,7 @@ const RaceGraphRecharts: React.FC<{}> = () => {
           <LineChart width={1500} height={750} data={gaps}>
             {uiSettings.showCars.map((carNum) => (
               <Line
+                key={_.uniqueId()}
                 type="monotone"
                 isAnimationActive={false}
                 dot={false}

@@ -60,16 +60,16 @@ const LiveContent: React.FC<{}> = () => {
           // dispatch(updateCars([data[0].payload.cars]));
           // dispatch(updatePitstops([data[0].payload.pitstops]));
         });
-        s.subscribe(sprintf("session.%s", id), (data) => {
+        s.subscribe(sprintf("racelog.session.%s", id), (data) => {
           dispatch(updateSession(data));
         });
-        s.subscribe(sprintf("messages.%s", id), (data) => {
+        s.subscribe(sprintf("racelog.messages.%s", id), (data) => {
           dispatch(updateMessages(data));
         });
-        s.subscribe(sprintf("cars.%s", id), (data) => {
+        s.subscribe(sprintf("racelog.cars.%s", id), (data) => {
           dispatch(updateCars(data));
         });
-        s.subscribe(sprintf("pits.%s", id), (data) => {
+        s.subscribe(sprintf("racelog.pits.%s", id), (data) => {
           dispatch(updatePitstops(data));
         });
       });

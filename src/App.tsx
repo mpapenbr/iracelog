@@ -7,9 +7,8 @@ import "./App.css";
 import RaceDetailsFrame from "./components/raceDetails";
 import { API_LOCAL_DEV_MODE } from "./constants";
 import { AnalysisMainPage } from "./pages/analysisPage";
+import { DemoRaces } from "./pages/demoRaces";
 import { FakeLoaderPage } from "./pages/fakeLoader";
-import LiveContent from "./pages/liveContent";
-import { RaceEventListPage } from "./pages/raceEventListPage";
 import { ApplicationState } from "./stores";
 
 const { Header, Content, Footer } = Layout;
@@ -31,14 +30,14 @@ const App: React.FC<AppProps> = (props: AppProps) => {
               <Menu.Item key="1">
                 <Link to="/events">Events</Link>
               </Menu.Item>
-              <Menu.Item key="2">
+              {/* <Menu.Item key="2">
                 <Link to="/live">Live</Link>
-              </Menu.Item>
+              </Menu.Item> */}
               <Menu.Item key="3">
                 <Link to="/analysis">Analysis</Link>
               </Menu.Item>
               {API_LOCAL_DEV_MODE ? (
-                <Menu.Item key="4">
+                <Menu.Item key="99">
                   <Link to="/devloader">DevLoader</Link>
                 </Menu.Item>
               ) : (
@@ -50,11 +49,12 @@ const App: React.FC<AppProps> = (props: AppProps) => {
             <div className="site-layout-content">
               <Switch>
                 <Route exact path="/events">
-                  <RaceEventListPage />
+                  {/* <RaceEventListPage /> */}
+                  <DemoRaces />
                 </Route>
-                <Route path="/live">
+                {/* <Route path="/live">
                   <LiveContent />
-                </Route>
+                </Route> */}
                 <Route path="/analysis">
                   <AnalysisMainPage />
                 </Route>

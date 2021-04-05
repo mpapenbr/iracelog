@@ -3,6 +3,7 @@ import React from "react";
 import { Route, Switch } from "react-router";
 import { Link } from "react-router-dom";
 import CarPitstops from "../components/live/carPitstops";
+import Classification from "../components/live/classification";
 import DriverLaps from "../components/live/driverLaps";
 import RaceGraph from "../components/live/raceGraph";
 import RaceGraphByReference from "../components/live/raceGraphRelative";
@@ -26,6 +27,9 @@ export const AnalysisMainPage: React.FC<MyProps> = (props: MyProps) => {
     <Layout>
       <Sider theme="light" width={200}>
         <Menu theme="light" mode="inline">
+          <Menu.Item key="classification" className="race-sidebar">
+            <Link to="/analysis/classification">Classification</Link>
+          </Menu.Item>
           <Menu.Item key="raceGraphA" className="race-sidebar">
             <Link to="/analysis/raceGraphA">Race graph A (victory)</Link>
           </Menu.Item>
@@ -57,6 +61,7 @@ export const AnalysisMainPage: React.FC<MyProps> = (props: MyProps) => {
       </Sider>
       <Content>
         <Switch>
+          <Route path="/analysis/classification" component={Classification} />
           <Route path="/analysis/raceGraphA" component={RaceGraph} />
           <Route path="/analysis/raceGraphARecharts" component={RaceGraphRecharts} />
           <Route path="/analysis/raceGraphB" component={RaceGraphByReference} />
