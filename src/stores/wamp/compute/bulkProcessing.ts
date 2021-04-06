@@ -8,6 +8,7 @@ import {
   ICarLaps,
   ICarPitInfo,
   ICarStintInfo,
+  IMessage,
   IPitInfo,
   IRaceGraph,
   IWampData,
@@ -24,8 +25,8 @@ class BulkProcessor {
   private carLaps = new Map<string, ICarLaps>();
   private raceOrder = [] as string[];
   private raceGraph = [] as IRaceGraph[];
+  private infoMsg = [] as IMessage[];
   private current: IWampData = { ...defaultWampData };
-
   constructor() {}
 
   /**
@@ -33,6 +34,9 @@ class BulkProcessor {
    */
   public process(current: IWampData, jsonItems: any[]) {
     this.current = current;
+    var lastSessionMsg;
+    var lastCarMsg;
+
     jsonItems.forEach((m) => {
       const carsData = m.cars;
       carsData.forEach((carEntry: []) => {
@@ -53,7 +57,11 @@ class BulkProcessor {
       this.raceOrder = processForRaceOrder(this.current, carsData);
       this.raceGraph = processForRaceGraph(this.current, this.raceGraph, carsData);
       this.processForLapGraph(this.current, carsData);
+      if (m.messages.length > 0) this.infoMsg.push(...m.messages);
+      lastSessionMsg = { msgType: m.msgType, timestamp: m.timestamp, data: m.session };
+      lastCarMsg = { msgType: m.msgType, timestamp: m.timestamp, data: carsData };
     });
+    this.infoMsg.reverse(); // want the last recieved message on top
     return {
       carStints: Array.from(this.carStintsLookup.values()),
       carPits: Array.from(this.carPitsLookup.values()),
@@ -62,6 +70,9 @@ class BulkProcessor {
       carLaps: Array.from(this.carLaps.values()),
       raceOrder: this.raceOrder,
       raceGraph: this.raceGraph,
+      session: lastSessionMsg,
+      cars: lastCarMsg,
+      infoMsgs: this.infoMsg,
     };
   }
 

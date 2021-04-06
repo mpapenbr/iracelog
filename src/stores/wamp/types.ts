@@ -2,7 +2,7 @@ export interface IWamp {
   stintNo: number;
 }
 
-interface IMessage {
+export interface IMessage {
   msgType: number;
   timestamp: number;
   data: any;
