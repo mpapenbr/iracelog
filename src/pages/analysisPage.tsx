@@ -4,13 +4,12 @@ import { Route, Switch } from "react-router";
 import { Link } from "react-router-dom";
 import CarPitstops from "../components/live/carPitstops";
 import Classification from "../components/live/classification";
-import DriverLaps from "../components/live/driverLaps";
-import RaceGraph from "../components/live/raceGraph";
-import RaceGraphByReference from "../components/live/raceGraphRelative";
 import RacePositionGraph from "../components/live/racePositionGraph";
 import StintDuration from "../components/live/stintDuration";
 import StintLaps from "../components/live/stintLaps";
+import DriverLapsRecharts from "../components/recharts/driverLaps";
 import RaceGraphRecharts from "../components/recharts/raceGraphRecharts";
+import RaceGraphByReferenceRecharts from "../components/recharts/raceGraphRelativeRecharts";
 
 interface IStateProps {}
 interface IDispachProps {
@@ -30,20 +29,26 @@ export const AnalysisMainPage: React.FC<MyProps> = (props: MyProps) => {
           <Menu.Item key="classification" className="race-sidebar">
             <Link to="/analysis/classification">Classification</Link>
           </Menu.Item>
-          <Menu.Item key="raceGraphA" className="race-sidebar">
+          {/* <Menu.Item key="raceGraphA" className="race-sidebar">
             <Link to="/analysis/raceGraphA">Race graph A (victory)</Link>
-          </Menu.Item>
+          </Menu.Item> */}
           <Menu.Item key="raceGraphARecharts" className="race-sidebar">
-            <Link to="/analysis/raceGraphARecharts">Race graph A (recharts)</Link>
+            <Link to="/analysis/raceGraphARecharts">Race graph (Leader)</Link>
           </Menu.Item>
-          <Menu.Item key="raceGraphB" className="race-sidebar">
-            <Link to="/analysis/raceGraphB">Race graph B</Link>
+          {/* <Menu.Item key="raceGraphB" className="race-sidebar">
+            <Link to="/analysis/raceGraphB">Race graph B (V)</Link>
+          </Menu.Item> */}
+          <Menu.Item key="raceGraphBRecharts" className="race-sidebar">
+            <Link to="/analysis/raceGraphBRecharts">Race graph (Car)</Link>
           </Menu.Item>
           <Menu.Item key="racePositions" className="race-sidebar">
             <Link to="/analysis/racePositions">Race positions</Link>
           </Menu.Item>
-          <Menu.Item key="driverLaps" className="race-sidebar">
-            <Link to="/analysis/driverLaps">Driver laps</Link>
+          {/* <Menu.Item key="driverLaps" className="race-sidebar">
+            <Link to="/analysis/driverLaps">Driver laps (V)</Link>
+          </Menu.Item> */}
+          <Menu.Item key="driverLapsRecharts" className="race-sidebar">
+            <Link to="/analysis/driverLapsRecharts">Driver laps </Link>
           </Menu.Item>
           <Menu.Item key="carPitstops" className="race-sidebar">
             <Link to="/analysis/carPitstops">Pitstops</Link>
@@ -62,11 +67,13 @@ export const AnalysisMainPage: React.FC<MyProps> = (props: MyProps) => {
       <Content>
         <Switch>
           <Route path="/analysis/classification" component={Classification} />
-          <Route path="/analysis/raceGraphA" component={RaceGraph} />
+          {/* <Route path="/analysis/raceGraphA" component={RaceGraph} /> */}
           <Route path="/analysis/raceGraphARecharts" component={RaceGraphRecharts} />
-          <Route path="/analysis/raceGraphB" component={RaceGraphByReference} />
+          {/* <Route path="/analysis/raceGraphB" component={RaceGraphByReference} /> */}
+          <Route path="/analysis/raceGraphBRecharts" component={RaceGraphByReferenceRecharts} />
           <Route path="/analysis/racePositions" component={RacePositionGraph} />
-          <Route path="/analysis/driverLaps" component={DriverLaps} />
+          {/* <Route path="/analysis/driverLaps" component={DriverLaps} /> */}
+          <Route path="/analysis/driverLapsRecharts" component={DriverLapsRecharts} />
           <Route path="/analysis/carPitstops" component={CarPitstops} />
           <Route path="/analysis/stintDurations" component={StintDuration} />
           <Route path="/analysis/stintLaps" component={StintLaps} />
