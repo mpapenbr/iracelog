@@ -13,7 +13,7 @@ jobs:
       - name: Prep
         id: prep
         run: |
-          DOCKER_IMAGE=myorg/myrepository
+          DOCKER_IMAGE=mpapenbr/iracelog-web
           VERSION=edge
           if [[ $GITHUB_REF == refs/tags/* ]]; then
             VERSION=${GITHUB_REF#refs/tags/}
