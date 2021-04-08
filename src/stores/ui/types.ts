@@ -7,6 +7,8 @@ export interface IUiEntries {
 
 export enum UiComponent {
   DRIVER_LAPS,
+  RACE_GRAPH_LEADER,
+  RACE_GRAPH_CAR,
 }
 export interface IBrushInterval {
   startIndex?: number;
@@ -47,9 +49,18 @@ export interface IUiData {
   entries: IUiEntries;
 
   // "new" ui comps
-  driverLapsSettings: IDriverLapsSettings;
-  raceGraphRelativeSettings: IRaceGraphRelativeSettings;
-  raceGraphSettings: IRaceGraphSettings;
+  driverLapsSettings: {
+    standard: IDriverLapsSettings;
+    brushRange?: IBrushInterval; // has to be seperated from the other settings due to different update mechanism
+  };
+  raceGraphRelativeSettings: {
+    standard: IRaceGraphRelativeSettings;
+    brushRange?: IBrushInterval; // see above
+  };
+  raceGraphSettings: {
+    standard: IRaceGraphSettings;
+    brushRange?: IBrushInterval; // see above
+  };
   racePositionSettings: IRacePositionSettings;
   raceStintSharedSettings: IRaceStintSharedSettings;
 }
@@ -60,20 +71,26 @@ export const defaultUiData: IUiData = {
 
   // "new" ui comps
   driverLapsSettings: {
-    showCars: [],
-    filterCarClasses: [],
-    filterSecs: 2,
+    standard: {
+      showCars: [],
+      filterCarClasses: [],
+      filterSecs: 2,
+    },
   },
   raceGraphRelativeSettings: {
-    referenceCarNum: "",
-    showCars: [],
-    filterCarClasses: [],
-    deltaRange: 10,
+    standard: {
+      referenceCarNum: "",
+      showCars: [],
+      filterCarClasses: [],
+      deltaRange: 10,
+    },
   },
   raceGraphSettings: {
-    showCars: [],
-    filterCarClasses: [],
-    gapRelativeToClassLeader: false,
+    standard: {
+      showCars: [],
+      filterCarClasses: [],
+      gapRelativeToClassLeader: false,
+    },
   },
   racePositionSettings: {
     showCars: [],

@@ -5,7 +5,6 @@ import _ from "lodash";
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { sprintf } from "sprintf-js";
-import RaceGraphByReference from "../components/live/raceGraphRelative";
 import { API_CROSSBAR_URL } from "../constants";
 import { ApplicationState } from "../stores";
 import {
@@ -82,7 +81,7 @@ const LiveContent: React.FC<{}> = () => {
       <DummySessionInfoData />
       <DummyStandings />
       {/* <RaceGraph /> */}
-      <RaceGraphByReference />
+
       <Row gutter={12}>
         <Col span={6}>
           <DummyPitstops />

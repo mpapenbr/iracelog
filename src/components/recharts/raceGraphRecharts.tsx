@@ -5,8 +5,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { Brush, CartesianGrid, Legend, Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 import { sprintf } from "sprintf-js";
 import { ApplicationState } from "../../stores";
-import { uiRaceGraphSettings } from "../../stores/ui/actions";
-import { IBrushInterval } from "../../stores/ui/types";
+import { uiRaceGraphSettings, uiUpdateBrushSettings } from "../../stores/ui/actions";
+import { IBrushInterval, UiComponent } from "../../stores/ui/types";
 import { IRaceGraph } from "../../stores/wamp/types";
 import CarFilter from "../live/carFilter";
 import { strokeColors } from "../live/colors";
@@ -20,16 +20,17 @@ interface IGraphData {
 
 const RaceGraphRecharts: React.FC<{}> = () => {
   const wamp = useSelector((state: ApplicationState) => state.wamp.data);
-  const uiSettings = useSelector((state: ApplicationState) => state.ui.data.raceGraphSettings);
+  const uiSettingsAll = useSelector((state: ApplicationState) => state.ui.data.raceGraphSettings);
+  const uiSettings = useSelector((state: ApplicationState) => state.ui.data.raceGraphSettings.standard);
   const raceGraph = useSelector((state: ApplicationState) => state.wamp.data.raceGraph);
   const dispatch = useDispatch();
   // this little trick handles the fetching of brushInterval from state, let it be changed here and on leaving this Element store the values in the redux state.
-  let brushKeeper: IBrushInterval = { ...uiSettings.brushInterval };
-  let curSettings = uiSettings;
+  let brushKeeper: IBrushInterval = { ...uiSettingsAll.brushRange };
+
   useEffect(() => {
     return () => {
       // console.log(curSettings);
-      dispatch(uiRaceGraphSettings({ ...curSettings, brushInterval: { ...brushKeeper } }));
+      dispatch(uiUpdateBrushSettings(UiComponent.RACE_GRAPH_LEADER, { ...brushKeeper }));
     };
   }, []);
 
@@ -113,7 +114,7 @@ const RaceGraphRecharts: React.FC<{}> = () => {
   };
 
   const onSelectShowCars = (value: any) => {
-    curSettings = { ...curSettings, showCars: value as string[] };
+    const curSettings = { ...uiSettings, showCars: value as string[] };
     dispatch(uiRaceGraphSettings(curSettings));
   };
 
@@ -126,12 +127,12 @@ const RaceGraphRecharts: React.FC<{}> = () => {
       currentShowCars: uiSettings.showCars,
       newSelection: value,
     });
-    curSettings = { ...uiSettings, filterCarClasses: value, showCars: newShowcars };
+    const curSettings = { ...uiSettings, filterCarClasses: value, showCars: newShowcars };
     dispatch(uiRaceGraphSettings(curSettings));
   };
 
   const onCheckboxChange = () => {
-    curSettings = { ...curSettings, gapRelativeToClassLeader: !curSettings.gapRelativeToClassLeader };
+    const curSettings = { ...uiSettings, gapRelativeToClassLeader: !uiSettings.gapRelativeToClassLeader };
     dispatch(uiRaceGraphSettings(curSettings));
   };
   const test = 6;

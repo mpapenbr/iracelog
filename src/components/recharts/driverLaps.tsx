@@ -35,18 +35,19 @@ const DriverLapsRecharts: React.FC<{}> = () => {
   const wamp = useSelector((state: ApplicationState) => state.wamp.data);
   const carLaps = useSelector((state: ApplicationState) => state.wamp.data.carLaps);
   const carInfo = useSelector((state: ApplicationState) => state.wamp.data.carInfo);
-  const uiSettings = useSelector((state: ApplicationState) => state.ui.data.driverLapsSettings);
+  const uiSettingsAll = useSelector((state: ApplicationState) => state.ui.data.driverLapsSettings);
+  const uiSettings = useSelector((state: ApplicationState) => state.ui.data.driverLapsSettings.standard);
   const dispatch = useDispatch();
 
   // this little trick handles the fetching of brushInterval from state, let it be changed here and on leaving this Element store the values in the redux state.
-  let curSettings = uiSettings;
-  console.log(curSettings.showCars);
-  console.log(curSettings.brushInterval);
-  let brushKeeper: IBrushInterval = { ...uiSettings.brushInterval };
+  // let curSettings = uiSettings;
+  // console.log(curSettings.showCars);
+  // console.log(curSettings.brushInterval);
+  let brushKeeper: IBrushInterval = { ...uiSettingsAll.brushRange };
   useEffect(() => {
     return () => {
-      console.log({ ...brushKeeper });
-      console.log(uiSettings.showCars);
+      // console.log({ ...brushKeeper });
+      // console.log(uiSettings.showCars);
       dispatch(uiUpdateBrushSettings(UiComponent.DRIVER_LAPS, { ...brushKeeper }));
     };
   }, []);
@@ -115,17 +116,17 @@ const DriverLapsRecharts: React.FC<{}> = () => {
   };
 
   const onSelectReferenceByTags = (value: any) => {
-    curSettings = { ...curSettings, showCars: value as string[] };
+    const curSettings = { ...uiSettings, showCars: value as string[] };
     dispatch(uiDriverLapsSettings(curSettings));
   };
 
   const onSelectCarClassChange = (value: any) => {
-    curSettings = { ...curSettings, filterCarClasses: value as string[] };
+    const curSettings = { ...uiSettings, filterCarClasses: value as string[] };
     dispatch(uiDriverLapsSettings(curSettings));
   };
 
   const onFilterSecsChange = (value: any) => {
-    curSettings = { ...curSettings, filterSecs: value };
+    const curSettings = { ...uiSettings, filterSecs: value };
     dispatch(uiDriverLapsSettings(curSettings));
   };
 
@@ -171,14 +172,16 @@ const DriverLapsRecharts: React.FC<{}> = () => {
           >
             <p className="custom-tooltip">Lap {lapNo}</p>
             <table cellPadding={1}>
-              {data.map((v) => (
-                // <p className="custom-tooltip" style={{ color: colorCode(v.carNum) }}>
-                <tr style={{ color: colorCode(v.carNum) }}>
-                  <td align="right">#{v.carNum}</td>
-                  <td align="right">{lapTimeString(v.lapTime)}</td>
-                </tr>
-                // </p>
-              ))}
+              <tbody>
+                {data.map((v) => (
+                  // <p className="custom-tooltip" style={{ color: colorCode(v.carNum) }}>
+                  <tr style={{ color: colorCode(v.carNum) }}>
+                    <td align="right">#{v.carNum}</td>
+                    <td align="right">{lapTimeString(v.lapTime)}</td>
+                  </tr>
+                  // </p>
+                ))}
+              </tbody>
             </table>
           </div>
         );
@@ -189,7 +192,8 @@ const DriverLapsRecharts: React.FC<{}> = () => {
   const brushChanged = (range: any) => {
     // Note: range is a BrushStartEndIndex but it is not exported. IBrushInterval has the same props
     brushKeeper = range;
-    curSettings.brushInterval = range;
+    // dispatch(uiUpdateBrushSettings(UiComponent.DRIVER_LAPS, { ...brushKeeper }));
+    // curSettings.brushInterval = range;
   };
 
   const InternalRaceGraph = (

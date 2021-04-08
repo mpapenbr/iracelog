@@ -17,8 +17,8 @@ import {
 import { sprintf } from "sprintf-js";
 import { DomainTuple } from "victory";
 import { ApplicationState } from "../../stores";
-import { uiRaceGraphRelativeSettings } from "../../stores/ui/actions";
-import { IBrushInterval } from "../../stores/ui/types";
+import { uiRaceGraphRelativeSettings, uiUpdateBrushSettings } from "../../stores/ui/actions";
+import { IBrushInterval, UiComponent } from "../../stores/ui/types";
 import { IRaceGraph } from "../../stores/wamp/types";
 import CarFilter from "../live/carFilter";
 import { strokeColors } from "../live/colors";
@@ -35,15 +35,17 @@ const RaceGraphByReferenceRecharts: React.FC<{}> = () => {
   const wamp = useSelector((state: ApplicationState) => state.wamp.data);
   const raceGraph = useSelector((state: ApplicationState) => state.wamp.data.raceGraph);
   const raceOrder = useSelector((state: ApplicationState) => state.wamp.data.raceOrder);
-  const uiSettings = useSelector((state: ApplicationState) => state.ui.data.raceGraphRelativeSettings);
+  const uiSettingsAll = useSelector((state: ApplicationState) => state.ui.data.raceGraphRelativeSettings);
+  const uiSettings = useSelector((state: ApplicationState) => state.ui.data.raceGraphRelativeSettings.standard);
   const dispatch = useDispatch();
 
   // this little trick handles the fetching of brushInterval from state, let it be changed here and on leaving this Element store the values in the redux state.
-  let brushKeeper: IBrushInterval = { ...uiSettings.brushInterval };
-  let curSettings = uiSettings;
+  let brushKeeper: IBrushInterval = { ...uiSettingsAll.brushRange };
+
   useEffect(() => {
+    brushKeeper = { ...uiSettingsAll.brushRange };
     return () => {
-      dispatch(uiRaceGraphRelativeSettings({ ...curSettings, brushInterval: { ...brushKeeper } }));
+      dispatch(uiUpdateBrushSettings(UiComponent.RACE_GRAPH_CAR, { ...brushKeeper }));
     };
   }, []);
 
@@ -113,17 +115,17 @@ const RaceGraphByReferenceRecharts: React.FC<{}> = () => {
     </Option>
   ));
   const onSelectReferenceCar = (value: any) => {
-    curSettings = { ...curSettings, referenceCarNum: value as string };
+    const curSettings = { ...uiSettings, referenceCarNum: value as string };
     dispatch(uiRaceGraphRelativeSettings(curSettings));
   };
 
   const onSelectCompareCars = (value: any) => {
-    curSettings = { ...curSettings, showCars: value as string[] };
+    const curSettings = { ...uiSettings, showCars: value as string[] };
     dispatch(uiRaceGraphRelativeSettings(curSettings));
   };
 
   const onSelectCarClassChange = (value: any) => {
-    curSettings = { ...curSettings, filterCarClasses: value as string[] };
+    const curSettings = { ...uiSettings, filterCarClasses: value as string[] };
     dispatch(uiRaceGraphRelativeSettings(curSettings));
   };
 
@@ -161,14 +163,16 @@ const RaceGraphByReferenceRecharts: React.FC<{}> = () => {
           >
             <p className="custom-tooltip">Lap {lapNo}</p>
             <table cellPadding={1}>
-              {data.map((v) => (
-                // <p className="custom-tooltip" style={{ color: colorCode(v.carNum) }}>
-                <tr style={{ color: colorCode(v.carNum) }}>
-                  <td align="right">#{v.carNum}</td>
-                  <td align="right">{sprintf("%.02f", v.gap)}</td>
-                </tr>
-                // </p>
-              ))}
+              <tbody>
+                {data.map((v) => (
+                  // <p className="custom-tooltip" style={{ color: colorCode(v.carNum) }}>
+                  <tr style={{ color: colorCode(v.carNum) }}>
+                    <td align="right">#{v.carNum}</td>
+                    <td align="right">{sprintf("%.02f", v.gap)}</td>
+                  </tr>
+                  // </p>
+                ))}
+              </tbody>
             </table>
           </div>
         );
