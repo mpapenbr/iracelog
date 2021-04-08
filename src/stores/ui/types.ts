@@ -5,6 +5,9 @@ export interface IUiEntries {
   entryDetails: number;
 }
 
+export enum UiComponent {
+  DRIVER_LAPS,
+}
 export interface IBrushInterval {
   startIndex?: number;
   endIndex?: number;

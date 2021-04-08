@@ -1,11 +1,13 @@
 import { action } from "typesafe-actions";
 import { IBaseAction } from "../../commons";
 import {
+  IBrushInterval,
   IDriverLapsSettings,
   IRaceGraphRelativeSettings,
   IRaceGraphSettings,
   IRacePositionSettings,
   IRaceStintSharedSettings,
+  UiComponent,
 } from "./types";
 
 export enum UiActionTypes {
@@ -17,10 +19,13 @@ export enum UiActionTypes {
   RACE_GRAPH_RELATIVE_SETTINGS = "@@ui/RACE_GRAPH_RELATIVE_SETTINGS",
   RACE_POSITION_SETTINGS = "@@ui/RACE_POSITION_SETTINGS",
   RACE_STINT_SHARED_SETTINGS = "@@ui/RACE_STINT_SHARED_SETTINGS",
+  UPDATE_BRUSH_SETTINGS = "@@ui/UPDATE_BRUSH_SETTINGS",
 }
 
 export const uiReset = (): IBaseAction => action(UiActionTypes.RESET, {});
 
+export const uiUpdateBrushSettings = (uiComp: UiComponent, data: IBrushInterval): IBaseAction =>
+  action(UiActionTypes.UPDATE_BRUSH_SETTINGS, { component: uiComp, data: data });
 export const uiSetStintNo = (no: number): IBaseAction => action(UiActionTypes.SET_STINT_NO, no);
 export const uiShowEntryDetails = (carIdx: number): IBaseAction => action(UiActionTypes.SHOW_ENTRY_DETAILS, carIdx);
 export const uiDriverLapsSettings = (settings: IDriverLapsSettings): IBaseAction =>

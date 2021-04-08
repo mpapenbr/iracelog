@@ -1,6 +1,6 @@
 import { Reducer } from "redux";
 import { UiActionTypes } from "./actions";
-import { defaultUiData, IUiState } from "./types";
+import { defaultUiData, IUiState, UiComponent } from "./types";
 
 const initialState: IUiState = {
   data: defaultUiData,
@@ -10,6 +10,15 @@ const reducer: Reducer<IUiState> = (state = initialState, action) => {
   switch (action.type) {
     case UiActionTypes.RESET:
       return { ...state, data: { ...defaultUiData } };
+    case UiActionTypes.UPDATE_BRUSH_SETTINGS: {
+      switch (action.payload.component) {
+        case UiComponent.DRIVER_LAPS:
+          const newDriverLapsSettings = { ...state.data.driverLapsSettings, brushInterval: action.payload.data };
+          return { ...state, data: { ...state.data, driverLapsSettings: newDriverLapsSettings } };
+      }
+      return state;
+    }
+
     case UiActionTypes.SET_STINT_NO:
       return { ...state, data: { ...state.data, stint: { ...state.data.stint, stintNo: action.payload } } };
     case UiActionTypes.SHOW_ENTRY_DETAILS:

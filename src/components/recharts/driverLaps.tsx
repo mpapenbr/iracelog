@@ -16,8 +16,8 @@ import {
 import { sprintf } from "sprintf-js";
 import { DomainTuple } from "victory";
 import { ApplicationState } from "../../stores";
-import { uiDriverLapsSettings } from "../../stores/ui/actions";
-import { IBrushInterval } from "../../stores/ui/types";
+import { uiDriverLapsSettings, uiUpdateBrushSettings } from "../../stores/ui/actions";
+import { IBrushInterval, UiComponent } from "../../stores/ui/types";
 import { lapTimeString } from "../../utils/output";
 import CarFilter from "../live/carFilter";
 import { strokeColors } from "../live/colors";
@@ -40,10 +40,14 @@ const DriverLapsRecharts: React.FC<{}> = () => {
 
   // this little trick handles the fetching of brushInterval from state, let it be changed here and on leaving this Element store the values in the redux state.
   let curSettings = uiSettings;
+  console.log(curSettings.showCars);
+  console.log(curSettings.brushInterval);
   let brushKeeper: IBrushInterval = { ...uiSettings.brushInterval };
   useEffect(() => {
     return () => {
-      dispatch(uiDriverLapsSettings({ ...curSettings, brushInterval: { ...brushKeeper } }));
+      console.log({ ...brushKeeper });
+      console.log(uiSettings.showCars);
+      dispatch(uiUpdateBrushSettings(UiComponent.DRIVER_LAPS, { ...brushKeeper }));
     };
   }, []);
 
@@ -185,6 +189,7 @@ const DriverLapsRecharts: React.FC<{}> = () => {
   const brushChanged = (range: any) => {
     // Note: range is a BrushStartEndIndex but it is not exported. IBrushInterval has the same props
     brushKeeper = range;
+    curSettings.brushInterval = range;
   };
 
   const InternalRaceGraph = (
