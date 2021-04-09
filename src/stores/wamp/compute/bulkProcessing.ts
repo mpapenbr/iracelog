@@ -191,6 +191,7 @@ class BulkProcessor {
                 carNum: currentCarNum,
                 lapEnter: currentCarLap,
                 enterTime: sessionTime,
+                isCurrentPitstop: true,
               };
               let carPitEntry = this.carPitsLookup.get(currentCarNum);
               if (carPitEntry === undefined) {
@@ -207,6 +208,7 @@ class BulkProcessor {
         carPitEntry.current.exitTime = sessionTime;
         carPitEntry.current.lapExit = currentCarLap;
         carPitEntry.current.laneTime = sessionTime - carPitEntry.current.enterTime;
+        carPitEntry.current.isCurrentPitstop = false;
         switch (currentCarState) {
           case "RUN":
             carPitEntry.history.push(carPitEntry.current);

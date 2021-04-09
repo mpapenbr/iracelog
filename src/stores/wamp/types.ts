@@ -97,6 +97,7 @@ export interface IPitInfo {
   stintTime: number;
   laneTime: number;
   numLaps: number;
+  isCurrentPitstop: boolean; // true if this is the current stint
 }
 
 export const defaultPitInfo: IPitInfo = {
@@ -108,6 +109,7 @@ export const defaultPitInfo: IPitInfo = {
   stintTime: 0,
   laneTime: 0,
   numLaps: 0,
+  isCurrentPitstop: false,
 };
 export interface ICarPitInfo {
   carNum: string;

@@ -2,11 +2,11 @@ import { Layout, Menu } from "antd";
 import React from "react";
 import { Route, Switch } from "react-router";
 import { Link } from "react-router-dom";
-import CarPitstops from "../components/live/carPitstops";
 import Classification from "../components/live/classification";
 import RacePositionGraph from "../components/live/racePositionGraph";
 import StintDuration from "../components/live/stintDuration";
 import StintLaps from "../components/live/stintLaps";
+import CarPitstopsRecharts from "../components/recharts/carPitstops";
 import DriverLapsRecharts from "../components/recharts/driverLaps";
 import RaceGraphRecharts from "../components/recharts/raceGraphRecharts";
 import RaceGraphByReferenceRecharts from "../components/recharts/raceGraphRelativeRecharts";
@@ -29,24 +29,18 @@ export const AnalysisMainPage: React.FC<MyProps> = (props: MyProps) => {
           <Menu.Item key="classification" className="race-sidebar">
             <Link to="/analysis/classification">Classification</Link>
           </Menu.Item>
-          {/* <Menu.Item key="raceGraphA" className="race-sidebar">
-            <Link to="/analysis/raceGraphA">Race graph A (victory)</Link>
-          </Menu.Item> */}
+
           <Menu.Item key="raceGraphARecharts" className="race-sidebar">
             <Link to="/analysis/raceGraphARecharts">Race graph (Leader)</Link>
           </Menu.Item>
-          {/* <Menu.Item key="raceGraphB" className="race-sidebar">
-            <Link to="/analysis/raceGraphB">Race graph B (V)</Link>
-          </Menu.Item> */}
+
           <Menu.Item key="raceGraphBRecharts" className="race-sidebar">
             <Link to="/analysis/raceGraphBRecharts">Race graph (Car)</Link>
           </Menu.Item>
           <Menu.Item key="racePositions" className="race-sidebar">
             <Link to="/analysis/racePositions">Race positions</Link>
           </Menu.Item>
-          {/* <Menu.Item key="driverLaps" className="race-sidebar">
-            <Link to="/analysis/driverLaps">Driver laps (V)</Link>
-          </Menu.Item> */}
+
           <Menu.Item key="driverLapsRecharts" className="race-sidebar">
             <Link to="/analysis/driverLapsRecharts">Driver laps </Link>
           </Menu.Item>
@@ -67,14 +61,14 @@ export const AnalysisMainPage: React.FC<MyProps> = (props: MyProps) => {
       <Content>
         <Switch>
           <Route path="/analysis/classification" component={Classification} />
-          {/* <Route path="/analysis/raceGraphA" component={RaceGraph} /> */}
+
           <Route path="/analysis/raceGraphARecharts" component={RaceGraphRecharts} />
-          {/* <Route path="/analysis/raceGraphB" component={RaceGraphByReference} /> */}
+
           <Route path="/analysis/raceGraphBRecharts" component={RaceGraphByReferenceRecharts} />
           <Route path="/analysis/racePositions" component={RacePositionGraph} />
-          {/* <Route path="/analysis/driverLaps" component={DriverLaps} /> */}
+
           <Route path="/analysis/driverLapsRecharts" component={DriverLapsRecharts} />
-          <Route path="/analysis/carPitstops" component={CarPitstops} />
+          <Route path="/analysis/carPitstops" component={CarPitstopsRecharts} />
           <Route path="/analysis/stintDurations" component={StintDuration} />
           <Route path="/analysis/stintLaps" component={StintLaps} />
           <Route path="/analysis/test" component={OtherContent} />
