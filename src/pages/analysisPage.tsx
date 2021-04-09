@@ -4,8 +4,9 @@ import { Route, Switch } from "react-router";
 import { Link } from "react-router-dom";
 import Classification from "../components/live/classification";
 import RacePositionGraph from "../components/live/racePositionGraph";
-import StintDuration from "../components/live/stintDuration";
 import StintLaps from "../components/live/stintLaps";
+import CarPitstopsNivo from "../components/nivo/carPitstops";
+import CarStintsNivo from "../components/nivo/carStints";
 import CarPitstopsRecharts from "../components/recharts/carPitstops";
 import DriverLapsRecharts from "../components/recharts/driverLaps";
 import RaceGraphRecharts from "../components/recharts/raceGraphRecharts";
@@ -45,7 +46,10 @@ export const AnalysisMainPage: React.FC<MyProps> = (props: MyProps) => {
             <Link to="/analysis/driverLapsRecharts">Driver laps </Link>
           </Menu.Item>
           <Menu.Item key="carPitstops" className="race-sidebar">
-            <Link to="/analysis/carPitstops">Pitstops</Link>
+            <Link to="/analysis/carPitstops">Pitstops (R)</Link>
+          </Menu.Item>
+          <Menu.Item key="carPitstopsNivo" className="race-sidebar">
+            <Link to="/analysis/carPitstopsNivo">Pitstops (N)</Link>
           </Menu.Item>
           <Menu.Item key="stintDurations" className="race-sidebar">
             <Link to="/analysis/stintDurations">Stint Durations</Link>
@@ -69,7 +73,8 @@ export const AnalysisMainPage: React.FC<MyProps> = (props: MyProps) => {
 
           <Route path="/analysis/driverLapsRecharts" component={DriverLapsRecharts} />
           <Route path="/analysis/carPitstops" component={CarPitstopsRecharts} />
-          <Route path="/analysis/stintDurations" component={StintDuration} />
+          <Route path="/analysis/carPitstopsNivo" component={CarPitstopsNivo} />
+          <Route path="/analysis/stintDurations" component={CarStintsNivo} />
           <Route path="/analysis/stintLaps" component={StintLaps} />
           <Route path="/analysis/test" component={OtherContent} />
         </Switch>
