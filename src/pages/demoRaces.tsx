@@ -11,15 +11,15 @@ import { ApplicationState } from "../stores";
 import { uiReset } from "../stores/ui/actions";
 import {
   connectedToServer,
+  setData,
   updateCars,
-  updateDummy,
   updateFromStateMessage,
   updateManifests,
   updateMessages,
   updatePitstops,
   updateSession,
 } from "../stores/wamp/actions";
-import { readData } from "./loadData";
+import { processJsonFromArchive, readAndProcessData, readData } from "./loadData";
 
 interface IStateProps {}
 interface IDispachProps {
@@ -54,9 +54,7 @@ export const DemoRaces: React.FC<MyProps> = (props: MyProps) => {
         dispatch(updateManifests(data));
       });
       dispatch(connectedToServer());
-      s.subscribe("dummy", (data) => {
-        dispatch(updateDummy(data));
-      });
+
       s.subscribe(sprintf("racelog.state.%s", id), (data) => {
         dispatch(updateFromStateMessage(data[0].payload));
         // dispatch(updateSession([data[0].payload.session]));
@@ -87,6 +85,43 @@ export const DemoRaces: React.FC<MyProps> = (props: MyProps) => {
     const id = e.currentTarget.value as string;
     if (globalWamp.currentLiveId === undefined) {
       connectToLiveData(id);
+    } else {
+      if (id.localeCompare(globalWamp.currentLiveId) === 0) {
+        // do nothing - user wanted to connect to current session
+        console.log("ignoring - already connection to session");
+      } else {
+        if (globalWamp.conn !== undefined) {
+          console.log("closing connection");
+          globalWamp.conn.close();
+        }
+        connectToLiveData(id);
+      }
+    }
+
+    dispatch(uiReset());
+    history.push("/analysis");
+    // setTimeout(() => setLoading(false), 2000);
+  };
+
+  const onLoadAndConnectButtonClicked = (e: React.MouseEvent<HTMLButtonElement>) => {
+    const id = e.currentTarget.value as string;
+    if (globalWamp.currentLiveId === undefined) {
+      readAndProcessData(id, dispatch).then((res: any) => {
+        console.log(res);
+        const { processed, timestamp, newStateData } = res;
+        dispatch(setData(newStateData));
+        console.log("processed " + processed + ". now fetch data after " + timestamp);
+        var conn = new autobahn.Connection({ url: API_CROSSBAR_URL + "/ws", realm: "racelog" });
+        conn.onopen = (s: Session) => {
+          s.call("racelog.archive.get_data", [id, timestamp]).then((data: any) => {
+            console.log(data.length);
+            processJsonFromArchive(data, dispatch);
+            conn.close();
+            connectToLiveData(id);
+          });
+        };
+        conn.open();
+      });
     } else {
       if (id.localeCompare(globalWamp.currentLiveId) === 0) {
         // do nothing - user wanted to connect to current session
@@ -144,6 +179,11 @@ export const DemoRaces: React.FC<MyProps> = (props: MyProps) => {
       key: "3",
     },
     {
+      title: "AI Demo: P217 race at Spa",
+      description: "3h race, medium tank, resets, repair stops",
+      key: "68d4ff7adbb3412b8da2ab53daf01453",
+    },
+    {
       title: "NEO Race 6h Barcelona",
       description: "Used for Multiclass tests. Be patient while loading (~30-45s)",
       key: "neo",
@@ -171,7 +211,7 @@ export const DemoRaces: React.FC<MyProps> = (props: MyProps) => {
           {info}
         </Modal>
       </Col>
-      <Col span={6}>
+      <Col span={8}>
         <List
           header={
             <Row justify="space-between">
@@ -190,6 +230,9 @@ export const DemoRaces: React.FC<MyProps> = (props: MyProps) => {
               actions={[
                 <Button value={item.key} type="default" onClick={onLiveButtonClicked}>
                   Connect
+                </Button>,
+                <Button value={item.key} type="default" onClick={onLoadAndConnectButtonClicked}>
+                  Load & Connect
                 </Button>,
               ]}
             >

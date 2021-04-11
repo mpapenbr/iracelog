@@ -156,7 +156,7 @@ const RaceGraphRecharts: React.FC<{}> = () => {
             <tbody>
               {data.map((v) => (
                 // <p className="custom-tooltip" style={{ color: colorCode(v.carNum) }}>
-                <tr style={{ color: colorCode(v.carNum) }}>
+                <tr key={_.uniqueId()} style={{ color: colorCode(v.carNum) }}>
                   <td align="right">#{v.carNum}</td>
                   <td align="right">{sprintf("%.02f", v.gap)}</td>
                 </tr>

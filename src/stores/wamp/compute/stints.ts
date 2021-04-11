@@ -171,6 +171,7 @@ export const processForStint2 = (current: IWampData, sessionTime: number, carsDa
                 carNum: currentCarNum,
                 lapEnter: currentCarLap,
                 enterTime: sessionTime,
+                isCurrentPitstop: true,
               };
               let carPitEntry = carPitsLookup.get(currentCarNum);
               if (carPitEntry === undefined) {
@@ -189,6 +190,7 @@ export const processForStint2 = (current: IWampData, sessionTime: number, carsDa
         carPitEntry.current.laneTime = sessionTime - carPitEntry.current.enterTime;
         switch (currentCarState) {
           case "RUN":
+            carPitEntry.current.isCurrentPitstop = false;
             carPitEntry.history.push(carPitEntry.current);
 
             const x = carStintsLookup.get(currentCarNum)!;

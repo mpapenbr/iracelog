@@ -208,9 +208,9 @@ class BulkProcessor {
         carPitEntry.current.exitTime = sessionTime;
         carPitEntry.current.lapExit = currentCarLap;
         carPitEntry.current.laneTime = sessionTime - carPitEntry.current.enterTime;
-        carPitEntry.current.isCurrentPitstop = false;
         switch (currentCarState) {
           case "RUN":
+            carPitEntry.current.isCurrentPitstop = false;
             carPitEntry.history.push(carPitEntry.current);
 
             const x = this.carStintsLookup.get(currentCarNum)!;

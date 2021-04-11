@@ -38,6 +38,7 @@ const Standings: React.FC<{}> = () => {
       return value > 0 ? lapTimeString(value) : "";
     } else {
       const [v, info] = value;
+      if (v < 0) return "";
       if (info === "old") {
         return <span style={{ color: "lightgrey" }}>{lapTimeString(v)}</span>;
       }
@@ -59,7 +60,14 @@ const Standings: React.FC<{}> = () => {
     { key: "userName", title: "Driver", render: (d) => getValue(d, "userName") },
     { key: "laps", title: "Lap", render: (d) => getValue(d, "lap") },
     { key: "last", title: "Last", render: (d) => coloredTimeData(d, "last") },
-    { key: "best", title: "Best", render: (d) => lapTimeString(getValue(d, "best")) },
+    {
+      key: "best",
+      title: "Best",
+      render: (d) => {
+        const v = getValue(d, "best");
+        return v > 0 ? lapTimeString(v) : "";
+      },
+    },
     { key: "trackPos", title: "CurPos", render: (d) => sprintf("%.4f", getValue(d, "trackPos")) },
     { key: "dist", title: "Dist", render: (d) => sprintf("%.0f", getValue(d, "dist")) },
     { key: "gap", title: "Gap", render: (d) => sprintf("%.1f", getValue(d, "gap")) },

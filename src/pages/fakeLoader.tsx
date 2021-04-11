@@ -4,11 +4,13 @@ import autobahn, { Session } from "autobahn";
 import React from "react";
 import { useDispatch } from "react-redux";
 import { sprintf } from "sprintf-js";
-import { API_CROSSBAR_URL, API_CROSSBAR_URL_HTTP } from "../constants";
+import { globalWamp } from "../commons/globals";
+import { API_CROSSBAR_URL } from "../constants";
 import { uiReset } from "../stores/ui/actions";
 import {
   connectedToServer,
   reset,
+  setData,
   updateCars,
   updateFromStateMessage,
   updateManifests,
@@ -16,6 +18,7 @@ import {
   updatePitstops,
   updateSession,
 } from "../stores/wamp/actions";
+import { readAndProcessData, readData } from "./loadData";
 
 interface IStateProps {}
 interface IDispachProps {
@@ -54,27 +57,47 @@ export const FakeLoaderPage: React.FC<MyProps> = (props: MyProps) => {
     return { processed: processed, timestamp: lastTimestamp };
   };
 
-  const readData = (e: string) => {
-    const url = API_CROSSBAR_URL_HTTP + "/testdata/manifest-" + e + ".json";
-    console.log(url);
-    const x = fetch(API_CROSSBAR_URL_HTTP + "/testdata/manifest-" + e + ".json").then((res: Response) => {
-      if (res.ok) {
-        res.json().then((j) => dispatch(updateManifests(j)));
-        fetch(API_CROSSBAR_URL_HTTP + "/testdata/data-" + e + ".json").then((res: Response) => {
-          if (res.ok) {
-            res.text().then((data) => {
-              console.log(data.length);
-              dispatch(reset());
-              dispatch(uiReset());
-              const { processed, timestamp } = processJsonFromArchive(data);
-            });
-          }
+  const loadAndLive = (eventId: string) => {
+    dispatch(reset());
+    dispatch(uiReset());
+    readAndProcessData(eventId, dispatch).then((data: any) => {
+      console.log(data);
+      const { processed, timestamp, newStateData } = data;
+      dispatch(setData(newStateData));
+      console.log("processed " + processed + ". now fetch data after " + timestamp);
+      var conn = new autobahn.Connection({ url: API_CROSSBAR_URL + "/ws", realm: "racelog" });
+      conn.onopen = (s: Session) => {
+        s.call("racelog.archive.get_data", [eventId, timestamp]).then((data: any) => {
+          console.log(data.length);
+          processJsonFromArchive(data);
+
+          s.subscribe(sprintf("racelog.state.%s", eventId), (data) => {
+            dispatch(updateFromStateMessage(data[0].payload));
+          });
+          s.subscribe(sprintf("racelog.session.%s", eventId), (data) => {
+            dispatch(updateSession(data));
+          });
+          s.subscribe(sprintf("racelog.messages.%s", eventId), (data) => {
+            dispatch(updateMessages(data));
+          });
+          s.subscribe(sprintf("racelog.cars.%s", eventId), (data) => {
+            dispatch(updateCars(data));
+          });
+          s.subscribe(sprintf("racelog.pits.%s", eventId), (data) => {
+            dispatch(updatePitstops(data));
+          });
         });
-      }
+        dispatch(connectedToServer());
+      };
+      conn.open();
+      globalWamp.conn = conn;
+      globalWamp.currentLiveId = eventId;
     });
   };
 
-  const loadAndLive = (eventId: string) => {
+  const loadAndLiveOld = (eventId: string) => {
+    var conn = new autobahn.Connection({ url: API_CROSSBAR_URL + "/ws", realm: "racelog" });
+    readData(eventId, dispatch);
     var conn = new autobahn.Connection({ url: API_CROSSBAR_URL + "/ws", realm: "racelog" });
     conn.onopen = (s: Session) => {
       s.call("racelog.archive.get_manifest", [eventId]).then((data: any) => {
@@ -118,9 +141,6 @@ export const FakeLoaderPage: React.FC<MyProps> = (props: MyProps) => {
   return (
     <>
       <Row>
-        <Col span={4}>
-          <Search placeholder="load from testdata dir" onSearch={readData} />
-        </Col>
         <Col span={4}>
           <Search placeholder="Simulate load + live" onSearch={loadAndLive} />
         </Col>

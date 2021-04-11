@@ -5,7 +5,7 @@ import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { ApplicationState } from "../../stores";
 import { uiRaceStintSharedSettings } from "../../stores/ui/actions";
-import { IStintInfo } from "../../stores/wamp/types";
+import { ICarStintInfo, IStintInfo } from "../../stores/wamp/types";
 import { secAsHHMMSS, secAsMMSS, sortCarNumberStr } from "../../utils/output";
 import CarFilter from "../live/carFilter";
 import { computeAvailableCars, extractSomeCarData, processCarClassSelection } from "../live/util";
@@ -29,8 +29,8 @@ const CarStintsNivo: React.FC<{}> = () => {
   const availableCars = computeAvailableCars(carDataContainer, uiSettings.filterCarClasses);
 
   const carOrder = [...uiSettings.showCars].sort(sortCarNumberStr).reverse();
-
-  const maxStints = carStints.reduce((a, b) => (b.history.length > a ? b.history.length : a), 0);
+  const numEntries = (item: ICarStintInfo) => item.history.length + (item.current.isCurrentStint ? 1 : 0);
+  const maxStints = carStints.reduce((a, b) => (numEntries(b) > a ? numEntries(b) : a), 0);
 
   const dataLookup = carStints.reduce((prev, cur) => {
     const stints = [...cur.history].concat(cur.current.isCurrentStint ? cur.current : []);

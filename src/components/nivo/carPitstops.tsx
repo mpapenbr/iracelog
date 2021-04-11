@@ -5,7 +5,7 @@ import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { ApplicationState } from "../../stores";
 import { uiRaceStintSharedSettings } from "../../stores/ui/actions";
-import { IPitInfo } from "../../stores/wamp/types";
+import { ICarPitInfo, IPitInfo } from "../../stores/wamp/types";
 import { secAsHHMMSS, secAsMMSS, sortCarNumberStr } from "../../utils/output";
 import CarFilter from "../live/carFilter";
 import { computeAvailableCars, extractSomeCarData, processCarClassSelection } from "../live/util";
@@ -30,7 +30,8 @@ const CarPitstopsNivo: React.FC<{}> = () => {
 
   const carOrder = [...uiSettings.showCars].sort(sortCarNumberStr).reverse();
 
-  const maxPitstops = carPits.reduce((a, b) => (b.history.length > a ? b.history.length : a), 0);
+  const numEntries = (item: ICarPitInfo) => item.history.length + (item.current.isCurrentPitstop ? 1 : 0);
+  const maxPitstops = carPits.reduce((a, b) => (numEntries(b) > a ? numEntries(b) : a), 0);
 
   const dataLookup = carPits.reduce((prev, cur) => {
     const pitstops = [...cur.history].concat(cur.current.isCurrentPitstop ? cur.current : []);
