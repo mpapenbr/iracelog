@@ -42,6 +42,7 @@ export interface IRacePositionSettings {
 export interface IRaceStintSharedSettings {
   showCars: string[];
   filterCarClasses: string[]; // empty = all classes, otherwise only selected
+  showAsLabel: string;
   brushInterval?: IBrushInterval;
 }
 export interface IUiData {
@@ -100,6 +101,7 @@ export const defaultUiData: IUiData = {
   raceStintSharedSettings: {
     showCars: [],
     filterCarClasses: [],
+    showAsLabel: "duration",
   },
 };
 export interface IUiState {

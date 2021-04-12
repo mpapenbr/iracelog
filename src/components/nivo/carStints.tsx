@@ -1,5 +1,5 @@
 import { ResponsiveBar } from "@nivo/bar";
-import { Empty, Row, Select } from "antd";
+import { Col, Empty, Radio, RadioChangeEvent, Row, Select, Tag } from "antd";
 import _ from "lodash";
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
@@ -16,6 +16,7 @@ interface IGraphData {
 }
 
 const { Option } = Select;
+const { CheckableTag } = Tag;
 interface IColData {
   value: number | [number, string];
 }
@@ -42,8 +43,16 @@ const CarStintsNivo: React.FC<{}> = () => {
   const stintData = carOrder.map((carNum) => {
     const carData = dataLookup.get(carNum);
     let work = { car: carNum };
+    const getValue = (v: IStintInfo) => {
+      switch (uiSettings.showAsLabel) {
+        case "duration":
+          return v.stintTime;
+        case "laps":
+          return v.numLaps;
+      }
+    };
     if (carData !== undefined) {
-      carData.forEach((v, idx) => (work = { ...work, ["Stint " + (idx + 1)]: v.stintTime }));
+      carData.forEach((v, idx) => (work = { ...work, ["Stint " + (idx + 1)]: getValue(v) }));
     }
     return { ...work };
   });
@@ -103,6 +112,14 @@ value: 77.66666666553647
       </div>
     );
   };
+  const labelFormatter = (v: number) => {
+    switch (uiSettings.showAsLabel) {
+      case "duration":
+        return secAsMMSS(v);
+      case "laps":
+        return v;
+    }
+  };
   const InternalGraph = (
     // <div style={{ position: "relative" }}>
     //   <div style={{ position: "absolute", width: "100%", height: "100%" }}>
@@ -118,7 +135,7 @@ value: 77.66666666553647
         indexScale={{ type: "band", round: true }}
         enableGridY={false}
         enableGridX={true}
-        label={(d) => `${secAsMMSS(d.value as number)}`}
+        label={(d) => `${labelFormatter(d.value as number)}`}
         animate={false}
         tooltip={(d) => CustomTooltip(d)}
         labelSkipWidth={20}
@@ -131,9 +148,21 @@ value: 77.66666666553647
     // </div>
   );
 
+  const isSet = (arg: string) => arg.localeCompare(uiSettings.showAsLabel) == 0;
+  const onShowModeChange = (e: RadioChangeEvent) => {
+    dispatch(uiRaceStintSharedSettings({ ...uiSettings, showAsLabel: e.target.value }));
+  };
+  const ShowMode = (
+    <Col>
+      <Radio.Group onChange={onShowModeChange} value={uiSettings.showAsLabel}>
+        <Radio.Button value="duration">Duration</Radio.Button>
+        <Radio.Button value="laps">Laps</Radio.Button>
+      </Radio.Group>
+    </Col>
+  );
   return (
     <>
-      <Row>
+      <Row gutter={16}>
         <CarFilter
           availableCars={availableCars}
           availableClasses={allCarClasses}
@@ -142,6 +171,7 @@ value: 77.66666666553647
           onSelectCarFilter={onSelectShowCars}
           onSelectCarClassFilter={onSelectCarClassChange}
         />
+        {ShowMode}
       </Row>
       {uiSettings.showCars.length === 0 ? <Empty description="Select cars" /> : InternalGraph}
     </>
