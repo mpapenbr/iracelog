@@ -55,6 +55,7 @@ const RaceGraphByReferenceRecharts: React.FC<{}> = () => {
 
   const dataForCar = (carNum: string) => {
     return wamp.raceGraph.reduce((prev, current) => {
+      if (current.carClass.localeCompare("overall") !== 0) return prev;
       const refCarEntry = current.gaps.find((gi) => gi.carNum === uiSettings.referenceCarNum);
       const carEntry = current.gaps.find((gi) => gi.carNum === carNum);
       if (carEntry !== undefined && refCarEntry !== undefined) {
@@ -166,7 +167,7 @@ const RaceGraphByReferenceRecharts: React.FC<{}> = () => {
               <tbody>
                 {data.map((v) => (
                   // <p className="custom-tooltip" style={{ color: colorCode(v.carNum) }}>
-                  <tr style={{ color: colorCode(v.carNum) }}>
+                  <tr key={_.uniqueId()} style={{ color: colorCode(v.carNum) }}>
                     <td align="right">#{v.carNum}</td>
                     <td align="right">{sprintf("%.02f", v.gap)}</td>
                   </tr>
