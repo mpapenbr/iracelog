@@ -3,6 +3,7 @@ import { IBaseAction } from "../../commons";
 import {
   IBrushInterval,
   IDriverLapsSettings,
+  IDriverStintSettings,
   IRaceGraphRelativeSettings,
   IRaceGraphSettings,
   IRacePositionSettings,
@@ -15,6 +16,7 @@ export enum UiActionTypes {
   SET_STINT_NO = "@@ui/SET_STINT_NO",
   SHOW_ENTRY_DETAILS = "@@ui/SHOW_ENTRY_DETAILS",
   DRIVER_LAPS_SETTINGS = "@@ui/DRIVER_LAPS_SETTINGS",
+  DRIVER_STINT_SETTINGS = "@@ui/DRIVER_STINT_SETTINGS",
   RACE_GRAPH_SETTINGS = "@@ui/RACE_GRAPH_SETTINGS",
   RACE_GRAPH_RELATIVE_SETTINGS = "@@ui/RACE_GRAPH_RELATIVE_SETTINGS",
   RACE_POSITION_SETTINGS = "@@ui/RACE_POSITION_SETTINGS",
@@ -30,6 +32,8 @@ export const uiSetStintNo = (no: number): IBaseAction => action(UiActionTypes.SE
 export const uiShowEntryDetails = (carIdx: number): IBaseAction => action(UiActionTypes.SHOW_ENTRY_DETAILS, carIdx);
 export const uiDriverLapsSettings = (settings: IDriverLapsSettings): IBaseAction =>
   action(UiActionTypes.DRIVER_LAPS_SETTINGS, settings);
+export const uiDriverStintSettings = (settings: IDriverStintSettings): IBaseAction =>
+  action(UiActionTypes.DRIVER_STINT_SETTINGS, settings);
 export const uiRaceGraphSettings = (settings: IRaceGraphSettings): IBaseAction =>
   action(UiActionTypes.RACE_GRAPH_SETTINGS, settings);
 export const uiRaceGraphRelativeSettings = (settings: IRaceGraphRelativeSettings): IBaseAction =>

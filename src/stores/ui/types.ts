@@ -45,6 +45,13 @@ export interface IRaceStintSharedSettings {
   showAsLabel: string;
   brushInterval?: IBrushInterval;
 }
+export interface IDriverStintSettings {
+  carNum: string;
+  filterCarClasses: string[]; // empty = all classes, otherwise only selected
+  filterSecs: number;
+  filterInOut: boolean;
+  showStint: number; // 0: all
+}
 export interface IUiData {
   stint: IUiStints;
   entries: IUiEntries;
@@ -64,6 +71,7 @@ export interface IUiData {
   };
   racePositionSettings: IRacePositionSettings;
   raceStintSharedSettings: IRaceStintSharedSettings;
+  driverStintSettings: IDriverStintSettings;
 }
 
 export const defaultUiData: IUiData = {
@@ -97,6 +105,13 @@ export const defaultUiData: IUiData = {
     showCars: [],
     filterCarClasses: [],
     showPosInClass: false,
+  },
+  driverStintSettings: {
+    carNum: "",
+    filterCarClasses: [],
+    filterSecs: 2,
+    filterInOut: true,
+    showStint: 0,
   },
   raceStintSharedSettings: {
     showCars: [],

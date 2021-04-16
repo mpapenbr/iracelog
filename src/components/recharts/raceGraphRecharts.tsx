@@ -30,7 +30,7 @@ const RaceGraphRecharts: React.FC<{}> = () => {
   useEffect(() => {
     return () => {
       // console.log(curSettings);
-      dispatch(uiUpdateBrushSettings(UiComponent.RACE_GRAPH_LEADER, { ...brushKeeper }));
+      // dispatch(uiUpdateBrushSettings(UiComponent.RACE_GRAPH_LEADER, { ...brushKeeper }));
     };
   }, []);
 
@@ -136,9 +136,17 @@ const RaceGraphRecharts: React.FC<{}> = () => {
     dispatch(uiRaceGraphSettings(curSettings));
   };
   const test = 6;
+
+  var timerId: any;
   const brushChanged = (range: any) => {
     // Note: range is a BrushStartEndIndex but it is not exported. IBrushInterval has the same props
-    brushKeeper = range;
+    // setBrushKeeper(range);
+    if (timerId) {
+      clearTimeout(timerId);
+    }
+    timerId = setTimeout(() => {
+      dispatch(uiUpdateBrushSettings(UiComponent.RACE_GRAPH_LEADER, { ...range }));
+    }, 500);
   };
 
   const CustomTooltip = (x: any) => {

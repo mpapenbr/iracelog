@@ -40,6 +40,14 @@ const reducer: Reducer<IUiState> = (state = initialState, action) => {
           driverLapsSettings: { ...state.data.driverLapsSettings, standard: { ...action.payload } },
         },
       };
+    case UiActionTypes.DRIVER_STINT_SETTINGS:
+      return {
+        ...state,
+        data: {
+          ...state.data,
+          driverStintSettings: { ...state.data.driverStintSettings, ...action.payload },
+        },
+      };
     case UiActionTypes.RACE_GRAPH_SETTINGS:
       return {
         ...state,

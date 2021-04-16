@@ -1,5 +1,5 @@
 import _ from "lodash";
-import { ICarInfo, IWampData } from "../../stores/wamp/types";
+import { ICarInfo, ICarPitInfo, ICarStintInfo, IPitInfo, IStintInfo, IWampData } from "../../stores/wamp/types";
 import { sortCarNumberStr } from "../../utils/output";
 
 export interface ICarFilterData {
@@ -35,7 +35,7 @@ export const extractSomeCarData = (wampData: IWampData): IExtractedCarData => {
     return m.set(cur.carNum, cur);
   }, new Map<string, ICarInfo>());
   const carClasses = _.uniq(
-    wampData.carInfo.filter((v) => "".localeCompare(v.carClass || "") != 0).map((v) => v.carClass)
+    wampData.carInfo.filter((v) => "".localeCompare(v.carClass || "") !== 0).map((v) => v.carClass)
   ).sort();
 
   const allCarNums = wampData.carLaps.length > 0 ? wampData.carLaps.map((v) => v.carNum).sort(sortCarNumberStr) : [];
@@ -99,4 +99,29 @@ export const processCarClassSelection = (args: ICarClassProcessorArgs): string[]
     newShowcars = _.uniq(newShowcars).sort(sortCarNumberStr);
     return newShowcars;
   }
+};
+
+/**
+ * convenience method to combine history and current stint
+ * @param carStints all available car stint data
+ * @param carNum
+ * @returns an array with combined history and current stint data for the requested carNum
+ */
+export const getCarStints = (carStints: ICarStintInfo[], carNum: string): IStintInfo[] => {
+  const found = carStints.find((v) => v.carNum === carNum);
+  if (found) {
+    return [...found.history].concat(found.current.isCurrentStint ? found.current : []);
+  } else return [];
+};
+/**
+ * convenience method to combine history and current pit stop
+ * @param carPitstops all available car pit stop data
+ * @param carNum
+ * @returns an array with combined history and current pit stop data for the requested carNum
+ */
+export const getCarPitStops = (carPitstops: ICarPitInfo[], carNum: string): IPitInfo[] => {
+  const found = carPitstops.find((v) => v.carNum === carNum);
+  if (found) {
+    return [...found.history].concat(found.current.isCurrentPitstop ? found.current : []);
+  } else return [];
 };
