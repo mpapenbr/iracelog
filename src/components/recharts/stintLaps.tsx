@@ -18,6 +18,7 @@ import { sprintf } from "sprintf-js";
 import { ApplicationState } from "../../stores";
 import { uiDriverStintSettings } from "../../stores/ui/actions";
 import { IBrushInterval } from "../../stores/ui/types";
+
 import { IStintInfo } from "../../stores/wamp/types";
 import { lapTimeString } from "../../utils/output";
 import CarClassFilter from "../live/carClassFilter";
@@ -64,6 +65,7 @@ const StintLapsRecharts: React.FC<{}> = () => {
 
   const stints = getCarStints(carStints, uiSettings.carNum);
   const graphDataOrig = dataForCar(uiSettings.carNum);
+
 
   // outsource
   const floatAvgRaw = (data: IGraphData[]): Map<number, { avg: number }> =>
@@ -122,7 +124,6 @@ const StintLapsRecharts: React.FC<{}> = () => {
       }
     });
   };
-
   stints.forEach((s) => {
     const stint = extractLapRange(graphDataOrig, s);
     const processStint = stint.slice(1, -1);
@@ -130,6 +131,7 @@ const StintLapsRecharts: React.FC<{}> = () => {
       mergeFloatingAvgs(floatAvgRaw(processStint));
     }
   });
+
 
   let laps = [] as any[];
   byLapLookup.forEach((v, lapNo) => {
@@ -208,6 +210,7 @@ const StintLapsRecharts: React.FC<{}> = () => {
     </Radio.Group>
   );
 
+
   const CustomTooltip = (x: any) => {
     // console.log(x);
     /*
@@ -260,6 +263,7 @@ const StintLapsRecharts: React.FC<{}> = () => {
     } else return <></>;
   };
 
+
   const InternalLapGraph = (
     <Row gutter={16}>
       <Col span={22}>
@@ -279,6 +283,7 @@ const StintLapsRecharts: React.FC<{}> = () => {
                 }}
               />
             ))}
+
             {[uiSettings.carNum].map((carNum) => (
               <Line
                 key={_.uniqueId()}
@@ -286,6 +291,7 @@ const StintLapsRecharts: React.FC<{}> = () => {
                 isAnimationActive={false}
                 dot={false}
                 // stroke={colorCode(carNum)}
+
                 stroke="red"
                 name="avg"
                 dataKey="avg"
@@ -310,6 +316,7 @@ const StintLapsRecharts: React.FC<{}> = () => {
             <XAxis dataKey="lapNo" axisLine={false} />
             {/* <YAxis type="number" /> */}
             {/* <YAxis type="number" domain={[(d: number) => Math.floor(d) - 1, (d: number) => Math.ceil(d) + 1]} /> */}
+
             <YAxis
               type="number"
               allowDataOverflow={true}
@@ -326,6 +333,7 @@ const StintLapsRecharts: React.FC<{}> = () => {
               startIndex={brushKeeper?.startIndex}
               endIndex={brushKeeper?.endIndex}
             />
+
             <Tooltip
               isAnimationActive={false}
               /*

@@ -129,6 +129,7 @@ const DriverLapsRecharts: React.FC<{}> = () => {
     dispatch(uiDriverLapsSettings(curSettings));
   };
 
+
   const cur = graphDataOrig
     .reduce((prev, cur) => _.concat(prev, cur), [])
     .reduce((prev, cur) => {
@@ -196,7 +197,9 @@ const DriverLapsRecharts: React.FC<{}> = () => {
 
             <CartesianGrid strokeDasharray="3 3" />
             <XAxis dataKey="lapNo" />
+
             <YAxis type="number" domain={yDomain} tickFormatter={(d) => lapTimeString(d)} allowDataOverflow={true} />
+
             <Brush
               dataKey="lapNo"
               height={30}
