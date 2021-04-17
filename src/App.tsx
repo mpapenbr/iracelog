@@ -5,7 +5,10 @@ import { BrowserRouter as Router, Link, Route, Switch } from "react-router-dom";
 import { Store } from "redux";
 import "./App.css";
 import RaceDetailsFrame from "./components/raceDetails";
-import { RaceEventListPage } from "./pages/raceEventListPage";
+import { API_LOCAL_DEV_MODE } from "./constants";
+import { AnalysisMainPage } from "./pages/analysisPage";
+import { DemoRaces } from "./pages/demoRaces";
+import { FakeLoaderPage } from "./pages/fakeLoader";
 import { ApplicationState } from "./stores";
 
 const { Header, Content, Footer } = Layout;
@@ -14,7 +17,6 @@ interface AppProps {
   store: Store<ApplicationState>;
 }
 
-const LiveContent: React.FC<{}> = () => <div>Here goes live content</div>;
 const OtherContent: React.FC<{}> = () => <div>Here goes other content</div>;
 
 const App: React.FC<AppProps> = (props: AppProps) => {
@@ -30,24 +32,39 @@ const App: React.FC<AppProps> = (props: AppProps) => {
               </Menu.Item>
               {/* <Menu.Item key="2">
                 <Link to="/live">Live</Link>
-              </Menu.Item>
-              <Menu.Item key="3">
-                <Link to="/other">Other</Link>
               </Menu.Item> */}
+              <Menu.Item key="3">
+                <Link to="/analysis">Analysis</Link>
+              </Menu.Item>
+              {API_LOCAL_DEV_MODE ? (
+                <Menu.Item key="99">
+                  <Link to="/devloader">DevLoader</Link>
+                </Menu.Item>
+              ) : (
+                <></>
+              )}
             </Menu>
           </Header>
           <Content style={{ padding: "0 50px" }}>
             <div className="site-layout-content">
               <Switch>
                 <Route exact path="/events">
-                  <RaceEventListPage />
+                  {/* <RaceEventListPage /> */}
+                  <DemoRaces />
                 </Route>
-                <Route path="/live">
+                {/* <Route path="/live">
                   <LiveContent />
+                </Route> */}
+                <Route path="/analysis">
+                  <AnalysisMainPage />
                 </Route>
-                <Route path="/other">
-                  <OtherContent />
-                </Route>
+                {API_LOCAL_DEV_MODE ? (
+                  <Route path="/devloader">
+                    <FakeLoaderPage />
+                  </Route>
+                ) : (
+                  <></>
+                )}
                 <Route path="/events/details/:id" component={RaceDetailsFrame} />
               </Switch>
             </div>

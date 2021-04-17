@@ -111,7 +111,7 @@ const GapProgression: React.FC<{}> = () => {
             precision={0}
             step={10}
             formatter={(v) => sprintf("%d sec", v)}
-            parser={(v) => (v !== undefined ? v.replace("sec", "") : "")}
+            parser={(v) => (v !== undefined ? parseInt(v.replace("sec", "")) : 0)}
             onChange={onFilterSecsChange}
           />
           <Checkbox defaultChecked={filterMode} checked={filterMode} onChange={onCheckboxChange}>

@@ -14,7 +14,7 @@ export const lapTimeString = (t: number): string => {
   const seconds = Math.trunc(work);
   work -= seconds;
   const hundrets = Math.trunc(work * 100);
-  return sprintf("%d:%02d.%02d", minutes, seconds, hundrets);
+  return minutes > 0 ? sprintf("%d:%02d.%02d", minutes, seconds, hundrets) : sprintf("%02d.%02d", seconds, hundrets);
 };
 
 export const lapTimeStringTenths = (t: number): string => {
@@ -23,8 +23,8 @@ export const lapTimeStringTenths = (t: number): string => {
   work -= minutes * 60;
   const seconds = Math.trunc(work);
   work -= seconds;
-  const hundrets = Math.trunc(work * 100);
-  return sprintf("%d:%02d.%01d", minutes, seconds, hundrets);
+  const tenths = Math.trunc(work * 10);
+  return sprintf("%d:%02d.%1d", minutes, seconds, tenths);
 };
 /**
  * converts sec value in human readable string presentation MM:SS
@@ -58,4 +58,17 @@ export const secAsHHMMSS = (t: number): string => {
  */
 export const adjustRawNumber = (raw: string): string => {
   return raw.length === 4 ? raw.slice(raw.length - parseInt(raw[0])) : raw;
+};
+
+/**
+ * used for sorting car numbers as string. car number with leading 0 will be sorted after the raw value, sorted by number of leading 0
+ * @param a
+ * @param b
+ * @returns
+ */
+export const sortCarNumberStr = (a: string, b: string) => {
+  const cmp = parseInt(a) - parseInt(b);
+  if (cmp === 0) {
+    return a.length - b.length;
+  } else return cmp;
 };
