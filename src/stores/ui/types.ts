@@ -31,6 +31,7 @@ export interface IRaceGraphSettings {
   showCars: string[];
   filterCarClasses: string[]; // empty = all classes, otherwise only selected
   gapRelativeToClassLeader: boolean; // if true, compute gap relative to class leader
+  deltaRange: number; // used in both direction (positive and negativ to reference)
   brushInterval?: IBrushInterval;
 }
 export interface IRacePositionSettings {
@@ -98,6 +99,7 @@ export const defaultUiData: IUiData = {
     standard: {
       showCars: [],
       filterCarClasses: [],
+      deltaRange: 120,
       gapRelativeToClassLeader: false,
     },
   },

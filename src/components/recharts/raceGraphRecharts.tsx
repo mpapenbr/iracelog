@@ -1,4 +1,4 @@
-import { Checkbox, Col, Empty, Row, Spin } from "antd";
+import { Checkbox, Col, Empty, InputNumber, Row, Spin } from "antd";
 import _, { isNumber } from "lodash";
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
@@ -135,7 +135,11 @@ const RaceGraphRecharts: React.FC<{}> = () => {
     const curSettings = { ...uiSettings, gapRelativeToClassLeader: !uiSettings.gapRelativeToClassLeader };
     dispatch(uiRaceGraphSettings(curSettings));
   };
-  const test = 6;
+
+  const onDeltaRangeChange = (value: any) => {
+    const curSettings = { ...uiSettings, deltaRange: value };
+    dispatch(uiRaceGraphSettings(curSettings));
+  };
 
   var timerId: any;
   const brushChanged = (range: any) => {
@@ -197,7 +201,13 @@ const RaceGraphRecharts: React.FC<{}> = () => {
 
             <CartesianGrid strokeDasharray="3 3" />
             <XAxis dataKey="lapNo" />
-            <YAxis />
+            <YAxis
+              type="number"
+              allowDataOverflow={true}
+              tickCount={10}
+              allowDecimals={false}
+              domain={[0, uiSettings.deltaRange]}
+            />
             <Brush
               dataKey="lapNo"
               height={30}
@@ -225,6 +235,17 @@ const RaceGraphRecharts: React.FC<{}> = () => {
           onSelectCarFilter={onSelectShowCars}
           onSelectCarClassFilter={onSelectCarClassChange}
         />
+        <Col span={4}>
+          <InputNumber
+            defaultValue={uiSettings.deltaRange}
+            precision={0}
+            step={10}
+            min={0}
+            formatter={(v) => sprintf("%d sec", v)}
+            parser={(v) => (v !== undefined ? parseInt(v.replace("sec", "")) : 0)}
+            onChange={onDeltaRangeChange}
+          />
+        </Col>
         <Col span={3}>
           <Checkbox
             defaultChecked={uiSettings.gapRelativeToClassLeader}
