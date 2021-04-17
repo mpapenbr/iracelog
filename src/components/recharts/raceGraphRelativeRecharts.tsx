@@ -1,4 +1,4 @@
-import { Col, Empty, Row, Select } from "antd";
+import { Col, Empty, InputNumber, Row, Select } from "antd";
 import _, { isNumber } from "lodash";
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
@@ -130,7 +130,7 @@ const RaceGraphByReferenceRecharts: React.FC<{}> = () => {
     dispatch(uiRaceGraphRelativeSettings(curSettings));
   };
 
-  const onFilterSecsChange = (value: any) => {
+  const onDeltaSecsChange = (value: any) => {
     dispatch(uiRaceGraphRelativeSettings({ ...uiSettings, deltaRange: value }));
   };
 
@@ -202,7 +202,13 @@ const RaceGraphByReferenceRecharts: React.FC<{}> = () => {
 
             <CartesianGrid strokeDasharray="3 3" />
             <XAxis dataKey="lapNo" axisLine={false} />
-            <YAxis />
+            <YAxis
+              type="number"
+              allowDataOverflow={true}
+              tickCount={10}
+              allowDecimals={false}
+              domain={[-uiSettings.deltaRange, uiSettings.deltaRange]}
+            />
             <Brush
               dataKey="lapNo"
               height={30}
@@ -244,16 +250,16 @@ const RaceGraphByReferenceRecharts: React.FC<{}> = () => {
           onSelectCarClassFilter={onSelectCarClassChange}
         />
 
-        {/* <Col span={4}>
+        <Col span={4}>
           <InputNumber
             defaultValue={uiSettings.deltaRange}
             precision={0}
             step={10}
             formatter={(v) => sprintf("%d sec", v)}
             parser={(v) => (v !== undefined ? parseInt(v.replace("sec", "")) : 0)}
-            onChange={onFilterSecsChange}
+            onChange={onDeltaSecsChange}
           />
-        </Col> */}
+        </Col>
       </Row>
 
       {uiSettings.referenceCarNum === "" ? <Empty description="Select reference car" /> : InternalRaceGraph}

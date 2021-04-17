@@ -18,7 +18,6 @@ import { sprintf } from "sprintf-js";
 import { ApplicationState } from "../../stores";
 import { uiDriverStintSettings } from "../../stores/ui/actions";
 import { IBrushInterval } from "../../stores/ui/types";
-
 import { IStintInfo } from "../../stores/wamp/types";
 import { lapTimeString } from "../../utils/output";
 import CarClassFilter from "../live/carClassFilter";
@@ -66,7 +65,6 @@ const StintLapsRecharts: React.FC<{}> = () => {
   const stints = getCarStints(carStints, uiSettings.carNum);
   const graphDataOrig = dataForCar(uiSettings.carNum);
 
-
   // outsource
   const floatAvgRaw = (data: IGraphData[]): Map<number, { avg: number }> =>
     data
@@ -99,7 +97,7 @@ const StintLapsRecharts: React.FC<{}> = () => {
     }, [] as number[])
     .sort((a, b) => a - b);
   const yDomain = [Math.floor(cur[0]), Math.ceil(cur[cur.length >> 1] + uiSettings.filterSecs)];
-  console.log(yDomain);
+  // console.log(yDomain);
   interface MyData {
     [x: string]: number;
   }
@@ -131,7 +129,6 @@ const StintLapsRecharts: React.FC<{}> = () => {
       mergeFloatingAvgs(floatAvgRaw(processStint));
     }
   });
-
 
   let laps = [] as any[];
   byLapLookup.forEach((v, lapNo) => {
@@ -196,7 +193,7 @@ const StintLapsRecharts: React.FC<{}> = () => {
             startIndex: stints[stintIdx - 1].lapExit - 1,
             endIndex: Math.min(stints[stintIdx - 1].lapEnter - 1, laps.length - 1),
           };
-    console.log("Stint: " + stintIdx + "-", range);
+    // console.log("Stint: " + stintIdx + "-", range);
     setBrushKeeper(range);
     const curSettings = { ...uiSettings, showStint: stintIdx };
     dispatch(uiDriverStintSettings(curSettings));
@@ -209,7 +206,6 @@ const StintLapsRecharts: React.FC<{}> = () => {
       ))}
     </Radio.Group>
   );
-
 
   const CustomTooltip = (x: any) => {
     // console.log(x);
@@ -262,7 +258,6 @@ const StintLapsRecharts: React.FC<{}> = () => {
       } else return <p>No data for lap {lapNo}</p>;
     } else return <></>;
   };
-
 
   const InternalLapGraph = (
     <Row gutter={16}>
