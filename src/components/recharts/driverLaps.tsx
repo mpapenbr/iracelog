@@ -14,7 +14,6 @@ import {
   YAxis,
 } from "recharts";
 import { sprintf } from "sprintf-js";
-import { DomainTuple } from "victory";
 import { ApplicationState } from "../../stores";
 import { uiDriverLapsSettings, uiUpdateBrushSettings } from "../../stores/ui/actions";
 import { IBrushInterval, UiComponent } from "../../stores/ui/types";
@@ -130,33 +129,14 @@ const DriverLapsRecharts: React.FC<{}> = () => {
     dispatch(uiDriverLapsSettings(curSettings));
   };
 
-  const calcXDom = (): DomainTuple => {
-    const ret = uiSettings.showCars.reduce(
-      (prev, cur) => {
-        const data = carDataLookup.get(cur)!;
-        const lMin = Math.min(...data.map((v) => v.lapNo));
-        const lMax = Math.max(...data.map((v) => v.lapNo));
-        return [Math.min(lMin, prev[0]), Math.max(lMax, prev[1])];
-      },
-      [0, 0]
-    );
-    return [ret[0], ret[1]];
-  };
-
-  const calcYDom = (): DomainTuple => {
-    const cur = uiSettings.showCars.reduce((prev, cur) => {
-      const data = carDataLookup.get(cur)!;
-      return prev.concat(data.map((v) => v.lapTime));
-    }, [] as number[]);
-
-    if (cur.length > 0) {
-      cur.sort();
-      const median = cur[cur.length >> 1];
-      return [cur[0], median + uiSettings.filterSecs];
-    } else {
-      return [0, 0];
-    }
-  };
+  const cur = graphDataOrig
+    .reduce((prev, cur) => _.concat(prev, cur), [])
+    .reduce((prev, cur) => {
+      return prev.concat([cur.lapTime]);
+    }, [] as number[])
+    .sort((a, b) => a - b);
+  const yDomain = [Math.floor(cur[0]), Math.ceil(cur[cur.length >> 1] + uiSettings.filterSecs)];
+  // console.log(yDomain);
 
   const CustomTooltip = (x: any) => {
     // console.log(x.payload);
@@ -216,7 +196,7 @@ const DriverLapsRecharts: React.FC<{}> = () => {
 
             <CartesianGrid strokeDasharray="3 3" />
             <XAxis dataKey="lapNo" />
-            <YAxis type="number" domain={[(d: number) => Math.floor(d) - 1, (d: number) => Math.ceil(d) + 1]} />
+            <YAxis type="number" domain={yDomain} tickFormatter={(d) => lapTimeString(d)} allowDataOverflow={true} />
             <Brush
               dataKey="lapNo"
               height={30}

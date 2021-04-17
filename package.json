@@ -42,6 +42,9 @@
     "victory": "^35.4.12",
     "web-vitals": "^0.2.4"
   },
+  "resolutions": {
+    "react-spring": "9.0.1"    
+  },
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",

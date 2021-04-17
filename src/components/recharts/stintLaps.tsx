@@ -18,6 +18,8 @@ import { sprintf } from "sprintf-js";
 import { ApplicationState } from "../../stores";
 import { uiDriverStintSettings } from "../../stores/ui/actions";
 import { IBrushInterval } from "../../stores/ui/types";
+import { IStintInfo } from "../../stores/wamp/types";
+import { lapTimeString } from "../../utils/output";
 import CarClassFilter from "../live/carClassFilter";
 import { strokeColors } from "../live/colors";
 import { computeAvailableCars, extractSomeCarData, getCarStints } from "../live/util";
@@ -63,20 +65,31 @@ const StintLapsRecharts: React.FC<{}> = () => {
   const stints = getCarStints(carStints, uiSettings.carNum);
   const graphDataOrig = dataForCar(uiSettings.carNum);
 
-  const floatAvgRaw = graphDataOrig
-    .reduce(
-      (prev, cur, idx) => {
-        // {sum:number, avg:number}
-        const cum = prev[prev.length - 1].sum + cur.lapTime;
-        prev.push({ sum: cum, avg: cum / prev.length, lapNo: cur.lapNo });
+  // outsource
+  const floatAvgRaw = (data: IGraphData[]): Map<number, { avg: number }> =>
+    data
+      .reduce(
+        (prev, cur, idx) => {
+          // {sum:number, avg:number}
+          const cum = prev[prev.length - 1].sum + cur.lapTime;
+          prev.push({ sum: cum, avg: cum / prev.length, lapNo: cur.lapNo });
+          return prev;
+        },
+        [{ lapNo: 0, sum: 0, avg: 0 }]
+      )
+      .slice(1) // remove the 0 entry
+      .reduce((prev, cur) => {
+        prev.set(cur.lapNo, { avg: cur.avg });
         return prev;
-      },
-      [{ lapNo: 0, sum: 0, avg: 0 }]
-    )
-    .reduce((prev, cur) => {
-      prev.set(cur.lapNo, { avg: cur.avg });
-      return prev;
-    }, new Map<number, { avg: number }>());
+      }, new Map<number, { avg: number }>());
+  // outsource
+  const extractLapRange = (a: IGraphData[], s: IStintInfo): IGraphData[] => {
+    const start = a.findIndex((v) => v.lapNo === s.lapExit); // yes this is the start of the stint (meaning: leaving the pits)
+    const end = a.findIndex((v) => v.lapNo === s.lapEnter);
+    // console.log("Stint:", { s }, " start:", start, " end:", end);
+    return a.slice(start, end === -1 ? a.length : end + 1); // may happen on last stint
+  };
+  let carStintRollAvg = new Map<number, { avg: number }>();
 
   const cur = graphDataOrig
     .reduce((prev, cur) => {
@@ -109,6 +122,15 @@ const StintLapsRecharts: React.FC<{}> = () => {
       }
     });
   };
+
+  stints.forEach((s) => {
+    const stint = extractLapRange(graphDataOrig, s);
+    const processStint = stint.slice(1, -1);
+    if (processStint.length > 0) {
+      mergeFloatingAvgs(floatAvgRaw(processStint));
+    }
+  });
+
   let laps = [] as any[];
   byLapLookup.forEach((v, lapNo) => {
     laps.push(
@@ -176,9 +198,6 @@ const StintLapsRecharts: React.FC<{}> = () => {
     setBrushKeeper(range);
     const curSettings = { ...uiSettings, showStint: stintIdx };
     dispatch(uiDriverStintSettings(curSettings));
-    // dispatch(uiRaceStintSharedSettings({ ...uiSettings, showAsLabel: e.target.value }));
-    // https://owncloud.juelps.de/index.php/s/FPgjVK5jCQrn3x2
-    // https://owncloud.juelps.de/index.php/s/FPgjVK5jCQrn3x2
   };
   const StintRadios = (
     <Radio.Group onChange={onStintNoChange} defaultValue={0} value={uiSettings.showStint}>
@@ -188,6 +207,58 @@ const StintLapsRecharts: React.FC<{}> = () => {
       ))}
     </Radio.Group>
   );
+
+  const CustomTooltip = (x: any) => {
+    // console.log(x);
+    /*
+    we get a structure like this:
+    {
+      active:bool,
+      label:number, // the "x" value
+      payload: {
+        name: "#171" // my carNum
+        color:
+        fill:
+        payload: // the actual for that x value data, e.g. {lapNo: 26, avg: 118.88057066665786, #171: 118.6949}
+        value: the "y" value
+      }[]
+    }
+    */
+    const { active, payload } = x;
+    if (active && payload && payload.length) {
+      const lapNo = x.label;
+      const dataCar = x.payload[0];
+      const dataAvg = x.payload.length > 1 ? x.payload[1] : undefined;
+
+      const data = [] as IGraphData[]; // graphDataByLapLookup.get(lapNo);
+      if (data !== undefined) {
+        return (
+          <div
+            className="custom-tooltip"
+            style={{ margin: 0, padding: 10, backgroundColor: "white", border: "1px solid rgb(204,204,204)" }}
+          >
+            <p className="custom-tooltip">Lap {lapNo}</p>
+            <table cellPadding={1}>
+              <tbody>
+                <tr style={{ color: dataCar.color }}>
+                  <td align="right">{dataCar.name}</td>
+                  <td align="right">{lapTimeString(dataCar.value)}</td>
+                </tr>
+                {dataAvg ? (
+                  <tr style={{ color: dataAvg.color }}>
+                    <td align="right">{dataAvg.name}</td>
+                    <td align="right">{lapTimeString(dataAvg.value)}</td>
+                  </tr>
+                ) : (
+                  <></>
+                )}
+              </tbody>
+            </table>
+          </div>
+        );
+      } else return <p>No data for lap {lapNo}</p>;
+    } else return <></>;
+  };
 
   const InternalLapGraph = (
     <Row gutter={16}>
@@ -208,18 +279,18 @@ const StintLapsRecharts: React.FC<{}> = () => {
                 }}
               />
             ))}
-            {/* {[uiSettings.carNum].map((carNum) => (
+            {[uiSettings.carNum].map((carNum) => (
               <Line
                 key={_.uniqueId()}
                 type="monotone"
                 isAnimationActive={false}
                 dot={false}
                 // stroke={colorCode(carNum)}
-                stroke="black"
+                stroke="red"
                 name="avg"
                 dataKey="avg"
               />
-            ))} */}
+            ))}
             {/* {[uiSettings.carNum].map((carNum) => (
               <Line
                 key={_.uniqueId()}
@@ -239,7 +310,14 @@ const StintLapsRecharts: React.FC<{}> = () => {
             <XAxis dataKey="lapNo" axisLine={false} />
             {/* <YAxis type="number" /> */}
             {/* <YAxis type="number" domain={[(d: number) => Math.floor(d) - 1, (d: number) => Math.ceil(d) + 1]} /> */}
-            <YAxis type="number" allowDataOverflow={true} tickCount={10} allowDecimals={false} domain={yDomain} />
+            <YAxis
+              type="number"
+              allowDataOverflow={true}
+              tickCount={10}
+              allowDecimals={false}
+              domain={yDomain}
+              tickFormatter={(d) => lapTimeString(d)}
+            />
             <Brush
               dataKey="lapNo"
               height={40}
@@ -248,7 +326,18 @@ const StintLapsRecharts: React.FC<{}> = () => {
               startIndex={brushKeeper?.startIndex}
               endIndex={brushKeeper?.endIndex}
             />
-            <Tooltip isAnimationActive={false} />
+            <Tooltip
+              isAnimationActive={false}
+              /*
+              formatter={(v: number) => {
+                return lapTimeString(v);
+              }}
+              labelFormatter={(v: any) => {
+                return "Lap " + v;
+              }}
+              */
+              content={CustomTooltip}
+            />
             <Legend layout="vertical" align="right" verticalAlign="top" />
             <ReferenceLine y={0} stroke="black" />
           </LineChart>
