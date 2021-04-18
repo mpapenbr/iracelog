@@ -188,6 +188,11 @@ export const DemoRaces: React.FC<MyProps> = (props: MyProps) => {
       description: "Used for Multiclass tests. Be patient while loading (~30-45s)",
       key: "neo",
     },
+    {
+      title: "NEO Race 12h Spa",
+      description: "Used for Multiclass tests. Be very patient while loading (~1m+)",
+      key: "26ceac390dcac80d439992c98b0a9db8",
+    },
   ];
   return (
     <Row gutter={16}>

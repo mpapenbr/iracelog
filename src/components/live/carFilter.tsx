@@ -19,7 +19,7 @@ const { Option } = Select;
 
 const CarFilter: React.FC<MyProps> = (props: MyProps) => {
   const referenceOptions = props.availableCars.map((d) => (
-    <Option key={_.uniqueId()} value={d.carNum}>
+    <Option key={d.carNum} value={d.carNum}>
       #{d.carNum} {d.name}
     </Option>
   ));
@@ -35,6 +35,7 @@ const CarFilter: React.FC<MyProps> = (props: MyProps) => {
   const handleOnSelectCarClassFilter = (value: any) => {
     props.onSelectCarClassFilter(value as string[]);
   };
+  console.log("Dings");
   return (
     <>
       <Col span={10}>

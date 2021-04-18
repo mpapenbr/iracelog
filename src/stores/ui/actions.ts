@@ -2,8 +2,10 @@ import { action } from "typesafe-actions";
 import { IBaseAction } from "../../commons";
 import {
   IBrushInterval,
+  IClassificationSettings,
   IDriverLapsSettings,
   IDriverStintSettings,
+  IMessagesSettings,
   IRaceGraphRelativeSettings,
   IRaceGraphSettings,
   IRacePositionSettings,
@@ -22,6 +24,8 @@ export enum UiActionTypes {
   RACE_POSITION_SETTINGS = "@@ui/RACE_POSITION_SETTINGS",
   RACE_STINT_SHARED_SETTINGS = "@@ui/RACE_STINT_SHARED_SETTINGS",
   UPDATE_BRUSH_SETTINGS = "@@ui/UPDATE_BRUSH_SETTINGS",
+  MESSAGES_SETTINGS = "@@ui/MESSAGES_SETTINGS",
+  CLASSIFICATION_SETTINGS = "@@ui/CLASSIFICATION_SETTINGS",
 }
 
 export const uiReset = (): IBaseAction => action(UiActionTypes.RESET, {});
@@ -42,3 +46,7 @@ export const uiRacePositionSettings = (settings: IRacePositionSettings): IBaseAc
   action(UiActionTypes.RACE_POSITION_SETTINGS, settings);
 export const uiRaceStintSharedSettings = (settings: IRaceStintSharedSettings): IBaseAction =>
   action(UiActionTypes.RACE_STINT_SHARED_SETTINGS, settings);
+export const uiMessagesSettings = (settings: IMessagesSettings): IBaseAction =>
+  action(UiActionTypes.MESSAGES_SETTINGS, settings);
+export const uiClassificationSettings = (settings: IClassificationSettings): IBaseAction =>
+  action(UiActionTypes.CLASSIFICATION_SETTINGS, settings);

@@ -31,6 +31,18 @@ class BulkProcessor {
 
   /**
    * process
+   * the json structure is like this
+   * {
+   * type: WAMP-MessageType,
+   * timestamp: number,
+   * payload: {
+   *  session: [] according to manifest,
+   *  cars: [][] according to manifest,
+   *  pits: [][] according to manifest,
+   *  messages: [][] according to manifest
+   * }
+   *
+   * }
    */
   public process(current: IWampData, jsonItems: any[]) {
     this.current = current;
@@ -38,7 +50,8 @@ class BulkProcessor {
     var lastCarMsg;
 
     jsonItems.forEach((m) => {
-      const carsData = m.cars;
+      const payload = m.payload;
+      const carsData = payload.cars;
       carsData.forEach((carEntry: []) => {
         const currentCarNum = getValueViaSpec(carEntry, current.manifests.car, "carNum");
         if (!this.carComputeState.has(currentCarNum)) {
@@ -49,7 +62,7 @@ class BulkProcessor {
         }
       });
 
-      const sessionTime = getValueViaSpec(m.session, current.manifests.session, "sessionTime");
+      const sessionTime = getValueViaSpec(payload.session, current.manifests.session, "sessionTime");
       carsData.forEach((carEntry: []) => {
         this.processDriverAndTeam(carEntry, sessionTime);
         this.processStintAndPit(carEntry, sessionTime);
@@ -57,9 +70,12 @@ class BulkProcessor {
       this.raceOrder = processForRaceOrder(this.current, carsData);
       this.raceGraph = processForRaceGraph(this.current, this.raceGraph, carsData);
       this.processForLapGraph(this.current, carsData);
-      if (m.messages.length > 0) this.infoMsg.push(...m.messages);
-      lastSessionMsg = { msgType: m.msgType, timestamp: m.timestamp, data: m.session };
-      lastCarMsg = { msgType: m.msgType, timestamp: m.timestamp, data: carsData };
+      if (payload.messages.length > 0) {
+        // m.messages.forEach((msg: any) => this.infoMsg.push({ timestamp: m.timestamp, msgType: 3, data: msg }));
+        this.infoMsg.push({ timestamp: m.timestamp, msgType: 3, data: payload.messages });
+      }
+      lastSessionMsg = { msgType: payload.msgType, timestamp: payload.timestamp, data: payload.session };
+      lastCarMsg = { msgType: payload.msgType, timestamp: payload.timestamp, data: carsData };
     });
     this.infoMsg.reverse(); // want the last recieved message on top
     return {

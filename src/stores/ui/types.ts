@@ -14,6 +14,13 @@ export interface IBrushInterval {
   startIndex?: number;
   endIndex?: number;
 }
+
+export interface IClassificationSettings {
+  pageSize: number;
+}
+export interface IMessagesSettings {
+  pageSize: number;
+}
 export interface IDriverLapsSettings {
   showCars: string[];
   filterCarClasses: string[]; // empty = all classes, otherwise only selected
@@ -58,6 +65,9 @@ export interface IUiData {
   entries: IUiEntries;
 
   // "new" ui comps
+  classificationSettings: IClassificationSettings;
+  messagesSettings: IMessagesSettings;
+
   driverLapsSettings: {
     standard: IDriverLapsSettings;
     brushRange?: IBrushInterval; // has to be seperated from the other settings due to different update mechanism
@@ -80,6 +90,13 @@ export const defaultUiData: IUiData = {
   entries: { entryDetails: -1 },
 
   // "new" ui comps
+  classificationSettings: {
+    pageSize: 20,
+  },
+  messagesSettings: {
+    pageSize: 20,
+  },
+
   driverLapsSettings: {
     standard: {
       showCars: [],
