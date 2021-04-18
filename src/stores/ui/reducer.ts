@@ -68,6 +68,10 @@ const reducer: Reducer<IUiState> = (state = initialState, action) => {
       return { ...state, data: { ...state.data, racePositionSettings: { ...action.payload } } };
     case UiActionTypes.RACE_STINT_SHARED_SETTINGS:
       return { ...state, data: { ...state.data, raceStintSharedSettings: { ...action.payload } } };
+    case UiActionTypes.MESSAGES_SETTINGS:
+      return { ...state, data: { ...state.data, messagesSettings: { ...action.payload } } };
+    case UiActionTypes.CLASSIFICATION_SETTINGS:
+      return { ...state, data: { ...state.data, classificationSettings: { ...action.payload } } };
     default:
       return state;
   }

@@ -49,12 +49,10 @@ const processJsonFromArchiveInOneGo = (data: string, manifests: IManifests) => {
     // if (line % 100 === 0) {
     //   console.log(line);
     // }
-    const { payload, timestamp } = JSON.parse(lines[line]);
-
-    const x = JSON.parse(lines[line]).payload;
+    const x = JSON.parse(lines[line]); //.payload;
     collectJson.push(x);
     processed++;
-    lastTimestamp = timestamp;
+    lastTimestamp = x.timestamp;
   }
   // const carsData = collectJson.map((item) => item.cars);
   const ret = { ...wamp, ...bulkProcess(wamp, collectJson) };

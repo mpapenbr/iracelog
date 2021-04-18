@@ -3,6 +3,7 @@ import React from "react";
 import { Route, Switch } from "react-router";
 import { Link } from "react-router-dom";
 import Classification from "../components/live/classification";
+import RaceMessages from "../components/live/raceMessages";
 import RacePositionGraph from "../components/live/racePositionGraph";
 import CarPitstopsNivo from "../components/nivo/carPitstops";
 import CarStintsNivo from "../components/nivo/carStints";
@@ -57,6 +58,9 @@ export const AnalysisMainPage: React.FC<MyProps> = (props: MyProps) => {
           <Menu.Item key="stintLaps" className="race-sidebar">
             <Link to="/analysis/stintLaps">Stint Laps</Link>
           </Menu.Item>
+          <Menu.Item key="messages" className="race-sidebar">
+            <Link to="/analysis/messages">Messages</Link>
+          </Menu.Item>
           {/* <Menu.Item key="test" className="race-sidebar">
             <Link to="test">test</Link>
           </Menu.Item> */}
@@ -77,6 +81,7 @@ export const AnalysisMainPage: React.FC<MyProps> = (props: MyProps) => {
           <Route path="/analysis/carPitstopsNivo" component={CarPitstopsNivo} />
           <Route path="/analysis/stintDurations" component={CarStintsNivo} />
           <Route path="/analysis/stintLaps" component={StintLapsRecharts} />
+          <Route path="/analysis/messages" component={RaceMessages} />
           <Route path="/analysis/test" component={OtherContent} />
         </Switch>
       </Content>
