@@ -1,3 +1,4 @@
+import { IPitInfo } from "@mpapenbr/iracelog-analysis/dist/stints/types";
 import { Col, Empty, Row, Select } from "antd";
 import _ from "lodash";
 import React from "react";
@@ -6,7 +7,6 @@ import { Bar, BarChart, CartesianGrid, ResponsiveContainer, XAxis, YAxis } from 
 import { sprintf } from "sprintf-js";
 import { ApplicationState } from "../../stores";
 import { uiRaceStintSharedSettings } from "../../stores/ui/actions";
-import { IPitInfo } from "../../stores/wamp/types";
 import { secAsMMSS, sortCarNumberStr } from "../../utils/output";
 import CarFilter from "../live/carFilter";
 import { computeAvailableCars, extractSomeCarData, processCarClassSelection } from "../live/util";

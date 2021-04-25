@@ -1,3 +1,5 @@
+import { IProcessRaceStateData } from "@mpapenbr/iracelog-analysis/dist/stints/types";
+
 export interface IWamp {
   stintNo: number;
 }
@@ -198,20 +200,9 @@ export interface ICarComputeState {
   carNum: string;
   state: CarComputeState;
 }
-export interface IWampData {
+export interface IWampData extends IProcessRaceStateData {
   connected: boolean;
-  session: IMessage;
   manifests: IManifests;
-  infoMsgs: IMessage[];
-  cars: IMessage;
-  carPits: ICarPitInfo[];
-  carStints: ICarStintInfo[];
-  raceGraph: IRaceGraph[];
-  carLaps: ICarLaps[];
-  carInfo: ICarInfo[];
-  carComputeState: ICarComputeState[];
-  raceOrder: string[]; // contains car numbers by current race order (last processed packet)
-  dummy: any;
 }
 export const emptyMessage: IMessage = {
   msgType: 0,
@@ -232,8 +223,6 @@ export const defaultWampData: IWampData = {
   carInfo: [],
   carComputeState: [],
   raceOrder: [],
-
-  dummy: "no content yet",
 };
 export interface IWampState {
   readonly data: IWampData;

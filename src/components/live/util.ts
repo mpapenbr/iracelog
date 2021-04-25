@@ -1,5 +1,12 @@
+import {
+  ICarInfo,
+  ICarPitInfo,
+  ICarStintInfo,
+  IPitInfo,
+  IProcessRaceStateData,
+  IStintInfo,
+} from "@mpapenbr/iracelog-analysis/dist/stints/types";
 import _ from "lodash";
-import { ICarInfo, ICarPitInfo, ICarStintInfo, IPitInfo, IStintInfo, IWampData } from "../../stores/wamp/types";
 import { sortCarNumberStr } from "../../utils/output";
 
 export interface ICarFilterData {
@@ -30,7 +37,7 @@ export interface IExtractedCarData {
  * @param wampData
  * @returns
  */
-export const extractSomeCarData = (wampData: IWampData): IExtractedCarData => {
+export const extractSomeCarData = (wampData: IProcessRaceStateData): IExtractedCarData => {
   const carInfoLookup = wampData.carInfo.reduce((m, cur) => {
     return m.set(cur.carNum, cur);
   }, new Map<string, ICarInfo>());

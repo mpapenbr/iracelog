@@ -1,4 +1,5 @@
 import { ReloadOutlined } from "@ant-design/icons";
+import { BulkProcessor } from "@mpapenbr/iracelog-analysis";
 import { Button, Col, List, Modal, Row } from "antd";
 import autobahn, { Session } from "autobahn";
 import React, { useEffect, useState } from "react";
@@ -19,6 +20,7 @@ import {
   updatePitstops,
   updateSession,
 } from "../stores/wamp/actions";
+import { postProcessManifest } from "../stores/wamp/reducer";
 import { processJsonFromArchive, readAndProcessData, readData } from "./loadData";
 
 interface IStateProps {}
@@ -52,28 +54,32 @@ export const DemoRaces: React.FC<MyProps> = (props: MyProps) => {
       s.call("racelog.get_manifests", [id]).then((data: any) => {
         console.log(data);
         dispatch(updateManifests(data));
+        const manifests = postProcessManifest(data[0]);
+        globalWamp.processor = new BulkProcessor(manifests);
       });
       dispatch(connectedToServer());
 
       s.subscribe(sprintf("racelog.state.%s", id), (data) => {
-        dispatch(updateFromStateMessage(data[0].payload));
+        dispatch(updateFromStateMessage(data[0]));
         // dispatch(updateSession([data[0].payload.session]));
         // dispatch(updateMessages([data[0].payload.messages]));
         // dispatch(updateCars([data[0].payload.cars]));
         // dispatch(updatePitstops([data[0].payload.pitstops]));
       });
-      s.subscribe(sprintf("racelog.session.%s", id), (data) => {
-        dispatch(updateSession(data));
-      });
-      s.subscribe(sprintf("racelog.messages.%s", id), (data) => {
-        dispatch(updateMessages(data));
-      });
-      s.subscribe(sprintf("racelog.cars.%s", id), (data) => {
-        dispatch(updateCars(data));
-      });
-      s.subscribe(sprintf("racelog.pits.%s", id), (data) => {
-        dispatch(updatePitstops(data));
-      });
+      if (false) {
+        s.subscribe(sprintf("racelog.session.%s", id), (data) => {
+          dispatch(updateSession(data));
+        });
+        s.subscribe(sprintf("racelog.messages.%s", id), (data) => {
+          dispatch(updateMessages(data));
+        });
+        s.subscribe(sprintf("racelog.cars.%s", id), (data) => {
+          dispatch(updateCars(data));
+        });
+        s.subscribe(sprintf("racelog.pits.%s", id), (data) => {
+          dispatch(updatePitstops(data));
+        });
+      }
     };
     conn.open();
 
