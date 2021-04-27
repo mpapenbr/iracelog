@@ -210,12 +210,12 @@ export const DemoRaces: React.FC<MyProps> = (props: MyProps) => {
     },
     {
       title: "NEO Race 6h Barcelona",
-      description: "Used for Multiclass tests. Be patient while loading (~30-45s)",
+      description: "Used for Multiclass tests. Be patient while loading (~15s)",
       key: "neo",
     },
     {
       title: "NEO Race 12h Spa",
-      description: "Used for Multiclass tests. Be very patient while loading (~1m+)",
+      description: "Used for Multiclass tests. Be a little more patient while loading (~30s)",
       key: "26ceac390dcac80d439992c98b0a9db8",
     },
   ];
