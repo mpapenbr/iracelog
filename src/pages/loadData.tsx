@@ -7,6 +7,10 @@ import { reset, setData, updateCars, updateFromStateMessage, updatePitstops } fr
 import { postProcessManifest } from "../stores/wamp/reducer";
 import { defaultWampData, IManifests, IWampData } from "../stores/wamp/types";
 
+/*
+ * this whole file may be obsolete. The processing for archived events is now done by the server and the data exchanged is handled in demoRaces
+ */
+
 export const processJsonFromArchive = (data: string, dispatch: Dispatch<any>) => {
   var lines = data.split("\n");
   let processed = 0;

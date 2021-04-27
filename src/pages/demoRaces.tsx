@@ -12,6 +12,7 @@ import { ApplicationState } from "../stores";
 import { uiReset } from "../stores/ui/actions";
 import {
   connectedToServer,
+  reset,
   setData,
   updateCars,
   updateFromStateMessage,
@@ -21,7 +22,7 @@ import {
   updateSession,
 } from "../stores/wamp/actions";
 import { postProcessManifest } from "../stores/wamp/reducer";
-import { processJsonFromArchive, readAndProcessData, readData } from "./loadData";
+import { processJsonFromArchive, readAndProcessData } from "./loadData";
 
 interface IStateProps {}
 interface IDispachProps {
@@ -44,8 +45,26 @@ export const DemoRaces: React.FC<MyProps> = (props: MyProps) => {
 
   const onButtonClicked = (e: React.MouseEvent<HTMLButtonElement>) => {
     const arg = e.currentTarget.value;
-    setLoading(true);
-    readData(arg, dispatch, doInfo);
+    // readData(arg, dispatch, doInfo);
+    var conn = new autobahn.Connection({ url: API_CROSSBAR_URL + "/ws", realm: "racelog" });
+    conn.onopen = (s: Session) => {
+      s.call("racelog.archive.get_manifest", [arg]).then((manifestData: any) => {
+        // console.log(manifestData);
+        setLoading(true);
+        dispatch(reset());
+        const mData = JSON.parse(manifestData[0]);
+        s.call("racelog.analysis.archive", [arg]).then((data: any) => {
+          // console.log(data);
+          dispatch(setData(data));
+          dispatch(updateManifests(mData));
+          conn.close();
+          setLoading(false);
+          history.push("/analysis");
+        });
+      });
+    };
+
+    conn.open();
     // setTimeout(() => setLoading(false), 2000);
   };
   const connectToLiveData = (id: string) => {
@@ -161,7 +180,7 @@ export const DemoRaces: React.FC<MyProps> = (props: MyProps) => {
     conn.onopen = (s: Session) => {
       s.call("racelog.list_providers").then((data: any) => {
         setLivedata(data.map((v: any) => ({ key: v.key, title: v.name, description: v.description })));
-        // conn.close();
+        conn.close();
       });
     };
     conn.open();
