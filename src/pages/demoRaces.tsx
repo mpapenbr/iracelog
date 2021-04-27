@@ -52,6 +52,7 @@ export const DemoRaces: React.FC<MyProps> = (props: MyProps) => {
         // console.log(manifestData);
         setLoading(true);
         dispatch(reset());
+        dispatch(uiReset());
         const mData = JSON.parse(manifestData[0]);
         s.call("racelog.analysis.archive", [arg]).then((data: any) => {
           // console.log(data);
