@@ -1,3 +1,4 @@
+import { IStintInfo } from "@mpapenbr/iracelog-analysis/dist/stints/types";
 import { Col, Empty, InputNumber, Radio, RadioChangeEvent, Row, Select } from "antd";
 import _ from "lodash";
 import React, { useState } from "react";
@@ -18,7 +19,6 @@ import { sprintf } from "sprintf-js";
 import { ApplicationState } from "../../stores";
 import { uiDriverStintSettings } from "../../stores/ui/actions";
 import { IBrushInterval } from "../../stores/ui/types";
-import { IStintInfo } from "../../stores/wamp/types";
 import { lapTimeString } from "../../utils/output";
 import CarClassFilter from "../live/carClassFilter";
 import { strokeColors } from "../live/colors";
@@ -200,9 +200,13 @@ const StintLapsRecharts: React.FC<{}> = () => {
   };
   const StintRadios = (
     <Radio.Group onChange={onStintNoChange} defaultValue={0} value={uiSettings.showStint}>
-      <Radio.Button value={0}>All</Radio.Button>
+      <Radio.Button key={0} value={0}>
+        All
+      </Radio.Button>
       {stints.map((s, idx) => (
-        <Radio.Button value={idx + 1}>{idx + 1}</Radio.Button>
+        <Radio.Button key={idx + 1} value={idx + 1}>
+          {idx + 1}
+        </Radio.Button>
       ))}
     </Radio.Group>
   );

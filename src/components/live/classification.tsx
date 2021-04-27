@@ -1,4 +1,4 @@
-import { Card, Col, Row, Statistic, Table } from "antd";
+import { Card, Col, Empty, Row, Statistic, Table } from "antd";
 import { ColumnsType, TablePaginationConfig } from "antd/lib/table";
 import _ from "lodash";
 import React from "react";
@@ -30,7 +30,7 @@ export default Classification;
 
 const Standings: React.FC<{}> = () => {
   const uiSettings = useSelector((state: ApplicationState) => state.ui.data.classificationSettings);
-  const carsRaw = useSelector((state: ApplicationState) => state.wamp.data.cars.data);
+  const carsRaw = useSelector((state: ApplicationState) => (state.wamp.data.cars ? state.wamp.data.cars.data : []));
   const stateCarManifest = useSelector((state: ApplicationState) => state.wamp.data.manifests.car);
   const dispatch = useDispatch();
   const getValue = (d: [], key: string) => getValueViaSpec(d, stateCarManifest, key);
@@ -110,10 +110,16 @@ const Standings: React.FC<{}> = () => {
 };
 
 const SessionInfoData: React.FC<{}> = () => {
-  const sessionData = useSelector((state: ApplicationState) => state.wamp.data.session);
-  // console.log(sessionData);
-  const getValue = (key: string) => getValueViaSpec(sessionData.data, SessionManifest, key);
+  const sessionData: [] = useSelector((state: ApplicationState) =>
+    state.wamp.data.session ? state.wamp.data.session.data : []
+  );
+
+  if (sessionData.length === 0) return <Empty description="No session data available" />;
+  const getValue = (key: string) => {
+    return getValueViaSpec(sessionData, SessionManifest, key);
+  };
   const gridStyle = { width: "25%" };
+
   return (
     <>
       <Row>

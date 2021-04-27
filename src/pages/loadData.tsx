@@ -1,9 +1,15 @@
+// import { bulkProcess } from "../stores/wamp/compute/bulkProcessing";
+// import { bulkProcess } from "@mpapenbr/iracelog-analysis/dist/stints/bulkProcessing";
+import { bulkProcess } from "@mpapenbr/iracelog-analysis";
 import { Dispatch } from "redux";
 import { API_DATA_HOST } from "../constants";
 import { reset, setData, updateCars, updateFromStateMessage, updatePitstops } from "../stores/wamp/actions";
-import { bulkProcess } from "../stores/wamp/compute/bulkProcessing";
 import { postProcessManifest } from "../stores/wamp/reducer";
 import { defaultWampData, IManifests, IWampData } from "../stores/wamp/types";
+
+/*
+ * this whole file may be obsolete. The processing for archived events is now done by the server and the data exchanged is handled in demoRaces
+ */
 
 export const processJsonFromArchive = (data: string, dispatch: Dispatch<any>) => {
   var lines = data.split("\n");
@@ -55,7 +61,7 @@ const processJsonFromArchiveInOneGo = (data: string, manifests: IManifests) => {
     lastTimestamp = x.timestamp;
   }
   // const carsData = collectJson.map((item) => item.cars);
-  const ret = { ...wamp, ...bulkProcess(wamp, collectJson) };
+  const ret = { ...wamp, ...bulkProcess(wamp, manifests, collectJson) };
   console.log("processed " + processed + " entries till timestamp " + lastTimestamp);
   return { processed: processed, timestamp: lastTimestamp, newStateData: ret };
 };

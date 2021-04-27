@@ -18,7 +18,7 @@ const RaceMessages: React.FC<{}> = () => {
   const infoMsgRaw = useSelector((state: ApplicationState) => state.wamp.data.infoMsgs);
   const dispatch = useDispatch();
   // each entry in infoMsgRaw is an array with messages, which needs to be flatten for the list
-  const data = infoMsgRaw.reduce((work, current) => {
+  const data = [...infoMsgRaw].reverse().reduce((work, current) => {
     return work.concat(
       current.data.map((v: any) => ({
         timestamp: new Date(current.timestamp * 1000),

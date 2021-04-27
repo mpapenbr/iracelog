@@ -1,3 +1,4 @@
+import { IRaceGraph } from "@mpapenbr/iracelog-analysis/dist/stints/types";
 import { Checkbox, Col, Empty, InputNumber, Row, Spin } from "antd";
 import _, { isNumber } from "lodash";
 import React, { useEffect } from "react";
@@ -7,7 +8,6 @@ import { sprintf } from "sprintf-js";
 import { ApplicationState } from "../../stores";
 import { uiRaceGraphSettings, uiUpdateBrushSettings } from "../../stores/ui/actions";
 import { IBrushInterval, UiComponent } from "../../stores/ui/types";
-import { IRaceGraph } from "../../stores/wamp/types";
 import CarFilter from "../live/carFilter";
 import { strokeColors } from "../live/colors";
 import { computeAvailableCars, extractSomeCarData, processCarClassSelection } from "../live/util";
