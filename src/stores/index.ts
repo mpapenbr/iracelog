@@ -1,5 +1,6 @@
 import { combineReducers } from "redux";
 import { all, fork } from "redux-saga/effects";
+import { baseDataReducers } from "./basedata/reducer";
 import { raceEventsReducer } from "./raceevents/reducer";
 import raceEventsSaga from "./raceevents/sagas";
 import { IRaceEventsState } from "./raceevents/types";
@@ -21,6 +22,7 @@ export const createRootReducer = () =>
     raceEvents: raceEventsReducer,
     ui: uiReducer,
     wamp: wampReducer,
+    baseData: baseDataReducers,
   });
 
 export function* rootSaga() {

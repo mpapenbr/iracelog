@@ -9,6 +9,7 @@
     "@nivo/line": "^0.68.0",
     "antd": "^4.15.3",
     "autobahn": "^20.9.2",
+    "deep-object-diff": "^1.1.0",
     "json-url": "^2.6.0",
     "lodash": "^4.17.20",
     "react": "^17.0.1",
@@ -25,6 +26,9 @@
     "sprintf-js": "^1.1.2",
     "typesafe-actions": "^5.1.0",
     "typescript": "^4.0.3",
+    "typescript-fsa": "^3.0.0",
+    "typescript-fsa-reducers": "^1.2.2",
+    "typescript-fsa-redux-saga": "^2.0.0",
     "uuid": "^8.3.2",
     "victory": "^35.4.12",
     "web-vitals": "^0.2.4"

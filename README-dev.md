@@ -10,7 +10,11 @@ So we need to put one in place at `~/.npmrc` which looks like this
 //npm.pkg.github.com/:_authToken=<READ_ACCESS_TOKEN>
 ```
 
+# Solved issues
+
 ## Nivo
+
+**FIXED with nivo@0.68**
 
 There are some issues with tooltips in production mode.
 Links:
@@ -29,5 +33,3 @@ Add this package.json
 ```
 
 run `yarn install` and the tooltips work in production like in development.
-
-# Solved issues
