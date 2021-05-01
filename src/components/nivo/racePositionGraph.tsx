@@ -4,7 +4,7 @@ import _ from "lodash";
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { ApplicationState } from "../../stores";
-import { uiRacePositionSettings } from "../../stores/ui/actions";
+import { racePositionsSettings } from "../../stores/ui/actions";
 import { IRaceGraph } from "../../stores/wamp/types";
 import { sortCarNumberStr } from "../../utils/output";
 import CarFilter from "../live/carFilter";
@@ -17,7 +17,7 @@ interface IGraphData {
 
 const RacePositionGraphNivo: React.FC<{}> = () => {
   const wamp = useSelector((state: ApplicationState) => state.wamp.data);
-  const uiSettings = useSelector((state: ApplicationState) => state.ui.data.racePositionSettings);
+  const uiSettings = useSelector((state: ApplicationState) => state.userSettings.racePositions);
   const raceGraph = useSelector((state: ApplicationState) => state.wamp.data.raceGraph);
   const dispatch = useDispatch();
 
@@ -61,7 +61,7 @@ const RacePositionGraphNivo: React.FC<{}> = () => {
   const posData = carOrder.map((carNum) => ({ id: "#" + carNum, data: dataForCar(carNum) }));
 
   const onSelectShowCars = (value: any) => {
-    dispatch(uiRacePositionSettings({ ...uiSettings, showCars: value as string[] }));
+    dispatch(racePositionsSettings({ ...uiSettings, showCars: value as string[] }));
   };
 
   const onSelectCarClassChange = (value: string[]) => {
@@ -71,11 +71,11 @@ const RacePositionGraphNivo: React.FC<{}> = () => {
       currentShowCars: uiSettings.showCars,
       newSelection: value,
     });
-    dispatch(uiRacePositionSettings({ ...uiSettings, filterCarClasses: value, showCars: newShowcars }));
+    dispatch(racePositionsSettings({ ...uiSettings, filterCarClasses: value, showCars: newShowcars }));
   };
 
   const onCheckboxChange = () => {
-    dispatch(uiRacePositionSettings({ ...uiSettings, showPosInClass: !uiSettings.showPosInClass }));
+    dispatch(racePositionsSettings({ ...uiSettings, showPosInClass: !uiSettings.showPosInClass }));
   };
 
   const data = [

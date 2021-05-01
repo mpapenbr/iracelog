@@ -4,7 +4,7 @@ import _ from "lodash";
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { ApplicationState } from "../../stores";
-import { uiRaceStintSharedSettings } from "../../stores/ui/actions";
+import { pitstopsSettings } from "../../stores/ui/actions";
 import { ICarPitInfo, IPitInfo } from "../../stores/wamp/types";
 import { secAsHHMMSS, secAsMMSS, sortCarNumberStr } from "../../utils/output";
 import CarFilter from "../live/carFilter";
@@ -22,7 +22,7 @@ interface IColData {
 const CarPitstopsNivo: React.FC<{}> = () => {
   const wamp = useSelector((state: ApplicationState) => state.wamp.data);
   const carPits = useSelector((state: ApplicationState) => state.wamp.data.carPits);
-  const uiSettings = useSelector((state: ApplicationState) => state.ui.data.raceStintSharedSettings);
+  const uiSettings = useSelector((state: ApplicationState) => state.userSettings.pitstops);
   const dispatch = useDispatch();
   const carDataContainer = extractSomeCarData(wamp);
   const { carInfoLookup, allCarNums, allCarClasses } = carDataContainer;
@@ -50,7 +50,7 @@ const CarPitstopsNivo: React.FC<{}> = () => {
   });
 
   const onSelectShowCars = (value: any) => {
-    dispatch(uiRaceStintSharedSettings({ ...uiSettings, showCars: value as string[] }));
+    dispatch(pitstopsSettings({ ...uiSettings, showCars: value as string[] }));
   };
 
   const onSelectCarClassChange = (value: string[]) => {
@@ -62,7 +62,7 @@ const CarPitstopsNivo: React.FC<{}> = () => {
       currentShowCars: uiSettings.showCars,
       newSelection: value,
     });
-    dispatch(uiRaceStintSharedSettings({ ...uiSettings, filterCarClasses: value, showCars: newShowcars }));
+    dispatch(pitstopsSettings({ ...uiSettings, filterCarClasses: value, showCars: newShowcars }));
   };
 
   // const pits: Map<string, number[]> = new Map();

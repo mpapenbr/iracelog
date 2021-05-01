@@ -5,7 +5,7 @@ import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { sprintf } from "sprintf-js";
 import { ApplicationState } from "../../stores";
-import { uiClassificationSettings } from "../../stores/ui/actions";
+import { classificationSettings } from "../../stores/ui/actions";
 import { getValueViaSpec } from "../../stores/wamp/compute/util";
 import { SessionManifest } from "../../stores/wamp/types";
 import { lapTimeString, secAsString } from "../../utils/output";
@@ -29,7 +29,7 @@ const Classification: React.FC<{}> = () => {
 export default Classification;
 
 const Standings: React.FC<{}> = () => {
-  const uiSettings = useSelector((state: ApplicationState) => state.ui.data.classificationSettings);
+  const uiSettings = useSelector((state: ApplicationState) => state.userSettings.classification);
   const carsRaw = useSelector((state: ApplicationState) => (state.wamp.data.cars ? state.wamp.data.cars.data : []));
   const stateCarManifest = useSelector((state: ApplicationState) => state.wamp.data.manifests.car);
   const dispatch = useDispatch();
@@ -94,7 +94,8 @@ const Standings: React.FC<{}> = () => {
     pageSize: uiSettings.pageSize,
     onShowSizeChange: (curPage, newPageSize) => {
       // console.log("current:" + curPage + " new: " + newPageSize);
-      dispatch(uiClassificationSettings({ ...uiSettings, pageSize: newPageSize }));
+      // dispatch(uiClassificationSettings({ ...uiSettings, pageSize: newPageSize }));
+      dispatch(classificationSettings({ pageSize: newPageSize }));
     },
     showSizeChanger: true,
   };

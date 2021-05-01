@@ -4,7 +4,7 @@ import _ from "lodash";
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { ApplicationState } from "../../stores";
-import { uiRaceStintSharedSettings } from "../../stores/ui/actions";
+import { stintsSettings } from "../../stores/ui/actions";
 import { ICarStintInfo, IStintInfo } from "../../stores/wamp/types";
 import { secAsHHMMSS, secAsMMSS, sortCarNumberStr } from "../../utils/output";
 import CarFilter from "../live/carFilter";
@@ -23,7 +23,7 @@ interface IColData {
 const CarStintsNivo: React.FC<{}> = () => {
   const wamp = useSelector((state: ApplicationState) => state.wamp.data);
   const carStints = useSelector((state: ApplicationState) => state.wamp.data.carStints);
-  const uiSettings = useSelector((state: ApplicationState) => state.ui.data.raceStintSharedSettings);
+  const uiSettings = useSelector((state: ApplicationState) => state.userSettings.stints);
   const dispatch = useDispatch();
   const carDataContainer = extractSomeCarData(wamp);
   const { carInfoLookup, allCarNums, allCarClasses } = carDataContainer;
@@ -58,7 +58,7 @@ const CarStintsNivo: React.FC<{}> = () => {
   });
 
   const onSelectShowCars = (value: any) => {
-    dispatch(uiRaceStintSharedSettings({ ...uiSettings, showCars: value as string[] }));
+    dispatch(stintsSettings({ ...uiSettings, showCars: value as string[] }));
   };
 
   const onSelectCarClassChange = (value: string[]) => {
@@ -70,7 +70,7 @@ const CarStintsNivo: React.FC<{}> = () => {
       currentShowCars: uiSettings.showCars,
       newSelection: value,
     });
-    dispatch(uiRaceStintSharedSettings({ ...uiSettings, filterCarClasses: value, showCars: newShowcars }));
+    dispatch(stintsSettings({ ...uiSettings, filterCarClasses: value, showCars: newShowcars }));
   };
 
   // const pits: Map<string, number[]> = new Map();
@@ -150,7 +150,7 @@ value: 77.66666666553647
 
   const isSet = (arg: string) => arg.localeCompare(uiSettings.showAsLabel) == 0;
   const onShowModeChange = (e: RadioChangeEvent) => {
-    dispatch(uiRaceStintSharedSettings({ ...uiSettings, showAsLabel: e.target.value }));
+    dispatch(stintsSettings({ ...uiSettings, showAsLabel: e.target.value }));
   };
   const ShowMode = (
     <Col>

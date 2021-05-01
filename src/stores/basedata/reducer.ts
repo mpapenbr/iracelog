@@ -11,4 +11,4 @@ const combinedReducers = combineReducers<object>({
   availableCars: AvailableCarsReducer,
 });
 
-export { combineReducers as baseDataReducers };
+export { combinedReducers as baseDataReducers };

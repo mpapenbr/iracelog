@@ -6,7 +6,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { Brush, CartesianGrid, Legend, Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 import { sprintf } from "sprintf-js";
 import { ApplicationState } from "../../stores";
-import { uiRaceGraphSettings, uiUpdateBrushSettings } from "../../stores/ui/actions";
+import { raceGraphSettings, uiUpdateBrushSettings } from "../../stores/ui/actions";
 import { IBrushInterval, UiComponent } from "../../stores/ui/types";
 import CarFilter from "../live/carFilter";
 import { strokeColors } from "../live/colors";
@@ -21,7 +21,7 @@ interface IGraphData {
 const RaceGraphRecharts: React.FC<{}> = () => {
   const wamp = useSelector((state: ApplicationState) => state.wamp.data);
   const uiSettingsAll = useSelector((state: ApplicationState) => state.ui.data.raceGraphSettings);
-  const uiSettings = useSelector((state: ApplicationState) => state.ui.data.raceGraphSettings.standard);
+  const uiSettings = useSelector((state: ApplicationState) => state.userSettings.raceGraph);
   const raceGraph = useSelector((state: ApplicationState) => state.wamp.data.raceGraph);
   const dispatch = useDispatch();
   // this little trick handles the fetching of brushInterval from state, let it be changed here and on leaving this Element store the values in the redux state.
@@ -115,7 +115,7 @@ const RaceGraphRecharts: React.FC<{}> = () => {
 
   const onSelectShowCars = (value: any) => {
     const curSettings = { ...uiSettings, showCars: value as string[] };
-    dispatch(uiRaceGraphSettings(curSettings));
+    dispatch(raceGraphSettings(curSettings));
   };
 
   const onSelectCarClassChange = (value: string[]) => {
@@ -128,17 +128,17 @@ const RaceGraphRecharts: React.FC<{}> = () => {
       newSelection: value,
     });
     const curSettings = { ...uiSettings, filterCarClasses: value, showCars: newShowcars };
-    dispatch(uiRaceGraphSettings(curSettings));
+    dispatch(raceGraphSettings(curSettings));
   };
 
   const onCheckboxChange = () => {
     const curSettings = { ...uiSettings, gapRelativeToClassLeader: !uiSettings.gapRelativeToClassLeader };
-    dispatch(uiRaceGraphSettings(curSettings));
+    dispatch(raceGraphSettings(curSettings));
   };
 
   const onDeltaRangeChange = (value: any) => {
     const curSettings = { ...uiSettings, deltaRange: value };
-    dispatch(uiRaceGraphSettings(curSettings));
+    dispatch(raceGraphSettings(curSettings));
   };
 
   var timerId: any;

@@ -3,7 +3,7 @@ import { ColumnsType, TablePaginationConfig } from "antd/lib/table";
 import _ from "lodash";
 import { useDispatch, useSelector } from "react-redux";
 import { ApplicationState } from "../../stores";
-import { uiMessagesSettings } from "../../stores/ui/actions";
+import { messagesSettings } from "../../stores/ui/actions";
 import { getValueViaSpec } from "../../stores/wamp/compute/util";
 import { InfoMsgManifest } from "../../stores/wamp/types";
 
@@ -14,7 +14,7 @@ interface IInfoMsgData {
   msg: string;
 }
 const RaceMessages: React.FC<{}> = () => {
-  const uiSettings = useSelector((state: ApplicationState) => state.ui.data.messagesSettings);
+  const uiSettings = useSelector((state: ApplicationState) => state.userSettings.messages);
   const infoMsgRaw = useSelector((state: ApplicationState) => state.wamp.data.infoMsgs);
   const dispatch = useDispatch();
   // each entry in infoMsgRaw is an array with messages, which needs to be flatten for the list
@@ -56,7 +56,8 @@ const RaceMessages: React.FC<{}> = () => {
     pageSize: uiSettings.pageSize,
     onShowSizeChange: (curPage, newPageSize) => {
       // console.log("current:" + curPage + " new: " + newPageSize);
-      dispatch(uiMessagesSettings({ ...uiSettings, pageSize: newPageSize }));
+
+      dispatch(messagesSettings({ pageSize: newPageSize }));
     },
     showSizeChanger: true,
   };

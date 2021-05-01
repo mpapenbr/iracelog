@@ -15,7 +15,7 @@ import {
 } from "recharts";
 import { sprintf } from "sprintf-js";
 import { ApplicationState } from "../../stores";
-import { uiDriverLapsSettings, uiUpdateBrushSettings } from "../../stores/ui/actions";
+import { driverLapsSettings, uiUpdateBrushSettings } from "../../stores/ui/actions";
 import { IBrushInterval, UiComponent } from "../../stores/ui/types";
 import { lapTimeString } from "../../utils/output";
 import CarFilter from "../live/carFilter";
@@ -35,7 +35,7 @@ const DriverLapsRecharts: React.FC<{}> = () => {
   const carLaps = useSelector((state: ApplicationState) => state.wamp.data.carLaps);
   const carInfo = useSelector((state: ApplicationState) => state.wamp.data.carInfo);
   const uiSettingsAll = useSelector((state: ApplicationState) => state.ui.data.driverLapsSettings);
-  const uiSettings = useSelector((state: ApplicationState) => state.ui.data.driverLapsSettings.standard);
+  const uiSettings = useSelector((state: ApplicationState) => state.userSettings.driverLaps);
   const dispatch = useDispatch();
 
   // this little trick handles the fetching of brushInterval from state, let it be changed here and on leaving this Element store the values in the redux state.
@@ -116,19 +116,18 @@ const DriverLapsRecharts: React.FC<{}> = () => {
 
   const onSelectReferenceByTags = (value: any) => {
     const curSettings = { ...uiSettings, showCars: value as string[] };
-    dispatch(uiDriverLapsSettings(curSettings));
+    dispatch(driverLapsSettings(curSettings));
   };
 
   const onSelectCarClassChange = (value: any) => {
     const curSettings = { ...uiSettings, filterCarClasses: value as string[] };
-    dispatch(uiDriverLapsSettings(curSettings));
+    dispatch(driverLapsSettings(curSettings));
   };
 
   const onFilterSecsChange = (value: any) => {
     const curSettings = { ...uiSettings, filterSecs: value };
-    dispatch(uiDriverLapsSettings(curSettings));
+    dispatch(driverLapsSettings(curSettings));
   };
-
 
   const cur = graphDataOrig
     .reduce((prev, cur) => _.concat(prev, cur), [])

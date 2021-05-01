@@ -1,15 +1,18 @@
 import { action } from "typesafe-actions";
+import { actionCreatorFactory } from "typescript-fsa";
 import { IBaseAction } from "../../commons";
 import {
   IBrushInterval,
   IClassificationSettings,
   IDriverLapsSettings,
-  IDriverStintSettings,
+  IDriverStintsSettings,
   IMessagesSettings,
+  IPitstopsSettings,
   IRaceGraphRelativeSettings,
   IRaceGraphSettings,
-  IRacePositionSettings,
+  IRacePositionsSettings,
   IRaceStintSharedSettings,
+  IStintsSettings,
   UiComponent,
 } from "./types";
 
@@ -36,17 +39,22 @@ export const uiSetStintNo = (no: number): IBaseAction => action(UiActionTypes.SE
 export const uiShowEntryDetails = (carIdx: number): IBaseAction => action(UiActionTypes.SHOW_ENTRY_DETAILS, carIdx);
 export const uiDriverLapsSettings = (settings: IDriverLapsSettings): IBaseAction =>
   action(UiActionTypes.DRIVER_LAPS_SETTINGS, settings);
-export const uiDriverStintSettings = (settings: IDriverStintSettings): IBaseAction =>
+export const uiDriverStintSettings = (settings: IDriverStintsSettings): IBaseAction =>
   action(UiActionTypes.DRIVER_STINT_SETTINGS, settings);
-export const uiRaceGraphSettings = (settings: IRaceGraphSettings): IBaseAction =>
-  action(UiActionTypes.RACE_GRAPH_SETTINGS, settings);
-export const uiRaceGraphRelativeSettings = (settings: IRaceGraphRelativeSettings): IBaseAction =>
-  action(UiActionTypes.RACE_GRAPH_RELATIVE_SETTINGS, settings);
-export const uiRacePositionSettings = (settings: IRacePositionSettings): IBaseAction =>
+export const uiRacePositionSettings = (settings: IRacePositionsSettings): IBaseAction =>
   action(UiActionTypes.RACE_POSITION_SETTINGS, settings);
 export const uiRaceStintSharedSettings = (settings: IRaceStintSharedSettings): IBaseAction =>
   action(UiActionTypes.RACE_STINT_SHARED_SETTINGS, settings);
-export const uiMessagesSettings = (settings: IMessagesSettings): IBaseAction =>
-  action(UiActionTypes.MESSAGES_SETTINGS, settings);
-export const uiClassificationSettings = (settings: IClassificationSettings): IBaseAction =>
-  action(UiActionTypes.CLASSIFICATION_SETTINGS, settings);
+
+// new actions start here
+const actionCreator = actionCreatorFactory("UI");
+
+export const classificationSettings = actionCreator<IClassificationSettings>("CLASSIFICATION_SETTINGS");
+export const messagesSettings = actionCreator<IMessagesSettings>("MESSAGES_SETTINGS");
+export const raceGraphSettings = actionCreator<IRaceGraphSettings>("RACEGRAPH_SETTINGS");
+export const raceGraphRelativeSettings = actionCreator<IRaceGraphRelativeSettings>("RACEGRAPH_RELATIVE_SETTINGS");
+export const racePositionsSettings = actionCreator<IRacePositionsSettings>("RACEPOSITIONS_SETTINGS");
+export const driverLapsSettings = actionCreator<IDriverLapsSettings>("DRIVERLAPS_SETTINGS");
+export const pitstopsSettings = actionCreator<IPitstopsSettings>("PITSTOPS_SETTINGS");
+export const stintsSettings = actionCreator<IStintsSettings>("STINTS_SETTINGS");
+export const driverStintsSettings = actionCreator<IDriverStintsSettings>("DRIVER_STINTS_SETTINGS");

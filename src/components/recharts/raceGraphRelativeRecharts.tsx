@@ -18,7 +18,7 @@ import {
 import { sprintf } from "sprintf-js";
 import { DomainTuple } from "victory";
 import { ApplicationState } from "../../stores";
-import { uiRaceGraphRelativeSettings, uiUpdateBrushSettings } from "../../stores/ui/actions";
+import { raceGraphRelativeSettings, uiUpdateBrushSettings } from "../../stores/ui/actions";
 import { IBrushInterval, UiComponent } from "../../stores/ui/types";
 import CarFilter from "../live/carFilter";
 import { strokeColors } from "../live/colors";
@@ -36,7 +36,7 @@ const RaceGraphByReferenceRecharts: React.FC<{}> = () => {
   const raceGraph = useSelector((state: ApplicationState) => state.wamp.data.raceGraph);
   const raceOrder = useSelector((state: ApplicationState) => state.wamp.data.raceOrder);
   const uiSettingsAll = useSelector((state: ApplicationState) => state.ui.data.raceGraphRelativeSettings);
-  const uiSettings = useSelector((state: ApplicationState) => state.ui.data.raceGraphRelativeSettings.standard);
+  const uiSettings = useSelector((state: ApplicationState) => state.userSettings.raceGraphRelative);
   const dispatch = useDispatch();
 
   // this little trick handles the fetching of brushInterval from state, let it be changed here and on leaving this Element store the values in the redux state.
@@ -117,21 +117,21 @@ const RaceGraphByReferenceRecharts: React.FC<{}> = () => {
   ));
   const onSelectReferenceCar = (value: any) => {
     const curSettings = { ...uiSettings, referenceCarNum: value as string };
-    dispatch(uiRaceGraphRelativeSettings(curSettings));
+    dispatch(raceGraphRelativeSettings(curSettings));
   };
 
   const onSelectCompareCars = (value: any) => {
     const curSettings = { ...uiSettings, showCars: value as string[] };
-    dispatch(uiRaceGraphRelativeSettings(curSettings));
+    dispatch(raceGraphRelativeSettings(curSettings));
   };
 
   const onSelectCarClassChange = (value: any) => {
     const curSettings = { ...uiSettings, filterCarClasses: value as string[] };
-    dispatch(uiRaceGraphRelativeSettings(curSettings));
+    dispatch(raceGraphRelativeSettings(curSettings));
   };
 
   const onDeltaSecsChange = (value: any) => {
-    dispatch(uiRaceGraphRelativeSettings({ ...uiSettings, deltaRange: value }));
+    dispatch(raceGraphRelativeSettings({ ...uiSettings, deltaRange: value }));
   };
 
   const calcXDom = (rg: IRaceGraph[]): DomainTuple => {

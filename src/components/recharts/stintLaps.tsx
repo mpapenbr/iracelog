@@ -17,7 +17,7 @@ import {
 } from "recharts";
 import { sprintf } from "sprintf-js";
 import { ApplicationState } from "../../stores";
-import { uiDriverStintSettings } from "../../stores/ui/actions";
+import { driverStintsSettings } from "../../stores/ui/actions";
 import { IBrushInterval } from "../../stores/ui/types";
 import { lapTimeString } from "../../utils/output";
 import CarClassFilter from "../live/carClassFilter";
@@ -38,7 +38,7 @@ const StintLapsRecharts: React.FC<{}> = () => {
   const carInfo = useSelector((state: ApplicationState) => state.wamp.data.carInfo);
   const carStints = useSelector((state: ApplicationState) => state.wamp.data.carStints);
   const uiSettingsAll = useSelector((state: ApplicationState) => state.ui.data.driverLapsSettings);
-  const uiSettings = useSelector((state: ApplicationState) => state.ui.data.driverStintSettings);
+  const uiSettings = useSelector((state: ApplicationState) => state.userSettings.driverStints);
   const dispatch = useDispatch();
   const [brushKeeper, setBrushKeeper] = useState({} as IBrushInterval);
 
@@ -153,23 +153,23 @@ const StintLapsRecharts: React.FC<{}> = () => {
   ));
   const onSelectReferenceCar = (value: any) => {
     const curSettings = { ...uiSettings, carNum: value as string, showStint: 0 };
-    dispatch(uiDriverStintSettings(curSettings));
+    dispatch(driverStintsSettings(curSettings));
     setBrushKeeper({});
   };
 
   const onSelectReferenceByTags = (value: any) => {
     const curSettings = { ...uiSettings, showCars: value as string[] };
-    dispatch(uiDriverStintSettings(curSettings));
+    dispatch(driverStintsSettings(curSettings));
   };
 
   const onSelectCarClassChange = (value: any) => {
     const curSettings = { ...uiSettings, filterCarClasses: value as string[] };
-    dispatch(uiDriverStintSettings(curSettings));
+    dispatch(driverStintsSettings(curSettings));
   };
 
   const onFilterSecsChange = (value: any) => {
     const curSettings = { ...uiSettings, filterSecs: value };
-    dispatch(uiDriverStintSettings(curSettings));
+    dispatch(driverStintsSettings(curSettings));
   };
 
   var timerId: any;
@@ -196,7 +196,7 @@ const StintLapsRecharts: React.FC<{}> = () => {
     // console.log("Stint: " + stintIdx + "-", range);
     setBrushKeeper(range);
     const curSettings = { ...uiSettings, showStint: stintIdx };
-    dispatch(uiDriverStintSettings(curSettings));
+    dispatch(driverStintsSettings(curSettings));
   };
   const StintRadios = (
     <Radio.Group onChange={onStintNoChange} defaultValue={0} value={uiSettings.showStint}>

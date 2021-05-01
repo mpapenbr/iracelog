@@ -132,13 +132,17 @@ Generator {
   }
 }
 
+function* dummy(action: IBaseAction): Generator<string, string, string> {
+  return "dummy";
+}
 export default function* raceEventsSaga() {
   yield all([
-    yield takeLatest(RaceEventActionTypes.SAGA_LOAD_EVENTS, fetchRaceEvents),
-    yield takeLatest(RaceEventActionTypes.SAGA_DELETE_EVENT, deleteRaceEvent),
-    yield takeLatest(RaceEventActionTypes.SAGA_LOAD_EVENT_DATA, fetchEventData),
-    yield takeLatest(RaceEventActionTypes.SAGA_ENSURE_EVENT_DATA, ensureEventData),
-    yield takeLatest(RaceEventActionTypes.SAGA_LOAD_EVENT_STINT_DATA, fetchEventStints),
-    yield takeLatest(RaceEventActionTypes.SAGA_ENSURE_EVENT_STINT_DATA, ensureEventStints),
+    takeLatest(RaceEventActionTypes.SAGA_LOAD_EVENTS, dummy),
+    // yield takeLatest(RaceEventActionTypes.SAGA_LOAD_EVENTS, fetchRaceEvents),
+    // yield takeLatest(RaceEventActionTypes.SAGA_DELETE_EVENT, deleteRaceEvent),
+    // yield takeLatest(RaceEventActionTypes.SAGA_LOAD_EVENT_DATA, fetchEventData),
+    // yield takeLatest(RaceEventActionTypes.SAGA_ENSURE_EVENT_DATA, ensureEventData),
+    // yield takeLatest(RaceEventActionTypes.SAGA_LOAD_EVENT_STINT_DATA, fetchEventStints),
+    // yield takeLatest(RaceEventActionTypes.SAGA_ENSURE_EVENT_STINT_DATA, ensureEventStints),
   ]);
 }
