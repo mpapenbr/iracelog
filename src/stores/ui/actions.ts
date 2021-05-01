@@ -16,21 +16,11 @@ import {
 } from "./types";
 
 export enum UiActionTypes {
-  RESET = "@@ui/RESET",
   SET_STINT_NO = "@@ui/SET_STINT_NO",
   SHOW_ENTRY_DETAILS = "@@ui/SHOW_ENTRY_DETAILS",
-  DRIVER_LAPS_SETTINGS = "@@ui/DRIVER_LAPS_SETTINGS",
-  DRIVER_STINT_SETTINGS = "@@ui/DRIVER_STINT_SETTINGS",
-  RACE_GRAPH_SETTINGS = "@@ui/RACE_GRAPH_SETTINGS",
-  RACE_GRAPH_RELATIVE_SETTINGS = "@@ui/RACE_GRAPH_RELATIVE_SETTINGS",
-  RACE_POSITION_SETTINGS = "@@ui/RACE_POSITION_SETTINGS",
-  RACE_STINT_SHARED_SETTINGS = "@@ui/RACE_STINT_SHARED_SETTINGS",
-  UPDATE_BRUSH_SETTINGS = "@@ui/UPDATE_BRUSH_SETTINGS",
-  MESSAGES_SETTINGS = "@@ui/MESSAGES_SETTINGS",
-  CLASSIFICATION_SETTINGS = "@@ui/CLASSIFICATION_SETTINGS",
-}
 
-export const uiReset = (): IBaseAction => action(UiActionTypes.RESET, {});
+  UPDATE_BRUSH_SETTINGS = "@@ui/UPDATE_BRUSH_SETTINGS",
+}
 
 export const uiUpdateBrushSettings = (uiComp: UiComponent, data: IBrushInterval): IBaseAction =>
   action(UiActionTypes.UPDATE_BRUSH_SETTINGS, { component: uiComp, data: data });

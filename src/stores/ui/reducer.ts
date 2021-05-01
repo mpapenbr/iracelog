@@ -4,8 +4,10 @@ import * as UiActions from "./actions";
 import { UiActionTypes } from "./actions";
 import {
   defaultUiData,
+  IClassificationSettings,
   IDriverLapsSettings,
   IDriverStintsSettings as IDriverStintsSettings,
+  IMessagesSettings,
   IPitstopsSettings,
   IRaceGraphRelativeSettings,
   IRaceGraphSettings,
@@ -22,8 +24,6 @@ const initialState: IUiState = {
 
 const reducer: Reducer<IUiState> = (state = initialState, action) => {
   switch (action.type) {
-    case UiActionTypes.RESET:
-      return { ...state, data: { ...defaultUiData } };
     case UiActionTypes.UPDATE_BRUSH_SETTINGS: {
       switch (action.payload.component) {
         case UiComponent.DRIVER_LAPS: {
@@ -46,54 +46,21 @@ const reducer: Reducer<IUiState> = (state = initialState, action) => {
       return { ...state, data: { ...state.data, stint: { ...state.data.stint, stintNo: action.payload } } };
     case UiActionTypes.SHOW_ENTRY_DETAILS:
       return { ...state, data: { ...state.data, entries: { ...state.data.entries, entryDetails: action.payload } } };
-    case UiActionTypes.DRIVER_LAPS_SETTINGS:
-      return {
-        ...state,
-        data: {
-          ...state.data,
-          driverLapsSettings: { ...state.data.driverLapsSettings, standard: { ...action.payload } },
-        },
-      };
-    case UiActionTypes.DRIVER_STINT_SETTINGS:
-      return {
-        ...state,
-        data: {
-          ...state.data,
-          driverStintSettings: { ...state.data.driverStintSettings, ...action.payload },
-        },
-      };
-    case UiActionTypes.RACE_GRAPH_SETTINGS:
-      return {
-        ...state,
-        data: {
-          ...state.data,
-          raceGraphSettings: { ...state.data.raceGraphSettings, standard: { ...action.payload } },
-        },
-      };
-    case UiActionTypes.RACE_GRAPH_RELATIVE_SETTINGS:
-      return {
-        ...state,
-        data: {
-          ...state.data,
-          raceGraphRelativeSettings: { ...state.data.raceGraphRelativeSettings, standard: { ...action.payload } },
-        },
-      };
-    case UiActionTypes.RACE_POSITION_SETTINGS:
-      return { ...state, data: { ...state.data, racePositionSettings: { ...action.payload } } };
-    case UiActionTypes.RACE_STINT_SHARED_SETTINGS:
-      return { ...state, data: { ...state.data, raceStintSharedSettings: { ...action.payload } } };
+
     default:
       return state;
   }
 };
 
-const ClassificationSettingsReducer = reducerWithInitialState({ pageSize: 20 }).case(
+const initialClassificationSettings: IClassificationSettings = { pageSize: 20 };
+const ClassificationSettingsReducer = reducerWithInitialState(initialClassificationSettings).case(
   UiActions.classificationSettings,
   (state, settings) => ({
     ...settings,
   })
 );
-const MessagesSettingsReducer = reducerWithInitialState({ pageSize: 20 }).case(
+const initialMessagesSettings: IMessagesSettings = { pageSize: 20 };
+const MessagesSettingsReducer = reducerWithInitialState(initialMessagesSettings).case(
   UiActions.messagesSettings,
   (state, settings) => ({
     ...settings,
@@ -178,7 +145,17 @@ const DriverStintsSettingsReducer = reducerWithInitialState(initialDriverStints)
   UiActions.driverStintsSettings,
   (state, settings) => settings
 );
-
+export const defaultStateData: IUserSettings = {
+  classification: initialClassificationSettings,
+  messages: initialMessagesSettings,
+  raceGraph: initialRaceGraphSettings,
+  raceGraphRelative: initialRaceGraphRelativeSettings,
+  racePositions: initialRacePositions,
+  driverLaps: initialDriverLaps,
+  pitstops: initialPitstops,
+  stints: initialStints,
+  driverStints: initialDriverStints,
+};
 const combinedReducers = combineReducers<IUserSettings>({
   classification: ClassificationSettingsReducer,
   messages: MessagesSettingsReducer,

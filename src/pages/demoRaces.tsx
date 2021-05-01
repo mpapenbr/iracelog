@@ -9,7 +9,18 @@ import { sprintf } from "sprintf-js";
 import { globalWamp } from "../commons/globals";
 import { API_CROSSBAR_URL } from "../constants";
 import { ApplicationState } from "../stores";
-import { uiReset } from "../stores/ui/actions";
+import {
+  classificationSettings,
+  driverLapsSettings,
+  driverStintsSettings,
+  messagesSettings,
+  pitstopsSettings,
+  raceGraphRelativeSettings,
+  raceGraphSettings,
+  racePositionsSettings,
+  stintsSettings,
+} from "../stores/ui/actions";
+import { defaultStateData } from "../stores/ui/reducer";
 import {
   connectedToServer,
   reset,
@@ -52,7 +63,7 @@ export const DemoRaces: React.FC<MyProps> = (props: MyProps) => {
         // console.log(manifestData);
         setLoading(true);
         dispatch(reset());
-        dispatch(uiReset());
+        resetUi();
         const mData = JSON.parse(manifestData[0]);
         s.call("racelog.analysis.archive", [arg]).then((data: any) => {
           // console.log(data);
@@ -107,6 +118,18 @@ export const DemoRaces: React.FC<MyProps> = (props: MyProps) => {
     globalWamp.currentLiveId = id;
   };
 
+  const resetUi = () => {
+    dispatch(classificationSettings(defaultStateData.classification));
+    dispatch(messagesSettings(defaultStateData.messages));
+    dispatch(raceGraphSettings(defaultStateData.raceGraph));
+    dispatch(raceGraphRelativeSettings(defaultStateData.raceGraphRelative));
+    dispatch(racePositionsSettings(defaultStateData.racePositions));
+    dispatch(driverLapsSettings(defaultStateData.driverLaps));
+    dispatch(pitstopsSettings(defaultStateData.pitstops));
+    dispatch(stintsSettings(defaultStateData.stints));
+    dispatch(driverStintsSettings(defaultStateData.driverStints));
+  };
+
   const onLiveButtonClicked = (e: React.MouseEvent<HTMLButtonElement>) => {
     const id = e.currentTarget.value as string;
     if (globalWamp.currentLiveId === undefined) {
@@ -124,7 +147,7 @@ export const DemoRaces: React.FC<MyProps> = (props: MyProps) => {
       }
     }
 
-    dispatch(uiReset());
+    resetUi();
     history.push("/analysis");
     // setTimeout(() => setLoading(false), 2000);
   };
@@ -161,18 +184,9 @@ export const DemoRaces: React.FC<MyProps> = (props: MyProps) => {
       }
     }
 
-    dispatch(uiReset());
+    resetUi();
     history.push("/analysis");
     // setTimeout(() => setLoading(false), 2000);
-  };
-
-  const doInfo = (msg: string) => {
-    if ("done".localeCompare(msg) === 0) {
-      dispatch(uiReset());
-      setLoading(false);
-      history.push("/analysis");
-    }
-    setInfo(msg);
   };
 
   const onReloadRequested = () => {
