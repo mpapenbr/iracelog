@@ -4,7 +4,6 @@ import { Route, Switch } from "react-router";
 import { Link } from "react-router-dom";
 import Classification from "../components/live/classification";
 import RaceMessages from "../components/live/raceMessages";
-import RacePositionGraph from "../components/live/racePositionGraph";
 import CarPitstopsNivo from "../components/nivo/carPitstops";
 import CarStintsNivo from "../components/nivo/carStints";
 import RacePositionGraphNivo from "../components/nivo/racePositionGraph";
@@ -73,7 +72,7 @@ export const AnalysisMainPage: React.FC<MyProps> = (props: MyProps) => {
           <Route path="/analysis/raceGraphARecharts" component={RaceGraphRecharts} />
 
           <Route path="/analysis/raceGraphBRecharts" component={RaceGraphByReferenceRecharts} />
-          <Route path="/analysis/racePositions" component={RacePositionGraph} />
+
           <Route path="/analysis/racePositionsNivo" component={RacePositionGraphNivo} />
 
           <Route path="/analysis/driverLapsRecharts" component={DriverLapsRecharts} />

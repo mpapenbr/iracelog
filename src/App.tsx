@@ -4,7 +4,6 @@ import { Provider } from "react-redux";
 import { BrowserRouter as Router, Link, Route, Switch } from "react-router-dom";
 import { Store } from "redux";
 import "./App.css";
-import RaceDetailsFrame from "./components/raceDetails";
 import { API_LOCAL_DEV_MODE } from "./constants";
 import { AnalysisMainPage } from "./pages/analysisPage";
 import { DemoRaces } from "./pages/demoRaces";
@@ -65,7 +64,6 @@ const App: React.FC<AppProps> = (props: AppProps) => {
                 ) : (
                   <></>
                 )}
-                <Route path="/events/details/:id" component={RaceDetailsFrame} />
               </Switch>
             </div>
           </Content>

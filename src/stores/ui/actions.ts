@@ -11,7 +11,6 @@ import {
   IRaceGraphRelativeSettings,
   IRaceGraphSettings,
   IRacePositionsSettings,
-  IRaceStintSharedSettings,
   IStintsSettings,
   UiComponent,
 } from "./types";
@@ -37,14 +36,6 @@ export const uiUpdateBrushSettings = (uiComp: UiComponent, data: IBrushInterval)
   action(UiActionTypes.UPDATE_BRUSH_SETTINGS, { component: uiComp, data: data });
 export const uiSetStintNo = (no: number): IBaseAction => action(UiActionTypes.SET_STINT_NO, no);
 export const uiShowEntryDetails = (carIdx: number): IBaseAction => action(UiActionTypes.SHOW_ENTRY_DETAILS, carIdx);
-export const uiDriverLapsSettings = (settings: IDriverLapsSettings): IBaseAction =>
-  action(UiActionTypes.DRIVER_LAPS_SETTINGS, settings);
-export const uiDriverStintSettings = (settings: IDriverStintsSettings): IBaseAction =>
-  action(UiActionTypes.DRIVER_STINT_SETTINGS, settings);
-export const uiRacePositionSettings = (settings: IRacePositionsSettings): IBaseAction =>
-  action(UiActionTypes.RACE_POSITION_SETTINGS, settings);
-export const uiRaceStintSharedSettings = (settings: IRaceStintSharedSettings): IBaseAction =>
-  action(UiActionTypes.RACE_STINT_SHARED_SETTINGS, settings);
 
 // new actions start here
 const actionCreator = actionCreatorFactory("UI");
