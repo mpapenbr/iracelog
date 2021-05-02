@@ -1,5 +1,6 @@
 import { ReloadOutlined } from "@ant-design/icons";
 import { BulkProcessor } from "@mpapenbr/iracelog-analysis";
+import { defaultProcessRaceStateData, IMessage } from "@mpapenbr/iracelog-analysis/dist/stints/types";
 import { Button, Col, List, Modal, Row } from "antd";
 import autobahn, { Session } from "autobahn";
 import React, { useEffect, useState } from "react";
@@ -8,7 +9,9 @@ import { useHistory } from "react-router";
 import { sprintf } from "sprintf-js";
 import { globalWamp } from "../commons/globals";
 import { API_CROSSBAR_URL } from "../constants";
+import { distributeChanges } from "../processor/processData";
 import { ApplicationState } from "../stores";
+import { updateClassification, updateSessionInfo } from "../stores/racedata/actions";
 import {
   classificationSettings,
   driverLapsSettings,
@@ -26,14 +29,12 @@ import {
   reset,
   setData,
   updateCars,
-  updateFromStateMessage,
   updateManifests,
   updateMessages,
   updatePitstops,
   updateSession,
 } from "../stores/wamp/actions";
 import { postProcessManifest } from "../stores/wamp/reducer";
-import { processJsonFromArchive, readAndProcessData } from "./loadData";
 
 interface IStateProps {}
 interface IDispachProps {
@@ -79,19 +80,38 @@ export const DemoRaces: React.FC<MyProps> = (props: MyProps) => {
     conn.open();
     // setTimeout(() => setLoading(false), 2000);
   };
+  const onChangeSession = (message: IMessage) => {
+    // console.log(message);
+    dispatch(updateSessionInfo(message));
+  };
+  const onChangeClassification = (message: IMessage) => {
+    // console.log(message);
+    dispatch(updateClassification(message));
+  };
   const connectToLiveData = (id: string) => {
     var conn = new autobahn.Connection({ url: API_CROSSBAR_URL + "/ws", realm: "racelog" });
     conn.onopen = (s: Session) => {
-      s.call("racelog.get_manifests", [id]).then((data: any) => {
-        console.log(data);
-        dispatch(updateManifests(data));
-        const manifests = postProcessManifest(data[0]);
-        globalWamp.processor = new BulkProcessor(manifests);
+      s.call("racelog.analysis.live", [id]).then((data: any) => {
+        console.log(data); // we  will always get an array here (due to WAMP)
+        // dispatch(updateManifests(data.manifests)); // these are the "small" manifests
+        const manifests = postProcessManifest(data.manifests);
+        dispatch(setData({ ...data.processedData, manifests: manifests }));
+        globalWamp.processor = new BulkProcessor(manifests, data.processedData);
+        globalWamp.currentData = data.processedData;
+        // globalWamp.processor.process(data.processedData, []); // workaround
       });
       dispatch(connectedToServer());
 
       s.subscribe(sprintf("racelog.state.%s", id), (data) => {
-        dispatch(updateFromStateMessage(data[0]));
+        // dispatch(updateFromStateMessage(data[0]));
+        const theProc = globalWamp.processor;
+        const newData = theProc!.process([data[0]]);
+        distributeChanges({
+          currentData: globalWamp.currentData || defaultProcessRaceStateData,
+          newData: newData,
+          onChangedSession: onChangeSession,
+          onChangedClassification: onChangeClassification,
+        });
         // dispatch(updateSession([data[0].payload.session]));
         // dispatch(updateMessages([data[0].payload.messages]));
         // dispatch(updateCars([data[0].payload.cars]));
@@ -152,43 +172,6 @@ export const DemoRaces: React.FC<MyProps> = (props: MyProps) => {
     // setTimeout(() => setLoading(false), 2000);
   };
 
-  const onLoadAndConnectButtonClicked = (e: React.MouseEvent<HTMLButtonElement>) => {
-    const id = e.currentTarget.value as string;
-    if (globalWamp.currentLiveId === undefined) {
-      readAndProcessData(id, dispatch).then((res: any) => {
-        console.log(res);
-        const { processed, timestamp, newStateData } = res;
-        dispatch(setData(newStateData));
-        console.log("processed " + processed + ". now fetch data after " + timestamp);
-        var conn = new autobahn.Connection({ url: API_CROSSBAR_URL + "/ws", realm: "racelog" });
-        conn.onopen = (s: Session) => {
-          s.call("racelog.archive.get_data", [id, timestamp]).then((data: any) => {
-            console.log(data.length);
-            processJsonFromArchive(data, dispatch);
-            conn.close();
-            connectToLiveData(id);
-          });
-        };
-        conn.open();
-      });
-    } else {
-      if (id.localeCompare(globalWamp.currentLiveId) === 0) {
-        // do nothing - user wanted to connect to current session
-        console.log("ignoring - already connection to session");
-      } else {
-        if (globalWamp.conn !== undefined) {
-          console.log("closing connection");
-          globalWamp.conn.close();
-        }
-        connectToLiveData(id);
-      }
-    }
-
-    resetUi();
-    history.push("/analysis");
-    // setTimeout(() => setLoading(false), 2000);
-  };
-
   const onReloadRequested = () => {
     console.log("fetching current live data providers");
     var conn = new autobahn.Connection({ url: API_CROSSBAR_URL + "/ws", realm: "racelog" });
@@ -222,6 +205,11 @@ export const DemoRaces: React.FC<MyProps> = (props: MyProps) => {
       title: "AI Demo: P217 race at Spa",
       description: "3h race, medium tank, resets, repair stops",
       key: "68d4ff7adbb3412b8da2ab53daf01453",
+    },
+    {
+      title: "NEC 2021 Race #2",
+      description: "Test for Nordschleife",
+      key: "28a7b97ab9aeb613d1c7c75461f3baec",
     },
     {
       title: "NEO Race 6h Barcelona",
@@ -275,9 +263,6 @@ export const DemoRaces: React.FC<MyProps> = (props: MyProps) => {
               actions={[
                 <Button value={item.key} type="default" onClick={onLiveButtonClicked}>
                   Connect
-                </Button>,
-                <Button value={item.key} type="default" onClick={onLoadAndConnectButtonClicked}>
-                  Load & Connect
                 </Button>,
               ]}
             >

@@ -30,7 +30,7 @@ export default Classification;
 
 const Standings: React.FC<{}> = () => {
   const uiSettings = useSelector((state: ApplicationState) => state.userSettings.classification);
-  const carsRaw = useSelector((state: ApplicationState) => (state.wamp.data.cars ? state.wamp.data.cars.data : []));
+  const carsRaw = useSelector((state: ApplicationState) => state.raceData.classification.data);
   const stateCarManifest = useSelector((state: ApplicationState) => state.wamp.data.manifests.car);
   const dispatch = useDispatch();
   const getValue = (d: [], key: string) => getValueViaSpec(d, stateCarManifest, key);
@@ -111,8 +111,10 @@ const Standings: React.FC<{}> = () => {
 };
 
 const SessionInfoData: React.FC<{}> = () => {
-  const sessionData: [] = useSelector((state: ApplicationState) =>
-    state.wamp.data.session ? state.wamp.data.session.data : []
+  const sessionData: [] = useSelector(
+    (state: ApplicationState) =>
+      // state.wamp.data.session ? state.wamp.data.session.data : []
+      state.raceData.sessionInfo.data
   );
 
   if (sessionData.length === 0) return <Empty description="No session data available" />;

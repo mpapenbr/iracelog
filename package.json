@@ -3,7 +3,7 @@
   "version": "0.9.11",
   "private": true,
   "dependencies": {
-    "@mpapenbr/iracelog-analysis": "^1.0.6",
+    "@mpapenbr/iracelog-analysis": "^1.0.9",
     "@nivo/bar": "^0.68.0",
     "@nivo/core": "^0.68.0",
     "@nivo/line": "^0.68.0",

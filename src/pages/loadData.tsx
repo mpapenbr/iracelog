@@ -61,7 +61,7 @@ const processJsonFromArchiveInOneGo = (data: string, manifests: IManifests) => {
     lastTimestamp = x.timestamp;
   }
   // const carsData = collectJson.map((item) => item.cars);
-  const ret = { ...wamp, ...bulkProcess(wamp, manifests, collectJson) };
+  const ret = { ...wamp, ...bulkProcess(manifests, collectJson) };
   console.log("processed " + processed + " entries till timestamp " + lastTimestamp);
   return { processed: processed, timestamp: lastTimestamp, newStateData: ret };
 };

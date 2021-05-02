@@ -34,6 +34,10 @@ const reducer: Reducer<IWampState> = (state = initialState, action) => {
         return { ...state, data: { ...state.data, manifests: postProcessManifest(action.payload[0]) } };
       } else return state;
     }
+    case WampActionTypes.SET_MANIFESTS: {
+      console.log(action.payload);
+      return { ...state, data: { ...state.data, manifests: action.payload } };
+    }
     case WampActionTypes.UPDATE_SESSION: {
       if (Array.isArray(action.payload)) {
         return { ...state, data: { ...state.data, session: action.payload[0] } };
@@ -65,7 +69,7 @@ const reducer: Reducer<IWampState> = (state = initialState, action) => {
       // const { carStints, carPits, carComputeState } = processForStint2(state.data, sessionTime, action.payload.cars);
       // const newCarInfo = processForCarInfo(state.data, sessionTime, action.payload.cars);
 
-      const newData = globalWamp.processor?.process(state.data, [action.payload]);
+      const newData = globalWamp.processor?.process([action.payload]);
       return { ...state, data: { ...state.data, ...newData } };
       // return {
       //   ...state,
