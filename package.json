@@ -47,7 +47,8 @@
     "@types/react-router-dom": "^5.1.6",
     "@types/sprintf-js": "^1.1.2",
     "@types/uuid": "^8.3.0",
-    "@types/victory": "^33.1.4"
+    "@types/victory": "^33.1.4",
+    "ts-jest": "^26.5.6"
   },
   "scripts": {
     "start": "react-scripts start",
@@ -56,6 +57,9 @@
     "eject": "react-scripts eject",
     "preversion": "yarn test",
     "postversion": "git push --tags"
+  },
+  "jest": {
+    "testEnvironment": "node"
   },
   "eslintConfig": {
     "extends": [
