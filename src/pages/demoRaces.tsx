@@ -1,6 +1,13 @@
 import { ReloadOutlined } from "@ant-design/icons";
 import { BulkProcessor } from "@mpapenbr/iracelog-analysis";
-import { defaultProcessRaceStateData, IMessage } from "@mpapenbr/iracelog-analysis/dist/stints/types";
+import {
+  defaultProcessRaceStateData,
+  ICarLaps,
+  ICarPitInfo,
+  ICarStintInfo,
+  IMessage,
+  IRaceGraph,
+} from "@mpapenbr/iracelog-analysis/dist/stints/types";
 import { Button, Col, List, Modal, Row } from "antd";
 import autobahn, { Session } from "autobahn";
 import React, { useEffect, useState } from "react";
@@ -11,7 +18,17 @@ import { globalWamp } from "../commons/globals";
 import { API_CROSSBAR_URL } from "../constants";
 import { distributeChanges } from "../processor/processData";
 import { ApplicationState } from "../stores";
-import { updateClassification, updateSessionInfo } from "../stores/racedata/actions";
+import {
+  updateAvailableCarClasses,
+  updateAvailableCars,
+  updateCarLaps,
+  updateCarPits,
+  updateCarStints,
+  updateClassification,
+  updateRaceGraph,
+  updateSessionInfo,
+} from "../stores/racedata/actions";
+import { ICarBaseData, ICarClass } from "../stores/racedata/types";
 import {
   classificationSettings,
   driverLapsSettings,
@@ -55,7 +72,7 @@ export const DemoRaces: React.FC<MyProps> = (props: MyProps) => {
     onReloadRequested();
   }, [loadTrigger]);
 
-  const onButtonClicked = (e: React.MouseEvent<HTMLButtonElement>) => {
+  const onLoadButtonClicked = (e: React.MouseEvent<HTMLButtonElement>) => {
     const arg = e.currentTarget.value;
     // readData(arg, dispatch, doInfo);
     var conn = new autobahn.Connection({ url: API_CROSSBAR_URL + "/ws", realm: "racelog" });
@@ -69,6 +86,18 @@ export const DemoRaces: React.FC<MyProps> = (props: MyProps) => {
         s.call("racelog.analysis.archive", [arg]).then((data: any) => {
           // console.log(data);
           dispatch(setData(data));
+          distributeChanges({
+            currentData: defaultProcessRaceStateData,
+            newData: data,
+            onChangedSession: onChangeSession,
+            onChangedClassification: onChangeClassification,
+            onChangedAvailableCars: onChangedAvailableCars,
+            onChangedAvailableCarClasses: onChangedAvailableCarClasses,
+            onChangedRaceGraph: onChangeRaceGraph,
+            onChangedCarLaps: onChangeCarLaps,
+            onChangedCarStints: onChangeCarStints,
+            onChangedCarPits: onChangeCarPits,
+          });
           dispatch(updateManifests(mData));
           conn.close();
           setLoading(false);
@@ -88,6 +117,32 @@ export const DemoRaces: React.FC<MyProps> = (props: MyProps) => {
     // console.log(message);
     dispatch(updateClassification(message));
   };
+  const onChangedAvailableCars = (data: ICarBaseData[]) => {
+    // console.log(message);
+    dispatch(updateAvailableCars(data));
+  };
+  const onChangedAvailableCarClasses = (data: ICarClass[]) => {
+    // console.log(message);
+    dispatch(updateAvailableCarClasses(data));
+  };
+
+  const onChangeRaceGraph = (data: IRaceGraph[]) => {
+    // console.log(message);
+    dispatch(updateRaceGraph(data));
+  };
+  const onChangeCarLaps = (data: ICarLaps[]) => {
+    // console.log(message);
+    dispatch(updateCarLaps(data));
+  };
+  const onChangeCarStints = (data: ICarStintInfo[]) => {
+    // console.log(message);
+    dispatch(updateCarStints(data));
+  };
+  const onChangeCarPits = (data: ICarPitInfo[]) => {
+    // console.log(message);
+    dispatch(updateCarPits(data));
+  };
+
   const connectToLiveData = (id: string) => {
     var conn = new autobahn.Connection({ url: API_CROSSBAR_URL + "/ws", realm: "racelog" });
     conn.onopen = (s: Session) => {
@@ -231,7 +286,7 @@ export const DemoRaces: React.FC<MyProps> = (props: MyProps) => {
           renderItem={(item: any) => (
             <List.Item
               actions={[
-                <Button value={item.key} type="default" onClick={onButtonClicked}>
+                <Button value={item.key} type="default" onClick={onLoadButtonClicked}>
                   Load
                 </Button>,
               ]}

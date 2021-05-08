@@ -7,6 +7,7 @@ import {
   IStintInfo,
 } from "@mpapenbr/iracelog-analysis/dist/stints/types";
 import _ from "lodash";
+import { ICarBaseData, ICarClass } from "../../stores/racedata/types";
 import { sortCarNumberStr } from "../../utils/output";
 
 export interface ICarFilterData {
@@ -36,6 +37,7 @@ export interface IExtractedCarData {
  * extracts some data around cars
  * @param wampData
  * @returns
+ * @deprecated since it is based on "old" data structure. To be removed
  */
 export const extractSomeCarData = (wampData: IProcessRaceStateData): IExtractedCarData => {
   const carInfoLookup = wampData.carInfo.reduce((m, cur) => {
@@ -131,4 +133,32 @@ export const getCarPitStops = (carPitstops: ICarPitInfo[], carNum: string): IPit
   if (found) {
     return [...found.history].concat(found.current.isCurrentPitstop ? found.current : []);
   } else return [];
+};
+
+/**
+ *
+ * @param carInfo as provided by BulkProcessor
+ * @returns list of cars (sorted by carNum)
+ */
+export const extractCarBaseData = (carInfo: ICarInfo[]): ICarBaseData[] => {
+  return carInfo
+    .map((v) => ({ carNum: v.carNum, name: v.name, carClass: v.carClass }))
+    .sort((a, b) => sortCarNumberStr(a.carNum, b.carNum));
+};
+
+/**
+ *
+ * @param carInfo as provided by BulkProcessor
+ * @returns list of car classes  (sorted by name)
+ */
+export const extractCarClasses = (carInfo: ICarInfo[]): ICarClass[] => {
+  const names = carInfo
+    .map((v) => v.carClass)
+    .reduce((prev, cur) => {
+      prev.add(cur);
+      return prev;
+    }, new Set<string>());
+  return Array.from(names)
+    .sort()
+    .map((v) => ({ name: v }));
 };
