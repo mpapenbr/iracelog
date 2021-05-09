@@ -3,7 +3,7 @@ import * as React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { sprintf } from "sprintf-js";
 import CarFilter from "../components/live/carFilter";
-import { processCarClassSelectionNew } from "../components/live/util";
+import { collectCarsByCarClassFilter, processCarClassSelectionNew } from "../components/live/util";
 import DriverLapsRecharts from "../components/recharts/driverLaps";
 import { ApplicationState } from "../stores";
 import { driverLapsSettings } from "../stores/ui/actions";
@@ -16,7 +16,7 @@ export const DriverLapsContainer: React.FC<{}> = () => {
   const showCars = useSelector((state: ApplicationState) => state.userSettings.driverLaps.showCars);
   const filterCarClasses = useSelector((state: ApplicationState) => state.userSettings.driverLaps.filterCarClasses);
   const dispatch = useDispatch();
-
+  const selectableCars = userSettings.selectableCars.length > 0 ? userSettings.selectableCars : cars;
   const onSelectCarClassChange = (values: string[]) => {
     const newShowcars = processCarClassSelectionNew({
       cars: cars,
@@ -24,7 +24,11 @@ export const DriverLapsContainer: React.FC<{}> = () => {
       currentShowCars: userSettings.showCars,
       newSelection: values,
     });
-    const curSettings = { ...userSettings, filterCarClasses: values, showCars: newShowcars };
+    const curSettings = {
+      ...userSettings,
+      filterCarClasses: values,
+      selectableCars: collectCarsByCarClassFilter(cars, values),
+    };
     dispatch(driverLapsSettings(curSettings));
   };
 
@@ -34,7 +38,7 @@ export const DriverLapsContainer: React.FC<{}> = () => {
   };
 
   const props = {
-    availableCars: cars,
+    availableCars: selectableCars,
     availableClasses: carClasses.map((v) => v.name),
     selectedCars: showCars,
     selectedCarClasses: filterCarClasses,

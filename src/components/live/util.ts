@@ -159,6 +159,13 @@ export const processCarClassSelectionNew = (args: ICarClassProcessorArgs2): stri
   }
 };
 
+export const collectCarsByCarClassFilter = (cars: ICarBaseData[], filterCarClasses: string[]): ICarBaseData[] => {
+  if (filterCarClasses === undefined) return cars;
+  if (filterCarClasses.length === 0 || filterCarClasses === ["All"]) {
+    return cars;
+  }
+  return cars.filter((c) => filterCarClasses.find((cc) => cc === c.carClass));
+};
 /**
  * convenience method to combine history and current stint
  * @param carStints all available car stint data
