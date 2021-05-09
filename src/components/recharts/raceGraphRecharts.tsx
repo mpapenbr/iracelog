@@ -1,16 +1,15 @@
 import { IRaceGraph } from "@mpapenbr/iracelog-analysis/dist/stints/types";
-import { Checkbox, Col, Empty, InputNumber, Row, Spin } from "antd";
+import { Col, Empty, Row, Spin } from "antd";
 import _, { isNumber } from "lodash";
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Brush, CartesianGrid, Legend, Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 import { sprintf } from "sprintf-js";
 import { ApplicationState } from "../../stores";
-import { raceGraphSettings, uiUpdateBrushSettings } from "../../stores/ui/actions";
+import { uiUpdateBrushSettings } from "../../stores/ui/actions";
 import { IBrushInterval, UiComponent } from "../../stores/ui/types";
-import CarFilter from "../live/carFilter";
 import { strokeColors } from "../live/colors";
-import { computeAvailableCars, extractSomeCarData, processCarClassSelection } from "../live/util";
+import { extractSomeCarData2 } from "../live/util";
 
 interface IGraphData {
   carNum: string;
@@ -19,10 +18,12 @@ interface IGraphData {
 }
 
 const RaceGraphRecharts: React.FC<{}> = () => {
-  const wamp = useSelector((state: ApplicationState) => state.wamp.data);
+  //const wamp = useSelector((state: ApplicationState) => state.wamp.data);
   const uiSettingsAll = useSelector((state: ApplicationState) => state.ui.data.raceGraphSettings);
   const uiSettings = useSelector((state: ApplicationState) => state.userSettings.raceGraph);
-  const raceGraph = useSelector((state: ApplicationState) => state.wamp.data.raceGraph);
+  const raceGraph = useSelector((state: ApplicationState) => state.raceData.raceGraph);
+  const carInfos = useSelector((state: ApplicationState) => state.raceData.carInfo);
+
   const dispatch = useDispatch();
   // this little trick handles the fetching of brushInterval from state, let it be changed here and on leaving this Element store the values in the redux state.
   let brushKeeper: IBrushInterval = { ...uiSettingsAll.brushRange };
@@ -34,15 +35,15 @@ const RaceGraphRecharts: React.FC<{}> = () => {
     };
   }, []);
 
-  const carDataContainer = extractSomeCarData(wamp);
+  const carDataContainer = extractSomeCarData2(carInfos);
   const { carInfoLookup, allCarNums, allCarClasses } = carDataContainer;
-  const availableCars = computeAvailableCars(carDataContainer, uiSettings.filterCarClasses);
+  // const availableCars = computeAvailableCars(carDataContainer, uiSettings.filterCarClasses);
 
-  if (wamp.raceGraph.length === 0) {
+  if (raceGraph.length === 0) {
     return <Spin />;
   }
 
-  const dataLookup = wamp.raceGraph.reduce((prev, cur) => {
+  const dataLookup = raceGraph.reduce((prev, cur) => {
     let entry = prev.get(cur.carClass);
     if (entry !== undefined) {
       prev.set(cur.carClass, entry.concat(cur));
@@ -111,34 +112,6 @@ const RaceGraphRecharts: React.FC<{}> = () => {
 
   const colorCode = (carNum: string): string => {
     return strokeColors[allCarNums.indexOf(carNum) % strokeColors.length];
-  };
-
-  const onSelectShowCars = (value: any) => {
-    const curSettings = { ...uiSettings, showCars: value as string[] };
-    dispatch(raceGraphSettings(curSettings));
-  };
-
-  const onSelectCarClassChange = (value: string[]) => {
-    // get removed car classes
-
-    const newShowcars = processCarClassSelection({
-      carDataContainer: carDataContainer,
-      currentFilter: uiSettings.filterCarClasses,
-      currentShowCars: uiSettings.showCars,
-      newSelection: value,
-    });
-    const curSettings = { ...uiSettings, filterCarClasses: value, showCars: newShowcars };
-    dispatch(raceGraphSettings(curSettings));
-  };
-
-  const onCheckboxChange = () => {
-    const curSettings = { ...uiSettings, gapRelativeToClassLeader: !uiSettings.gapRelativeToClassLeader };
-    dispatch(raceGraphSettings(curSettings));
-  };
-
-  const onDeltaRangeChange = (value: any) => {
-    const curSettings = { ...uiSettings, deltaRange: value };
-    dispatch(raceGraphSettings(curSettings));
   };
 
   var timerId: any;
@@ -226,36 +199,6 @@ const RaceGraphRecharts: React.FC<{}> = () => {
 
   return (
     <>
-      <Row gutter={16}>
-        <CarFilter
-          availableCars={availableCars}
-          availableClasses={allCarClasses}
-          selectedCars={uiSettings.showCars}
-          selectedCarClasses={uiSettings.filterCarClasses}
-          onSelectCarFilter={onSelectShowCars}
-          onSelectCarClassFilter={onSelectCarClassChange}
-        />
-        <Col span={4}>
-          <InputNumber
-            defaultValue={uiSettings.deltaRange}
-            precision={0}
-            step={10}
-            min={0}
-            formatter={(v) => sprintf("%d sec", v)}
-            parser={(v) => (v !== undefined ? parseInt(v.replace("sec", "")) : 0)}
-            onChange={onDeltaRangeChange}
-          />
-        </Col>
-        <Col span={3}>
-          <Checkbox
-            defaultChecked={uiSettings.gapRelativeToClassLeader}
-            checked={uiSettings.gapRelativeToClassLeader}
-            onChange={onCheckboxChange}
-          >
-            Gaps relative to class leader
-          </Checkbox>
-        </Col>
-      </Row>
       {uiSettings.showCars.length === 0 ? (
         <Empty description="Select single cars or car classes from the above selectors" />
       ) : (

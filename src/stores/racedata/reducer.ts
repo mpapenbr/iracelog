@@ -1,4 +1,5 @@
 import {
+  ICarInfo,
   ICarLaps,
   ICarPitInfo,
   ICarStintInfo,
@@ -19,9 +20,11 @@ export interface IRaceData {
   sessionInfo: IMessage;
   classification: IMessage;
   raceGraph: IRaceGraph[];
+  carInfo: ICarInfo[];
   carLaps: ICarLaps[];
   carStints: ICarStintInfo[];
   carPits: ICarPitInfo[];
+  infoMessages: IMessage[];
 }
 
 // available cars
@@ -37,6 +40,11 @@ export const AvailableCarClassesReducer = reducerWithInitialState(
   [] as ICarClass[]
 ).case(RaceActions.updateAvailableCarClasses, (state, classes) => [...classes]);
 
+// car info
+export const CarInfoReducer = reducerWithInitialState([] as ICarInfo[]).case(
+  RaceActions.updateCarInfo,
+  (state, data) => [...data]
+);
 // race graph
 export const RaceGraphReducer = reducerWithInitialState([] as IRaceGraph[]).case(
   RaceActions.updateRaceGraph,
@@ -79,15 +87,24 @@ export const ClassificationReducer = reducerWithInitialState(initialClassificati
   })
 );
 
+// info messages
+
+export const InfoMessagesReducer = reducerWithInitialState([] as IMessage[]).case(
+  RaceActions.updateInfoMessages,
+  (state, arg) => [...arg]
+);
+
 const combinedReducers = combineReducers<IRaceData>({
   availableCars: AvailableCarsReducer,
   availableCarClasses: AvailableCarClassesReducer,
   sessionInfo: SessionInfoReducer,
   classification: ClassificationReducer,
   raceGraph: RaceGraphReducer,
+  carInfo: CarInfoReducer,
   carLaps: CarLapsReducer,
   carStints: CarStintsReducer,
   carPits: CarPitsReducer,
+  infoMessages: InfoMessagesReducer,
 });
 
 export { combinedReducers as raceDataReducers };

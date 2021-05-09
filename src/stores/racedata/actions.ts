@@ -1,4 +1,5 @@
 import {
+  ICarInfo,
   ICarLaps,
   ICarPitInfo,
   ICarStintInfo,
@@ -16,6 +17,9 @@ export const updateAvailableCars = actionCreator<ICarBaseData[]>("UPDATE_AVAILAB
 // available car classes
 export const updateAvailableCarClasses = actionCreator<ICarClass[]>("UPDATE_AVAILABLE_CAR_CLASSES");
 
+// car info
+export const updateCarInfo = actionCreator<ICarInfo[]>("UPDATE_CAR_INFO");
+
 // session info
 export const updateSessionInfo = actionCreator<IMessage>("UPDATE_SESSION_INFO");
 // classification
@@ -29,3 +33,5 @@ export const updateCarLaps = actionCreator<ICarLaps[]>("UPDATE_CAR_LAPS");
 export const updateCarStints = actionCreator<ICarStintInfo[]>("UPDATE_CAR_STINTS");
 // car stints
 export const updateCarPits = actionCreator<ICarPitInfo[]>("UPDATE_CAR_PITS");
+// info messages
+export const updateInfoMessages = actionCreator<IMessage[]>("UPDATE_INFO_MESSAGES");

@@ -2,14 +2,17 @@ import { ReloadOutlined } from "@ant-design/icons";
 import { BulkProcessor } from "@mpapenbr/iracelog-analysis";
 import {
   defaultProcessRaceStateData,
+  ICarInfo,
   ICarLaps,
   ICarPitInfo,
   ICarStintInfo,
   IMessage,
+  IProcessRaceStateData,
   IRaceGraph,
 } from "@mpapenbr/iracelog-analysis/dist/stints/types";
 import { Button, Col, List, Modal, Row } from "antd";
 import autobahn, { Session } from "autobahn";
+import _ from "lodash";
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useHistory } from "react-router";
@@ -21,10 +24,12 @@ import { ApplicationState } from "../stores";
 import {
   updateAvailableCarClasses,
   updateAvailableCars,
+  updateCarInfo,
   updateCarLaps,
   updateCarPits,
   updateCarStints,
   updateClassification,
+  updateInfoMessages,
   updateRaceGraph,
   updateSessionInfo,
 } from "../stores/racedata/actions";
@@ -85,19 +90,8 @@ export const DemoRaces: React.FC<MyProps> = (props: MyProps) => {
         const mData = JSON.parse(manifestData[0]);
         s.call("racelog.analysis.archive", [arg]).then((data: any) => {
           // console.log(data);
-          dispatch(setData(data));
-          distributeChanges({
-            currentData: defaultProcessRaceStateData,
-            newData: data,
-            onChangedSession: onChangeSession,
-            onChangedClassification: onChangeClassification,
-            onChangedAvailableCars: onChangedAvailableCars,
-            onChangedAvailableCarClasses: onChangedAvailableCarClasses,
-            onChangedRaceGraph: onChangeRaceGraph,
-            onChangedCarLaps: onChangeCarLaps,
-            onChangedCarStints: onChangeCarStints,
-            onChangedCarPits: onChangeCarPits,
-          });
+          // dispatch(setData(data)); // to be removed!
+          doDistribute(defaultProcessRaceStateData, data);
           dispatch(updateManifests(mData));
           conn.close();
           setLoading(false);
@@ -117,17 +111,26 @@ export const DemoRaces: React.FC<MyProps> = (props: MyProps) => {
     // console.log(message);
     dispatch(updateClassification(message));
   };
+
+  const onChangeInfoMessages = (data: IMessage[]) => {
+    console.log("onChangeInfoMessages: " + data.length);
+    dispatch(updateInfoMessages(data));
+  };
   const onChangedAvailableCars = (data: ICarBaseData[]) => {
-    // console.log(message);
+    console.log("onChangedAvailableCars: " + data.length);
     dispatch(updateAvailableCars(data));
   };
   const onChangedAvailableCarClasses = (data: ICarClass[]) => {
-    // console.log(message);
+    console.log("onChangedAvailableCarClasses: " + data.length);
     dispatch(updateAvailableCarClasses(data));
   };
 
-  const onChangeRaceGraph = (data: IRaceGraph[]) => {
+  const onChangeCarInfos = (data: ICarInfo[]) => {
     // console.log(message);
+    dispatch(updateCarInfo(data));
+  };
+  const onChangeRaceGraph = (data: IRaceGraph[]) => {
+    console.log("onChangeRaceGraph: " + data.length);
     dispatch(updateRaceGraph(data));
   };
   const onChangeCarLaps = (data: ICarLaps[]) => {
@@ -135,16 +138,35 @@ export const DemoRaces: React.FC<MyProps> = (props: MyProps) => {
     dispatch(updateCarLaps(data));
   };
   const onChangeCarStints = (data: ICarStintInfo[]) => {
-    // console.log(message);
+    // console.log("onChangeCarStints:" + data.length);
     dispatch(updateCarStints(data));
   };
   const onChangeCarPits = (data: ICarPitInfo[]) => {
     // console.log(message);
+    // console.log("onChangeCarPits:" + data.length);
     dispatch(updateCarPits(data));
+  };
+
+  const doDistribute = (currentData: IProcessRaceStateData, newData: IProcessRaceStateData) => {
+    distributeChanges({
+      currentData: currentData,
+      newData: newData,
+      onChangedSession: onChangeSession,
+      onChangedClassification: onChangeClassification,
+      onChangedAvailableCars: onChangedAvailableCars,
+      onChangedAvailableCarClasses: onChangedAvailableCarClasses,
+      onChangedRaceGraph: onChangeRaceGraph,
+      onChangedCarInfos: onChangeCarInfos,
+      onChangedCarLaps: onChangeCarLaps,
+      onChangedCarStints: onChangeCarStints,
+      onChangedCarPits: onChangeCarPits,
+      onChangedInfoMessages: onChangeInfoMessages,
+    });
   };
 
   const connectToLiveData = (id: string) => {
     var conn = new autobahn.Connection({ url: API_CROSSBAR_URL + "/ws", realm: "racelog" });
+
     conn.onopen = (s: Session) => {
       s.call("racelog.analysis.live", [id]).then((data: any) => {
         console.log(data); // we  will always get an array here (due to WAMP)
@@ -152,6 +174,8 @@ export const DemoRaces: React.FC<MyProps> = (props: MyProps) => {
         const manifests = postProcessManifest(data.manifests);
         dispatch(setData({ ...data.processedData, manifests: manifests }));
         globalWamp.processor = new BulkProcessor(manifests, data.processedData);
+
+        doDistribute(defaultProcessRaceStateData, data.processedData);
         globalWamp.currentData = data.processedData;
         // globalWamp.processor.process(data.processedData, []); // workaround
       });
@@ -160,13 +184,26 @@ export const DemoRaces: React.FC<MyProps> = (props: MyProps) => {
       s.subscribe(sprintf("racelog.state.%s", id), (data) => {
         // dispatch(updateFromStateMessage(data[0]));
         const theProc = globalWamp.processor;
+        // important, otherwise we don't detect changes on carLaps,carStints,.... (all those Array.from(...) attrs of BulkProcessor)
+        // raceGraph would be ok though. Needs further investigation
+        const curData = _.cloneDeep(globalWamp.currentData!);
+        // const merk = globalWamp.currentData?.carLaps[0].laps.length;
+        // const bigMerk = [...curData!.carLaps[0].laps];
         const newData = theProc!.process([data[0]]);
-        distributeChanges({
-          currentData: globalWamp.currentData || defaultProcessRaceStateData,
-          newData: newData,
-          onChangedSession: onChangeSession,
-          onChangedClassification: onChangeClassification,
-        });
+        // console.log(
+        //   "merk: " +
+        //     merk +
+        //     "bigMerk: " +
+        //     bigMerk.length +
+        //     " curData: " +
+        //     curData!.carLaps[0].laps.length +
+        //     " current:" +
+        //     globalWamp.currentData?.carLaps[0].laps.length +
+        //     " new: " +
+        //     newData.carLaps[0].laps.length
+        // );
+        doDistribute(curData, newData);
+        globalWamp.currentData = { ...newData };
         // dispatch(updateSession([data[0].payload.session]));
         // dispatch(updateMessages([data[0].payload.messages]));
         // dispatch(updateCars([data[0].payload.cars]));

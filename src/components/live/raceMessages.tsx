@@ -15,7 +15,7 @@ interface IInfoMsgData {
 }
 const RaceMessages: React.FC<{}> = () => {
   const uiSettings = useSelector((state: ApplicationState) => state.userSettings.messages);
-  const infoMsgRaw = useSelector((state: ApplicationState) => state.wamp.data.infoMsgs);
+  const infoMsgRaw = useSelector((state: ApplicationState) => state.raceData.infoMessages);
   const dispatch = useDispatch();
   // each entry in infoMsgRaw is an array with messages, which needs to be flatten for the list
   const data = [...infoMsgRaw].reverse().reduce((work, current) => {

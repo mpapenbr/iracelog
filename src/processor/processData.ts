@@ -1,4 +1,5 @@
 import {
+  ICarInfo,
   ICarLaps,
   ICarPitInfo,
   ICarStintInfo,
@@ -18,10 +19,12 @@ export interface IProcessingInfo {
   onChangedClassification?: (s: IMessage) => void;
   onChangedAvailableCars?: (newData: ICarBaseData[]) => void;
   onChangedAvailableCarClasses?: (newData: ICarClass[]) => void;
+  onChangedCarInfos?: (newData: ICarInfo[]) => void;
   onChangedRaceGraph?: (newData: IRaceGraph[]) => void;
   onChangedCarLaps?: (newData: ICarLaps[]) => void;
   onChangedCarStints?: (newData: ICarStintInfo[]) => void;
   onChangedCarPits?: (newData: ICarPitInfo[]) => void;
+  onChangedInfoMessages?: (newData: IMessage[]) => void;
 }
 export const distributeChanges = (args: IProcessingInfo) => {
   // session
@@ -47,6 +50,7 @@ export const distributeChanges = (args: IProcessingInfo) => {
 
   // available cars / car classes
   if (!_.isEmpty(diff(args.currentData.carInfo, args.newData.carInfo))) {
+    if (args.onChangedCarInfos) args.onChangedCarInfos(args.newData.carInfo);
     const baseCurrent = extractCarBaseData(args.currentData.carInfo);
     const baseNew = extractCarBaseData(args.newData.carInfo);
     if (!_.isEmpty(diff(baseNew, baseCurrent))) {
@@ -75,5 +79,9 @@ export const distributeChanges = (args: IProcessingInfo) => {
   // carPits
   if (!_.isEmpty(diff(args.currentData.carPits, args.newData.carPits))) {
     if (args.onChangedCarPits) args.onChangedCarPits(args.newData.carPits);
+  }
+  // info messages
+  if (!_.isEmpty(diff(args.currentData.infoMsgs, args.newData.infoMsgs))) {
+    if (args.onChangedInfoMessages) args.onChangedInfoMessages(args.newData.infoMsgs);
   }
 };
