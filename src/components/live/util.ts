@@ -7,6 +7,7 @@ import {
   IStintInfo,
 } from "@mpapenbr/iracelog-analysis/dist/stints/types";
 import _ from "lodash";
+import { ICarBaseData, ICarClass } from "../../stores/racedata/types";
 import { sortCarNumberStr } from "../../utils/output";
 
 export interface ICarFilterData {
@@ -36,6 +37,7 @@ export interface IExtractedCarData {
  * extracts some data around cars
  * @param wampData
  * @returns
+ * @deprecated since it is based on "old" data structure. To be removed
  */
 export const extractSomeCarData = (wampData: IProcessRaceStateData): IExtractedCarData => {
   const carInfoLookup = wampData.carInfo.reduce((m, cur) => {
@@ -46,6 +48,24 @@ export const extractSomeCarData = (wampData: IProcessRaceStateData): IExtractedC
   ).sort();
 
   const allCarNums = wampData.carLaps.length > 0 ? wampData.carLaps.map((v) => v.carNum).sort(sortCarNumberStr) : [];
+  return { carInfoLookup: carInfoLookup, allCarNums: allCarNums, allCarClasses: carClasses };
+};
+
+/**
+ * extracts some data around cars
+ * @param carInfo
+ * @returns processed
+
+ */
+export const extractSomeCarData2 = (carInfo: ICarInfo[]): IExtractedCarData => {
+  const carInfoLookup = carInfo.reduce((m, cur) => {
+    return m.set(cur.carNum, cur);
+  }, new Map<string, ICarInfo>());
+  const carClasses = _.uniq(
+    carInfo.filter((v) => "".localeCompare(v.carClass || "") !== 0).map((v) => v.carClass)
+  ).sort();
+
+  const allCarNums = carInfo.length > 0 ? carInfo.map((v) => v.carNum).sort(sortCarNumberStr) : [];
   return { carInfoLookup: carInfoLookup, allCarNums: allCarNums, allCarClasses: carClasses };
 };
 
@@ -84,6 +104,7 @@ interface ICarClassProcessorArgs {
  * can be called when the user changes the car class filter.
  * @param args
  * @returns
+ * @deprecated use new variant
  */
 export const processCarClassSelection = (args: ICarClassProcessorArgs): string[] => {
   if (args.newSelection.findIndex((v) => "All".localeCompare(v) === 0) !== -1) {
@@ -103,6 +124,36 @@ export const processCarClassSelection = (args: ICarClassProcessorArgs): string[]
         addedClasses.has(args.carDataContainer.carInfoLookup.get(carNum)!.carClass)
       )
     );
+    newShowcars = _.uniq(newShowcars).sort(sortCarNumberStr);
+    return newShowcars;
+  }
+};
+
+interface ICarClassProcessorArgs2 {
+  newSelection: string[];
+  currentFilter: string[];
+  currentShowCars: string[];
+  cars: ICarBaseData[];
+}
+export const processCarClassSelectionNew = (args: ICarClassProcessorArgs2): string[] => {
+  if (args.newSelection.find((v) => "All" === v)) {
+    const ret = [...args.cars.map((v) => v.carNum)];
+    ret.sort(sortCarNumberStr);
+    return ret;
+  } else {
+    const lookup: Map<string, ICarBaseData> = args.cars.reduce((a, b) => {
+      a.set(b.carNum, b);
+      return a;
+    }, new Map<string, ICarBaseData>());
+    const removedClasses = new Set(_.difference(args.currentFilter, args.newSelection));
+    _.remove(args.currentShowCars, (carNum) => removedClasses.has(lookup.get(carNum)!.carClass));
+    // get added car classes
+    const addedClasses = new Set(_.difference(args.newSelection, args.currentFilter));
+    let newShowcars = _.concat(
+      args.currentShowCars,
+      args.cars.filter((c) => addedClasses.has(c.carClass)).map((c) => c.carNum)
+    );
+
     newShowcars = _.uniq(newShowcars).sort(sortCarNumberStr);
     return newShowcars;
   }
@@ -131,4 +182,32 @@ export const getCarPitStops = (carPitstops: ICarPitInfo[], carNum: string): IPit
   if (found) {
     return [...found.history].concat(found.current.isCurrentPitstop ? found.current : []);
   } else return [];
+};
+
+/**
+ *
+ * @param carInfo as provided by BulkProcessor
+ * @returns list of cars (sorted by carNum)
+ */
+export const extractCarBaseData = (carInfo: ICarInfo[]): ICarBaseData[] => {
+  return carInfo
+    .map((v) => ({ carNum: v.carNum, name: v.name, carClass: v.carClass }))
+    .sort((a, b) => sortCarNumberStr(a.carNum, b.carNum));
+};
+
+/**
+ *
+ * @param carInfo as provided by BulkProcessor
+ * @returns list of car classes  (sorted by name)
+ */
+export const extractCarClasses = (carInfo: ICarInfo[]): ICarClass[] => {
+  const names = carInfo
+    .map((v) => v.carClass)
+    .reduce((prev, cur) => {
+      prev.add(cur);
+      return prev;
+    }, new Set<string>());
+  return Array.from(names)
+    .sort()
+    .map((v) => ({ name: v }));
 };

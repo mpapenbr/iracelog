@@ -1,14 +1,10 @@
 import { ResponsiveLine } from "@nivo/line";
-import { Checkbox, Col, Empty, Row, Spin } from "antd";
-import _ from "lodash";
+import { Col, Empty, Row, Spin } from "antd";
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { ApplicationState } from "../../stores";
-import { uiRacePositionSettings } from "../../stores/ui/actions";
 import { IRaceGraph } from "../../stores/wamp/types";
 import { sortCarNumberStr } from "../../utils/output";
-import CarFilter from "../live/carFilter";
-import { computeAvailableCars, extractSomeCarData, processCarClassSelection } from "../live/util";
 
 interface IGraphData {
   x: number;
@@ -16,26 +12,17 @@ interface IGraphData {
 }
 
 const RacePositionGraphNivo: React.FC<{}> = () => {
-  const wamp = useSelector((state: ApplicationState) => state.wamp.data);
-  const uiSettings = useSelector((state: ApplicationState) => state.ui.data.racePositionSettings);
-  const raceGraph = useSelector((state: ApplicationState) => state.wamp.data.raceGraph);
+  // const wamp = useSelector((state: ApplicationState) => state.wamp.data);
+  const uiSettings = useSelector((state: ApplicationState) => state.userSettings.racePositions);
+  const raceGraph = useSelector((state: ApplicationState) => state.raceData.raceGraph);
   const dispatch = useDispatch();
 
-  const carDataContainer = extractSomeCarData(wamp);
-  const { carInfoLookup, allCarNums, allCarClasses } = carDataContainer;
-  const availableCars = computeAvailableCars(carDataContainer, uiSettings.filterCarClasses);
-
-  if (wamp.raceGraph.length === 0) {
+  if (raceGraph.length === 0) {
     return <Spin />;
   }
   const carOrder = [...uiSettings.showCars].sort(sortCarNumberStr).reverse();
-  const carClassesFromShowCars = _.uniq([
-    uiSettings.showCars
-      .map((carNum) => carInfoLookup.get(carNum)!.carClass)
-      .filter((v) => "".localeCompare(v || "") === 0),
-    "overall", // we need then allways
-  ]).sort();
-  const dataLookup = wamp.raceGraph.reduce((prev, cur) => {
+
+  const dataLookup = raceGraph.reduce((prev, cur) => {
     let entry = prev.get(cur.carClass);
     if (entry !== undefined) {
       prev.set(cur.carClass, entry.concat(cur));
@@ -59,24 +46,6 @@ const RacePositionGraphNivo: React.FC<{}> = () => {
   };
 
   const posData = carOrder.map((carNum) => ({ id: "#" + carNum, data: dataForCar(carNum) }));
-
-  const onSelectShowCars = (value: any) => {
-    dispatch(uiRacePositionSettings({ ...uiSettings, showCars: value as string[] }));
-  };
-
-  const onSelectCarClassChange = (value: string[]) => {
-    const newShowcars = processCarClassSelection({
-      carDataContainer: carDataContainer,
-      currentFilter: uiSettings.filterCarClasses,
-      currentShowCars: uiSettings.showCars,
-      newSelection: value,
-    });
-    dispatch(uiRacePositionSettings({ ...uiSettings, filterCarClasses: value, showCars: newShowcars }));
-  };
-
-  const onCheckboxChange = () => {
-    dispatch(uiRacePositionSettings({ ...uiSettings, showPosInClass: !uiSettings.showPosInClass }));
-  };
 
   const data = [
     { id: "#99", data: [1, 1, 2, 25].map((v, idx) => ({ x: idx + 1, y: v })) },
@@ -138,25 +107,6 @@ const RacePositionGraphNivo: React.FC<{}> = () => {
 
   return (
     <>
-      <Row gutter={16}>
-        <CarFilter
-          availableCars={availableCars}
-          availableClasses={allCarClasses}
-          selectedCars={uiSettings.showCars}
-          selectedCarClasses={uiSettings.filterCarClasses}
-          onSelectCarFilter={onSelectShowCars}
-          onSelectCarClassFilter={onSelectCarClassChange}
-        />
-        <Col span={3}>
-          <Checkbox
-            defaultChecked={uiSettings.showPosInClass}
-            checked={uiSettings.showPosInClass}
-            onChange={onCheckboxChange}
-          >
-            Show position in class
-          </Checkbox>
-        </Col>
-      </Row>
       {uiSettings.showCars.length === 0 ? (
         <Empty description="Select single cars or car classes from the above selectors" />
       ) : (

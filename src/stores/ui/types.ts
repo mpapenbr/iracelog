@@ -28,7 +28,7 @@ export interface IDriverLapsSettings {
   brushInterval?: IBrushInterval;
 }
 export interface IRaceGraphRelativeSettings {
-  referenceCarNum: string;
+  referenceCarNum?: string;
   showCars: string[];
   filterCarClasses: string[]; // empty = all classes, otherwise only selected
   deltaRange: number; // used in both direction (positive and negativ to reference)
@@ -41,11 +41,20 @@ export interface IRaceGraphSettings {
   deltaRange: number; // used in both direction (positive and negativ to reference)
   brushInterval?: IBrushInterval;
 }
-export interface IRacePositionSettings {
+export interface IRacePositionsSettings {
   showCars: string[];
   filterCarClasses: string[]; // empty = all classes, otherwise only selected
   showPosInClass: boolean; // if true, show position in class
   brushInterval?: IBrushInterval;
+}
+export interface IPitstopsSettings {
+  showCars: string[];
+  filterCarClasses: string[]; // empty = all classes, otherwise only selected
+}
+export interface IStintsSettings {
+  showCars: string[];
+  filterCarClasses: string[]; // empty = all classes, otherwise only selected
+  showAsLabel: string;
 }
 export interface IRaceStintSharedSettings {
   showCars: string[];
@@ -53,7 +62,7 @@ export interface IRaceStintSharedSettings {
   showAsLabel: string;
   brushInterval?: IBrushInterval;
 }
-export interface IDriverStintSettings {
+export interface IDriverStintsSettings {
   carNum: string;
   filterCarClasses: string[]; // empty = all classes, otherwise only selected
   filterSecs: number;
@@ -80,9 +89,21 @@ export interface IUiData {
     standard: IRaceGraphSettings;
     brushRange?: IBrushInterval; // see above
   };
-  racePositionSettings: IRacePositionSettings;
+  racePositionSettings: IRacePositionsSettings;
   raceStintSharedSettings: IRaceStintSharedSettings;
-  driverStintSettings: IDriverStintSettings;
+  driverStintSettings: IDriverStintsSettings;
+}
+
+export interface IUserSettings {
+  classification: IClassificationSettings;
+  messages: IMessagesSettings;
+  raceGraph: IRaceGraphSettings;
+  raceGraphRelative: IRaceGraphRelativeSettings;
+  racePositions: IRacePositionsSettings;
+  driverLaps: IDriverLapsSettings;
+  pitstops: IPitstopsSettings;
+  stints: IStintsSettings;
+  driverStints: IDriverStintsSettings;
 }
 
 export const defaultUiData: IUiData = {

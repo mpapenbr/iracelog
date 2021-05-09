@@ -24,7 +24,7 @@ const CarFilter: React.FC<MyProps> = (props: MyProps) => {
     </Option>
   ));
   const carClassOptions = _.concat(props.availableClasses, "All").map((d) => (
-    <Option key={_.uniqueId()} value={d}>
+    <Option key={d} value={d}>
       {d}
     </Option>
   ));

@@ -6,6 +6,7 @@ export enum WampActionTypes {
   CONNECTED = "@@wamp/CONNECTED",
 
   UPDATE_MANIFESTS = "@@wamp/UPDATE_MANIFESTS",
+  SET_MANIFESTS = "@@wamp/SET_MANIFESTS",
 
   UPDATE_SESSION = "@@wamp/UPDATE_SESSION",
   UPDATE_MESSAGES = "@@wamp/UPDATE_MESSAGES",
@@ -24,6 +25,7 @@ export const connectToServer = (): IBaseAction => action(WampActionTypes.CONNECT
 export const connectedToServer = (): IBaseAction => action(WampActionTypes.CONNECTED);
 
 export const updateManifests = (data: any): IBaseAction => action(WampActionTypes.UPDATE_MANIFESTS, data);
+export const setManifests = (data: any): IBaseAction => action(WampActionTypes.SET_MANIFESTS, data);
 
 export const updateSession = (data: any): IBaseAction => action(WampActionTypes.UPDATE_SESSION, data);
 export const updateMessages = (data: any): IBaseAction => action(WampActionTypes.UPDATE_MESSAGES, data);

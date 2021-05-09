@@ -6,7 +6,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { Bar, BarChart, CartesianGrid, ResponsiveContainer, XAxis, YAxis } from "recharts";
 import { sprintf } from "sprintf-js";
 import { ApplicationState } from "../../stores";
-import { uiRaceStintSharedSettings } from "../../stores/ui/actions";
+import { pitstopsSettings } from "../../stores/ui/actions";
 import { secAsMMSS, sortCarNumberStr } from "../../utils/output";
 import CarFilter from "../live/carFilter";
 import { computeAvailableCars, extractSomeCarData, processCarClassSelection } from "../live/util";
@@ -23,7 +23,7 @@ interface IColData {
 const CarPitstopsRecharts: React.FC<{}> = () => {
   const wamp = useSelector((state: ApplicationState) => state.wamp.data);
   const carPits = useSelector((state: ApplicationState) => state.wamp.data.carPits);
-  const uiSettings = useSelector((state: ApplicationState) => state.ui.data.raceStintSharedSettings);
+  const uiSettings = useSelector((state: ApplicationState) => state.userSettings.pitstops);
   const dispatch = useDispatch();
   const carDataContainer = extractSomeCarData(wamp);
   const { carInfoLookup, allCarNums, allCarClasses } = carDataContainer;
@@ -82,7 +82,7 @@ const CarPitstopsRecharts: React.FC<{}> = () => {
   };
 
   const onSelectShowCars = (value: any) => {
-    dispatch(uiRaceStintSharedSettings({ ...uiSettings, showCars: value as string[] }));
+    dispatch(pitstopsSettings({ ...uiSettings, showCars: value as string[] }));
   };
 
   const onSelectCarClassChange = (value: string[]) => {
@@ -94,7 +94,7 @@ const CarPitstopsRecharts: React.FC<{}> = () => {
       currentShowCars: uiSettings.showCars,
       newSelection: value,
     });
-    dispatch(uiRaceStintSharedSettings({ ...uiSettings, filterCarClasses: value, showCars: newShowcars }));
+    dispatch(pitstopsSettings({ ...uiSettings, filterCarClasses: value, showCars: newShowcars }));
   };
 
   // const pits: Map<string, number[]> = new Map();

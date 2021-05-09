@@ -1,4 +1,4 @@
-import { Col, Empty, InputNumber, Row, Select } from "antd";
+import { Col, Empty, Row, Select } from "antd";
 import _ from "lodash";
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
@@ -13,14 +13,12 @@ import {
   XAxis,
   YAxis,
 } from "recharts";
-import { sprintf } from "sprintf-js";
+import { globalWamp } from "../../commons/globals";
 import { ApplicationState } from "../../stores";
-import { uiDriverLapsSettings, uiUpdateBrushSettings } from "../../stores/ui/actions";
+import { driverLapsSettings, uiUpdateBrushSettings } from "../../stores/ui/actions";
 import { IBrushInterval, UiComponent } from "../../stores/ui/types";
 import { lapTimeString } from "../../utils/output";
-import CarFilter from "../live/carFilter";
 import { strokeColors } from "../live/colors";
-import { computeAvailableCars, extractSomeCarData } from "../live/util";
 
 interface IGraphData {
   carNum: string;
@@ -31,11 +29,12 @@ interface IGraphData {
 const { Option } = Select;
 
 const DriverLapsRecharts: React.FC<{}> = () => {
-  const wamp = useSelector((state: ApplicationState) => state.wamp.data);
-  const carLaps = useSelector((state: ApplicationState) => state.wamp.data.carLaps);
-  const carInfo = useSelector((state: ApplicationState) => state.wamp.data.carInfo);
+  // const wamp = useSelector((state: ApplicationState) => state.wamp.data);
+  const cars = useSelector((state: ApplicationState) => state.raceData.availableCars);
+  const carLaps = useSelector((state: ApplicationState) => state.raceData.carLaps);
+
   const uiSettingsAll = useSelector((state: ApplicationState) => state.ui.data.driverLapsSettings);
-  const uiSettings = useSelector((state: ApplicationState) => state.ui.data.driverLapsSettings.standard);
+  const uiSettings = useSelector((state: ApplicationState) => state.userSettings.driverLaps);
   const dispatch = useDispatch();
 
   // this little trick handles the fetching of brushInterval from state, let it be changed here and on leaving this Element store the values in the redux state.
@@ -51,9 +50,7 @@ const DriverLapsRecharts: React.FC<{}> = () => {
     };
   }, []);
 
-  const carDataContainer = extractSomeCarData(wamp);
-  const { carInfoLookup, allCarNums, allCarClasses } = carDataContainer;
-  const availableCars = computeAvailableCars(carDataContainer, uiSettings.filterCarClasses);
+  const allCarNums = cars.map((c) => c.carNum);
   const dataForCar = (carNum: string): IGraphData[] => {
     const found = carLaps.find((v) => v.carNum === carNum);
     if (found !== undefined) {
@@ -116,19 +113,18 @@ const DriverLapsRecharts: React.FC<{}> = () => {
 
   const onSelectReferenceByTags = (value: any) => {
     const curSettings = { ...uiSettings, showCars: value as string[] };
-    dispatch(uiDriverLapsSettings(curSettings));
+    dispatch(driverLapsSettings(curSettings));
   };
 
   const onSelectCarClassChange = (value: any) => {
     const curSettings = { ...uiSettings, filterCarClasses: value as string[] };
-    dispatch(uiDriverLapsSettings(curSettings));
+    dispatch(driverLapsSettings(curSettings));
   };
 
   const onFilterSecsChange = (value: any) => {
     const curSettings = { ...uiSettings, filterSecs: value };
-    dispatch(uiDriverLapsSettings(curSettings));
+    dispatch(driverLapsSettings(curSettings));
   };
-
 
   const cur = graphDataOrig
     .reduce((prev, cur) => _.concat(prev, cur), [])
@@ -200,14 +196,18 @@ const DriverLapsRecharts: React.FC<{}> = () => {
 
             <YAxis type="number" domain={yDomain} tickFormatter={(d) => lapTimeString(d)} allowDataOverflow={true} />
 
-            <Brush
-              dataKey="lapNo"
-              height={30}
-              stroke="#8884d8"
-              onChange={brushChanged}
-              startIndex={brushKeeper?.startIndex}
-              endIndex={brushKeeper?.endIndex}
-            />
+            {globalWamp.currentLiveId ? (
+              <></>
+            ) : (
+              <Brush
+                dataKey="lapNo"
+                height={30}
+                stroke="#8884d8"
+                onChange={brushChanged}
+                startIndex={brushKeeper?.startIndex}
+                endIndex={brushKeeper?.endIndex}
+              />
+            )}
             <Tooltip isAnimationActive={false} content={CustomTooltip} />
             <Legend layout="vertical" align="right" verticalAlign="top" />
           </ScatterChart>
@@ -216,33 +216,7 @@ const DriverLapsRecharts: React.FC<{}> = () => {
     </Row>
   );
 
-  return (
-    <>
-      <Row gutter={16}>
-        <CarFilter
-          availableCars={availableCars}
-          availableClasses={allCarClasses}
-          selectedCars={uiSettings.showCars}
-          selectedCarClasses={uiSettings.filterCarClasses}
-          onSelectCarFilter={onSelectReferenceByTags}
-          onSelectCarClassFilter={onSelectCarClassChange}
-        />
-        <Col span={4}>
-          <InputNumber
-            defaultValue={uiSettings.filterSecs}
-            precision={0}
-            step={1}
-            min={0}
-            formatter={(v) => sprintf("%d sec", v)}
-            parser={(v) => (v !== undefined ? parseInt(v.replace("sec", "")) : 0)}
-            onChange={onFilterSecsChange}
-          />
-        </Col>
-      </Row>
-
-      {uiSettings.showCars.length === 0 ? <Empty description="Select car" /> : InternalRaceGraph}
-    </>
-  );
+  return <>{uiSettings.showCars.length === 0 ? <Empty description="Select car" /> : InternalRaceGraph}</>;
 };
 
 export default DriverLapsRecharts;

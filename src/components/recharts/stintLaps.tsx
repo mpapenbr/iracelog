@@ -1,5 +1,5 @@
 import { IStintInfo } from "@mpapenbr/iracelog-analysis/dist/stints/types";
-import { Col, Empty, InputNumber, Radio, RadioChangeEvent, Row, Select } from "antd";
+import { Col, Empty, Radio, RadioChangeEvent, Row, Select } from "antd";
 import _ from "lodash";
 import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
@@ -15,14 +15,12 @@ import {
   XAxis,
   YAxis,
 } from "recharts";
-import { sprintf } from "sprintf-js";
+import { globalWamp } from "../../commons/globals";
 import { ApplicationState } from "../../stores";
-import { uiDriverStintSettings } from "../../stores/ui/actions";
+import { driverStintsSettings } from "../../stores/ui/actions";
 import { IBrushInterval } from "../../stores/ui/types";
 import { lapTimeString } from "../../utils/output";
-import CarClassFilter from "../live/carClassFilter";
-import { strokeColors } from "../live/colors";
-import { computeAvailableCars, extractSomeCarData, getCarStints } from "../live/util";
+import { getCarStints } from "../live/util";
 
 interface IGraphData {
   carNum: string;
@@ -33,18 +31,14 @@ interface IGraphData {
 const { Option } = Select;
 
 const StintLapsRecharts: React.FC<{}> = () => {
-  const wamp = useSelector((state: ApplicationState) => state.wamp.data);
-  const carLaps = useSelector((state: ApplicationState) => state.wamp.data.carLaps);
-  const carInfo = useSelector((state: ApplicationState) => state.wamp.data.carInfo);
-  const carStints = useSelector((state: ApplicationState) => state.wamp.data.carStints);
-  const uiSettingsAll = useSelector((state: ApplicationState) => state.ui.data.driverLapsSettings);
-  const uiSettings = useSelector((state: ApplicationState) => state.ui.data.driverStintSettings);
+  const carLaps = useSelector((state: ApplicationState) => state.raceData.carLaps);
+
+  const carStints = useSelector((state: ApplicationState) => state.raceData.carStints);
+
+  const uiSettings = useSelector((state: ApplicationState) => state.userSettings.driverStints);
   const dispatch = useDispatch();
   const [brushKeeper, setBrushKeeper] = useState({} as IBrushInterval);
 
-  const carDataContainer = extractSomeCarData(wamp);
-  const { carInfoLookup, allCarNums, allCarClasses } = carDataContainer;
-  const availableCars = computeAvailableCars(carDataContainer, uiSettings.filterCarClasses);
   const dataForCar = (carNum: string): IGraphData[] => {
     const found = carLaps.find((v) => v.carNum === carNum);
     if (found !== undefined) {
@@ -59,8 +53,6 @@ const StintLapsRecharts: React.FC<{}> = () => {
       return found.laps.map((v) => ({ carNum: carNum, lapNo: v.lapNo, lapTime: getValue(v.lapTime) }));
     } else return [];
   };
-
-  let carDataLookup = new Map<string, IGraphData[]>();
 
   const stints = getCarStints(carStints, uiSettings.carNum);
   const graphDataOrig = dataForCar(uiSettings.carNum);
@@ -142,35 +134,6 @@ const StintLapsRecharts: React.FC<{}> = () => {
     );
   });
   // console.log(laps);
-  const colorCode = (carNum: string): string => {
-    return strokeColors[allCarNums.indexOf(carNum) % strokeColors.length];
-  };
-
-  const referenceOptions = availableCars.map((d) => (
-    <Option key={_.uniqueId()} value={d.carNum}>
-      #{d.carNum} {d.name}
-    </Option>
-  ));
-  const onSelectReferenceCar = (value: any) => {
-    const curSettings = { ...uiSettings, carNum: value as string, showStint: 0 };
-    dispatch(uiDriverStintSettings(curSettings));
-    setBrushKeeper({});
-  };
-
-  const onSelectReferenceByTags = (value: any) => {
-    const curSettings = { ...uiSettings, showCars: value as string[] };
-    dispatch(uiDriverStintSettings(curSettings));
-  };
-
-  const onSelectCarClassChange = (value: any) => {
-    const curSettings = { ...uiSettings, filterCarClasses: value as string[] };
-    dispatch(uiDriverStintSettings(curSettings));
-  };
-
-  const onFilterSecsChange = (value: any) => {
-    const curSettings = { ...uiSettings, filterSecs: value };
-    dispatch(uiDriverStintSettings(curSettings));
-  };
 
   var timerId: any;
   const brushChanged = (range: any) => {
@@ -196,7 +159,7 @@ const StintLapsRecharts: React.FC<{}> = () => {
     // console.log("Stint: " + stintIdx + "-", range);
     setBrushKeeper(range);
     const curSettings = { ...uiSettings, showStint: stintIdx };
-    dispatch(uiDriverStintSettings(curSettings));
+    dispatch(driverStintsSettings(curSettings));
   };
   const StintRadios = (
     <Radio.Group onChange={onStintNoChange} defaultValue={0} value={uiSettings.showStint}>
@@ -324,15 +287,18 @@ const StintLapsRecharts: React.FC<{}> = () => {
               domain={yDomain}
               tickFormatter={(d) => lapTimeString(d)}
             />
-            <Brush
-              dataKey="lapNo"
-              height={40}
-              stroke="#8884d8"
-              onChange={brushChanged}
-              startIndex={brushKeeper?.startIndex}
-              endIndex={brushKeeper?.endIndex}
-            />
-
+            {globalWamp.currentLiveId ? (
+              <></>
+            ) : (
+              <Brush
+                dataKey="lapNo"
+                height={40}
+                stroke="#8884d8"
+                onChange={brushChanged}
+                startIndex={brushKeeper?.startIndex}
+                endIndex={brushKeeper?.endIndex}
+              />
+            )}
             <Tooltip
               isAnimationActive={false}
               /*
@@ -358,39 +324,7 @@ const StintLapsRecharts: React.FC<{}> = () => {
     }
   };
   return (
-    <>
-      <Row gutter={16}>
-        <Col span={6}>
-          <Select
-            style={{ width: "100%" }}
-            allowClear
-            value={uiSettings.carNum ? uiSettings.carNum : undefined}
-            placeholder="Select car"
-            onChange={onSelectReferenceCar}
-            maxTagCount="responsive"
-          >
-            {referenceOptions}
-          </Select>
-        </Col>
-        <CarClassFilter
-          availableClasses={allCarClasses}
-          onSelectCarClassFilter={onSelectCarClassChange}
-          selectedCarClasses={uiSettings.filterCarClasses}
-        />
-        <Col span={4}>
-          <InputNumber
-            defaultValue={uiSettings.filterSecs}
-            precision={0}
-            step={1}
-            min={0}
-            formatter={(v) => sprintf("%d sec", v)}
-            parser={(v) => (v !== undefined ? parseInt(v.replace("sec", "")) : 0)}
-            onChange={onFilterSecsChange}
-          />
-        </Col>
-      </Row>
-      {uiSettings.carNum && uiSettings.carNum.length > 0 ? InternalLapGraph : <Empty description="Select car" />}
-    </>
+    <>{uiSettings.carNum && uiSettings.carNum.length > 0 ? InternalLapGraph : <Empty description="Select car" />}</>
   );
 };
 
