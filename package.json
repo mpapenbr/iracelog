@@ -1,13 +1,13 @@
 {
   "name": "iracelog",
-  "version": "0.9.11",
+  "version": "0.9.12",
   "private": true,
   "dependencies": {
     "@mpapenbr/iracelog-analysis": "^1.0.9",
-    "@nivo/bar": "^0.68.0",
-    "@nivo/core": "^0.68.0",
-    "@nivo/line": "^0.68.0",
-    "antd": "^4.15.3",
+    "@nivo/bar": "^0.69.0",
+    "@nivo/core": "^0.69.0",
+    "@nivo/line": "^0.69.0",
+    "antd": "^4.15.4",
     "autobahn": "^20.9.2",
     "deep-object-diff": "^1.1.0",
     "json-url": "^2.6.0",
