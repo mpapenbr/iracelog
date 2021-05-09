@@ -2,7 +2,7 @@ import { Checkbox, Col, Row } from "antd";
 import * as React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import CarFilter from "../components/live/carFilter";
-import { processCarClassSelectionNew } from "../components/live/util";
+import { collectCarsByCarClassFilter, processCarClassSelectionNew } from "../components/live/util";
 import RacePositionGraphNivo from "../components/nivo/racePositionGraph";
 import { ApplicationState } from "../stores";
 import { racePositionsSettings } from "../stores/ui/actions";
@@ -16,6 +16,8 @@ export const RacePositionsContainer: React.FC<{}> = () => {
   const filterCarClasses = useSelector((state: ApplicationState) => state.userSettings.racePositions.filterCarClasses);
   const dispatch = useDispatch();
 
+  const selectableCars = userSettings.selectableCars.length > 0 ? userSettings.selectableCars : cars;
+
   const onSelectCarClassChange = (values: string[]) => {
     const newShowcars = processCarClassSelectionNew({
       cars: cars,
@@ -23,14 +25,19 @@ export const RacePositionsContainer: React.FC<{}> = () => {
       currentShowCars: userSettings.showCars,
       newSelection: values,
     });
-    const curSettings = { ...userSettings, filterCarClasses: values, showCars: newShowcars };
+    const curSettings = {
+      ...userSettings,
+      filterCarClasses: values,
+      showCars: newShowcars,
+      selectableCars: collectCarsByCarClassFilter(cars, values),
+    };
     dispatch(racePositionsSettings(curSettings));
   };
   const onCheckboxChange = () => {
     dispatch(racePositionsSettings({ ...userSettings, showPosInClass: !userSettings.showPosInClass }));
   };
   const props = {
-    availableCars: cars,
+    availableCars: selectableCars,
     availableClasses: carClasses.map((v) => v.name),
     selectedCars: showCars,
     selectedCarClasses: filterCarClasses,

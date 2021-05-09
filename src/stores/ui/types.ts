@@ -1,3 +1,5 @@
+import { ICarBaseData } from "../racedata/types";
+
 export interface IUiStints {
   stintNo: number;
 }
@@ -23,19 +25,22 @@ export interface IMessagesSettings {
 }
 export interface IDriverLapsSettings {
   showCars: string[];
+  selectableCars: ICarBaseData[]; // the cars to show in the dropdown as selectable
   filterCarClasses: string[]; // empty = all classes, otherwise only selected
   filterSecs: number;
   brushInterval?: IBrushInterval;
 }
 export interface IRaceGraphRelativeSettings {
   referenceCarNum?: string;
-  showCars: string[];
+  showCars: string[]; // the cars to show
+  selectableCars: ICarBaseData[]; // the cars to show in the dropdown as selectable
   filterCarClasses: string[]; // empty = all classes, otherwise only selected
   deltaRange: number; // used in both direction (positive and negativ to reference)
   brushInterval?: IBrushInterval;
 }
 export interface IRaceGraphSettings {
   showCars: string[];
+  selectableCars: ICarBaseData[]; // the cars to show in the dropdown as selectable
   filterCarClasses: string[]; // empty = all classes, otherwise only selected
   gapRelativeToClassLeader: boolean; // if true, compute gap relative to class leader
   deltaRange: number; // used in both direction (positive and negativ to reference)
@@ -43,16 +48,19 @@ export interface IRaceGraphSettings {
 }
 export interface IRacePositionsSettings {
   showCars: string[];
+  selectableCars: ICarBaseData[]; // the cars to show in the dropdown as selectable
   filterCarClasses: string[]; // empty = all classes, otherwise only selected
   showPosInClass: boolean; // if true, show position in class
   brushInterval?: IBrushInterval;
 }
 export interface IPitstopsSettings {
   showCars: string[];
+  selectableCars: ICarBaseData[]; // the cars to show in the dropdown as selectable
   filterCarClasses: string[]; // empty = all classes, otherwise only selected
 }
 export interface IStintsSettings {
   showCars: string[];
+  selectableCars: ICarBaseData[]; // the cars to show in the dropdown as selectable
   filterCarClasses: string[]; // empty = all classes, otherwise only selected
   showAsLabel: string;
 }
@@ -64,6 +72,7 @@ export interface IRaceStintSharedSettings {
 }
 export interface IDriverStintsSettings {
   carNum: string;
+  selectableCars: ICarBaseData[]; // the cars to show in the dropdown as selectable
   filterCarClasses: string[]; // empty = all classes, otherwise only selected
   filterSecs: number;
   filterInOut: boolean;
@@ -121,12 +130,14 @@ export const defaultUiData: IUiData = {
   driverLapsSettings: {
     standard: {
       showCars: [],
+      selectableCars: [],
       filterCarClasses: [],
       filterSecs: 2,
     },
   },
   raceGraphRelativeSettings: {
     standard: {
+      selectableCars: [],
       referenceCarNum: "",
       showCars: [],
       filterCarClasses: [],
@@ -136,6 +147,7 @@ export const defaultUiData: IUiData = {
   raceGraphSettings: {
     standard: {
       showCars: [],
+      selectableCars: [],
       filterCarClasses: [],
       deltaRange: 120,
       gapRelativeToClassLeader: false,
@@ -143,12 +155,14 @@ export const defaultUiData: IUiData = {
   },
   racePositionSettings: {
     showCars: [],
+    selectableCars: [],
     filterCarClasses: [],
     showPosInClass: false,
   },
   driverStintSettings: {
     carNum: "",
     filterCarClasses: [],
+    selectableCars: [],
     filterSecs: 2,
     filterInOut: true,
     showStint: 0,

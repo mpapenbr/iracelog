@@ -3,7 +3,7 @@ import * as React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { sprintf } from "sprintf-js";
 import CarFilter from "../components/live/carFilter";
-import { processCarClassSelectionNew } from "../components/live/util";
+import { collectCarsByCarClassFilter, processCarClassSelectionNew } from "../components/live/util";
 import RaceGraphByReferenceRecharts from "../components/recharts/raceGraphByReferenceRecharts";
 import { ApplicationState } from "../stores";
 import { raceGraphRelativeSettings } from "../stores/ui/actions";
@@ -17,8 +17,11 @@ export const RaceGraphByReferenceContainer: React.FC<{}> = () => {
   const userSettings = useSelector((state: ApplicationState) => state.userSettings.raceGraphRelative);
 
   const showCars = useSelector((state: ApplicationState) => state.userSettings.raceGraphRelative.showCars);
-  const filterCarClasses = useSelector((state: ApplicationState) => state.userSettings.raceGraph.filterCarClasses);
+  const filterCarClasses = useSelector(
+    (state: ApplicationState) => state.userSettings.raceGraphRelative.filterCarClasses
+  );
   const dispatch = useDispatch();
+  const selectableCars = userSettings.selectableCars.length > 0 ? userSettings.selectableCars : cars;
 
   const onSelectCarClassChange = (values: string[]) => {
     const newShowcars = processCarClassSelectionNew({
@@ -27,7 +30,12 @@ export const RaceGraphByReferenceContainer: React.FC<{}> = () => {
       currentShowCars: userSettings.showCars,
       newSelection: values,
     });
-    const curSettings = { ...userSettings, filterCarClasses: values, showCars: newShowcars };
+    const curSettings = {
+      ...userSettings,
+      filterCarClasses: values,
+      // showCars: newShowcars,
+      selectableCars: collectCarsByCarClassFilter(cars, values),
+    };
     dispatch(raceGraphRelativeSettings(curSettings));
   };
 
@@ -41,14 +49,14 @@ export const RaceGraphByReferenceContainer: React.FC<{}> = () => {
     dispatch(raceGraphRelativeSettings(curSettings));
   };
 
-  const referenceOptions = cars.map((d) => (
+  const referenceOptions = selectableCars.map((d) => (
     <Option key={d.carNum} value={d.carNum}>
       #{d.carNum} {d.name}
     </Option>
   ));
 
   const props = {
-    availableCars: cars,
+    availableCars: selectableCars,
     availableClasses: carClasses.map((v) => v.name),
     selectedCars: showCars,
     selectedCarClasses: filterCarClasses,

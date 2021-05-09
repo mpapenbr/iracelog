@@ -69,6 +69,7 @@ const MessagesSettingsReducer = reducerWithInitialState(initialMessagesSettings)
 // RaceGraphSettings
 const initialRaceGraphSettings: IRaceGraphSettings = {
   showCars: [],
+  selectableCars: [],
   filterCarClasses: [],
   deltaRange: 120,
   gapRelativeToClassLeader: false,
@@ -81,6 +82,7 @@ const RaceGraphSettingsReducer = reducerWithInitialState(initialRaceGraphSetting
 // RaceGraphRelativeSettings
 const initialRaceGraphRelativeSettings: IRaceGraphRelativeSettings = {
   showCars: [],
+  selectableCars: [],
   filterCarClasses: [],
   deltaRange: 120,
   referenceCarNum: undefined,
@@ -93,6 +95,7 @@ const RaceGraphRelativeSettingsReducer = reducerWithInitialState(initialRaceGrap
 // RacePositions
 const initialRacePositions: IRacePositionsSettings = {
   showCars: [],
+  selectableCars: [],
   filterCarClasses: [],
   showPosInClass: false,
 };
@@ -104,6 +107,7 @@ const RacePositionsSettingsReducer = reducerWithInitialState(initialRacePosition
 // DriverLaps
 const initialDriverLaps: IDriverLapsSettings = {
   showCars: [],
+  selectableCars: [],
   filterCarClasses: [],
   filterSecs: 2,
 };
@@ -115,6 +119,7 @@ const DriverLapsSettingsReducer = reducerWithInitialState(initialDriverLaps).cas
 // Pitstops
 const initialPitstops: IPitstopsSettings = {
   showCars: [],
+  selectableCars: [],
   filterCarClasses: [],
 };
 const PitstopsSettingsReducer = reducerWithInitialState(initialPitstops).case(
@@ -125,6 +130,7 @@ const PitstopsSettingsReducer = reducerWithInitialState(initialPitstops).case(
 // Stints
 const initialStints: IStintsSettings = {
   showCars: [],
+  selectableCars: [],
   filterCarClasses: [],
   showAsLabel: "duration",
 };
@@ -136,6 +142,7 @@ const StintsSettingsReducer = reducerWithInitialState(initialStints).case(
 // DriverStints
 const initialDriverStints: IDriverStintsSettings = {
   carNum: "",
+  selectableCars: [],
   filterCarClasses: [],
   filterSecs: 2,
   filterInOut: true,
