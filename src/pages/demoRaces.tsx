@@ -14,13 +14,12 @@ import { Button, Col, List, Modal, Row } from "antd";
 import autobahn, { Session } from "autobahn";
 import _ from "lodash";
 import React, { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { useHistory } from "react-router";
 import { sprintf } from "sprintf-js";
 import { globalWamp } from "../commons/globals";
 import { API_CROSSBAR_URL } from "../constants";
 import { distributeChanges } from "../processor/processData";
-import { ApplicationState } from "../stores";
 import {
   updateAvailableCarClasses,
   updateAvailableCars,
@@ -46,16 +45,7 @@ import {
   stintsSettings,
 } from "../stores/ui/actions";
 import { defaultStateData } from "../stores/ui/reducer";
-import {
-  connectedToServer,
-  reset,
-  setData,
-  updateCars,
-  updateManifests,
-  updateMessages,
-  updatePitstops,
-  updateSession,
-} from "../stores/wamp/actions";
+import { connectedToServer, reset, setData, updateManifests } from "../stores/wamp/actions";
 import { postProcessManifest } from "../stores/wamp/reducer";
 
 interface IStateProps {}
@@ -67,7 +57,7 @@ type MyProps = IStateProps & IDispachProps;
 export const DemoRaces: React.FC<MyProps> = (props: MyProps) => {
   const dispatch = useDispatch();
   const history = useHistory();
-  const wamp = useSelector((state: ApplicationState) => state.wamp.data);
+
   const [loadTrigger, setLoadTrigger] = useState(0);
   const [loading, setLoading] = useState(false);
   const [info, setInfo] = useState("Loading data....");
@@ -89,8 +79,6 @@ export const DemoRaces: React.FC<MyProps> = (props: MyProps) => {
         resetUi();
         const mData = JSON.parse(manifestData[0]);
         s.call("racelog.analysis.archive", [arg]).then((data: any) => {
-          // console.log(data);
-          // dispatch(setData(data)); // to be removed!
           doDistribute(defaultProcessRaceStateData, data);
           dispatch(updateManifests(mData));
           conn.close();
@@ -177,52 +165,20 @@ export const DemoRaces: React.FC<MyProps> = (props: MyProps) => {
 
         doDistribute(defaultProcessRaceStateData, data.processedData);
         globalWamp.currentData = data.processedData;
-        // globalWamp.processor.process(data.processedData, []); // workaround
       });
       dispatch(connectedToServer());
 
       s.subscribe(sprintf("racelog.state.%s", id), (data) => {
-        // dispatch(updateFromStateMessage(data[0]));
         const theProc = globalWamp.processor;
         // important, otherwise we don't detect changes on carLaps,carStints,.... (all those Array.from(...) attrs of BulkProcessor)
         // raceGraph would be ok though. Needs further investigation
         const curData = _.cloneDeep(globalWamp.currentData!);
-        // const merk = globalWamp.currentData?.carLaps[0].laps.length;
-        // const bigMerk = [...curData!.carLaps[0].laps];
+
         const newData = theProc!.process([data[0]]);
-        // console.log(
-        //   "merk: " +
-        //     merk +
-        //     "bigMerk: " +
-        //     bigMerk.length +
-        //     " curData: " +
-        //     curData!.carLaps[0].laps.length +
-        //     " current:" +
-        //     globalWamp.currentData?.carLaps[0].laps.length +
-        //     " new: " +
-        //     newData.carLaps[0].laps.length
-        // );
+
         doDistribute(curData, newData);
         globalWamp.currentData = { ...newData };
-        // dispatch(updateSession([data[0].payload.session]));
-        // dispatch(updateMessages([data[0].payload.messages]));
-        // dispatch(updateCars([data[0].payload.cars]));
-        // dispatch(updatePitstops([data[0].payload.pitstops]));
       });
-      if (false) {
-        s.subscribe(sprintf("racelog.session.%s", id), (data) => {
-          dispatch(updateSession(data));
-        });
-        s.subscribe(sprintf("racelog.messages.%s", id), (data) => {
-          dispatch(updateMessages(data));
-        });
-        s.subscribe(sprintf("racelog.cars.%s", id), (data) => {
-          dispatch(updateCars(data));
-        });
-        s.subscribe(sprintf("racelog.pits.%s", id), (data) => {
-          dispatch(updatePitstops(data));
-        });
-      }
     };
     conn.open();
 

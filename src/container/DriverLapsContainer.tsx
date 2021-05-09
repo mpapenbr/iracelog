@@ -1,20 +1,20 @@
-import { Checkbox, Col, InputNumber, Row } from "antd";
+import { Col, InputNumber, Row } from "antd";
 import * as React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { sprintf } from "sprintf-js";
 import CarFilter from "../components/live/carFilter";
 import { processCarClassSelectionNew } from "../components/live/util";
-import RaceGraphRecharts from "../components/recharts/raceGraphRecharts";
+import DriverLapsRecharts from "../components/recharts/driverLaps";
 import { ApplicationState } from "../stores";
-import { raceGraphSettings } from "../stores/ui/actions";
+import { driverLapsSettings } from "../stores/ui/actions";
 
-export const RaceGraphContainer: React.FC<{}> = () => {
+export const DriverLapsContainer: React.FC<{}> = () => {
   const cars = useSelector((state: ApplicationState) => state.raceData.availableCars);
   const carClasses = useSelector((state: ApplicationState) => state.raceData.availableCarClasses);
-  const userSettings = useSelector((state: ApplicationState) => state.userSettings.raceGraph);
+  const userSettings = useSelector((state: ApplicationState) => state.userSettings.driverLaps);
 
-  const showCars = useSelector((state: ApplicationState) => state.userSettings.raceGraph.showCars);
-  const filterCarClasses = useSelector((state: ApplicationState) => state.userSettings.raceGraph.filterCarClasses);
+  const showCars = useSelector((state: ApplicationState) => state.userSettings.driverLaps.showCars);
+  const filterCarClasses = useSelector((state: ApplicationState) => state.userSettings.driverLaps.filterCarClasses);
   const dispatch = useDispatch();
 
   const onSelectCarClassChange = (values: string[]) => {
@@ -25,17 +25,12 @@ export const RaceGraphContainer: React.FC<{}> = () => {
       newSelection: values,
     });
     const curSettings = { ...userSettings, filterCarClasses: values, showCars: newShowcars };
-    dispatch(raceGraphSettings(curSettings));
+    dispatch(driverLapsSettings(curSettings));
   };
 
-  const onCheckboxChange = () => {
-    const curSettings = { ...userSettings, gapRelativeToClassLeader: !userSettings.gapRelativeToClassLeader };
-    dispatch(raceGraphSettings(curSettings));
-  };
-
-  const onDeltaRangeChange = (value: any) => {
-    const curSettings = { ...userSettings, deltaRange: value };
-    dispatch(raceGraphSettings(curSettings));
+  const onFilterRangeChange = (value: any) => {
+    const curSettings = { ...userSettings, filterSecs: value };
+    dispatch(driverLapsSettings(curSettings));
   };
 
   const props = {
@@ -45,7 +40,7 @@ export const RaceGraphContainer: React.FC<{}> = () => {
     selectedCarClasses: filterCarClasses,
     onSelectCarFilter: (selection: string[]) => {
       const curSettings = { ...userSettings, showCars: selection };
-      dispatch(raceGraphSettings(curSettings));
+      dispatch(driverLapsSettings(curSettings));
     },
     onSelectCarClassFilter: onSelectCarClassChange,
   };
@@ -56,27 +51,18 @@ export const RaceGraphContainer: React.FC<{}> = () => {
         <CarFilter {...props} />
         <Col span={4}>
           <InputNumber
-            defaultValue={userSettings.deltaRange}
+            defaultValue={userSettings.filterSecs}
             precision={0}
             step={10}
             min={0}
             formatter={(v) => sprintf("%d sec", v)}
             parser={(v) => (v !== undefined ? parseInt(v.replace("sec", "")) : 0)}
-            onChange={onDeltaRangeChange}
+            onChange={onFilterRangeChange}
           />
-        </Col>
-        <Col span={3}>
-          <Checkbox
-            defaultChecked={userSettings.gapRelativeToClassLeader}
-            checked={userSettings.gapRelativeToClassLeader}
-            onChange={onCheckboxChange}
-          >
-            Gaps relative to class leader
-          </Checkbox>
         </Col>
       </Row>
 
-      <RaceGraphRecharts />
+      <DriverLapsRecharts />
     </>
   );
 };

@@ -4,14 +4,13 @@ import { Route, Switch } from "react-router";
 import { Link } from "react-router-dom";
 import Classification from "../components/live/classification";
 import RaceMessages from "../components/live/raceMessages";
-import CarPitstopsNivo from "../components/nivo/carPitstops";
-import CarStintsNivo from "../components/nivo/carStints";
-import RacePositionGraphNivo from "../components/nivo/racePositionGraph";
-import CarPitstopsRecharts from "../components/recharts/carPitstops";
-import DriverLapsRecharts from "../components/recharts/driverLaps";
-import RaceGraphByReferenceRecharts from "../components/recharts/raceGraphRelativeRecharts";
-import StintLapsRecharts from "../components/recharts/stintLaps";
+import { CarPitstopsContainer } from "../container/CarPitstopsContainer";
+import { CarStintsContainer } from "../container/CarStintsContainer";
+import { DriverLapsContainer } from "../container/DriverLapsContainer";
+import { RaceGraphByReferenceContainer } from "../container/RaceGraphByReferenceContainer";
 import { RaceGraphContainer } from "../container/RaceGraphContainer";
+import { RacePositionsContainer } from "../container/RacePositionsContainer";
+import { StintLapsContainer } from "../container/StintLapsContainer";
 
 interface IStateProps {}
 interface IDispachProps {
@@ -48,8 +47,8 @@ export const AnalysisMainPage: React.FC<MyProps> = (props: MyProps) => {
             <Link to="/analysis/driverLapsRecharts">Driver laps </Link>
           </Menu.Item>
 
-          <Menu.Item key="carPitstopsNivo" className="race-sidebar">
-            <Link to="/analysis/carPitstopsNivo">Pitstops</Link>
+          <Menu.Item key="carPitstops" className="race-sidebar">
+            <Link to="/analysis/carPitstops">Pitstops</Link>
           </Menu.Item>
           <Menu.Item key="stintDurations" className="race-sidebar">
             <Link to="/analysis/stintDurations">Stint Durations</Link>
@@ -60,9 +59,10 @@ export const AnalysisMainPage: React.FC<MyProps> = (props: MyProps) => {
           <Menu.Item key="messages" className="race-sidebar">
             <Link to="/analysis/messages">Messages</Link>
           </Menu.Item>
-          <Menu.Item key="test" className="race-sidebar">
+
+          {/* <Menu.Item key="test" className="race-sidebar">
             <Link to="/analysis/test">test</Link>
-          </Menu.Item>
+          </Menu.Item> */}
         </Menu>
       </Sider>
       <Content>
@@ -71,17 +71,17 @@ export const AnalysisMainPage: React.FC<MyProps> = (props: MyProps) => {
 
           <Route path="/analysis/raceGraphARecharts" component={RaceGraphContainer} />
 
-          <Route path="/analysis/raceGraphBRecharts" component={RaceGraphByReferenceRecharts} />
+          <Route path="/analysis/raceGraphBRecharts" component={RaceGraphByReferenceContainer} />
 
-          <Route path="/analysis/racePositionsNivo" component={RacePositionGraphNivo} />
+          <Route path="/analysis/racePositionsNivo" component={RacePositionsContainer} />
 
-          <Route path="/analysis/driverLapsRecharts" component={DriverLapsRecharts} />
-          <Route path="/analysis/carPitstops" component={CarPitstopsRecharts} />
-          <Route path="/analysis/carPitstopsNivo" component={CarPitstopsNivo} />
-          <Route path="/analysis/stintDurations" component={CarStintsNivo} />
-          <Route path="/analysis/stintLaps" component={StintLapsRecharts} />
+          <Route path="/analysis/driverLapsRecharts" component={DriverLapsContainer} />
+          <Route path="/analysis/carPitstops" component={CarPitstopsContainer} />
+
+          <Route path="/analysis/stintDurations" component={CarStintsContainer} />
+          <Route path="/analysis/stintLaps" component={StintLapsContainer} />
           <Route path="/analysis/messages" component={RaceMessages} />
-          <Route path="/analysis/test" component={RaceGraphContainer} />
+          {/* <Route path="/analysis/test" component={RaceGraphContainer} /> */}
         </Switch>
       </Content>
     </Layout>

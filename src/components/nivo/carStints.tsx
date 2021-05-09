@@ -1,33 +1,15 @@
 import { ResponsiveBar } from "@nivo/bar";
-import { Col, Empty, Radio, RadioChangeEvent, Row, Select, Tag } from "antd";
+import { Empty } from "antd";
 import _ from "lodash";
 import React from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import { ApplicationState } from "../../stores";
-import { stintsSettings } from "../../stores/ui/actions";
 import { ICarStintInfo, IStintInfo } from "../../stores/wamp/types";
 import { secAsHHMMSS, secAsMMSS, sortCarNumberStr } from "../../utils/output";
-import CarFilter from "../live/carFilter";
-import { computeAvailableCars, extractSomeCarData, processCarClassSelection } from "../live/util";
 
-interface IGraphData {
-  x: string;
-  y: number;
-}
-
-const { Option } = Select;
-const { CheckableTag } = Tag;
-interface IColData {
-  value: number | [number, string];
-}
 const CarStintsNivo: React.FC<{}> = () => {
-  const wamp = useSelector((state: ApplicationState) => state.wamp.data);
-  const carStints = useSelector((state: ApplicationState) => state.wamp.data.carStints);
+  const carStints = useSelector((state: ApplicationState) => state.raceData.carStints);
   const uiSettings = useSelector((state: ApplicationState) => state.userSettings.stints);
-  const dispatch = useDispatch();
-  const carDataContainer = extractSomeCarData(wamp);
-  const { carInfoLookup, allCarNums, allCarClasses } = carDataContainer;
-  const availableCars = computeAvailableCars(carDataContainer, uiSettings.filterCarClasses);
 
   const carOrder = [...uiSettings.showCars].sort(sortCarNumberStr).reverse();
   const numEntries = (item: ICarStintInfo) => item.history.length + (item.current.isCurrentStint ? 1 : 0);
@@ -56,32 +38,6 @@ const CarStintsNivo: React.FC<{}> = () => {
     }
     return { ...work };
   });
-
-  const onSelectShowCars = (value: any) => {
-    dispatch(stintsSettings({ ...uiSettings, showCars: value as string[] }));
-  };
-
-  const onSelectCarClassChange = (value: string[]) => {
-    // get removed car classes
-
-    const newShowcars = processCarClassSelection({
-      carDataContainer: carDataContainer,
-      currentFilter: uiSettings.filterCarClasses,
-      currentShowCars: uiSettings.showCars,
-      newSelection: value,
-    });
-    dispatch(stintsSettings({ ...uiSettings, filterCarClasses: value, showCars: newShowcars }));
-  };
-
-  // const pits: Map<string, number[]> = new Map();
-  // pits.set("1", [12, 20, 14]);
-
-  const pits = [
-    { car: "#45", p1: 12, p2: 22, p3: 15 },
-    { car: "#77", p1: 10 },
-    { car: "#99", p1: 7, p2: 8, p3: 9 },
-  ];
-  const colorScale = ["Pink", "PaleGoldenrod", "LightGreen"];
 
   const CustomTooltip = (data: any) => {
     // we get something like this:
@@ -121,9 +77,6 @@ value: 77.66666666553647
     }
   };
   const InternalGraph = (
-    // <div style={{ position: "relative" }}>
-    //   <div style={{ position: "absolute", width: "100%", height: "100%" }}>
-    //     Hallo
     <div style={{ height: "750px" }}>
       <ResponsiveBar
         data={stintData}
@@ -144,38 +97,9 @@ value: 77.66666666553647
         }}
       />
     </div>
-    //   </div>
-    // </div>
   );
 
-  const isSet = (arg: string) => arg.localeCompare(uiSettings.showAsLabel) == 0;
-  const onShowModeChange = (e: RadioChangeEvent) => {
-    dispatch(stintsSettings({ ...uiSettings, showAsLabel: e.target.value }));
-  };
-  const ShowMode = (
-    <Col>
-      <Radio.Group onChange={onShowModeChange} value={uiSettings.showAsLabel}>
-        <Radio.Button value="duration">Duration</Radio.Button>
-        <Radio.Button value="laps">Laps</Radio.Button>
-      </Radio.Group>
-    </Col>
-  );
-  return (
-    <>
-      <Row gutter={16}>
-        <CarFilter
-          availableCars={availableCars}
-          availableClasses={allCarClasses}
-          selectedCars={uiSettings.showCars}
-          selectedCarClasses={uiSettings.filterCarClasses}
-          onSelectCarFilter={onSelectShowCars}
-          onSelectCarClassFilter={onSelectCarClassChange}
-        />
-        {ShowMode}
-      </Row>
-      {uiSettings.showCars.length === 0 ? <Empty description="Select cars" /> : InternalGraph}
-    </>
-  );
+  return <>{uiSettings.showCars.length === 0 ? <Empty description="Select cars" /> : InternalGraph}</>;
 };
 
 export default CarStintsNivo;

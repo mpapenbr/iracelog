@@ -5,6 +5,7 @@ import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Brush, CartesianGrid, Legend, Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 import { sprintf } from "sprintf-js";
+import { globalWamp } from "../../commons/globals";
 import { ApplicationState } from "../../stores";
 import { uiUpdateBrushSettings } from "../../stores/ui/actions";
 import { IBrushInterval, UiComponent } from "../../stores/ui/types";
@@ -181,14 +182,18 @@ const RaceGraphRecharts: React.FC<{}> = () => {
               allowDecimals={false}
               domain={[0, uiSettings.deltaRange]}
             />
-            <Brush
-              dataKey="lapNo"
-              height={30}
-              stroke="#8884d8"
-              onChange={brushChanged}
-              startIndex={brushKeeper?.startIndex}
-              endIndex={brushKeeper?.endIndex}
-            />
+            {globalWamp.currentLiveId ? (
+              <></>
+            ) : (
+              <Brush
+                dataKey="lapNo"
+                height={30}
+                stroke="#8884d8"
+                onChange={brushChanged}
+                startIndex={brushKeeper?.startIndex}
+                endIndex={brushKeeper?.endIndex}
+              />
+            )}
             <Tooltip isAnimationActive={false} content={CustomTooltip} />
             <Legend layout="vertical" align="right" verticalAlign="top" />
           </LineChart>

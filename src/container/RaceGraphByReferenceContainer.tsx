@@ -1,19 +1,22 @@
-import { Checkbox, Col, InputNumber, Row } from "antd";
+import { Col, InputNumber, Row, Select } from "antd";
 import * as React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { sprintf } from "sprintf-js";
 import CarFilter from "../components/live/carFilter";
 import { processCarClassSelectionNew } from "../components/live/util";
-import RaceGraphRecharts from "../components/recharts/raceGraphRecharts";
+import RaceGraphByReferenceRecharts from "../components/recharts/raceGraphByReferenceRecharts";
 import { ApplicationState } from "../stores";
-import { raceGraphSettings } from "../stores/ui/actions";
+import { raceGraphRelativeSettings } from "../stores/ui/actions";
 
-export const RaceGraphContainer: React.FC<{}> = () => {
+const { Option } = Select;
+
+export const RaceGraphByReferenceContainer: React.FC<{}> = () => {
   const cars = useSelector((state: ApplicationState) => state.raceData.availableCars);
   const carClasses = useSelector((state: ApplicationState) => state.raceData.availableCarClasses);
-  const userSettings = useSelector((state: ApplicationState) => state.userSettings.raceGraph);
 
-  const showCars = useSelector((state: ApplicationState) => state.userSettings.raceGraph.showCars);
+  const userSettings = useSelector((state: ApplicationState) => state.userSettings.raceGraphRelative);
+
+  const showCars = useSelector((state: ApplicationState) => state.userSettings.raceGraphRelative.showCars);
   const filterCarClasses = useSelector((state: ApplicationState) => state.userSettings.raceGraph.filterCarClasses);
   const dispatch = useDispatch();
 
@@ -25,18 +28,24 @@ export const RaceGraphContainer: React.FC<{}> = () => {
       newSelection: values,
     });
     const curSettings = { ...userSettings, filterCarClasses: values, showCars: newShowcars };
-    dispatch(raceGraphSettings(curSettings));
-  };
-
-  const onCheckboxChange = () => {
-    const curSettings = { ...userSettings, gapRelativeToClassLeader: !userSettings.gapRelativeToClassLeader };
-    dispatch(raceGraphSettings(curSettings));
+    dispatch(raceGraphRelativeSettings(curSettings));
   };
 
   const onDeltaRangeChange = (value: any) => {
     const curSettings = { ...userSettings, deltaRange: value };
-    dispatch(raceGraphSettings(curSettings));
+    dispatch(raceGraphRelativeSettings(curSettings));
   };
+
+  const onSelectReferenceCar = (value: any) => {
+    const curSettings = { ...userSettings, referenceCarNum: value as string };
+    dispatch(raceGraphRelativeSettings(curSettings));
+  };
+
+  const referenceOptions = cars.map((d) => (
+    <Option key={d.carNum} value={d.carNum}>
+      #{d.carNum} {d.name}
+    </Option>
+  ));
 
   const props = {
     availableCars: cars,
@@ -45,7 +54,7 @@ export const RaceGraphContainer: React.FC<{}> = () => {
     selectedCarClasses: filterCarClasses,
     onSelectCarFilter: (selection: string[]) => {
       const curSettings = { ...userSettings, showCars: selection };
-      dispatch(raceGraphSettings(curSettings));
+      dispatch(raceGraphRelativeSettings(curSettings));
     },
     onSelectCarClassFilter: onSelectCarClassChange,
   };
@@ -53,6 +62,18 @@ export const RaceGraphContainer: React.FC<{}> = () => {
   return (
     <>
       <Row gutter={16}>
+        <Col span={4}>
+          <Select
+            style={{ width: "100%" }}
+            allowClear
+            value={userSettings.referenceCarNum}
+            placeholder="Select reference car"
+            onChange={onSelectReferenceCar}
+            maxTagCount="responsive"
+          >
+            {referenceOptions}
+          </Select>
+        </Col>
         <CarFilter {...props} />
         <Col span={4}>
           <InputNumber
@@ -65,18 +86,9 @@ export const RaceGraphContainer: React.FC<{}> = () => {
             onChange={onDeltaRangeChange}
           />
         </Col>
-        <Col span={3}>
-          <Checkbox
-            defaultChecked={userSettings.gapRelativeToClassLeader}
-            checked={userSettings.gapRelativeToClassLeader}
-            onChange={onCheckboxChange}
-          >
-            Gaps relative to class leader
-          </Checkbox>
-        </Col>
       </Row>
 
-      <RaceGraphRecharts />
+      <RaceGraphByReferenceRecharts />
     </>
   );
 };

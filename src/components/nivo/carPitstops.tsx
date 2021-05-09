@@ -1,32 +1,18 @@
 import { ResponsiveBar } from "@nivo/bar";
-import { Empty, Row, Select } from "antd";
+import { Empty, Select } from "antd";
 import _ from "lodash";
 import React from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import { ApplicationState } from "../../stores";
-import { pitstopsSettings } from "../../stores/ui/actions";
 import { ICarPitInfo, IPitInfo } from "../../stores/wamp/types";
 import { secAsHHMMSS, secAsMMSS, sortCarNumberStr } from "../../utils/output";
-import CarFilter from "../live/carFilter";
-import { computeAvailableCars, extractSomeCarData, processCarClassSelection } from "../live/util";
-
-interface IGraphData {
-  x: string;
-  y: number;
-}
 
 const { Option } = Select;
-interface IColData {
-  value: number | [number, string];
-}
+
 const CarPitstopsNivo: React.FC<{}> = () => {
-  const wamp = useSelector((state: ApplicationState) => state.wamp.data);
-  const carPits = useSelector((state: ApplicationState) => state.wamp.data.carPits);
+  // const cars = useSelector((state: ApplicationState) => state.raceData.availableCars);
+  const carPits = useSelector((state: ApplicationState) => state.raceData.carPits);
   const uiSettings = useSelector((state: ApplicationState) => state.userSettings.pitstops);
-  const dispatch = useDispatch();
-  const carDataContainer = extractSomeCarData(wamp);
-  const { carInfoLookup, allCarNums, allCarClasses } = carDataContainer;
-  const availableCars = computeAvailableCars(carDataContainer, uiSettings.filterCarClasses);
 
   const carOrder = [...uiSettings.showCars].sort(sortCarNumberStr).reverse();
 
@@ -48,32 +34,6 @@ const CarPitstopsNivo: React.FC<{}> = () => {
     }
     return { ...work };
   });
-
-  const onSelectShowCars = (value: any) => {
-    dispatch(pitstopsSettings({ ...uiSettings, showCars: value as string[] }));
-  };
-
-  const onSelectCarClassChange = (value: string[]) => {
-    // get removed car classes
-
-    const newShowcars = processCarClassSelection({
-      carDataContainer: carDataContainer,
-      currentFilter: uiSettings.filterCarClasses,
-      currentShowCars: uiSettings.showCars,
-      newSelection: value,
-    });
-    dispatch(pitstopsSettings({ ...uiSettings, filterCarClasses: value, showCars: newShowcars }));
-  };
-
-  // const pits: Map<string, number[]> = new Map();
-  // pits.set("1", [12, 20, 14]);
-
-  const pits = [
-    { car: "#45", p1: 12, p2: 22, p3: 15 },
-    { car: "#77", p1: 10 },
-    { car: "#99", p1: 7, p2: 8, p3: 9 },
-  ];
-  const colorScale = ["Pink", "PaleGoldenrod", "LightGreen"];
 
   const CustomTooltip = (data: any) => {
     // we get something like this:
@@ -102,9 +62,6 @@ value: 77.66666666553647
     );
   };
   const InternalGraph = (
-    // <div style={{ position: "relative" }}>
-    //   <div style={{ position: "absolute", width: "100%", height: "100%" }}>
-    //     Hallo
     <div style={{ height: "750px" }}>
       <ResponsiveBar
         data={pitData}
@@ -125,25 +82,9 @@ value: 77.66666666553647
         }}
       />
     </div>
-    //   </div>
-    // </div>
   );
 
-  return (
-    <>
-      <Row>
-        <CarFilter
-          availableCars={availableCars}
-          availableClasses={allCarClasses}
-          selectedCars={uiSettings.showCars}
-          selectedCarClasses={uiSettings.filterCarClasses}
-          onSelectCarFilter={onSelectShowCars}
-          onSelectCarClassFilter={onSelectCarClassChange}
-        />
-      </Row>
-      {uiSettings.showCars.length === 0 ? <Empty description="Select cars" /> : InternalGraph}
-    </>
-  );
+  return <>{uiSettings.showCars.length === 0 ? <Empty description="Select cars" /> : InternalGraph}</>;
 };
 
 export default CarPitstopsNivo;
