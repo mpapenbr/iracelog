@@ -1,16 +1,3 @@
-var codec = require("json-url")("lzw");
-
-export function compressJson(data: any): Promise<string> {
-  // var result = "";
-  const json = JSON.stringify(data);
-  return codec.compress(json);
-}
-
-export function decompress(data: string): Promise<any> {
-  return codec.decompress(data).then((j: any) => {
-    return jsonDateEnhancer(j);
-  });
-}
 /**
  * converts raw json data (as string) to object.
  * Detects ISO date strings and converts them to Date
@@ -27,5 +14,3 @@ export function jsonDateEnhancer(raw: string) {
   }
   return JSON.parse(raw, reviver);
 }
-
-export default { compressJson, decompress };
