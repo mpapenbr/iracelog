@@ -211,7 +211,7 @@ export const extractCarClasses = (carInfo: ICarInfo[]): ICarClass[] => {
   const names = carInfo
     .map((v) => v.carClass)
     .reduce((prev, cur) => {
-      prev.add(cur);
+      if (cur?.length > 0) prev.add(cur);
       return prev;
     }, new Set<string>());
   return Array.from(names)
