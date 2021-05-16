@@ -28,6 +28,7 @@ import {
   updateCarPits,
   updateCarStints,
   updateClassification,
+  updateEventInfo,
   updateInfoMessages,
   updateRaceGraph,
   updateSessionInfo,
@@ -45,7 +46,7 @@ import {
   stintsSettings,
 } from "../stores/ui/actions";
 import { defaultStateData } from "../stores/ui/reducer";
-import { connectedToServer, reset, setData, updateManifests } from "../stores/wamp/actions";
+import { connectedToServer, reset, setManifests, updateManifests } from "../stores/wamp/actions";
 import { postProcessManifest } from "../stores/wamp/reducer";
 
 interface IStateProps {}
@@ -160,14 +161,18 @@ export const DemoRaces: React.FC<MyProps> = (props: MyProps) => {
         console.log(data); // we  will always get an array here (due to WAMP)
         // dispatch(updateManifests(data.manifests)); // these are the "small" manifests
         const manifests = postProcessManifest(data.manifests);
-        dispatch(setData({ ...data.processedData, manifests: manifests }));
+        dispatch(setManifests(manifests));
         globalWamp.processor = new BulkProcessor(manifests, data.processedData);
 
         doDistribute(defaultProcessRaceStateData, data.processedData);
         globalWamp.currentData = data.processedData;
       });
       dispatch(connectedToServer());
-
+      // TODO: maybe combine this with above call
+      s.call("racelog.get_event_info", [id]).then((data: any) => {
+        console.log(data);
+        dispatch(updateEventInfo(data[0]));
+      });
       s.subscribe(sprintf("racelog.state.%s", id), (data) => {
         const theProc = globalWamp.processor;
         // important, otherwise we don't detect changes on carLaps,carStints,.... (all those Array.from(...) attrs of BulkProcessor)

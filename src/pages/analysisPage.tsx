@@ -6,6 +6,7 @@ import Classification from "../components/live/classification";
 import RaceMessages from "../components/live/raceMessages";
 import { CarPitstopsContainer } from "../container/CarPitstopsContainer";
 import { CarStintsContainer } from "../container/CarStintsContainer";
+import { CircleOfDoomContainer } from "../container/CircleOfDoomContainer";
 import { DriverLapsContainer } from "../container/DriverLapsContainer";
 import { RaceGraphByReferenceContainer } from "../container/RaceGraphByReferenceContainer";
 import { RaceGraphContainer } from "../container/RaceGraphContainer";
@@ -29,6 +30,10 @@ export const AnalysisMainPage: React.FC<MyProps> = (props: MyProps) => {
         <Menu theme="light" mode="inline">
           <Menu.Item key="classification" className="race-sidebar">
             <Link to="/analysis/classification">Classification</Link>
+          </Menu.Item>
+
+          <Menu.Item key="cod" className="race-sidebar">
+            <Link to="/analysis/cod">Circle of doom</Link>
           </Menu.Item>
 
           <Menu.Item key="raceGraphARecharts" className="race-sidebar">
@@ -68,6 +73,7 @@ export const AnalysisMainPage: React.FC<MyProps> = (props: MyProps) => {
       <Content>
         <Switch>
           <Route path="/analysis/classification" component={Classification} />
+          <Route path="/analysis/cod" component={CircleOfDoomContainer} />
 
           <Route path="/analysis/raceGraphARecharts" component={RaceGraphContainer} />
 

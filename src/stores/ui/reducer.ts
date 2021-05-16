@@ -4,6 +4,7 @@ import * as UiActions from "./actions";
 import { UiActionTypes } from "./actions";
 import {
   defaultUiData,
+  ICircleOfDoomSettings,
   IClassificationSettings,
   IDriverLapsSettings,
   IDriverStintsSettings as IDriverStintsSettings,
@@ -152,6 +153,20 @@ const DriverStintsSettingsReducer = reducerWithInitialState(initialDriverStints)
   UiActions.driverStintsSettings,
   (state, settings) => settings
 );
+
+// CircleOfDoomSettings
+const initialCircleOfDoom: ICircleOfDoomSettings = {
+  referenceCarNum: "",
+  pitstopTime: 0,
+  calcSpeed: 0,
+  showCars: [],
+  selectableCars: [],
+  filterCarClasses: [],
+};
+const CircleOfDoomSettingsReducer = reducerWithInitialState(initialCircleOfDoom).case(
+  UiActions.circleOfDoomSettings,
+  (state, settings) => settings
+);
 export const defaultStateData: IUserSettings = {
   classification: initialClassificationSettings,
   messages: initialMessagesSettings,
@@ -162,6 +177,7 @@ export const defaultStateData: IUserSettings = {
   pitstops: initialPitstops,
   stints: initialStints,
   driverStints: initialDriverStints,
+  circleOfDoom: initialCircleOfDoom,
 };
 const combinedReducers = combineReducers<IUserSettings>({
   classification: ClassificationSettingsReducer,
@@ -173,6 +189,7 @@ const combinedReducers = combineReducers<IUserSettings>({
   pitstops: PitstopsSettingsReducer,
   stints: StintsSettingsReducer,
   driverStints: DriverStintsSettingsReducer,
+  circleOfDoom: CircleOfDoomSettingsReducer,
 });
 
 export { reducer as uiReducer, initialState as uiInitialState, combinedReducers as userSettingsReducer };

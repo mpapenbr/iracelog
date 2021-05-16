@@ -78,6 +78,14 @@ export interface IDriverStintsSettings {
   filterInOut: boolean;
   showStint: number; // 0: all
 }
+export interface ICircleOfDoomSettings {
+  referenceCarNum: string; // use this car for calculations
+  pitstopTime: number; // calculate with this pit stop time
+  calcSpeed: number; // for temporary use during development
+  showCars: string[];
+  selectableCars: ICarBaseData[]; // the cars to show in the dropdown as selectable
+  filterCarClasses: string[]; // empty = all classes, otherwise only selected
+}
 export interface IUiData {
   stint: IUiStints;
   entries: IUiEntries;
@@ -113,6 +121,7 @@ export interface IUserSettings {
   pitstops: IPitstopsSettings;
   stints: IStintsSettings;
   driverStints: IDriverStintsSettings;
+  circleOfDoom: ICircleOfDoomSettings;
 }
 
 export const defaultUiData: IUiData = {

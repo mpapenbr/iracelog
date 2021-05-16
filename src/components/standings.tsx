@@ -1,40 +1,22 @@
-import { Card, Col, Empty, Row, Statistic, Table } from "antd";
-import { ColumnsType, TablePaginationConfig } from "antd/lib/table";
+import { getValueViaSpec } from "@mpapenbr/iracelog-analysis/dist/stints/util";
+import { Table, TablePaginationConfig } from "antd";
+import { ColumnsType } from "antd/lib/table";
 import _ from "lodash";
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { sprintf } from "sprintf-js";
-import { ApplicationState } from "../../stores";
-import { classificationSettings } from "../../stores/ui/actions";
-import { getValueViaSpec } from "../../stores/wamp/compute/util";
-import { SessionManifest } from "../../stores/wamp/types";
-import { lapTimeString, secAsString } from "../../utils/output";
+import { ApplicationState } from "../stores";
+import { classificationSettings } from "../stores/ui/actions";
+import { lapTimeString } from "../utils/output";
 
-const Classification: React.FC<{}> = () => {
-  return (
-    <>
-      <Row>
-        <Col span={24}>
-          <SessionInfoData />
-        </Col>
-      </Row>
-      {/* <Row>
-        <Col span={24}>
-          <CircleOfDoom />
-        </Col>
-      </Row> */}
+interface MyProps {
+  showCars: string[];
+}
+interface DispatchProps {}
 
-      <Row>
-        <Col span={24}>
-          <Standings />
-        </Col>
-      </Row>
-    </>
-  );
-};
-export default Classification;
+type Props = MyProps & DispatchProps;
 
-const Standings: React.FC<{}> = () => {
+export const Standings: React.FC<Props> = (props: Props) => {
   const uiSettings = useSelector((state: ApplicationState) => state.userSettings.classification);
   const carsRaw = useSelector((state: ApplicationState) => state.raceData.classification.data);
   const stateCarManifest = useSelector((state: ApplicationState) => state.wamp.data.manifests.car);
@@ -118,6 +100,7 @@ const Standings: React.FC<{}> = () => {
   // console.log(data);
   // className="istint-compact"
 
+  const cars = carsRaw.filter((c: any) => props.showCars.includes(getValue(c, "carNum")));
   const pagination: TablePaginationConfig = {
     defaultPageSize: 20,
     pageSize: uiSettings.pageSize,
@@ -133,61 +116,8 @@ const Standings: React.FC<{}> = () => {
       className="iracelog-compact"
       pagination={pagination}
       columns={columns}
-      dataSource={carsRaw}
+      dataSource={cars}
       rowKey={() => _.uniqueId()}
     />
-  );
-};
-
-const SessionInfoData: React.FC<{}> = () => {
-  const sessionData: [] = useSelector(
-    (state: ApplicationState) =>
-      // state.wamp.data.session ? state.wamp.data.session.data : []
-      state.raceData.sessionInfo.data
-  );
-
-  if (sessionData.length === 0) return <Empty description="No session data available" />;
-  const getValue = (key: string) => {
-    return getValueViaSpec(sessionData, SessionManifest, key);
-  };
-  const gridStyle = { width: "25%" };
-
-  return (
-    <>
-      <Row>
-        <Col span={12}>
-          <Card>
-            <Card.Grid style={gridStyle}>
-              <Statistic title="Session time" value={secAsString(getValue("sessionTime"))} />
-            </Card.Grid>
-            <Card.Grid style={gridStyle}>
-              <Statistic title="Remaining time" value={secAsString(getValue("timeRemain"))} />
-            </Card.Grid>
-            <Card.Grid style={gridStyle}>
-              <Statistic title="Time of day" value={secAsString(getValue("timeOfDay"))} />
-            </Card.Grid>
-            <Card.Grid style={gridStyle}>
-              <Statistic title="Flag" value={getValue("flagState")} />
-            </Card.Grid>
-          </Card>
-        </Col>
-        <Col span={12}>
-          <Card>
-            <Card.Grid style={gridStyle}>
-              <Statistic title="Track temp" precision={1} value={getValue("trackTemp")} />
-            </Card.Grid>
-            <Card.Grid style={gridStyle}>
-              <Statistic title="Air temp" precision={1} value={getValue("airTemp")} />
-            </Card.Grid>
-            <Card.Grid style={gridStyle}>
-              <Statistic title="Wind direction" precision={1} value={getValue("windDir")} />
-            </Card.Grid>
-            <Card.Grid style={gridStyle}>
-              <Statistic title="Wind speed (m/s)" precision={1} value={getValue("windVel")} />
-            </Card.Grid>
-          </Card>
-        </Col>
-      </Row>
-    </>
   );
 };
