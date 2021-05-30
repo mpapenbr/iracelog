@@ -28,6 +28,7 @@ import {
   updateCarPits,
   updateCarStints,
   updateClassification,
+  updateEventInfo,
   updateInfoMessages,
   updateRaceGraph,
   updateSessionInfo,
@@ -45,7 +46,7 @@ import {
   stintsSettings,
 } from "../stores/ui/actions";
 import { defaultStateData } from "../stores/ui/reducer";
-import { connectedToServer, reset, setData, updateManifests } from "../stores/wamp/actions";
+import { connectedToServer, reset, setManifests, updateManifests } from "../stores/wamp/actions";
 import { postProcessManifest } from "../stores/wamp/reducer";
 
 interface IStateProps {}
@@ -73,14 +74,14 @@ export const DemoRaces: React.FC<MyProps> = (props: MyProps) => {
     var conn = new autobahn.Connection({ url: API_CROSSBAR_URL + "/ws", realm: "racelog" });
     conn.onopen = (s: Session) => {
       s.call("racelog.archive.get_manifest", [arg]).then((manifestData: any) => {
-        // console.log(manifestData);
+        console.log(manifestData);
         setLoading(true);
         dispatch(reset());
         resetUi();
-        const mData = JSON.parse(manifestData[0]);
+        // const mData = JSON.parse(manifestData);
         s.call("racelog.analysis.archive", [arg]).then((data: any) => {
           doDistribute(defaultProcessRaceStateData, data);
-          dispatch(updateManifests(mData));
+          dispatch(updateManifests(manifestData));
           conn.close();
           setLoading(false);
           history.push("/analysis");
@@ -160,14 +161,18 @@ export const DemoRaces: React.FC<MyProps> = (props: MyProps) => {
         console.log(data); // we  will always get an array here (due to WAMP)
         // dispatch(updateManifests(data.manifests)); // these are the "small" manifests
         const manifests = postProcessManifest(data.manifests);
-        dispatch(setData({ ...data.processedData, manifests: manifests }));
+        dispatch(setManifests(manifests));
         globalWamp.processor = new BulkProcessor(manifests, data.processedData);
 
         doDistribute(defaultProcessRaceStateData, data.processedData);
         globalWamp.currentData = data.processedData;
       });
       dispatch(connectedToServer());
-
+      // TODO: maybe combine this with above call
+      s.call("racelog.get_event_info", [id]).then((data: any) => {
+        console.log(data);
+        dispatch(updateEventInfo(data[0]));
+      });
       s.subscribe(sprintf("racelog.state.%s", id), (data) => {
         const theProc = globalWamp.processor;
         // important, otherwise we don't detect changes on carLaps,carStints,.... (all those Array.from(...) attrs of BulkProcessor)
@@ -238,12 +243,12 @@ export const DemoRaces: React.FC<MyProps> = (props: MyProps) => {
       description: "3h+ race with 20 GT3",
       key: "1",
     },
-    {
-      title: "AI demo: The Special Characters at Watkins",
-      description:
-        "a lot of pitstops, short stints, mainly used to check if umlauts and other character decorations are ok.",
-      key: "2",
-    },
+    // {
+    //   title: "AI demo: The Special Characters at Watkins",
+    //   description:
+    //     "a lot of pitstops, short stints, mainly used to check if umlauts and other character decorations are ok.",
+    //   key: "2",
+    // },
     {
       title: "AI Demo: GT3 race at Barcelona",
       description: "3h race longer stints, 30 GT3",
@@ -254,11 +259,11 @@ export const DemoRaces: React.FC<MyProps> = (props: MyProps) => {
       description: "3h race, medium tank, resets, repair stops",
       key: "68d4ff7adbb3412b8da2ab53daf01453",
     },
-    {
-      title: "NEC 2021 Race #2",
-      description: "Test for Nordschleife",
-      key: "28a7b97ab9aeb613d1c7c75461f3baec",
-    },
+    // {
+    //   title: "NEC 2021 Race #2",
+    //   description: "Test for Nordschleife",
+    //   key: "28a7b97ab9aeb613d1c7c75461f3baec",
+    // },
     {
       title: "NEO Race 6h Barcelona",
       description: "Used for Multiclass tests. Be patient while loading (~15s)",

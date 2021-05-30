@@ -75,6 +75,8 @@
 
 .iracelog-compact .ant-table-tbody > tr > td {
   padding-right: 1px;
+  padding-top: 6px;
+  padding-bottom: 6px;
   font-size: 14px;
   line-height: 0.4rem;
 }

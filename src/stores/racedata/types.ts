@@ -7,3 +7,19 @@ export interface ICarBaseData {
 export interface ICarClass {
   name: string;
 }
+
+export interface ISector {
+  SectorNum: number;
+  SectorStartPct: number;
+}
+export interface IEventInfo {
+  trackId: number;
+  teamRacing: boolean;
+  irSessionId: number;
+  trackDisplayName: string;
+  trackDisplayShortName: string;
+  trackConfigName: string;
+  trackLength: number;
+  eventTime: string;
+  sectors: ISector[];
+}

@@ -9,7 +9,7 @@ import {
 import { combineReducers } from "redux";
 import { reducerWithInitialState } from "typescript-fsa-reducers";
 import * as RaceActions from "./actions";
-import { ICarBaseData, ICarClass } from "./types";
+import { ICarBaseData, ICarClass, IEventInfo } from "./types";
 
 /**
  * this interface describes the attributes concerning the race data which are stored in the state
@@ -25,6 +25,7 @@ export interface IRaceData {
   carStints: ICarStintInfo[];
   carPits: ICarPitInfo[];
   infoMessages: IMessage[];
+  eventInfo: IEventInfo;
 }
 
 // available cars
@@ -36,9 +37,10 @@ export const AvailableCarsReducer = reducerWithInitialState([] as ICarBaseData[]
 );
 
 // available car classes
-export const AvailableCarClassesReducer = reducerWithInitialState(
-  [] as ICarClass[]
-).case(RaceActions.updateAvailableCarClasses, (state, classes) => [...classes]);
+export const AvailableCarClassesReducer = reducerWithInitialState([] as ICarClass[]).case(
+  RaceActions.updateAvailableCarClasses,
+  (state, classes) => [...classes]
+);
 
 // car info
 export const CarInfoReducer = reducerWithInitialState([] as ICarInfo[]).case(
@@ -94,6 +96,23 @@ export const InfoMessagesReducer = reducerWithInitialState([] as IMessage[]).cas
   (state, arg) => [...arg]
 );
 
+// event info
+export const initialEventInfo: IEventInfo = {
+  trackId: 0,
+  teamRacing: false,
+  irSessionId: 0,
+  trackDisplayName: "Default track",
+  trackDisplayShortName: "track",
+  trackConfigName: "",
+  trackLength: 3000,
+  eventTime: new Date().toISOString(),
+  sectors: [],
+};
+export const EventInfoReducer = reducerWithInitialState(initialEventInfo).case(
+  RaceActions.updateEventInfo,
+  (state, arg) => ({ ...arg })
+);
+
 const combinedReducers = combineReducers<IRaceData>({
   availableCars: AvailableCarsReducer,
   availableCarClasses: AvailableCarClassesReducer,
@@ -105,6 +124,7 @@ const combinedReducers = combineReducers<IRaceData>({
   carStints: CarStintsReducer,
   carPits: CarPitsReducer,
   infoMessages: InfoMessagesReducer,
+  eventInfo: EventInfoReducer,
 });
 
 export { combinedReducers as raceDataReducers };

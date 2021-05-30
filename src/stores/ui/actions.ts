@@ -3,6 +3,7 @@ import { actionCreatorFactory } from "typescript-fsa";
 import { IBaseAction } from "../../commons";
 import {
   IBrushInterval,
+  ICircleOfDoomSettings,
   IClassificationSettings,
   IDriverLapsSettings,
   IDriverStintsSettings,
@@ -39,3 +40,4 @@ export const driverLapsSettings = actionCreator<IDriverLapsSettings>("DRIVERLAPS
 export const pitstopsSettings = actionCreator<IPitstopsSettings>("PITSTOPS_SETTINGS");
 export const stintsSettings = actionCreator<IStintsSettings>("STINTS_SETTINGS");
 export const driverStintsSettings = actionCreator<IDriverStintsSettings>("DRIVER_STINTS_SETTINGS");
+export const circleOfDoomSettings = actionCreator<ICircleOfDoomSettings>("CIRCLE_OF_DOOM_SETTINGS");
