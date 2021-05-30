@@ -59,8 +59,8 @@ export const distributeChanges = (args: IProcessingInfo) => {
       const classesCurrent: ICarClass[] = extractCarClasses(args.currentData.carInfo);
       const classesNew: ICarClass[] = extractCarClasses(args.newData.carInfo);
       if (!_.isEmpty(diff(classesNew, classesCurrent))) {
-        args.onChangedAvailableCarClasses?.(classesNew);
       }
+      args.onChangedAvailableCarClasses?.(classesNew);
     }
   }
   // raceGraph

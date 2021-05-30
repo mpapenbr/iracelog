@@ -74,14 +74,14 @@ export const DemoRaces: React.FC<MyProps> = (props: MyProps) => {
     var conn = new autobahn.Connection({ url: API_CROSSBAR_URL + "/ws", realm: "racelog" });
     conn.onopen = (s: Session) => {
       s.call("racelog.archive.get_manifest", [arg]).then((manifestData: any) => {
-        // console.log(manifestData);
+        console.log(manifestData);
         setLoading(true);
         dispatch(reset());
         resetUi();
-        const mData = JSON.parse(manifestData[0]);
+        // const mData = JSON.parse(manifestData);
         s.call("racelog.analysis.archive", [arg]).then((data: any) => {
           doDistribute(defaultProcessRaceStateData, data);
-          dispatch(updateManifests(mData));
+          dispatch(updateManifests(manifestData));
           conn.close();
           setLoading(false);
           history.push("/analysis");
@@ -243,12 +243,12 @@ export const DemoRaces: React.FC<MyProps> = (props: MyProps) => {
       description: "3h+ race with 20 GT3",
       key: "1",
     },
-    {
-      title: "AI demo: The Special Characters at Watkins",
-      description:
-        "a lot of pitstops, short stints, mainly used to check if umlauts and other character decorations are ok.",
-      key: "2",
-    },
+    // {
+    //   title: "AI demo: The Special Characters at Watkins",
+    //   description:
+    //     "a lot of pitstops, short stints, mainly used to check if umlauts and other character decorations are ok.",
+    //   key: "2",
+    // },
     {
       title: "AI Demo: GT3 race at Barcelona",
       description: "3h race longer stints, 30 GT3",
@@ -259,11 +259,11 @@ export const DemoRaces: React.FC<MyProps> = (props: MyProps) => {
       description: "3h race, medium tank, resets, repair stops",
       key: "68d4ff7adbb3412b8da2ab53daf01453",
     },
-    {
-      title: "NEC 2021 Race #2",
-      description: "Test for Nordschleife",
-      key: "28a7b97ab9aeb613d1c7c75461f3baec",
-    },
+    // {
+    //   title: "NEC 2021 Race #2",
+    //   description: "Test for Nordschleife",
+    //   key: "28a7b97ab9aeb613d1c7c75461f3baec",
+    // },
     {
       title: "NEO Race 6h Barcelona",
       description: "Used for Multiclass tests. Be patient while loading (~15s)",
