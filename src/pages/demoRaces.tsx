@@ -63,9 +63,11 @@ export const DemoRaces: React.FC<MyProps> = (props: MyProps) => {
   const [loading, setLoading] = useState(false);
   const [info, setInfo] = useState("Loading data....");
   const [livedata, setLivedata] = useState([] as any[]);
+  const [events, setEvents] = useState([] as any[]);
 
   useEffect(() => {
     onReloadRequested();
+    onLoadEvents();
   }, [loadTrigger]);
 
   const onLoadButtonClicked = (e: React.MouseEvent<HTMLButtonElement>) => {
@@ -237,7 +239,19 @@ export const DemoRaces: React.FC<MyProps> = (props: MyProps) => {
     conn.open();
   };
 
-  const data = [
+  const onLoadEvents = () => {
+    console.log("fetching events");
+    var conn = new autobahn.Connection({ url: API_CROSSBAR_URL + "/ws", realm: "racelog" });
+    conn.onopen = (s: Session) => {
+      s.call("racelog.archive.events").then((data: any) => {
+        setEvents(data.map((v: any) => ({ key: v.eventKey, title: v.name, description: v.description })));
+        conn.close();
+      });
+    };
+    conn.open();
+  };
+
+  const oldData = [
     {
       title: "AI demo: GT3 race Watkins",
       description: "3h+ race with 20 GT3",
@@ -280,7 +294,7 @@ export const DemoRaces: React.FC<MyProps> = (props: MyProps) => {
       <Col span={6}>
         <List
           header={<h3>Demo races</h3>}
-          dataSource={data}
+          dataSource={events}
           renderItem={(item: any) => (
             <List.Item
               actions={[

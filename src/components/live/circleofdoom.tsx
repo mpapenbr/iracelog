@@ -44,10 +44,11 @@ export const CircleOfDoom: React.FC<{}> = () => {
     // P217: 227 km/h bei 1:02 laptime
     // R8: 198
     // const c = ICarLap;
-    const sortedLaps = carLaps
+    let sortedLaps = carLaps
       .find((c) => c.carNum === carData.carNum)
       ?.laps.map((v) => v.lapTime)
       .sort();
+    if (sortedLaps === undefined) sortedLaps = [];
     const meanLap = sortedLaps![Math.ceil(sortedLaps!.length / 2)];
     console.log("meanLap: " + meanLap);
     const avgSpeed = eventInfo.trackLength / meanLap;
@@ -55,7 +56,7 @@ export const CircleOfDoom: React.FC<{}> = () => {
     const data = dataRaw.find((c) => c.carNum === carData.carNum)!;
     const pitInfo = carPits.find((item) => item.carNum === carData.carNum)!;
     let inPits = 0;
-    if (pitInfo.current.isCurrentPitstop) {
+    if (pitInfo && pitInfo.current.isCurrentPitstop) {
       console.log("car is in pits for " + pitInfo.current.laneTime);
       inPits = pitInfo.current.laneTime;
     }
