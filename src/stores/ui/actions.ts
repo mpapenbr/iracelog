@@ -12,6 +12,7 @@ import {
   IRaceGraphRelativeSettings,
   IRaceGraphSettings,
   IRacePositionsSettings,
+  IReplaySettings,
   IStintsSettings,
   UiComponent,
 } from "./types";
@@ -41,3 +42,5 @@ export const pitstopsSettings = actionCreator<IPitstopsSettings>("PITSTOPS_SETTI
 export const stintsSettings = actionCreator<IStintsSettings>("STINTS_SETTINGS");
 export const driverStintsSettings = actionCreator<IDriverStintsSettings>("DRIVER_STINTS_SETTINGS");
 export const circleOfDoomSettings = actionCreator<ICircleOfDoomSettings>("CIRCLE_OF_DOOM_SETTINGS");
+
+export const replaySettings = actionCreator<IReplaySettings>("REPLAY_SETTINGS");

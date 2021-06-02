@@ -7,10 +7,9 @@
     "@nivo/bar": "^0.69.0",
     "@nivo/core": "^0.69.0",
     "@nivo/line": "^0.69.0",
-    "antd": "^4.15.5",
+    "antd": "^4.16.1",
     "autobahn": "^20.9.2",
     "deep-object-diff": "^1.1.0",
-  
     "lodash": "^4.17.20",
     "react": "^17.0.1",
     "react-dom": "^17.0.1",
@@ -58,7 +57,6 @@
     "preversion": "yarn test",
     "postversion": "git push --tags"
   },
-  
   "eslintConfig": {
     "extends": [
       "react-app",

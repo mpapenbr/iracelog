@@ -4,6 +4,7 @@ import { Connection } from "autobahn";
 
 interface IGlobalWamp {
   currentLiveId?: string;
+  replayId?: string; // is set if data was loaded for replay
   conn?: Connection;
   processor?: BulkProcessor;
   currentData?: IProcessRaceStateData;

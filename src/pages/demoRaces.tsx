@@ -43,6 +43,7 @@ import {
   raceGraphRelativeSettings,
   raceGraphSettings,
   racePositionsSettings,
+  replaySettings,
   stintsSettings,
 } from "../stores/ui/actions";
 import { defaultStateData } from "../stores/ui/reducer";
@@ -84,6 +85,40 @@ export const DemoRaces: React.FC<MyProps> = (props: MyProps) => {
         s.call("racelog.analysis.archive", [arg]).then((data: any) => {
           doDistribute(defaultProcessRaceStateData, data);
           dispatch(updateManifests(manifestData));
+          conn.close();
+          setLoading(false);
+          history.push("/analysis");
+        });
+      });
+    };
+
+    conn.open();
+    // setTimeout(() => setLoading(false), 2000);
+  };
+
+  const onReplayButtonClicked = (e: React.MouseEvent<HTMLButtonElement>) => {
+    const arg = e.currentTarget.value;
+    // readData(arg, dispatch, doInfo);
+    var conn = new autobahn.Connection({ url: API_CROSSBAR_URL + "/ws", realm: "racelog" });
+    conn.onopen = (s: Session) => {
+      setLoading(true);
+      s.call("racelog.archive.replay_info", [arg]).then((eventInfo: any) => {
+        console.log(eventInfo);
+        dispatch(reset());
+        resetUi();
+        dispatch(
+          replaySettings({
+            currentSessionTime: eventInfo.minSessionTime,
+            minSessionTime: eventInfo.minSessionTime,
+            maxSessionTime: eventInfo.maxSessionTime,
+            enabled: true,
+            eventKey: eventInfo.event.eventKey,
+          })
+        );
+        // const mData = JSON.parse(manifestData);
+        s.call("racelog.analysis.archive", [eventInfo.event.eventKey]).then((data: any) => {
+          doDistribute(defaultProcessRaceStateData, data);
+          dispatch(updateManifests(eventInfo.event.manifests));
           conn.close();
           setLoading(false);
           history.push("/analysis");
@@ -244,7 +279,9 @@ export const DemoRaces: React.FC<MyProps> = (props: MyProps) => {
     var conn = new autobahn.Connection({ url: API_CROSSBAR_URL + "/ws", realm: "racelog" });
     conn.onopen = (s: Session) => {
       s.call("racelog.archive.events").then((data: any) => {
-        setEvents(data.map((v: any) => ({ key: v.eventKey, title: v.name, description: v.description })));
+        setEvents(
+          data.map((v: any) => ({ key: v.eventKey, title: v.name, description: v.description, eventId: v.id }))
+        );
         conn.close();
       });
     };
@@ -300,6 +337,9 @@ export const DemoRaces: React.FC<MyProps> = (props: MyProps) => {
               actions={[
                 <Button value={item.key} type="default" onClick={onLoadButtonClicked}>
                   Load
+                </Button>,
+                <Button value={item.eventId} type="default" onClick={onReplayButtonClicked}>
+                  Replay
                 </Button>,
               ]}
             >

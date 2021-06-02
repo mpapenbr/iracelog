@@ -13,6 +13,7 @@ import {
   IRaceGraphRelativeSettings,
   IRaceGraphSettings,
   IRacePositionsSettings,
+  IReplaySettings,
   IStintsSettings,
   IUiState,
   IUserSettings,
@@ -167,6 +168,20 @@ const CircleOfDoomSettingsReducer = reducerWithInitialState(initialCircleOfDoom)
   UiActions.circleOfDoomSettings,
   (state, settings) => settings
 );
+
+// ReplaySettings
+const initialReplaySettings: IReplaySettings = {
+  enabled: false,
+  eventKey: "",
+  minSessionTime: 0,
+  maxSessionTime: 0,
+  currentSessionTime: 0,
+};
+const ReplaySettingsReducer = reducerWithInitialState(initialReplaySettings).case(
+  UiActions.replaySettings,
+  (state, settings) => settings
+);
+
 export const defaultStateData: IUserSettings = {
   classification: initialClassificationSettings,
   messages: initialMessagesSettings,
@@ -178,6 +193,7 @@ export const defaultStateData: IUserSettings = {
   stints: initialStints,
   driverStints: initialDriverStints,
   circleOfDoom: initialCircleOfDoom,
+  replay: initialReplaySettings,
 };
 const combinedReducers = combineReducers<IUserSettings>({
   classification: ClassificationSettingsReducer,
@@ -190,6 +206,7 @@ const combinedReducers = combineReducers<IUserSettings>({
   stints: StintsSettingsReducer,
   driverStints: DriverStintsSettingsReducer,
   circleOfDoom: CircleOfDoomSettingsReducer,
+  replay: ReplaySettingsReducer,
 });
 
 export { reducer as uiReducer, initialState as uiInitialState, combinedReducers as userSettingsReducer };
