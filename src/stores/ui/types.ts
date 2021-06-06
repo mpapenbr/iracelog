@@ -88,10 +88,16 @@ export interface ICircleOfDoomSettings {
 }
 export interface IReplaySettings {
   enabled: boolean;
+  playing: boolean;
+  playSpeed: number;
+  timerHandle: number;
   eventKey: string; // the event key currently loaded for replay (blank if none)
+  eventId: number; // the (internal) event id associated to the eventKey
+  minTimestamp: number; // the timestamp (number) of the first "race" entry in the db
   minSessionTime: number;
   maxSessionTime: number;
   currentSessionTime: number;
+  currentTimestamp: number; // holds the current timestamp
 }
 export interface IUiData {
   stint: IUiStints;

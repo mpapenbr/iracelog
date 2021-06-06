@@ -11,6 +11,7 @@ import { DriverLapsContainer } from "../container/DriverLapsContainer";
 import { RaceGraphByReferenceContainer } from "../container/RaceGraphByReferenceContainer";
 import { RaceGraphContainer } from "../container/RaceGraphContainer";
 import { RacePositionsContainer } from "../container/RacePositionsContainer";
+import { ReplayCircleOfDoomContainer } from "../container/ReplayCircleOfDoomContainer";
 import { StintLapsContainer } from "../container/StintLapsContainer";
 
 interface IStateProps {}
@@ -64,6 +65,9 @@ export const AnalysisMainPage: React.FC<MyProps> = (props: MyProps) => {
           <Menu.Item key="messages" className="race-sidebar">
             <Link to="/analysis/messages">Messages</Link>
           </Menu.Item>
+          <Menu.Item key="replayCOD" className="race-sidebar">
+            <Link to="/analysis/replayCOD">Replay COD</Link>
+          </Menu.Item>
 
           {/* <Menu.Item key="test" className="race-sidebar">
             <Link to="/analysis/test">test</Link>
@@ -87,6 +91,7 @@ export const AnalysisMainPage: React.FC<MyProps> = (props: MyProps) => {
           <Route path="/analysis/stintDurations" component={CarStintsContainer} />
           <Route path="/analysis/stintLaps" component={StintLapsContainer} />
           <Route path="/analysis/messages" component={RaceMessages} />
+          <Route path="/analysis/replayCOD" component={ReplayCircleOfDoomContainer} />
           {/* <Route path="/analysis/test" component={RaceGraphContainer} /> */}
         </Switch>
       </Content>

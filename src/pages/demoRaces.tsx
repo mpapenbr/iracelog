@@ -20,6 +20,7 @@ import { sprintf } from "sprintf-js";
 import { globalWamp } from "../commons/globals";
 import { API_CROSSBAR_URL } from "../constants";
 import { distributeChanges } from "../processor/processData";
+import { ReplayDataHolder } from "../processor/ReplayDataHolder";
 import {
   updateAvailableCarClasses,
   updateAvailableCars,
@@ -46,7 +47,7 @@ import {
   replaySettings,
   stintsSettings,
 } from "../stores/ui/actions";
-import { defaultStateData } from "../stores/ui/reducer";
+import { defaultStateData, initialReplaySettings } from "../stores/ui/reducer";
 import { connectedToServer, reset, setManifests, updateManifests } from "../stores/wamp/actions";
 import { postProcessManifest } from "../stores/wamp/reducer";
 
@@ -106,20 +107,25 @@ export const DemoRaces: React.FC<MyProps> = (props: MyProps) => {
         console.log(eventInfo);
         dispatch(reset());
         resetUi();
-        dispatch(
-          replaySettings({
-            currentSessionTime: eventInfo.minSessionTime,
-            minSessionTime: eventInfo.minSessionTime,
-            maxSessionTime: eventInfo.maxSessionTime,
-            enabled: true,
-            eventKey: eventInfo.event.eventKey,
-          })
-        );
+        const settings = {
+          ...initialReplaySettings,
+          minTimestamp: eventInfo.minTimestamp,
+          currentSessionTime: eventInfo.minSessionTime,
+          minSessionTime: eventInfo.minSessionTime,
+          maxSessionTime: eventInfo.maxSessionTime,
+          enabled: true,
+          eventKey: eventInfo.event.eventKey,
+          eventId: eventInfo.event.id,
+        };
+        dispatch(replaySettings(settings));
+        dispatch(updateEventInfo(eventInfo.event.data.info));
         // const mData = JSON.parse(manifestData);
         s.call("racelog.analysis.archive", [eventInfo.event.eventKey]).then((data: any) => {
           doDistribute(defaultProcessRaceStateData, data);
           dispatch(updateManifests(eventInfo.event.manifests));
-          conn.close();
+          // conn.close();
+          const rh = new ReplayDataHolder(s, settings);
+          globalWamp.replayHolder = rh;
           setLoading(false);
           history.push("/analysis");
         });

@@ -170,16 +170,22 @@ const CircleOfDoomSettingsReducer = reducerWithInitialState(initialCircleOfDoom)
 );
 
 // ReplaySettings
-const initialReplaySettings: IReplaySettings = {
+export const initialReplaySettings: IReplaySettings = {
   enabled: false,
   eventKey: "",
+  eventId: 0,
+  minTimestamp: 0,
   minSessionTime: 0,
   maxSessionTime: 0,
   currentSessionTime: 0,
+  currentTimestamp: 0,
+  playing: false,
+  playSpeed: 0,
+  timerHandle: 0,
 };
 const ReplaySettingsReducer = reducerWithInitialState(initialReplaySettings).case(
   UiActions.replaySettings,
-  (state, settings) => settings
+  (state, settings) => ({ ...settings })
 );
 
 export const defaultStateData: IUserSettings = {
