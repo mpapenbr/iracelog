@@ -7,7 +7,7 @@ import {
   PauseCircleOutlined,
   RightOutlined,
 } from "@ant-design/icons";
-import { Button, Dropdown, Menu, Select } from "antd";
+import { Button, Dropdown, Menu, Select, Slider } from "antd";
 import * as React from "react";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
@@ -15,6 +15,7 @@ import { globalWamp } from "../commons/globals";
 import { ApplicationState } from "../stores";
 import { updateClassification, updateSessionInfo } from "../stores/racedata/actions";
 import { replaySettings } from "../stores/ui/actions";
+import { useInterval } from "../utils/useInterval";
 
 const { Option } = Select;
 
@@ -22,27 +23,26 @@ export const ReplayControl: React.FC<{}> = () => {
   const dispatch = useDispatch();
   const settings = useSelector((state: ApplicationState) => state.userSettings.replay);
 
-  const [timerHandle, setTimerHandle] = useState(0);
   const [playing, setPlaying] = useState(false);
-  const [speed, setSpeed] = useState(1);
+  const [speed, setSpeed] = useState(settings.playSpeed);
   const [currentSessionTime, setCurrentSessionTime] = useState(settings.currentSessionTime);
-  const [currentTs, setCurrentTs] = useState(0);
-  const [loadTrigger, setLoadTrigger] = useState(0);
+  const [currentTs, setCurrentTs] = useState(settings.currentTimestamp);
 
   useEffect(() => {
-    console.log("useEffect");
-    console.log("settings.playing: " + settings.playing);
-    setPlaying(settings.playing);
-    if (true || settings.playing) {
-      console.log("settings.playing is true!!!");
-      setTimerHandle(settings.timerHandle);
-      setSpeed(settings.playSpeed);
-      setCurrentSessionTime(settings.currentSessionTime);
-      setCurrentTs(settings.currentTimestamp);
-    }
-  }, [loadTrigger]);
+    return () => {
+      console.log("Called on leave!");
+      const curSettings = {
+        ...settings,
+        currentSessionTime: currentSessionTime,
+        currentTimestamp: currentTs,
+        playing: playing,
+        playSpeed: speed,
+      };
+      // dispatch(replaySettings(curSettings));
+    };
+  }, []);
 
-  const requestData = (startTimer?: boolean) => {
+  const requestData = () => {
     const d = globalWamp.replayHolder?.next();
     console.log(d);
     console.log("settings.playing: " + settings.playing + " local.playing: " + playing);
@@ -57,12 +57,14 @@ export const ReplayControl: React.FC<{}> = () => {
         playing: playing,
         playSpeed: speed,
       };
-      console.log(curSettings);
-      // dispatch(replaySettings(curSettings));
+      // console.log(curSettings);
+      dispatch(replaySettings(curSettings));
       setCurrentSessionTime(d.data.session[0]);
       setCurrentTs(d.timestamp);
     }
   };
+
+  useInterval(() => requestData(), playing ? 1000 / speed : null);
 
   const onChange = (value: any) => {
     const curSettings = { ...settings, currentSessionTime: value as number };
@@ -74,42 +76,35 @@ export const ReplayControl: React.FC<{}> = () => {
     // dispatch(loadReplayData(value as number, 100));
     const startTs = (settings.minTimestamp + value) as number;
     globalWamp.replayHolder?.loadData(startTs);
+    requestData();
+    setPlaying(true);
   };
   const onPlayButtonClicked = (e: React.MouseEvent<HTMLButtonElement>) => {
     const curSpeed = speed > 0 ? speed : 1;
-    const handle = setInterval(requestData, 1000 / speed);
-    dispatch(replaySettings({ ...settings, playing: true, playSpeed: curSpeed, timerHandle: handle }));
-    console.log(handle);
-    setTimerHandle(handle);
+    dispatch(replaySettings({ ...settings, playing: true, playSpeed: curSpeed }));
     setPlaying(true);
     setSpeed(curSpeed);
   };
 
   const onPauseButtonClicked = (e: React.MouseEvent<HTMLButtonElement>) => {
-    console.log("pausing now " + timerHandle);
-    clearInterval(timerHandle);
     setPlaying(false);
-    dispatch(replaySettings({ ...settings, playing: false }));
+    // dispatch(replaySettings({ ...settings, playing: false }));
   };
 
   const onChangeSpeed = (e: React.MouseEvent<HTMLButtonElement>) => {
     console.log("new speed:" + e.currentTarget.value);
     const speed = parseInt(e.currentTarget.value);
-    clearInterval(timerHandle);
-    const handle = setInterval(requestData, 1000 / speed);
-    setTimerHandle(handle);
-    dispatch(replaySettings({ ...settings, playSpeed: speed, timerHandle: handle }));
+
+    dispatch(replaySettings({ ...settings, playSpeed: speed }));
   };
 
   const onChangeSpeedByDropdown = (e: any) => {
     console.log("new speed:" + e.key);
     // console.log(e.key);
     const speed = parseInt(e.key);
-    clearInterval(timerHandle);
-    const handle = setInterval(requestData, 1000 / speed);
-    setTimerHandle(handle);
+
     setSpeed(speed);
-    dispatch(replaySettings({ ...settings, playSpeed: speed, timerHandle: handle }));
+    dispatch(replaySettings({ ...settings, playSpeed: speed }));
   };
 
   const onStep = (e: React.MouseEvent<HTMLButtonElement>) => {
@@ -128,15 +123,16 @@ export const ReplayControl: React.FC<{}> = () => {
   );
   return (
     <>
-      {/* <Slider
+      <Slider
+        disabled={playing}
         min={settings.minSessionTime}
         max={settings.maxSessionTime}
-        value={settings.currentSessionTime}
+        // value={settings.currentSessionTime}
         defaultValue={settings.currentSessionTime}
         tooltipVisible={true}
-        onChange={onChange}
+        // onChange={onChange}
         onAfterChange={updateSettings}
-      /> */}
+      />
 
       <Button icon={<DoubleLeftOutlined />} onClick={onStep} value={-600} />
       <Button icon={<LeftOutlined />} onClick={onStep} value={-60} />

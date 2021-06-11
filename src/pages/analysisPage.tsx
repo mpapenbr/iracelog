@@ -13,6 +13,7 @@ import { RaceGraphContainer } from "../container/RaceGraphContainer";
 import { RacePositionsContainer } from "../container/RacePositionsContainer";
 import { ReplayCircleOfDoomContainer } from "../container/ReplayCircleOfDoomContainer";
 import { StintLapsContainer } from "../container/StintLapsContainer";
+import { TestContainer } from "../container/Test";
 
 interface IStateProps {}
 interface IDispachProps {
@@ -69,9 +70,9 @@ export const AnalysisMainPage: React.FC<MyProps> = (props: MyProps) => {
             <Link to="/analysis/replayCOD">Replay COD</Link>
           </Menu.Item>
 
-          {/* <Menu.Item key="test" className="race-sidebar">
+          <Menu.Item key="test" className="race-sidebar">
             <Link to="/analysis/test">test</Link>
-          </Menu.Item> */}
+          </Menu.Item>
         </Menu>
       </Sider>
       <Content>
@@ -92,7 +93,7 @@ export const AnalysisMainPage: React.FC<MyProps> = (props: MyProps) => {
           <Route path="/analysis/stintLaps" component={StintLapsContainer} />
           <Route path="/analysis/messages" component={RaceMessages} />
           <Route path="/analysis/replayCOD" component={ReplayCircleOfDoomContainer} />
-          {/* <Route path="/analysis/test" component={RaceGraphContainer} /> */}
+          <Route path="/analysis/test" component={TestContainer} />
         </Switch>
       </Content>
     </Layout>

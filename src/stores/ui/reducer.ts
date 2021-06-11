@@ -185,8 +185,9 @@ export const initialReplaySettings: IReplaySettings = {
 };
 const ReplaySettingsReducer = reducerWithInitialState(initialReplaySettings).case(
   UiActions.replaySettings,
-  (state, settings) => ({ ...settings })
+  (state, settings) => settings
 );
+const DemoReducer = reducerWithInitialState(0).case(UiActions.demoSettings, (state, value) => value);
 
 export const defaultStateData: IUserSettings = {
   classification: initialClassificationSettings,
@@ -200,6 +201,7 @@ export const defaultStateData: IUserSettings = {
   driverStints: initialDriverStints,
   circleOfDoom: initialCircleOfDoom,
   replay: initialReplaySettings,
+  counter: 0,
 };
 const combinedReducers = combineReducers<IUserSettings>({
   classification: ClassificationSettingsReducer,
@@ -213,6 +215,7 @@ const combinedReducers = combineReducers<IUserSettings>({
   driverStints: DriverStintsSettingsReducer,
   circleOfDoom: CircleOfDoomSettingsReducer,
   replay: ReplaySettingsReducer,
+  counter: DemoReducer,
 });
 
 export { reducer as uiReducer, initialState as uiInitialState, combinedReducers as userSettingsReducer };

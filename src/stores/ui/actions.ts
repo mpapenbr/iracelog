@@ -44,3 +44,4 @@ export const driverStintsSettings = actionCreator<IDriverStintsSettings>("DRIVER
 export const circleOfDoomSettings = actionCreator<ICircleOfDoomSettings>("CIRCLE_OF_DOOM_SETTINGS");
 
 export const replaySettings = actionCreator<IReplaySettings>("REPLAY_SETTINGS");
+export const demoSettings = actionCreator<number>("DEMO_SETTINGS");

@@ -136,6 +136,7 @@ export interface IUserSettings {
   driverStints: IDriverStintsSettings;
   circleOfDoom: ICircleOfDoomSettings;
   replay: IReplaySettings;
+  counter: number;
 }
 
 // may be deleted - check usage!
