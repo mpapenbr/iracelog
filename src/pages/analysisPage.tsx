@@ -4,6 +4,7 @@ import { Route, Switch } from "react-router";
 import { Link } from "react-router-dom";
 import Classification from "../components/live/classification";
 import RaceMessages from "../components/live/raceMessages";
+import { API_LOCAL_DEV_MODE } from "../constants";
 import { CarPitstopsContainer } from "../container/CarPitstopsContainer";
 import { CarStintsContainer } from "../container/CarStintsContainer";
 import { CircleOfDoomContainer } from "../container/CircleOfDoomContainer";
@@ -69,10 +70,13 @@ export const AnalysisMainPage: React.FC<MyProps> = (props: MyProps) => {
           <Menu.Item key="replayCOD" className="race-sidebar">
             <Link to="/analysis/replayCOD">Replay COD</Link>
           </Menu.Item>
-
-          <Menu.Item key="test" className="race-sidebar">
-            <Link to="/analysis/test">test</Link>
-          </Menu.Item>
+          {API_LOCAL_DEV_MODE ? (
+            <Menu.Item key="test" className="race-sidebar">
+              <Link to="/analysis/test">test</Link>
+            </Menu.Item>
+          ) : (
+            <></>
+          )}
         </Menu>
       </Sider>
       <Content>

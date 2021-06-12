@@ -112,15 +112,15 @@ export const ReplayCircleOfDoomContainer: React.FC<{}> = () => {
           <CarFilter {...props} />
         </Row>
         <Row gutter={16}>
-          <Col>
+          <Col span="6">
             <CircleOfDoom />
           </Col>
-          <Col span="16">
+          <Col span="18">
             <Row gutter={16}>
-              <Col span="8">
+              <Col span="12">
                 <SelectPitStopParam />
               </Col>
-              <Col span="8">
+              <Col span="12">
                 <ReplayControl />
               </Col>
             </Row>

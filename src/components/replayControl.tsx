@@ -11,11 +11,11 @@ import { Button, Dropdown, Menu, Select, Slider } from "antd";
 import * as React from "react";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import useInterval from "react-use/lib/useInterval";
 import { globalWamp } from "../commons/globals";
 import { ApplicationState } from "../stores";
 import { updateClassification, updateSessionInfo } from "../stores/racedata/actions";
 import { replaySettings } from "../stores/ui/actions";
-import { useInterval } from "../utils/useInterval";
 
 const { Option } = Select;
 
@@ -70,14 +70,13 @@ export const ReplayControl: React.FC<{}> = () => {
     const curSettings = { ...settings, currentSessionTime: value as number };
     dispatch(replaySettings(curSettings));
   };
-  const updateSettings = (value: any) => {
+  const updateSettings = async (value: any) => {
     const curSettings = { ...settings, currentSessionTime: value as number };
     dispatch(replaySettings(curSettings));
     // dispatch(loadReplayData(value as number, 100));
     const startTs = (settings.minTimestamp + value) as number;
-    globalWamp.replayHolder?.loadData(startTs);
+    await globalWamp.replayHolder?.syncLoadData(startTs);
     requestData();
-    setPlaying(true);
   };
   const onPlayButtonClicked = (e: React.MouseEvent<HTMLButtonElement>) => {
     const curSpeed = speed > 0 ? speed : 1;
@@ -107,11 +106,14 @@ export const ReplayControl: React.FC<{}> = () => {
     dispatch(replaySettings({ ...settings, playSpeed: speed }));
   };
 
-  const onStep = (e: React.MouseEvent<HTMLButtonElement>) => {
+  const onStep = async (e: React.MouseEvent<HTMLButtonElement>) => {
     console.log("step:" + e.currentTarget.value);
     const step = parseInt(e.currentTarget.value);
 
-    globalWamp.replayHolder?.loadData(currentTs + step);
+    await globalWamp.replayHolder?.syncLoadData(currentTs + step);
+    // const d = globalWamp.replayHolder?.next();
+    // console.log(d);
+    requestData();
   };
 
   const menu = () => (
