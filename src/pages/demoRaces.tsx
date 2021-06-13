@@ -20,6 +20,7 @@ import { sprintf } from "sprintf-js";
 import { globalWamp } from "../commons/globals";
 import { API_CROSSBAR_URL } from "../constants";
 import { distributeChanges } from "../processor/processData";
+import { ReplayDataHolder } from "../processor/ReplayDataHolder";
 import {
   updateAvailableCarClasses,
   updateAvailableCars,
@@ -43,9 +44,10 @@ import {
   raceGraphRelativeSettings,
   raceGraphSettings,
   racePositionsSettings,
+  replaySettings,
   stintsSettings,
 } from "../stores/ui/actions";
-import { defaultStateData } from "../stores/ui/reducer";
+import { defaultStateData, initialReplaySettings } from "../stores/ui/reducer";
 import { connectedToServer, reset, setManifests, updateManifests } from "../stores/wamp/actions";
 import { postProcessManifest } from "../stores/wamp/reducer";
 
@@ -70,7 +72,7 @@ export const DemoRaces: React.FC<MyProps> = (props: MyProps) => {
     onLoadEvents();
   }, [loadTrigger]);
 
-  const onLoadButtonClicked = (e: React.MouseEvent<HTMLButtonElement>) => {
+  const onLoadButtonClicked_OoO = (e: React.MouseEvent<HTMLButtonElement>) => {
     const arg = e.currentTarget.value;
     // readData(arg, dispatch, doInfo);
     var conn = new autobahn.Connection({ url: API_CROSSBAR_URL + "/ws", realm: "racelog" });
@@ -83,8 +85,48 @@ export const DemoRaces: React.FC<MyProps> = (props: MyProps) => {
         // const mData = JSON.parse(manifestData);
         s.call("racelog.analysis.archive", [arg]).then((data: any) => {
           doDistribute(defaultProcessRaceStateData, data);
+
           dispatch(updateManifests(manifestData));
           conn.close();
+          setLoading(false);
+          history.push("/analysis");
+        });
+      });
+    };
+
+    conn.open();
+    // setTimeout(() => setLoading(false), 2000);
+  };
+
+  const onLoadForReplayButtonClicked = (e: React.MouseEvent<HTMLButtonElement>) => {
+    const arg = e.currentTarget.value;
+    // readData(arg, dispatch, doInfo);
+    var conn = new autobahn.Connection({ url: API_CROSSBAR_URL + "/ws", realm: "racelog" });
+    conn.onopen = (s: Session) => {
+      setLoading(true);
+      s.call("racelog.archive.replay_info", [arg]).then((eventInfo: any) => {
+        console.log(eventInfo);
+        dispatch(reset());
+        resetUi();
+        const settings = {
+          ...initialReplaySettings,
+          minTimestamp: eventInfo.minTimestamp,
+          currentSessionTime: eventInfo.minSessionTime,
+          minSessionTime: eventInfo.minSessionTime,
+          maxSessionTime: eventInfo.maxSessionTime,
+          enabled: true,
+          eventKey: eventInfo.event.eventKey,
+          eventId: eventInfo.event.id,
+        };
+        dispatch(replaySettings(settings));
+        dispatch(updateEventInfo(eventInfo.event.data.info));
+        // const mData = JSON.parse(manifestData);
+        s.call("racelog.analysis.archive", [eventInfo.event.eventKey]).then((data: any) => {
+          doDistribute(defaultProcessRaceStateData, data);
+          dispatch(updateManifests(eventInfo.event.data.manifests));
+          // conn.close();
+          const rh = new ReplayDataHolder(s, settings);
+          globalWamp.replayHolder = rh;
           setLoading(false);
           history.push("/analysis");
         });
@@ -244,7 +286,9 @@ export const DemoRaces: React.FC<MyProps> = (props: MyProps) => {
     var conn = new autobahn.Connection({ url: API_CROSSBAR_URL + "/ws", realm: "racelog" });
     conn.onopen = (s: Session) => {
       s.call("racelog.archive.events").then((data: any) => {
-        setEvents(data.map((v: any) => ({ key: v.eventKey, title: v.name, description: v.description })));
+        setEvents(
+          data.map((v: any) => ({ key: v.eventKey, title: v.name, description: v.description, eventId: v.id }))
+        );
         conn.close();
       });
     };
@@ -298,7 +342,10 @@ export const DemoRaces: React.FC<MyProps> = (props: MyProps) => {
           renderItem={(item: any) => (
             <List.Item
               actions={[
-                <Button value={item.key} type="default" onClick={onLoadButtonClicked}>
+                // <Button value={item.key} type="default" onClick={onLoadButtonClicked_OoO}>
+                //   Load
+                // </Button>,
+                <Button value={item.eventId} type="default" onClick={onLoadForReplayButtonClicked}>
                   Load
                 </Button>,
               ]}

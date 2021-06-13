@@ -86,6 +86,19 @@ export interface ICircleOfDoomSettings {
   selectableCars: ICarBaseData[]; // the cars to show in the dropdown as selectable
   filterCarClasses: string[]; // empty = all classes, otherwise only selected
 }
+export interface IReplaySettings {
+  enabled: boolean;
+  playing: boolean;
+  playSpeed: number;
+  timerHandle: number;
+  eventKey: string; // the event key currently loaded for replay (blank if none)
+  eventId: number; // the (internal) event id associated to the eventKey
+  minTimestamp: number; // the timestamp (number) of the first "race" entry in the db
+  minSessionTime: number;
+  maxSessionTime: number;
+  currentSessionTime: number;
+  currentTimestamp: number; // holds the current timestamp
+}
 export interface IUiData {
   stint: IUiStints;
   entries: IUiEntries;
@@ -122,8 +135,11 @@ export interface IUserSettings {
   stints: IStintsSettings;
   driverStints: IDriverStintsSettings;
   circleOfDoom: ICircleOfDoomSettings;
+  replay: IReplaySettings;
+  counter: number;
 }
 
+// may be deleted - check usage!
 export const defaultUiData: IUiData = {
   stint: { stintNo: 0 },
   entries: { entryDetails: -1 },

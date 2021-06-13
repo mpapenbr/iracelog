@@ -1,25 +1,17 @@
 import { Col, Row } from "antd";
 import * as React from "react";
 import { useSelector } from "react-redux";
-import { DummyRaceGraph } from "../components/dummyRaceGraph";
-import CarFilter from "../components/live/carFilter";
+import { ReplayControlDummy } from "../components/replayControlDummy";
 import { ApplicationState } from "../stores";
 
 export const TestContainer: React.FC<{}> = () => {
-  const cars = useSelector((state: ApplicationState) => state.raceData.availableCars);
-  const props = {
-    availableCars: cars,
-    availableClasses: [],
-    selectedCars: [],
-    selectedCarClasses: [],
-    onSelectCarFilter: (v: any) => {},
-    onSelectCarClassFilter: (v: any) => {},
-  };
+  const value = useSelector((state: ApplicationState) => state.userSettings.counter);
+
   return (
     <Row gutter={16}>
-      <CarFilter {...props} />
       <Col>
-        <DummyRaceGraph />
+        <ReplayControlDummy />
+        <p>{value}</p>
       </Col>
     </Row>
   );

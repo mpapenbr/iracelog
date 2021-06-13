@@ -4,6 +4,7 @@ import { Route, Switch } from "react-router";
 import { Link } from "react-router-dom";
 import Classification from "../components/live/classification";
 import RaceMessages from "../components/live/raceMessages";
+import { API_LOCAL_DEV_MODE } from "../constants";
 import { CarPitstopsContainer } from "../container/CarPitstopsContainer";
 import { CarStintsContainer } from "../container/CarStintsContainer";
 import { CircleOfDoomContainer } from "../container/CircleOfDoomContainer";
@@ -11,7 +12,9 @@ import { DriverLapsContainer } from "../container/DriverLapsContainer";
 import { RaceGraphByReferenceContainer } from "../container/RaceGraphByReferenceContainer";
 import { RaceGraphContainer } from "../container/RaceGraphContainer";
 import { RacePositionsContainer } from "../container/RacePositionsContainer";
+import { ReplayCircleOfDoomContainer } from "../container/ReplayCircleOfDoomContainer";
 import { StintLapsContainer } from "../container/StintLapsContainer";
+import { TestContainer } from "../container/Test";
 
 interface IStateProps {}
 interface IDispachProps {
@@ -33,7 +36,7 @@ export const AnalysisMainPage: React.FC<MyProps> = (props: MyProps) => {
           </Menu.Item>
 
           <Menu.Item key="cod" className="race-sidebar">
-            <Link to="/analysis/cod">Circle of doom</Link>
+            <Link to="/analysis/replayCOD">Circle of race</Link>
           </Menu.Item>
 
           <Menu.Item key="raceGraphARecharts" className="race-sidebar">
@@ -65,9 +68,13 @@ export const AnalysisMainPage: React.FC<MyProps> = (props: MyProps) => {
             <Link to="/analysis/messages">Messages</Link>
           </Menu.Item>
 
-          {/* <Menu.Item key="test" className="race-sidebar">
-            <Link to="/analysis/test">test</Link>
-          </Menu.Item> */}
+          {API_LOCAL_DEV_MODE ? (
+            <Menu.Item key="test" className="race-sidebar">
+              <Link to="/analysis/test">test</Link>
+            </Menu.Item>
+          ) : (
+            <></>
+          )}
         </Menu>
       </Sider>
       <Content>
@@ -87,7 +94,8 @@ export const AnalysisMainPage: React.FC<MyProps> = (props: MyProps) => {
           <Route path="/analysis/stintDurations" component={CarStintsContainer} />
           <Route path="/analysis/stintLaps" component={StintLapsContainer} />
           <Route path="/analysis/messages" component={RaceMessages} />
-          {/* <Route path="/analysis/test" component={RaceGraphContainer} /> */}
+          <Route path="/analysis/replayCOD" component={ReplayCircleOfDoomContainer} />
+          <Route path="/analysis/test" component={TestContainer} />
         </Switch>
       </Content>
     </Layout>

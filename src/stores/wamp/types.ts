@@ -4,6 +4,12 @@ export interface IWamp {
   stintNo: number;
 }
 
+export enum MessageType {
+  STATE = 1,
+  // more to come when used ;)
+  STATE_DELTA = 8,
+}
+
 export interface IMessage {
   msgType: number;
   timestamp: number;

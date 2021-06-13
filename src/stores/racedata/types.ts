@@ -23,3 +23,9 @@ export interface IEventInfo {
   eventTime: string;
   sectors: ISector[];
 }
+
+export interface IReplayMessage {
+  type: number;
+  timestamp: number;
+  payload: any;
+}
