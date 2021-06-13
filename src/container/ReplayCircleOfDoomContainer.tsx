@@ -1,4 +1,4 @@
-import { Col, Empty, Form, InputNumber, Row, Select, Slider } from "antd";
+import { Col, Form, InputNumber, Row, Select, Slider } from "antd";
 import * as React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { sprintf } from "sprintf-js";
@@ -105,35 +105,32 @@ export const ReplayCircleOfDoomContainer: React.FC<{}> = () => {
     );
   };
 
-  if (replaySettings.enabled) {
-    return (
-      <>
-        <Row gutter={16}>
-          <CarFilter {...props} />
-        </Row>
-        <Row gutter={16}>
-          <Col span="6">
-            <CircleOfDoom />
-          </Col>
-          <Col span="18">
-            <Row gutter={16}>
-              <Col span="12">
-                <SelectPitStopParam />
-              </Col>
-              <Col span="12">
-                <ReplayControl />
-              </Col>
-            </Row>
-            <Row>
-              <Col span="24">
-                <SessionInfoDescription />
-              </Col>
-            </Row>
-          </Col>
-        </Row>
+  return (
+    <>
+      <Row gutter={16}>
+        <CarFilter {...props} />
+      </Row>
+      <Row gutter={16}>
+        <Col span="6">
+          <CircleOfDoom />
+        </Col>
+        <Col span="18">
+          <Row gutter={16}>
+            <Col span="12">
+              <SelectPitStopParam />
+            </Col>
 
-        <Standings showCars={showCars} />
-      </>
-    );
-  } else return <Empty description="Sorry, only available with live data" />;
+            <Col span="12">{replaySettings.enabled ? <ReplayControl /> : <></>}</Col>
+          </Row>
+          <Row>
+            <Col span="24">
+              <SessionInfoDescription />
+            </Col>
+          </Row>
+        </Col>
+      </Row>
+
+      <Standings showCars={showCars} />
+    </>
+  );
 };

@@ -36,7 +36,7 @@ export const AnalysisMainPage: React.FC<MyProps> = (props: MyProps) => {
           </Menu.Item>
 
           <Menu.Item key="cod" className="race-sidebar">
-            <Link to="/analysis/cod">Circle of doom</Link>
+            <Link to="/analysis/replayCOD">Circle of race</Link>
           </Menu.Item>
 
           <Menu.Item key="raceGraphARecharts" className="race-sidebar">
@@ -67,9 +67,7 @@ export const AnalysisMainPage: React.FC<MyProps> = (props: MyProps) => {
           <Menu.Item key="messages" className="race-sidebar">
             <Link to="/analysis/messages">Messages</Link>
           </Menu.Item>
-          <Menu.Item key="replayCOD" className="race-sidebar">
-            <Link to="/analysis/replayCOD">Replay COD</Link>
-          </Menu.Item>
+
           {API_LOCAL_DEV_MODE ? (
             <Menu.Item key="test" className="race-sidebar">
               <Link to="/analysis/test">test</Link>

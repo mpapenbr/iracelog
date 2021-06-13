@@ -16,6 +16,7 @@ import { globalWamp } from "../commons/globals";
 import { ApplicationState } from "../stores";
 import { updateClassification, updateSessionInfo } from "../stores/racedata/actions";
 import { replaySettings } from "../stores/ui/actions";
+import { secAsHHMMSS } from "../utils/output";
 
 const { Option } = Select;
 
@@ -74,7 +75,7 @@ export const ReplayControl: React.FC<{}> = () => {
     const curSettings = { ...settings, currentSessionTime: value as number };
     dispatch(replaySettings(curSettings));
     // dispatch(loadReplayData(value as number, 100));
-    const startTs = (settings.minTimestamp + value) as number;
+    const startTs = settings.minTimestamp + ((value as number) - settings.minSessionTime);
     await globalWamp.replayHolder?.syncLoadData(startTs);
     requestData();
   };
@@ -88,13 +89,6 @@ export const ReplayControl: React.FC<{}> = () => {
   const onPauseButtonClicked = (e: React.MouseEvent<HTMLButtonElement>) => {
     setPlaying(false);
     // dispatch(replaySettings({ ...settings, playing: false }));
-  };
-
-  const onChangeSpeed = (e: React.MouseEvent<HTMLButtonElement>) => {
-    console.log("new speed:" + e.currentTarget.value);
-    const speed = parseInt(e.currentTarget.value);
-
-    dispatch(replaySettings({ ...settings, playSpeed: speed }));
   };
 
   const onChangeSpeedByDropdown = (e: any) => {
@@ -111,8 +105,6 @@ export const ReplayControl: React.FC<{}> = () => {
     const step = parseInt(e.currentTarget.value);
 
     await globalWamp.replayHolder?.syncLoadData(currentTs + step);
-    // const d = globalWamp.replayHolder?.next();
-    // console.log(d);
     requestData();
   };
 
@@ -123,6 +115,7 @@ export const ReplayControl: React.FC<{}> = () => {
       ))}
     </Menu>
   );
+  // const ttFormatter = (v) => return
   return (
     <>
       <Slider
@@ -131,8 +124,9 @@ export const ReplayControl: React.FC<{}> = () => {
         max={settings.maxSessionTime}
         // value={settings.currentSessionTime}
         defaultValue={settings.currentSessionTime}
-        tooltipVisible={true}
+        // tooltipVisible={false}
         // onChange={onChange}
+        tipFormatter={(v: number | undefined) => (v ? `${secAsHHMMSS(v)}` : "")}
         onAfterChange={updateSettings}
       />
 

@@ -72,7 +72,7 @@ export const DemoRaces: React.FC<MyProps> = (props: MyProps) => {
     onLoadEvents();
   }, [loadTrigger]);
 
-  const onLoadButtonClicked = (e: React.MouseEvent<HTMLButtonElement>) => {
+  const onLoadButtonClicked_OoO = (e: React.MouseEvent<HTMLButtonElement>) => {
     const arg = e.currentTarget.value;
     // readData(arg, dispatch, doInfo);
     var conn = new autobahn.Connection({ url: API_CROSSBAR_URL + "/ws", realm: "racelog" });
@@ -85,6 +85,7 @@ export const DemoRaces: React.FC<MyProps> = (props: MyProps) => {
         // const mData = JSON.parse(manifestData);
         s.call("racelog.analysis.archive", [arg]).then((data: any) => {
           doDistribute(defaultProcessRaceStateData, data);
+
           dispatch(updateManifests(manifestData));
           conn.close();
           setLoading(false);
@@ -97,7 +98,7 @@ export const DemoRaces: React.FC<MyProps> = (props: MyProps) => {
     // setTimeout(() => setLoading(false), 2000);
   };
 
-  const onReplayButtonClicked = (e: React.MouseEvent<HTMLButtonElement>) => {
+  const onLoadForReplayButtonClicked = (e: React.MouseEvent<HTMLButtonElement>) => {
     const arg = e.currentTarget.value;
     // readData(arg, dispatch, doInfo);
     var conn = new autobahn.Connection({ url: API_CROSSBAR_URL + "/ws", realm: "racelog" });
@@ -122,7 +123,7 @@ export const DemoRaces: React.FC<MyProps> = (props: MyProps) => {
         // const mData = JSON.parse(manifestData);
         s.call("racelog.analysis.archive", [eventInfo.event.eventKey]).then((data: any) => {
           doDistribute(defaultProcessRaceStateData, data);
-          dispatch(updateManifests(eventInfo.event.manifests));
+          dispatch(updateManifests(eventInfo.event.data.manifests));
           // conn.close();
           const rh = new ReplayDataHolder(s, settings);
           globalWamp.replayHolder = rh;
@@ -341,11 +342,11 @@ export const DemoRaces: React.FC<MyProps> = (props: MyProps) => {
           renderItem={(item: any) => (
             <List.Item
               actions={[
-                <Button value={item.key} type="default" onClick={onLoadButtonClicked}>
+                // <Button value={item.key} type="default" onClick={onLoadButtonClicked_OoO}>
+                //   Load
+                // </Button>,
+                <Button value={item.eventId} type="default" onClick={onLoadForReplayButtonClicked}>
                   Load
-                </Button>,
-                <Button value={item.eventId} type="default" onClick={onReplayButtonClicked}>
-                  Replay
                 </Button>,
               ]}
             >

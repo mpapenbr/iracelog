@@ -32,7 +32,9 @@ const reducer: Reducer<IWampState> = (state = initialState, action) => {
     case WampActionTypes.UPDATE_MANIFESTS: {
       if (Array.isArray(action.payload)) {
         return { ...state, data: { ...state.data, manifests: postProcessManifest(action.payload[0]) } };
-      } else return state;
+      } else {
+        return { ...state, data: { ...state.data, manifests: postProcessManifest(action.payload) } };
+      }
     }
     case WampActionTypes.SET_MANIFESTS: {
       console.log(action.payload);

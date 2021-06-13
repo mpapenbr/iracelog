@@ -1,5 +1,5 @@
 import { getValueViaSpec } from "@mpapenbr/iracelog-analysis/dist/stints/util";
-import { Descriptions } from "antd";
+import { Descriptions, Empty } from "antd";
 import { useSelector } from "react-redux";
 import { sprintf } from "sprintf-js";
 import { ApplicationState } from "../stores";
@@ -14,7 +14,7 @@ const SessionInfoDescription: React.FC<{}> = () => {
   const numOut = (key: string) => {
     return sprintf("%.1f", getValue(key));
   };
-  return (
+  return sInfo.data.length > 0 ? (
     <Descriptions bordered>
       <Descriptions.Item label="Session time">{secAsString(getValue("sessionTime"))}</Descriptions.Item>
       <Descriptions.Item label="Remaining">{secAsString(getValue("timeRemain"))}</Descriptions.Item>
@@ -25,6 +25,8 @@ const SessionInfoDescription: React.FC<{}> = () => {
       <Descriptions.Item label="Wind direction">{numOut("windDir")}</Descriptions.Item>
       <Descriptions.Item label="Wind speed (m/s)">{numOut("windVel")}</Descriptions.Item>
     </Descriptions>
+  ) : (
+    <Empty description="No data available" />
   );
 };
 export default SessionInfoDescription;
