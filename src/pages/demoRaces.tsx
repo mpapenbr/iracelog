@@ -104,26 +104,26 @@ export const DemoRaces: React.FC<MyProps> = (props: MyProps) => {
     var conn = new autobahn.Connection({ url: API_CROSSBAR_URL + "/ws", realm: "racelog" });
     conn.onopen = (s: Session) => {
       setLoading(true);
-      s.call("racelog.archive.replay_info", [arg]).then((eventInfo: any) => {
+      s.call("racelog.archive.event_info", [arg]).then((eventInfo: any) => {
         console.log(eventInfo);
         dispatch(reset());
         resetUi();
         const settings = {
           ...initialReplaySettings,
-          minTimestamp: eventInfo.minTimestamp,
-          currentSessionTime: eventInfo.minSessionTime,
-          minSessionTime: eventInfo.minSessionTime,
-          maxSessionTime: eventInfo.maxSessionTime,
+          minTimestamp: eventInfo.data.replayInfo.minTimestamp,
+          currentSessionTime: eventInfo.data.replayInfo.minSessionTime,
+          minSessionTime: eventInfo.data.replayInfo.minSessionTime,
+          maxSessionTime: eventInfo.data.replayInfo.maxSessionTime,
           enabled: true,
-          eventKey: eventInfo.event.eventKey,
-          eventId: eventInfo.event.id,
+          eventKey: eventInfo.eventKey,
+          eventId: eventInfo.id,
         };
         dispatch(replaySettings(settings));
-        dispatch(updateEventInfo(eventInfo.event.data.info));
+        dispatch(updateEventInfo(eventInfo.data.info));
         // const mData = JSON.parse(manifestData);
-        s.call("racelog.analysis.archive", [eventInfo.event.eventKey]).then((data: any) => {
+        s.call("racelog.analysis.archive", [eventInfo.eventKey]).then((data: any) => {
           doDistribute(defaultProcessRaceStateData, data);
-          dispatch(updateManifests(eventInfo.event.data.manifests));
+          dispatch(updateManifests(eventInfo.data.manifests));
           // conn.close();
           const rh = new ReplayDataHolder(s, settings);
           globalWamp.replayHolder = rh;
