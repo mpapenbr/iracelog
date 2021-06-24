@@ -36,7 +36,7 @@ export const AnalysisMainPage: React.FC<MyProps> = (props: MyProps) => {
           </Menu.Item>
 
           <Menu.Item key="cod" className="race-sidebar">
-            <Link to="/analysis/replayCOD">Circle of race</Link>
+            <Link to="/analysis/replayCOD">Circle of doom</Link>
           </Menu.Item>
 
           <Menu.Item key="raceGraphARecharts" className="race-sidebar">

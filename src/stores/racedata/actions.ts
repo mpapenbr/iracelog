@@ -7,7 +7,7 @@ import {
   IRaceGraph,
 } from "@mpapenbr/iracelog-analysis/dist/stints/types";
 import actionCreatorFactory from "typescript-fsa";
-import { ICarBaseData, ICarClass, IEventInfo } from "./types";
+import { ICarBaseData, ICarClass, IEventInfo, ITrackInfo } from "./types";
 
 const actionCreator = actionCreatorFactory("RACE_DATA");
 
@@ -37,3 +37,5 @@ export const updateCarPits = actionCreator<ICarPitInfo[]>("UPDATE_CAR_PITS");
 export const updateInfoMessages = actionCreator<IMessage[]>("UPDATE_INFO_MESSAGES");
 // info messages
 export const updateEventInfo = actionCreator<IEventInfo>("UPDATE_EVENT_INFO");
+// info messages
+export const updateTrackInfo = actionCreator<ITrackInfo>("UPDATE_TRACK_INFO");
