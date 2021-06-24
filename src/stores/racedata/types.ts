@@ -24,6 +24,21 @@ export interface IEventInfo {
   sectors: ISector[];
 }
 
+export interface IPitInfo {
+  entry: number;
+  exit: number;
+  pitDelta: number;
+}
+export interface ITrackInfo {
+  pit: IPitInfo;
+  sectors: ISector[];
+  trackId: number;
+  trackDisplayName: string;
+  trackDisplayShortName: string;
+  trackConfigName: string;
+  trackLength: number;
+}
+
 export interface IReplayMessage {
   type: number;
   timestamp: number;

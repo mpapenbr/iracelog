@@ -33,8 +33,9 @@ import {
   updateInfoMessages,
   updateRaceGraph,
   updateSessionInfo,
+  updateTrackInfo,
 } from "../stores/racedata/actions";
-import { ICarBaseData, ICarClass } from "../stores/racedata/types";
+import { ICarBaseData, ICarClass, ITrackInfo } from "../stores/racedata/types";
 import {
   classificationSettings,
   driverLapsSettings,
@@ -102,35 +103,37 @@ export const DemoRaces: React.FC<MyProps> = (props: MyProps) => {
     const arg = e.currentTarget.value;
     // readData(arg, dispatch, doInfo);
     var conn = new autobahn.Connection({ url: API_CROSSBAR_URL + "/ws", realm: "racelog" });
-    conn.onopen = (s: Session) => {
+    conn.onopen = async (s: Session) => {
       setLoading(true);
-      s.call("racelog.archive.event_info", [arg]).then((eventInfo: any) => {
-        console.log(eventInfo);
-        dispatch(reset());
-        resetUi();
-        const settings = {
-          ...initialReplaySettings,
-          minTimestamp: eventInfo.data.replayInfo.minTimestamp,
-          currentSessionTime: eventInfo.data.replayInfo.minSessionTime,
-          minSessionTime: eventInfo.data.replayInfo.minSessionTime,
-          maxSessionTime: eventInfo.data.replayInfo.maxSessionTime,
-          enabled: true,
-          eventKey: eventInfo.eventKey,
-          eventId: eventInfo.id,
-        };
-        dispatch(replaySettings(settings));
-        dispatch(updateEventInfo(eventInfo.data.info));
-        // const mData = JSON.parse(manifestData);
-        s.call("racelog.analysis.archive", [eventInfo.eventKey]).then((data: any) => {
-          doDistribute(defaultProcessRaceStateData, data);
-          dispatch(updateManifests(eventInfo.data.manifests));
-          // conn.close();
-          const rh = new ReplayDataHolder(s, settings);
-          globalWamp.replayHolder = rh;
-          setLoading(false);
-          history.push("/analysis");
-        });
-      });
+      const eventInfo = (await s.call("racelog.archive.event_info", [arg])) as any;
+      console.log(eventInfo);
+      dispatch(reset());
+      resetUi();
+      const settings = {
+        ...initialReplaySettings,
+        minTimestamp: eventInfo.data.replayInfo.minTimestamp,
+        currentSessionTime: eventInfo.data.replayInfo.minSessionTime,
+        minSessionTime: eventInfo.data.replayInfo.minSessionTime,
+        maxSessionTime: eventInfo.data.replayInfo.maxSessionTime,
+        enabled: true,
+        eventKey: eventInfo.eventKey,
+        eventId: eventInfo.id,
+      };
+      dispatch(replaySettings(settings));
+      dispatch(updateEventInfo(eventInfo.data.info));
+
+      const trackInfo = (await s.call("racelog.get_track_info", [eventInfo.data.info.trackId])) as ITrackInfo;
+      dispatch(updateTrackInfo(trackInfo));
+      // const mData = JSON.parse(manifestData);
+      const data = (await s.call("racelog.analysis.archive", [eventInfo.eventKey])) as any;
+
+      doDistribute(defaultProcessRaceStateData, data);
+      dispatch(updateManifests(eventInfo.data.manifests));
+      // conn.close();
+      const rh = new ReplayDataHolder(s, settings);
+      globalWamp.replayHolder = rh;
+      setLoading(false);
+      history.push("/analysis");
     };
 
     conn.open();

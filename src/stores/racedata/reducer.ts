@@ -9,7 +9,7 @@ import {
 import { combineReducers } from "redux";
 import { reducerWithInitialState } from "typescript-fsa-reducers";
 import * as RaceActions from "./actions";
-import { ICarBaseData, ICarClass, IEventInfo } from "./types";
+import { ICarBaseData, ICarClass, IEventInfo, ITrackInfo } from "./types";
 
 /**
  * this interface describes the attributes concerning the race data which are stored in the state
@@ -26,6 +26,7 @@ export interface IRaceData {
   carPits: ICarPitInfo[];
   infoMessages: IMessage[];
   eventInfo: IEventInfo;
+  trackInfo: ITrackInfo;
 }
 
 // available cars
@@ -113,6 +114,20 @@ export const EventInfoReducer = reducerWithInitialState(initialEventInfo).case(
   (state, arg) => ({ ...arg })
 );
 
+export const initialTrackInfo: ITrackInfo = {
+  trackId: 0,
+  trackDisplayName: "Default track",
+  trackDisplayShortName: "track",
+  trackConfigName: "",
+  trackLength: 3000,
+  pit: { entry: -1, exit: -1, pitDelta: 0 },
+  sectors: [],
+};
+export const TrackInfoReducer = reducerWithInitialState(initialTrackInfo).case(
+  RaceActions.updateTrackInfo,
+  (state, arg) => ({ ...arg })
+);
+
 const combinedReducers = combineReducers<IRaceData>({
   availableCars: AvailableCarsReducer,
   availableCarClasses: AvailableCarClassesReducer,
@@ -125,6 +140,7 @@ const combinedReducers = combineReducers<IRaceData>({
   carPits: CarPitsReducer,
   infoMessages: InfoMessagesReducer,
   eventInfo: EventInfoReducer,
+  trackInfo: TrackInfoReducer,
 });
 
 export { combinedReducers as raceDataReducers };

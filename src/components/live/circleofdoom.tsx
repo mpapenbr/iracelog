@@ -17,6 +17,7 @@ export const CircleOfDoom: React.FC<{}> = () => {
   const carsRaw = useSelector((state: ApplicationState) => state.raceData.classification.data);
   const carLaps = useSelector((state: ApplicationState) => state.raceData.carLaps);
   const carPits = useSelector((state: ApplicationState) => state.raceData.carPits);
+  const trackInfo = useSelector((state: ApplicationState) => state.raceData.trackInfo);
   const stateCarManifest = useSelector((state: ApplicationState) => state.wamp.data.manifests.car);
   const carInfos = useSelector((state: ApplicationState) => state.raceData.availableCars);
   const eventInfo = useSelector((state: ApplicationState) => state.raceData.eventInfo);
@@ -99,6 +100,37 @@ export const CircleOfDoom: React.FC<{}> = () => {
       </>
     );
   };
+  const PitBox = () => {
+    if (trackInfo.pit === undefined || trackInfo.pit.entry === -1) {
+      return <></>;
+    } else {
+      // console.log(`entry: ${trackInfo.pit.entry} exit: ${trackInfo.pit.exit}`);
+      const pitLen = trackInfo.pit.exit + 1 - trackInfo.pit.entry;
+
+      const arc = pitLen * 360;
+
+      const innerCircle = circleSize - circleExtendSize - 1; // we want the pit box just one pixel below the COD
+
+      const x = Math.trunc(Math.cos((arc * Math.PI) / 180.0) * innerCircle);
+      const y = Math.trunc(Math.sin((arc * Math.PI) / 180.0) * innerCircle);
+      const xp = innerCircle - x - 1;
+      const yp = y;
+      // console.log(`innerCircle: ${innerCircle} len: ${pitLen} winkel: ${arc} x:${x} y: ${y}`);
+      return (
+        <g>
+          <g transform={`rotate(${90 + Math.trunc(trackInfo.pit.exit * 360)} ${circleSize} ${circleSize} )`}>
+            <path
+              d={`M ${circleSize - innerCircle + 1} ${circleSize}  a ${innerCircle} ${innerCircle} 0 0 0 ${xp} ${yp}  `}
+              stroke="grey"
+              fill="none"
+              strokeWidth="2"
+            />
+          </g>
+        </g>
+      );
+    }
+  };
+
   const colorCat = strokeColors;
   const circleSize = 150;
   const margin = 30;
@@ -124,8 +156,8 @@ export const CircleOfDoom: React.FC<{}> = () => {
             const color = getColor(item.carNum);
 
             // standard for leader
-            let w = item.pos == 0 ? 4 : 2;
-            let h = item.pos == 0 ? emphasizeLen : standardLen;
+            let w = item.pos === 0 ? 4 : 2;
+            let h = item.pos === 0 ? emphasizeLen : standardLen;
             if (userSettings.referenceCarNum === item.carNum) {
               w = 6;
               h = emphasizeLen + 3;
@@ -144,6 +176,7 @@ export const CircleOfDoom: React.FC<{}> = () => {
               </g>
             );
           })}
+        <PitBox />
         {data
           .filter((item) => ["PIT"].includes(item.state))
           .map((item) => {
