@@ -65,14 +65,14 @@ export const Standings: React.FC<Props> = (props: Props) => {
     );
   };
   const columns: ColumnsType<{}> = [
-    { key: "pos", title: "Pos", render: (d) => getValue(d, "pos") },
-    { key: "pic", title: "PIC", render: (d) => getValue(d, "pic") },
-    { key: "carNum", title: "Num", render: (d) => getValue(d, "carNum") },
-    { key: "carClass", title: "Class", render: (d) => getValue(d, "carClass") },
+    { key: "pos", title: "Pos", render: (d) => getValue(d, "pos"), width: 20, align: "right" },
+    { key: "pic", title: "PIC", render: (d) => getValue(d, "pic"), width: 20, align: "right" },
+    { key: "carNum", title: "#", render: (d) => getValue(d, "carNum"), width: 20, align: "right" },
+    { key: "carClass", title: "Class", render: (d) => getValue(d, "carClass"), ellipsis: false },
     { key: "state", title: "State", render: (d) => getValue(d, "state") },
-    { key: "userName", title: "Driver", render: (d) => getValue(d, "userName") },
-    { key: "laps", title: "Lap", render: (d) => lapsOutput(d) },
-    { key: "last", title: "Last", render: (d) => coloredTimeData(d, "last") },
+    { key: "userName", title: "Driver", render: (d) => getValue(d, "userName"), ellipsis: false },
+    { key: "laps", title: "Lap", render: (d) => lapsOutput(d), width: 20, align: "right" },
+    { key: "last", title: "Last", render: (d) => coloredTimeData(d, "last"), width: 60, align: "right" },
     {
       key: "best",
       title: "Best",
@@ -80,13 +80,39 @@ export const Standings: React.FC<Props> = (props: Props) => {
         const v = getValue(d, "best");
         return v > 0 ? lapTimeString(v) : "";
       },
+      width: 60,
+      align: "right",
     },
     // { key: "trackPos", title: "CurPos", render: (d) => nullAwareOutput(getValue(d, "trackPos"), "%.4f") },
-    { key: "trackPos2", title: "TrackPos", render: (d) => trackPosGraph(getValue(d, "trackPos")) },
-    { key: "dist", title: "Dist", render: (d) => nullAwareOutput(getValue(d, "dist"), "%.0f") },
-    { key: "gap", title: "Gap", render: (d) => nullAwareOutput(getValue(d, "gap"), "%.1f") },
-    { key: "interval", title: "Int", render: (d) => nullAwareOutput(getValue(d, "interval"), "%.1f") },
-    { key: "speed", title: "Speed", render: (d) => nullAwareOutput(getValue(d, "speed"), "%.0f") },
+    {
+      key: "trackPos2",
+      title: "TrackPos",
+      render: (d) => trackPosGraph(getValue(d, "trackPos")),
+      width: 85,
+      align: "center",
+    },
+    {
+      key: "dist",
+      title: "Dist",
+      render: (d) => nullAwareOutput(getValue(d, "dist"), "%.0f"),
+      width: 20,
+      align: "right",
+    },
+    { key: "gap", title: "Gap", render: (d) => nullAwareOutput(getValue(d, "gap"), "%.1f"), width: 20, align: "right" },
+    {
+      key: "interval",
+      title: "Int",
+      render: (d) => nullAwareOutput(getValue(d, "interval"), "%.1f"),
+      width: 20,
+      align: "right",
+    },
+    {
+      key: "speed",
+      title: "Speed",
+      render: (d) => nullAwareOutput(getValue(d, "speed"), "%.0f"),
+      width: 20,
+      align: "right",
+    },
   ];
   stateCarManifest
     .filter((v) => /^s\d+$/.test(v.name))
@@ -95,11 +121,12 @@ export const Standings: React.FC<Props> = (props: Props) => {
         key: v.name,
         title: v.name.toLocaleUpperCase(),
         render: (d) => coloredTimeData(d, v.name),
+        width: 45,
+        align: "right",
       })
     );
   // console.log(data);
   // className="istint-compact"
-
   const cars = carsRaw.filter((c: any) => props.showCars.includes(getValue(c, "carNum")));
   const pagination: TablePaginationConfig = {
     defaultPageSize: 20,
