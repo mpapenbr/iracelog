@@ -73,10 +73,10 @@
   margin: 16px 0 16px 24px;
 }
 
-.iracelog-compact .ant-table-tbody > tr > td {
-  padding-right: 1px;
-  padding-top: 6px;
-  padding-bottom: 6px;
-  font-size: 14px;
-  line-height: 0.4rem;
+div.iracelog-compact th,
+div.iracelog-compact td {
+  padding-right: 2px;
+  padding-left: 2px;
+  padding-top: 2px;
+  padding-bottom: 2px;
 }
