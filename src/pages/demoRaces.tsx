@@ -21,6 +21,7 @@ import { globalWamp } from "../commons/globals";
 import { API_CROSSBAR_URL } from "../constants";
 import { distributeChanges } from "../processor/processData";
 import { ReplayDataHolder } from "../processor/ReplayDataHolder";
+import { updateAvailableStandingsColumns } from "../stores/basedata/actions";
 import {
   updateAvailableCarClasses,
   updateAvailableCars,
@@ -248,6 +249,7 @@ export const DemoRaces: React.FC<MyProps> = (props: MyProps) => {
     dispatch(pitstopsSettings(defaultStateData.pitstops));
     dispatch(stintsSettings(defaultStateData.stints));
     dispatch(driverStintsSettings(defaultStateData.driverStints));
+    dispatch(updateAvailableStandingsColumns([]));
   };
 
   const onLiveButtonClicked = (e: React.MouseEvent<HTMLButtonElement>) => {

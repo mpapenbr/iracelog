@@ -54,7 +54,7 @@ const reducer: Reducer<IUiState> = (state = initialState, action) => {
   }
 };
 
-const initialClassificationSettings: IClassificationSettings = { pageSize: 20 };
+const initialClassificationSettings: IClassificationSettings = { pageSize: 20, showCols: [] };
 const ClassificationSettingsReducer = reducerWithInitialState(initialClassificationSettings).case(
   UiActions.classificationSettings,
   (state, settings) => ({

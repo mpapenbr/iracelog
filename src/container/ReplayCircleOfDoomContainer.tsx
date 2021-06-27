@@ -1,4 +1,5 @@
-import { Col, Form, InputNumber, Row, Select, Slider } from "antd";
+import { SettingOutlined } from "@ant-design/icons";
+import { Button, Col, Form, InputNumber, Popover, Row, Select, Slider } from "antd";
 import * as React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { sprintf } from "sprintf-js";
@@ -8,6 +9,7 @@ import { collectCarsByCarClassFilter, processCarClassSelectionNew } from "../com
 import { ReplayControl } from "../components/replayControl";
 import SessionInfoDescription from "../components/sessionInfoDescr";
 import { Standings } from "../components/standings";
+import StandingsColumnControl from "../components/standingsColumnControl";
 import { ApplicationState } from "../stores";
 import { circleOfDoomSettings } from "../stores/ui/actions";
 
@@ -109,6 +111,12 @@ export const ReplayCircleOfDoomContainer: React.FC<{}> = () => {
     <>
       <Row gutter={16}>
         <CarFilter {...props} />
+
+        <Col offset={9} span={1}>
+          <Popover content={<StandingsColumnControl />} title="Select columns">
+            <Button icon={<SettingOutlined />} />
+          </Popover>
+        </Col>
       </Row>
       <Row gutter={16}>
         <Col span="6">
@@ -123,7 +131,7 @@ export const ReplayCircleOfDoomContainer: React.FC<{}> = () => {
             <Col span="12">{replaySettings.enabled ? <ReplayControl /> : <></>}</Col>
           </Row>
           <Row>
-            <Col span="24">
+            <Col span="23">
               <SessionInfoDescription />
             </Col>
           </Row>

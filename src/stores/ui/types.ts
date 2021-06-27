@@ -17,8 +17,14 @@ export interface IBrushInterval {
   endIndex?: number;
 }
 
+export interface IColumnInfo {
+  name: string;
+  title: string;
+}
+
 export interface IClassificationSettings {
   pageSize: number;
+  showCols: IColumnInfo[];
 }
 export interface IMessagesSettings {
   pageSize: number;
@@ -147,6 +153,7 @@ export const defaultUiData: IUiData = {
   // "new" ui comps
   classificationSettings: {
     pageSize: 20,
+    showCols: [],
   },
   messagesSettings: {
     pageSize: 20,

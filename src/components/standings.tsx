@@ -6,6 +6,7 @@ import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { sprintf } from "sprintf-js";
 import { ApplicationState } from "../stores";
+import { updateAvailableStandingsColumns as availableStandingsColumns } from "../stores/basedata/actions";
 import { classificationSettings } from "../stores/ui/actions";
 import { lapTimeString } from "../utils/output";
 
@@ -18,6 +19,7 @@ type Props = MyProps & DispatchProps;
 
 export const Standings: React.FC<Props> = (props: Props) => {
   const uiSettings = useSelector((state: ApplicationState) => state.userSettings.classification);
+  const stateColumnsAvail = useSelector((state: ApplicationState) => state.baseData.availableStandingsColumns);
   const carsRaw = useSelector((state: ApplicationState) => state.raceData.classification.data);
   const stateCarManifest = useSelector((state: ApplicationState) => state.wamp.data.manifests.car);
   const dispatch = useDispatch();
@@ -127,6 +129,7 @@ export const Standings: React.FC<Props> = (props: Props) => {
     );
   // console.log(data);
   // className="istint-compact"
+
   const cars = carsRaw.filter((c: any) => props.showCars.includes(getValue(c, "carNum")));
   const pagination: TablePaginationConfig = {
     defaultPageSize: 20,
@@ -134,15 +137,22 @@ export const Standings: React.FC<Props> = (props: Props) => {
     onShowSizeChange: (curPage, newPageSize) => {
       // console.log("current:" + curPage + " new: " + newPageSize);
       // dispatch(uiClassificationSettings({ ...uiSettings, pageSize: newPageSize }));
-      dispatch(classificationSettings({ pageSize: newPageSize }));
+      dispatch(classificationSettings({ ...uiSettings, pageSize: newPageSize }));
     },
     showSizeChanger: true,
   };
+  if (!stateColumnsAvail.length) {
+    const updateData = columns.map((c) => ({ name: c.key! as string, title: c.title as string }));
+    dispatch(availableStandingsColumns(updateData));
+    dispatch(classificationSettings({ ...uiSettings, showCols: updateData }));
+  }
+  const filteredColumns = columns.filter((c) => uiSettings.showCols.map((sc) => sc.name).includes(c.key as string));
+
   return (
     <Table
       className="iracelog-compact"
       pagination={pagination}
-      columns={columns}
+      columns={filteredColumns}
       dataSource={cars}
       rowKey={() => _.uniqueId()}
     />

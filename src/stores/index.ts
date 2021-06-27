@@ -1,6 +1,6 @@
 import { combineReducers } from "redux";
 import { all, fork } from "redux-saga/effects";
-import { baseDataReducers } from "./basedata/reducer";
+import { baseDataReducers, IBaseData } from "./basedata/reducer";
 import { IRaceData, raceDataReducers } from "./racedata/reducer";
 import { raceEventsReducer } from "./raceevents/reducer";
 import raceEventsSaga from "./raceevents/sagas";
@@ -16,6 +16,7 @@ export interface ApplicationState {
   wamp: IWampState;
   userSettings: IUserSettings;
   raceData: IRaceData;
+  baseData: IBaseData;
 }
 
 // export interface IMetaActions extends PayloadMetaAction<TypeConstant,IMeta> {}
@@ -25,7 +26,7 @@ export const createRootReducer = () =>
     raceEvents: raceEventsReducer, // will be removed
     ui: uiReducer, // will be removed
     wamp: wampReducer, // will be removed
-    baseData: baseDataReducers, // hmmmm, still thinking: as of now: will be removed
+    baseData: baseDataReducers,
     raceData: raceDataReducers, // this is new place for everything concerning the race data of a single event
     userSettings: userSettingsReducer, // this is the new place for user settings
   });
