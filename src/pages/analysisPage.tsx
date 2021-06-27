@@ -7,7 +7,6 @@ import RaceMessages from "../components/live/raceMessages";
 import { API_LOCAL_DEV_MODE } from "../constants";
 import { CarPitstopsContainer } from "../container/CarPitstopsContainer";
 import { CarStintsContainer } from "../container/CarStintsContainer";
-import { CircleOfDoomContainer } from "../container/CircleOfDoomContainer";
 import { DriverLapsContainer } from "../container/DriverLapsContainer";
 import { RaceGraphByReferenceContainer } from "../container/RaceGraphByReferenceContainer";
 import { RaceGraphContainer } from "../container/RaceGraphContainer";
@@ -80,7 +79,6 @@ export const AnalysisMainPage: React.FC<MyProps> = (props: MyProps) => {
       <Content>
         <Switch>
           <Route path="/analysis/classification" component={Classification} />
-          <Route path="/analysis/cod" component={CircleOfDoomContainer} />
 
           <Route path="/analysis/raceGraphARecharts" component={RaceGraphContainer} />
 

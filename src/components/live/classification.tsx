@@ -1,4 +1,5 @@
-import { Card, Col, Empty, Row, Statistic } from "antd";
+import { SettingOutlined } from "@ant-design/icons";
+import { Button, Card, Col, Empty, Popover, Row, Statistic } from "antd";
 import React from "react";
 import { useSelector } from "react-redux";
 import { ApplicationState } from "../../stores";
@@ -6,21 +7,22 @@ import { getValueViaSpec } from "../../stores/wamp/compute/util";
 import { SessionManifest } from "../../stores/wamp/types";
 import { secAsString } from "../../utils/output";
 import { Standings } from "../standings";
+import StandingsColumnControl from "../standingsColumnControl";
 
 const Classification: React.FC<{}> = () => {
   const cars = useSelector((state: ApplicationState) => state.raceData.availableCars).map((v) => v.carNum);
   return (
     <>
-      <Row>
-        <Col span={24}>
+      <Row align="bottom">
+        <Col span={23}>
           <SessionInfoData />
         </Col>
-      </Row>
-      {/* <Row>
-        <Col span={24}>
-          <CircleOfDoom />
+        <Col>
+          <Popover content={<StandingsColumnControl />} title="Select columns">
+            <Button icon={<SettingOutlined />} />
+          </Popover>
         </Col>
-      </Row> */}
+      </Row>
 
       <Row>
         <Col span={24}>
