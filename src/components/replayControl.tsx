@@ -88,7 +88,8 @@ export const ReplayControl: React.FC<{}> = () => {
 
   const onPauseButtonClicked = (e: React.MouseEvent<HTMLButtonElement>) => {
     setPlaying(false);
-    // dispatch(replaySettings({ ...settings, playing: false }));
+    // console.log(currentSessionTime);
+    dispatch(replaySettings({ ...settings, currentSessionTime: currentSessionTime }));
   };
 
   const onChangeSpeedByDropdown = (e: any) => {
@@ -138,7 +139,7 @@ export const ReplayControl: React.FC<{}> = () => {
       />
       <Button icon={<RightOutlined />} onClick={onStep} value={60} />
       <Button icon={<DoubleRightOutlined />} onClick={onStep} value={600} />
-      <Dropdown disabled={!playing} overlay={menu}>
+      <Dropdown overlay={menu}>
         <Button>
           {settings.playSpeed}x <DownOutlined />
         </Button>

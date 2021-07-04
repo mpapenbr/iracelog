@@ -116,6 +116,25 @@ export const Standings: React.FC<Props> = (props: Props) => {
       align: "right",
     },
   ];
+
+  if (stateCarManifest.findIndex((v) => v.name === "stintLap") > -1) {
+    columns.push({
+      key: "stintLap",
+      title: "SL",
+      render: (d) => nullAwareOutput(getValue(d, "stintLap"), "%.0f"),
+      width: 20,
+      align: "right",
+    });
+  }
+  if (stateCarManifest.findIndex((v) => v.name === "pitstops") > -1) {
+    columns.push({
+      key: "pitstops",
+      title: "PIT",
+      render: (d) => nullAwareOutput(getValue(d, "pitstops"), "%.0f"),
+      width: 20,
+      align: "right",
+    });
+  }
   stateCarManifest
     .filter((v) => /^s\d+$/.test(v.name))
     .forEach((v) =>

@@ -57,7 +57,7 @@ value: 77.66666666553647
     const stintIdx = parseInt(match![1]) - 1;
     const item = stintInfo[stintIdx];
     return (
-      <div>
+      <div style={{ background: "white" }}>
         <strong>
           #{item.carNum} {data.id}
         </strong>
