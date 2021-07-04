@@ -46,6 +46,7 @@ const SessionInfoData: React.FC<{}> = () => {
     return getValueViaSpec(sessionData, SessionManifest, key);
   };
   const gridStyle = { width: "25%" };
+  // const gridStyle = {};
 
   return (
     <>

@@ -38,6 +38,7 @@ import {
 } from "../stores/racedata/actions";
 import { ICarBaseData, ICarClass, ITrackInfo } from "../stores/racedata/types";
 import {
+  circleOfDoomSettings,
   classificationSettings,
   driverLapsSettings,
   driverStintsSettings,
@@ -217,9 +218,11 @@ export const DemoRaces: React.FC<MyProps> = (props: MyProps) => {
       });
       dispatch(connectedToServer());
       // TODO: maybe combine this with above call
-      s.call("racelog.get_event_info", [id]).then((data: any) => {
+      s.call("racelog.get_event_info", [id]).then(async (data: any) => {
         console.log(data);
         dispatch(updateEventInfo(data[0]));
+        const trackInfo = (await s.call("racelog.get_track_info", [data[0].trackId])) as ITrackInfo;
+        dispatch(updateTrackInfo(trackInfo));
       });
       s.subscribe(sprintf("racelog.state.%s", id), (data) => {
         const theProc = globalWamp.processor;
@@ -249,7 +252,11 @@ export const DemoRaces: React.FC<MyProps> = (props: MyProps) => {
     dispatch(pitstopsSettings(defaultStateData.pitstops));
     dispatch(stintsSettings(defaultStateData.stints));
     dispatch(driverStintsSettings(defaultStateData.driverStints));
+    dispatch(circleOfDoomSettings(defaultStateData.circleOfDoom));
+    dispatch(replaySettings(defaultStateData.replay));
     dispatch(updateAvailableStandingsColumns([]));
+    dispatch(updateAvailableCars([]));
+    dispatch(updateAvailableCarClasses([]));
   };
 
   const onLiveButtonClicked = (e: React.MouseEvent<HTMLButtonElement>) => {
@@ -300,44 +307,6 @@ export const DemoRaces: React.FC<MyProps> = (props: MyProps) => {
     conn.open();
   };
 
-  const oldData = [
-    {
-      title: "AI demo: GT3 race Watkins",
-      description: "3h+ race with 20 GT3",
-      key: "1",
-    },
-    // {
-    //   title: "AI demo: The Special Characters at Watkins",
-    //   description:
-    //     "a lot of pitstops, short stints, mainly used to check if umlauts and other character decorations are ok.",
-    //   key: "2",
-    // },
-    {
-      title: "AI Demo: GT3 race at Barcelona",
-      description: "3h race longer stints, 30 GT3",
-      key: "3",
-    },
-    {
-      title: "AI Demo: P217 race at Spa",
-      description: "3h race, medium tank, resets, repair stops",
-      key: "68d4ff7adbb3412b8da2ab53daf01453",
-    },
-    // {
-    //   title: "NEC 2021 Race #2",
-    //   description: "Test for Nordschleife",
-    //   key: "28a7b97ab9aeb613d1c7c75461f3baec",
-    // },
-    {
-      title: "NEO Race 6h Barcelona",
-      description: "Used for Multiclass tests. Be patient while loading (~15s)",
-      key: "neo",
-    },
-    {
-      title: "NEO Race 12h Spa",
-      description: "Used for Multiclass tests. Be a little more patient while loading (~30s)",
-      key: "26ceac390dcac80d439992c98b0a9db8",
-    },
-  ];
   return (
     <Row gutter={16}>
       <Col span={6}>

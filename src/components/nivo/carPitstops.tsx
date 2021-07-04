@@ -52,7 +52,7 @@ value: 77.66666666553647
 
     const pitIdx = parseInt(match![1]) - 1;
     return (
-      <div>
+      <div style={{ background: "white" }}>
         <strong>
           #{pitInfo[pitIdx].carNum} {data.id}
         </strong>
