@@ -1,6 +1,6 @@
 {
   "name": "iracelog",
-  "version": "0.9.17",
+  "version": "0.9.18",
   "private": true,
   "dependencies": {
     "@mpapenbr/iracelog-analysis": "^1.0.9",
