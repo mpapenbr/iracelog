@@ -1,32 +1,37 @@
-import { ResponsiveBar } from "@nivo/bar";
+import { ResponsiveBar, ResponsiveBarCanvas } from "@nivo/bar";
 import { Empty } from "antd";
 import _ from "lodash";
 import React from "react";
-import { useSelector } from "react-redux";
-import { ApplicationState } from "../../stores";
 import { ICarStintInfo, IStintInfo } from "../../stores/wamp/types";
 import { secAsHHMMSS, secAsMMSS, sortCarNumberStr } from "../../utils/output";
 
-const CarStintsNivo: React.FC<{}> = () => {
-  const carStints = useSelector((state: ApplicationState) => state.raceData.carStints);
-  const uiSettings = useSelector((state: ApplicationState) => state.userSettings.stints);
-
-  const carOrder = [...uiSettings.showCars].sort(sortCarNumberStr).reverse();
+interface MyProps {
+  carStints: ICarStintInfo[];
+  showCars: string[];
+  showAsLabel: string;
+}
+const CarStintsNivo: React.FC<MyProps> = (props: MyProps) => {
+  const carOrder = [...props.showCars].sort(sortCarNumberStr).reverse();
   const numEntries = (item: ICarStintInfo) => item.history.length + (item.current.isCurrentStint ? 1 : 0);
-  const maxStints = carStints.reduce((a, b) => (numEntries(b) > a ? numEntries(b) : a), 0);
+  const maxStints = props.carStints.reduce((a, b) => (numEntries(b) > a ? numEntries(b) : a), 0);
 
-  const dataLookup = carStints.reduce((prev, cur) => {
+  const dataLookup = props.carStints.reduce((prev, cur) => {
     const stints = [...cur.history].concat(cur.current.isCurrentStint ? cur.current : []);
     prev.set(cur.carNum, stints);
     return prev;
   }, new Map<string, IStintInfo[]>());
 
-  // console.log(x);
+  const guessNumToDraw = props.carStints
+    .filter((v) => props.showCars.includes(v.carNum))
+    .reduce((prev, cur) => {
+      return prev + cur.history.length + 1;
+    }, 0);
+
   const stintData = carOrder.map((carNum) => {
     const carData = dataLookup.get(carNum);
     let work = { car: carNum };
     const getValue = (v: IStintInfo) => {
-      switch (uiSettings.showAsLabel) {
+      switch (props.showAsLabel) {
         case "duration":
           return v.stintTime;
         case "laps":
@@ -69,37 +74,53 @@ value: 77.66666666553647
     );
   };
   const labelFormatter = (v: number) => {
-    switch (uiSettings.showAsLabel) {
+    switch (props.showAsLabel) {
       case "duration":
         return secAsMMSS(v);
       case "laps":
         return v;
     }
   };
+
+  const graphProps = {
+    data: stintData,
+    keys: _.range(1, maxStints + 1).map((i) => "Stint " + i),
+    indexBy: "car",
+    label: (d: any) => `${labelFormatter(d.value as number)}`,
+    tooltip: (d: any) => CustomTooltip(d),
+    enableGridY: false,
+    enableGridX: false,
+    margin: { top: 50, right: 130, bottom: 50, left: 60 },
+    lableSkipWidth: 20,
+    axisLeft: { format: (value: any) => `#${value}` },
+    // the following props don't get recognized. error message is like: "string" not valid here
+    // layout: "horizontal",
+    // valueScale: {type: "linear"  },
+    // indexScale: {type: "band", round:true},
+  };
+
   const InternalGraph = (
     <div style={{ height: "750px" }}>
-      <ResponsiveBar
-        data={stintData}
-        keys={_.range(1, maxStints + 1).map((i) => "Stint " + i)}
-        indexBy="car"
-        margin={{ top: 50, right: 130, bottom: 50, left: 60 }}
-        layout="horizontal"
-        valueScale={{ type: "linear" }}
-        indexScale={{ type: "band", round: true }}
-        enableGridY={false}
-        enableGridX={true}
-        label={(d) => `${labelFormatter(d.value as number)}`}
-        animate={false}
-        tooltip={(d) => CustomTooltip(d)}
-        labelSkipWidth={20}
-        axisLeft={{
-          format: (value) => `#${value}`,
-        }}
-      />
+      {guessNumToDraw > 300 ? (
+        // Canvas looks a little blurry, so we use it only when we think the standard way would take too long
+        <ResponsiveBarCanvas
+          {...graphProps}
+          layout="horizontal"
+          valueScale={{ type: "linear" }}
+          indexScale={{ type: "band", round: true }}
+        />
+      ) : (
+        <ResponsiveBar
+          {...graphProps}
+          layout="horizontal"
+          valueScale={{ type: "linear" }}
+          indexScale={{ type: "band", round: true }}
+        />
+      )}
     </div>
   );
 
-  return <>{uiSettings.showCars.length === 0 ? <Empty description="Select cars" /> : InternalGraph}</>;
+  return <>{props.showCars.length === 0 ? <Empty description="Select cars" /> : InternalGraph}</>;
 };
 
 export default CarStintsNivo;

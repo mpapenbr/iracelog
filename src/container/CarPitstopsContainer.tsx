@@ -5,22 +5,30 @@ import CarFilter from "../components/live/carFilter";
 import { collectCarsByCarClassFilter, processCarClassSelectionNew } from "../components/live/util";
 import CarPitstopsNivo from "../components/nivo/carPitstops";
 import { ApplicationState } from "../stores";
-import { pitstopsSettings } from "../stores/ui/actions";
+import { globalSettings, pitstopsSettings } from "../stores/ui/actions";
 
 export const CarPitstopsContainer: React.FC<{}> = () => {
   const cars = useSelector((state: ApplicationState) => state.raceData.availableCars);
+  const carPits = useSelector((state: ApplicationState) => state.raceData.carPits);
   const carClasses = useSelector((state: ApplicationState) => state.raceData.availableCarClasses);
   const userSettings = useSelector((state: ApplicationState) => state.userSettings.pitstops);
+  const stateGlobalSettings = useSelector((state: ApplicationState) => state.userSettings.global);
 
-  const showCars = useSelector((state: ApplicationState) => state.userSettings.pitstops.showCars);
-  const filterCarClasses = useSelector((state: ApplicationState) => state.userSettings.pitstops.filterCarClasses);
+  const selectSettings = () => {
+    if (stateGlobalSettings.syncSelection) {
+      return { showCars: stateGlobalSettings.showCars, filterCarClasses: stateGlobalSettings.filterCarClasses };
+    } else {
+      return { showCars: userSettings.showCars, filterCarClasses: userSettings.filterCarClasses };
+    }
+  };
+  const { showCars, filterCarClasses } = selectSettings();
   const dispatch = useDispatch();
   const selectableCars = userSettings.selectableCars.length > 0 ? userSettings.selectableCars : cars;
   const onSelectCarClassChange = (values: string[]) => {
     const newShowcars = processCarClassSelectionNew({
       cars: cars,
-      currentFilter: userSettings.filterCarClasses,
-      currentShowCars: userSettings.showCars,
+      currentFilter: filterCarClasses,
+      currentShowCars: showCars,
       newSelection: values,
     });
     const curSettings = {
@@ -30,6 +38,9 @@ export const CarPitstopsContainer: React.FC<{}> = () => {
       selectableCars: collectCarsByCarClassFilter(cars, values),
     };
     dispatch(pitstopsSettings(curSettings));
+    if (stateGlobalSettings.syncSelection) {
+      dispatch(globalSettings({ ...stateGlobalSettings, showCars: newShowcars, filterCarClasses: values }));
+    }
   };
 
   const props = {
@@ -40,17 +51,24 @@ export const CarPitstopsContainer: React.FC<{}> = () => {
     onSelectCarFilter: (selection: string[]) => {
       const curSettings = { ...userSettings, showCars: selection };
       dispatch(pitstopsSettings(curSettings));
+      if (stateGlobalSettings.syncSelection) {
+        dispatch(globalSettings({ ...stateGlobalSettings, showCars: selection }));
+      }
     },
     onSelectCarClassFilter: onSelectCarClassChange,
   };
 
+  const graphProps = {
+    showCars: showCars,
+    carPits: carPits,
+  };
   return (
     <>
       <Row gutter={16}>
         <CarFilter {...props} />
       </Row>
 
-      <CarPitstopsNivo />
+      <CarPitstopsNivo {...graphProps} />
     </>
   );
 };

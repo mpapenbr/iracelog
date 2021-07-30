@@ -7,6 +7,7 @@ import {
   IClassificationSettings,
   IDriverLapsSettings,
   IDriverStintsSettings,
+  IGlobalSettings,
   IMessagesSettings,
   IPitstopsSettings,
   IRaceGraphRelativeSettings,
@@ -44,4 +45,9 @@ export const driverStintsSettings = actionCreator<IDriverStintsSettings>("DRIVER
 export const circleOfDoomSettings = actionCreator<ICircleOfDoomSettings>("CIRCLE_OF_DOOM_SETTINGS");
 
 export const replaySettings = actionCreator<IReplaySettings>("REPLAY_SETTINGS");
+export const globalSettings = actionCreator<IGlobalSettings>("GLOBAL_SETTINGS");
 export const demoSettings = actionCreator<number>("DEMO_SETTINGS");
+
+// TODO: rethink if saga would be better mechanism to distribute selections
+export const sagaPitstopsSettings = actionCreator<IPitstopsSettings>("SAGA_PITSTOPS_SETTINGS");
+export const sagaStintsSettings = actionCreator<IStintsSettings>("SAGA_STINTS_SETTINGS");

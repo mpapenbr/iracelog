@@ -8,6 +8,7 @@ import {
   IClassificationSettings,
   IDriverLapsSettings,
   IDriverStintsSettings as IDriverStintsSettings,
+  IGlobalSettings,
   IMessagesSettings,
   IPitstopsSettings,
   IRaceGraphRelativeSettings,
@@ -187,6 +188,17 @@ const ReplaySettingsReducer = reducerWithInitialState(initialReplaySettings).cas
   UiActions.replaySettings,
   (state, settings) => settings
 );
+
+export const initialGlobalSettings: IGlobalSettings = {
+  syncSelection: true,
+  showCars: [],
+  filterCarClasses: [],
+};
+const GlobalSettingsReducer = reducerWithInitialState(initialGlobalSettings).case(
+  UiActions.globalSettings,
+  (state, settings) => settings
+);
+
 const DemoReducer = reducerWithInitialState(0).case(UiActions.demoSettings, (state, value) => value);
 
 export const defaultStateData: IUserSettings = {
@@ -201,6 +213,7 @@ export const defaultStateData: IUserSettings = {
   driverStints: initialDriverStints,
   circleOfDoom: initialCircleOfDoom,
   replay: initialReplaySettings,
+  global: initialGlobalSettings,
   counter: 0,
 };
 const combinedReducers = combineReducers<IUserSettings>({
@@ -215,6 +228,7 @@ const combinedReducers = combineReducers<IUserSettings>({
   driverStints: DriverStintsSettingsReducer,
   circleOfDoom: CircleOfDoomSettingsReducer,
   replay: ReplaySettingsReducer,
+  global: GlobalSettingsReducer,
   counter: DemoReducer,
 });
 

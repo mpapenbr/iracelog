@@ -2,24 +2,26 @@ import { ResponsiveBar } from "@nivo/bar";
 import { Empty, Select } from "antd";
 import _ from "lodash";
 import React from "react";
-import { useSelector } from "react-redux";
-import { ApplicationState } from "../../stores";
 import { ICarPitInfo, IPitInfo } from "../../stores/wamp/types";
 import { secAsHHMMSS, secAsMMSS, sortCarNumberStr } from "../../utils/output";
 
 const { Option } = Select;
 
-const CarPitstopsNivo: React.FC<{}> = () => {
+interface MyProps {
+  carPits: ICarPitInfo[];
+  showCars: string[];
+}
+const CarPitstopsNivo: React.FC<MyProps> = (props: MyProps) => {
   // const cars = useSelector((state: ApplicationState) => state.raceData.availableCars);
-  const carPits = useSelector((state: ApplicationState) => state.raceData.carPits);
-  const uiSettings = useSelector((state: ApplicationState) => state.userSettings.pitstops);
+  // const carPits = useSelector((state: ApplicationState) => state.raceData.carPits);
+  // const uiSettings = useSelector((state: ApplicationState) => state.userSettings.pitstops);
 
-  const carOrder = [...uiSettings.showCars].sort(sortCarNumberStr).reverse();
+  const carOrder = [...props.showCars].sort(sortCarNumberStr).reverse();
 
   const numEntries = (item: ICarPitInfo) => item.history.length + (item.current.isCurrentPitstop ? 1 : 0);
-  const maxPitstops = carPits.reduce((a, b) => (numEntries(b) > a ? numEntries(b) : a), 0);
+  const maxPitstops = props.carPits.reduce((a, b) => (numEntries(b) > a ? numEntries(b) : a), 0);
 
-  const dataLookup = carPits.reduce((prev, cur) => {
+  const dataLookup = props.carPits.reduce((prev, cur) => {
     const pitstops = [...cur.history].concat(cur.current.isCurrentPitstop ? cur.current : []);
     prev.set(cur.carNum, pitstops);
     return prev;
@@ -84,7 +86,7 @@ value: 77.66666666553647
     </div>
   );
 
-  return <>{uiSettings.showCars.length === 0 ? <Empty description="Select cars" /> : InternalGraph}</>;
+  return <>{props.showCars.length === 0 ? <Empty description="Select cars" /> : InternalGraph}</>;
 };
 
 export default CarPitstopsNivo;
