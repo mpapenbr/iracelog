@@ -105,6 +105,12 @@ export interface IReplaySettings {
   currentSessionTime: number;
   currentTimestamp: number; // holds the current timestamp
 }
+
+export interface IGlobalSettings {
+  syncSelection: boolean; // if true, selection for showCars,referenceCars are pushed to all relevant pages
+  showCars: string[];
+  filterCarClasses: string[]; // empty = all classes, otherwise only selected
+}
 export interface IUiData {
   stint: IUiStints;
   entries: IUiEntries;
@@ -142,6 +148,7 @@ export interface IUserSettings {
   driverStints: IDriverStintsSettings;
   circleOfDoom: ICircleOfDoomSettings;
   replay: IReplaySettings;
+  global: IGlobalSettings;
   counter: number;
 }
 

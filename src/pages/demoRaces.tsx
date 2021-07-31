@@ -42,6 +42,7 @@ import {
   classificationSettings,
   driverLapsSettings,
   driverStintsSettings,
+  globalSettings,
   messagesSettings,
   pitstopsSettings,
   raceGraphRelativeSettings,
@@ -74,32 +75,6 @@ export const DemoRaces: React.FC<MyProps> = (props: MyProps) => {
     onReloadRequested();
     onLoadEvents();
   }, [loadTrigger]);
-
-  const onLoadButtonClicked_OoO = (e: React.MouseEvent<HTMLButtonElement>) => {
-    const arg = e.currentTarget.value;
-    // readData(arg, dispatch, doInfo);
-    var conn = new autobahn.Connection({ url: API_CROSSBAR_URL + "/ws", realm: "racelog" });
-    conn.onopen = (s: Session) => {
-      s.call("racelog.archive.get_manifest", [arg]).then((manifestData: any) => {
-        console.log(manifestData);
-        setLoading(true);
-        dispatch(reset());
-        resetUi();
-        // const mData = JSON.parse(manifestData);
-        s.call("racelog.analysis.archive", [arg]).then((data: any) => {
-          doDistribute(defaultProcessRaceStateData, data);
-
-          dispatch(updateManifests(manifestData));
-          conn.close();
-          setLoading(false);
-          history.push("/analysis");
-        });
-      });
-    };
-
-    conn.open();
-    // setTimeout(() => setLoading(false), 2000);
-  };
 
   const onLoadForReplayButtonClicked = (e: React.MouseEvent<HTMLButtonElement>) => {
     const arg = e.currentTarget.value;
@@ -254,6 +229,7 @@ export const DemoRaces: React.FC<MyProps> = (props: MyProps) => {
     dispatch(driverStintsSettings(defaultStateData.driverStints));
     dispatch(circleOfDoomSettings(defaultStateData.circleOfDoom));
     dispatch(replaySettings(defaultStateData.replay));
+    dispatch(globalSettings(defaultStateData.global));
     dispatch(updateAvailableStandingsColumns([]));
     dispatch(updateAvailableCars([]));
     dispatch(updateAvailableCarClasses([]));

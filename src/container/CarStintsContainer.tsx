@@ -5,22 +5,30 @@ import CarFilter from "../components/live/carFilter";
 import { collectCarsByCarClassFilter, processCarClassSelectionNew } from "../components/live/util";
 import CarStintsNivo from "../components/nivo/carStints";
 import { ApplicationState } from "../stores";
-import { stintsSettings } from "../stores/ui/actions";
+import { globalSettings, stintsSettings } from "../stores/ui/actions";
 
 export const CarStintsContainer: React.FC<{}> = () => {
   const cars = useSelector((state: ApplicationState) => state.raceData.availableCars);
+  const carStints = useSelector((state: ApplicationState) => state.raceData.carStints);
   const carClasses = useSelector((state: ApplicationState) => state.raceData.availableCarClasses);
   const userSettings = useSelector((state: ApplicationState) => state.userSettings.stints);
+  const stateGlobalSettings = useSelector((state: ApplicationState) => state.userSettings.global);
 
-  const showCars = useSelector((state: ApplicationState) => state.userSettings.stints.showCars);
-  const filterCarClasses = useSelector((state: ApplicationState) => state.userSettings.stints.filterCarClasses);
+  const selectSettings = () => {
+    if (stateGlobalSettings.syncSelection) {
+      return { showCars: stateGlobalSettings.showCars, filterCarClasses: stateGlobalSettings.filterCarClasses };
+    } else {
+      return { showCars: userSettings.showCars, filterCarClasses: userSettings.filterCarClasses };
+    }
+  };
+  const { showCars, filterCarClasses } = selectSettings();
   const dispatch = useDispatch();
   const selectableCars = userSettings.selectableCars.length > 0 ? userSettings.selectableCars : cars;
   const onSelectCarClassChange = (values: string[]) => {
     const newShowcars = processCarClassSelectionNew({
       cars: cars,
-      currentFilter: userSettings.filterCarClasses,
-      currentShowCars: userSettings.showCars,
+      currentFilter: filterCarClasses,
+      currentShowCars: showCars,
       newSelection: values,
     });
     const curSettings = {
@@ -30,6 +38,10 @@ export const CarStintsContainer: React.FC<{}> = () => {
       selectableCars: collectCarsByCarClassFilter(cars, values),
     };
     dispatch(stintsSettings(curSettings));
+
+    if (stateGlobalSettings.syncSelection) {
+      dispatch(globalSettings({ ...stateGlobalSettings, showCars: newShowcars, filterCarClasses: values }));
+    }
   };
 
   const props = {
@@ -40,10 +52,17 @@ export const CarStintsContainer: React.FC<{}> = () => {
     onSelectCarFilter: (selection: string[]) => {
       const curSettings = { ...userSettings, showCars: selection };
       dispatch(stintsSettings(curSettings));
+      if (stateGlobalSettings.syncSelection) {
+        dispatch(globalSettings({ ...stateGlobalSettings, showCars: selection }));
+      }
     },
     onSelectCarClassFilter: onSelectCarClassChange,
   };
-
+  const graphProps = {
+    showCars: showCars,
+    carStints: carStints,
+    showAsLabel: userSettings.showAsLabel,
+  };
   const onShowModeChange = (e: RadioChangeEvent) => {
     dispatch(stintsSettings({ ...userSettings, showAsLabel: e.target.value }));
   };
@@ -62,7 +81,7 @@ export const CarStintsContainer: React.FC<{}> = () => {
         {ShowMode}
       </Row>
 
-      <CarStintsNivo />
+      <CarStintsNivo {...graphProps} />
     </>
   );
 };

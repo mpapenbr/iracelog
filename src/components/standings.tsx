@@ -70,6 +70,7 @@ export const Standings: React.FC<Props> = (props: Props) => {
     { key: "pos", title: "Pos", render: (d) => getValue(d, "pos"), width: 20, align: "right" },
     { key: "pic", title: "PIC", render: (d) => getValue(d, "pic"), width: 20, align: "right" },
     { key: "carNum", title: "#", render: (d) => getValue(d, "carNum"), width: 20, align: "right" },
+    { key: "car", title: "Car", render: (d) => getValue(d, "car") },
     { key: "carClass", title: "Class", render: (d) => getValue(d, "carClass"), ellipsis: false },
     { key: "state", title: "State", render: (d) => getValue(d, "state") },
     { key: "userName", title: "Driver", render: (d) => getValue(d, "userName"), ellipsis: false },
@@ -112,7 +113,7 @@ export const Standings: React.FC<Props> = (props: Props) => {
       key: "speed",
       title: "Speed",
       render: (d) => nullAwareOutput(getValue(d, "speed"), "%.0f"),
-      width: 20,
+      width: 30,
       align: "right",
     },
   ];
@@ -122,7 +123,7 @@ export const Standings: React.FC<Props> = (props: Props) => {
       key: "stintLap",
       title: "SL",
       render: (d) => nullAwareOutput(getValue(d, "stintLap"), "%.0f"),
-      width: 20,
+      width: 30,
       align: "right",
     });
   }

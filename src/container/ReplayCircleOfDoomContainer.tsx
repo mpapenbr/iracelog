@@ -11,7 +11,7 @@ import SessionInfoDescription from "../components/sessionInfoDescr";
 import { Standings } from "../components/standings";
 import StandingsColumnControl from "../components/standingsColumnControl";
 import { ApplicationState } from "../stores";
-import { circleOfDoomSettings } from "../stores/ui/actions";
+import { circleOfDoomSettings, globalSettings } from "../stores/ui/actions";
 
 const { Option } = Select;
 
@@ -19,17 +19,26 @@ export const ReplayCircleOfDoomContainer: React.FC<{}> = () => {
   const cars = useSelector((state: ApplicationState) => state.raceData.availableCars);
   const carClasses = useSelector((state: ApplicationState) => state.raceData.availableCarClasses);
   const userSettings = useSelector((state: ApplicationState) => state.userSettings.circleOfDoom);
-  const showCars = useSelector((state: ApplicationState) => state.userSettings.circleOfDoom.showCars);
-  const filterCarClasses = useSelector((state: ApplicationState) => state.userSettings.circleOfDoom.filterCarClasses);
+
   const replaySettings = useSelector((state: ApplicationState) => state.userSettings.replay);
+  const stateGlobalSettings = useSelector((state: ApplicationState) => state.userSettings.global);
+
+  const selectSettings = () => {
+    if (stateGlobalSettings.syncSelection) {
+      return { showCars: stateGlobalSettings.showCars, filterCarClasses: stateGlobalSettings.filterCarClasses };
+    } else {
+      return { showCars: userSettings.showCars, filterCarClasses: userSettings.filterCarClasses };
+    }
+  };
+  const { showCars, filterCarClasses } = selectSettings();
 
   const dispatch = useDispatch();
   const selectableCars = userSettings.selectableCars.length > 0 ? userSettings.selectableCars : cars;
   const onSelectCarClassChange = (values: string[]) => {
     const newShowcars = processCarClassSelectionNew({
       cars: cars,
-      currentFilter: userSettings.filterCarClasses,
-      currentShowCars: userSettings.showCars,
+      currentFilter: filterCarClasses,
+      currentShowCars: showCars,
       newSelection: values,
     });
     const curSettings = {
@@ -39,6 +48,9 @@ export const ReplayCircleOfDoomContainer: React.FC<{}> = () => {
       selectableCars: collectCarsByCarClassFilter(cars, values),
     };
     dispatch(circleOfDoomSettings(curSettings));
+    if (stateGlobalSettings.syncSelection) {
+      dispatch(globalSettings({ ...stateGlobalSettings, showCars: newShowcars, filterCarClasses: values }));
+    }
   };
 
   const onSelectReferenceCar = (value: any) => {
@@ -69,6 +81,9 @@ export const ReplayCircleOfDoomContainer: React.FC<{}> = () => {
     onSelectCarFilter: (selection: string[]) => {
       const curSettings = { ...userSettings, showCars: selection };
       dispatch(circleOfDoomSettings(curSettings));
+      if (stateGlobalSettings.syncSelection) {
+        dispatch(globalSettings({ ...stateGlobalSettings, showCars: selection }));
+      }
     },
     onSelectCarClassFilter: onSelectCarClassChange,
   };
@@ -120,7 +135,11 @@ export const ReplayCircleOfDoomContainer: React.FC<{}> = () => {
       </Row>
       <Row gutter={16}>
         <Col span="6">
-          <CircleOfDoom />
+          <CircleOfDoom
+            showCars={showCars}
+            referenceCarNum={userSettings.referenceCarNum}
+            pitstopTime={userSettings.pitstopTime}
+          />
         </Col>
         <Col span="18">
           <Row gutter={16}>
