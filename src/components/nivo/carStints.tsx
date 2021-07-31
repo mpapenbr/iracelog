@@ -111,6 +111,7 @@ value: 77.66666666553647
         />
       ) : (
         <ResponsiveBar
+          animate={false}
           {...graphProps}
           layout="horizontal"
           valueScale={{ type: "linear" }}

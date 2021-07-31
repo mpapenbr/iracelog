@@ -135,7 +135,11 @@ export const ReplayCircleOfDoomContainer: React.FC<{}> = () => {
       </Row>
       <Row gutter={16}>
         <Col span="6">
-          <CircleOfDoom />
+          <CircleOfDoom
+            showCars={showCars}
+            referenceCarNum={userSettings.referenceCarNum}
+            pitstopTime={userSettings.pitstopTime}
+          />
         </Col>
         <Col span="18">
           <Row gutter={16}>

@@ -13,7 +13,13 @@ type TrackPosData = {
   pic: number;
 };
 
-export const CircleOfDoom: React.FC<{}> = () => {
+interface MyProps {
+  showCars: string[];
+  referenceCarNum: string;
+  pitstopTime: number;
+}
+
+export const CircleOfDoom: React.FC<MyProps> = (props: MyProps) => {
   const carsRaw = useSelector((state: ApplicationState) => state.raceData.classification.data);
   const carLaps = useSelector((state: ApplicationState) => state.raceData.carLaps);
   const carPits = useSelector((state: ApplicationState) => state.raceData.carPits);
@@ -21,7 +27,7 @@ export const CircleOfDoom: React.FC<{}> = () => {
   const stateCarManifest = useSelector((state: ApplicationState) => state.wamp.data.manifests.car);
   const carInfos = useSelector((state: ApplicationState) => state.raceData.availableCars);
   const eventInfo = useSelector((state: ApplicationState) => state.raceData.eventInfo);
-  const userSettings = useSelector((state: ApplicationState) => state.userSettings.circleOfDoom);
+  const userSettingsx = useSelector((state: ApplicationState) => state.userSettings.circleOfDoom);
 
   const allCarNums = carInfos.map((c) => c.carNum);
   const carLookup = carInfos.reduce((prev, cur) => {
@@ -34,14 +40,14 @@ export const CircleOfDoom: React.FC<{}> = () => {
     pos: idx,
     pic: getValueViaSpec(c, stateCarManifest, "pic"),
   }));
-  const data = dataRaw.filter((c) => userSettings.showCars.includes(c.carNum));
+  const data = dataRaw.filter((c) => props.showCars.includes(c.carNum));
   // console.log(data);
 
   const OptionalDisplays = () => {
-    if (!userSettings.referenceCarNum?.length) {
+    if (!props.referenceCarNum?.length) {
       return <></>;
     }
-    const carData = carLookup.get(userSettings.referenceCarNum)!;
+    const carData = carLookup.get(props.referenceCarNum)!;
     // P217: 227 km/h bei 1:02 laptime
     // R8: 198
     // const c = ICarLap;
@@ -61,8 +67,7 @@ export const CircleOfDoom: React.FC<{}> = () => {
       console.log("car is in pits for " + pitInfo.current.laneTime);
       inPits = pitInfo.current.laneTime;
     }
-    const newPos =
-      ((1 + data.trackPos - (avgSpeed * (userSettings.pitstopTime - inPits)) / eventInfo.trackLength) % 1) * 360;
+    const newPos = ((1 + data.trackPos - (avgSpeed * (props.pitstopTime - inPits)) / eventInfo.trackLength) % 1) * 360;
 
     const color = getColor(data.carNum);
     return (
@@ -158,7 +163,7 @@ export const CircleOfDoom: React.FC<{}> = () => {
             // standard for leader
             let w = item.pos === 0 ? 4 : 2;
             let h = item.pos === 0 ? emphasizeLen : standardLen;
-            if (userSettings.referenceCarNum === item.carNum) {
+            if (props.referenceCarNum === item.carNum) {
               w = 6;
               h = emphasizeLen + 3;
             }
@@ -185,7 +190,7 @@ export const CircleOfDoom: React.FC<{}> = () => {
             // standard for leader
             let w = item.pos == 0 ? 4 : 2;
             let h = item.pos == 0 ? emphasizeLen : standardLen;
-            if (userSettings.referenceCarNum === item.carNum) {
+            if (props.referenceCarNum === item.carNum) {
               w = 6;
               h = emphasizeLen + 3;
             }
