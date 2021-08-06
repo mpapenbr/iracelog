@@ -1,4 +1,4 @@
-import { ResponsiveBar } from "@nivo/bar";
+import { ResponsiveBar, ResponsiveBarCanvas } from "@nivo/bar";
 import { Empty, Select } from "antd";
 import _ from "lodash";
 import React from "react";
@@ -10,6 +10,8 @@ const { Option } = Select;
 interface MyProps {
   carPits: ICarPitInfo[];
   showCars: string[];
+  hideLongPitstops: boolean;
+  hideThreshold: number;
 }
 const CarPitstopsNivo: React.FC<MyProps> = (props: MyProps) => {
   // const cars = useSelector((state: ApplicationState) => state.raceData.availableCars);
@@ -28,14 +30,27 @@ const CarPitstopsNivo: React.FC<MyProps> = (props: MyProps) => {
   }, new Map<string, IPitInfo[]>());
 
   // console.log(x);
+  const isLongPitstop = (pit: IPitInfo): boolean => {
+    return pit.laneTime > props.hideThreshold;
+  };
+
   const pitData = carOrder.map((carNum) => {
     const carData = dataLookup.get(carNum);
     let work = { car: carNum };
     if (carData !== undefined) {
-      carData.forEach((v, idx) => (work = { ...work, ["Pitstop " + (idx + 1)]: v.laneTime }));
+      carData
+        // TODO: soll nur den letzten STopp betrachten
+        .filter((v, idx) => (props.hideLongPitstops ? (idx === carData.length - 1 ? !isLongPitstop(v) : true) : true))
+        .forEach((v, idx) => (work = { ...work, ["Pitstop " + (idx + 1)]: v.laneTime }));
     }
     return { ...work };
   });
+  console.log(pitData);
+  const guessNumToDraw = props.carPits
+    .filter((v) => props.showCars.includes(v.carNum))
+    .reduce((prev, cur) => {
+      return prev + cur.history.length + 1;
+    }, 0);
 
   const CustomTooltip = (data: any) => {
     // we get something like this:
@@ -63,26 +78,43 @@ value: 77.66666666553647
       </div>
     );
   };
+
+  const graphProps = {
+    data: pitData,
+    keys: _.range(1, maxPitstops + 1).map((i) => "Pitstop " + i),
+    indexBy: "car",
+    label: (d: any) => `${secAsMMSS(d.value as number)}`,
+    tooltip: (d: any) => CustomTooltip(d),
+    enableGridY: false,
+    enableGridX: false,
+    margin: { top: 50, right: 130, bottom: 50, left: 60 },
+    labelSkipWidth: 20,
+    axisLeft: { format: (value: any) => `#${value}` },
+    // the following props don't get recognized. error message is like: "string" not valid here
+    // layout: "horizontal",
+    // valueScale: {type: "linear"  },
+    // indexScale: {type: "band", round:true},
+  };
+
   const InternalGraph = (
     <div style={{ height: "750px" }}>
-      <ResponsiveBar
-        data={pitData}
-        keys={_.range(1, maxPitstops + 1).map((i) => "Pitstop " + i)}
-        indexBy="car"
-        margin={{ top: 50, right: 130, bottom: 50, left: 60 }}
-        layout="horizontal"
-        valueScale={{ type: "linear" }}
-        indexScale={{ type: "band", round: true }}
-        enableGridY={false}
-        enableGridX={true}
-        label={(d) => `${secAsMMSS(d.value as number)}`}
-        animate={false}
-        tooltip={(d) => CustomTooltip(d)}
-        labelSkipWidth={20}
-        axisLeft={{
-          format: (value) => `#${value}`,
-        }}
-      />
+      {guessNumToDraw > 300 ? (
+        // Canvas looks a little blurry, so we use it only when we think the standard way would take too long
+        <ResponsiveBarCanvas
+          {...graphProps}
+          layout="horizontal"
+          valueScale={{ type: "linear" }}
+          indexScale={{ type: "band", round: true }}
+        />
+      ) : (
+        <ResponsiveBar
+          animate={false}
+          {...graphProps}
+          layout="horizontal"
+          valueScale={{ type: "linear" }}
+          indexScale={{ type: "band", round: true }}
+        />
+      )}
     </div>
   );
 

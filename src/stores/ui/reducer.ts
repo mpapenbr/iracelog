@@ -124,6 +124,9 @@ const initialPitstops: IPitstopsSettings = {
   showCars: [],
   selectableCars: [],
   filterCarClasses: [],
+  hideLongPitstops: false,
+  hideThreshold: 300, //
+  showRunningOnly: true,
 };
 const PitstopsSettingsReducer = reducerWithInitialState(initialPitstops).case(
   UiActions.pitstopsSettings,
@@ -136,6 +139,7 @@ const initialStints: IStintsSettings = {
   selectableCars: [],
   filterCarClasses: [],
   showAsLabel: "duration",
+  showRunningOnly: true,
 };
 const StintsSettingsReducer = reducerWithInitialState(initialStints).case(
   UiActions.stintsSettings,

@@ -91,7 +91,7 @@ value: 77.66666666553647
     enableGridY: false,
     enableGridX: false,
     margin: { top: 50, right: 130, bottom: 50, left: 60 },
-    lableSkipWidth: 20,
+    labelSkipWidth: 20,
     axisLeft: { format: (value: any) => `#${value}` },
     // the following props don't get recognized. error message is like: "string" not valid here
     // layout: "horizontal",

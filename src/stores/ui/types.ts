@@ -63,12 +63,16 @@ export interface IPitstopsSettings {
   showCars: string[];
   selectableCars: ICarBaseData[]; // the cars to show in the dropdown as selectable
   filterCarClasses: string[]; // empty = all classes, otherwise only selected
+  hideLongPitstops: boolean; // if true, long pitstop will hide the car row
+  hideThreshold: number; // threshold (in sec) to hide a car row
+  showRunningOnly: boolean; // if true, show only cars that are still running
 }
 export interface IStintsSettings {
   showCars: string[];
   selectableCars: ICarBaseData[]; // the cars to show in the dropdown as selectable
   filterCarClasses: string[]; // empty = all classes, otherwise only selected
   showAsLabel: string;
+  showRunningOnly: boolean; // if true, show only cars that are still running
 }
 export interface IRaceStintSharedSettings {
   showCars: string[];
