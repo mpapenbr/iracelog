@@ -2,11 +2,12 @@ import { ResponsiveBar, ResponsiveBarCanvas } from "@nivo/bar";
 import { Empty } from "antd";
 import _ from "lodash";
 import React from "react";
-import { ICarStintInfo, IStintInfo } from "../../stores/wamp/types";
+import { ICarInfo, ICarStintInfo, IStintInfo } from "../../stores/wamp/types";
 import { secAsHHMMSS, secAsMMSS, sortCarNumberStr } from "../../utils/output";
 
 interface MyProps {
   carStints: ICarStintInfo[];
+  carInfo: ICarInfo[];
   showCars: string[];
   showAsLabel: string;
 }
@@ -44,6 +45,25 @@ const CarStintsNivo: React.FC<MyProps> = (props: MyProps) => {
     return { ...work };
   });
 
+  const stintDriverLookup: Map<string, string[]> = carOrder.reduce((prev, cur) => {
+    const si: IStintInfo[] = dataLookup.get(cur)!;
+    if (si === undefined) {
+      // may happen if some driver did not move the car at all (for example)
+      return prev;
+    }
+    const curCarInfo = props.carInfo.find((v) => v.carNum === cur);
+    const newCarData = si.reduce((res, siCur) => {
+      const driver = curCarInfo?.drivers.find((d) =>
+        d.seatTime.find((s) => s.enterCarTime <= siCur.exitTime && s.leaveCarTime >= siCur.enterTime)
+      );
+
+      // return ["res"];
+      return [...res, driver ? driver.driverName : "n.a."];
+    }, [] as string[]);
+    prev.set(cur, newCarData);
+    return prev;
+  }, new Map());
+
   const CustomTooltip = (data: any) => {
     // we get something like this:
     /*
@@ -61,11 +81,13 @@ value: 77.66666666553647
 
     const stintIdx = parseInt(match![1]) - 1;
     const item = stintInfo[stintIdx];
+    const driver = stintDriverLookup.get(item.carNum)?.[stintIdx];
     return (
       <div style={{ background: "white" }}>
         <strong>
           #{item.carNum} {data.id}
         </strong>
+        <br /> {driver}
         <br />
         Lap {item.lapExit} - {item.lapEnter} ({item.lapEnter - item.lapExit + 1})
         <br />
@@ -81,7 +103,6 @@ value: 77.66666666553647
         return v;
     }
   };
-
   const graphProps = {
     data: stintData,
     keys: _.range(1, maxStints + 1).map((i) => "Stint " + i),
@@ -90,8 +111,8 @@ value: 77.66666666553647
     tooltip: (d: any) => CustomTooltip(d),
     enableGridY: false,
     enableGridX: false,
-    margin: { top: 50, right: 130, bottom: 50, left: 60 },
-    lableSkipWidth: 20,
+    margin: { top: 20, right: 130, bottom: 50, left: 60 },
+    labelSkipWidth: 20,
     axisLeft: { format: (value: any) => `#${value}` },
     // the following props don't get recognized. error message is like: "string" not valid here
     // layout: "horizontal",
@@ -99,8 +120,10 @@ value: 77.66666666553647
     // indexScale: {type: "band", round:true},
   };
 
+  console.log(guessNumToDraw);
+  const calcHeight = Math.min(1200, Math.max(150, carOrder.length * 30));
   const InternalGraph = (
-    <div style={{ height: "750px" }}>
+    <div style={{ height: `${calcHeight}px` }}>
       {guessNumToDraw > 300 ? (
         // Canvas looks a little blurry, so we use it only when we think the standard way would take too long
         <ResponsiveBarCanvas

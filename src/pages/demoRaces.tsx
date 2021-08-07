@@ -8,7 +8,7 @@ import {
   ICarStintInfo,
   IMessage,
   IProcessRaceStateData,
-  IRaceGraph,
+  IRaceGraph
 } from "@mpapenbr/iracelog-analysis/dist/stints/types";
 import { Button, Col, List, Modal, Row } from "antd";
 import autobahn, { Session } from "autobahn";
@@ -34,7 +34,7 @@ import {
   updateInfoMessages,
   updateRaceGraph,
   updateSessionInfo,
-  updateTrackInfo,
+  updateTrackInfo
 } from "../stores/racedata/actions";
 import { ICarBaseData, ICarClass, ITrackInfo } from "../stores/racedata/types";
 import {
@@ -49,7 +49,7 @@ import {
   raceGraphSettings,
   racePositionsSettings,
   replaySettings,
-  stintsSettings,
+  stintsSettings
 } from "../stores/ui/actions";
 import { defaultStateData, initialReplaySettings } from "../stores/ui/reducer";
 import { connectedToServer, reset, setManifests, updateManifests } from "../stores/wamp/actions";
@@ -109,6 +109,8 @@ export const DemoRaces: React.FC<MyProps> = (props: MyProps) => {
       // conn.close();
       const rh = new ReplayDataHolder(s, settings);
       globalWamp.replayHolder = rh;
+      globalWamp.currentLiveId = undefined;
+      
       setLoading(false);
       history.push("/analysis");
     };

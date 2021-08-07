@@ -1,9 +1,11 @@
-import { Row } from "antd";
+import { SettingOutlined } from "@ant-design/icons";
+import { Button, Col, Popover, Row } from "antd";
 import * as React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import CarFilter from "../components/live/carFilter";
 import { collectCarsByCarClassFilter, processCarClassSelectionNew } from "../components/live/util";
 import CarPitstopsNivo from "../components/nivo/carPitstops";
+import PitstopControl from "../components/pitstopControl";
 import { ApplicationState } from "../stores";
 import { globalSettings, pitstopsSettings } from "../stores/ui/actions";
 
@@ -61,11 +63,18 @@ export const CarPitstopsContainer: React.FC<{}> = () => {
   const graphProps = {
     showCars: showCars,
     carPits: carPits,
+    hideLongPitstops: userSettings.hideLongPitstops,
+    hideThreshold: userSettings.hideThreshold,
   };
   return (
     <>
       <Row gutter={16}>
         <CarFilter {...props} />
+
+        <Popover content={<PitstopControl />} title="Configure settings">
+          <Button icon={<SettingOutlined />} />
+        </Popover>
+        <Col offset={7} span={1}></Col>
       </Row>
 
       <CarPitstopsNivo {...graphProps} />
