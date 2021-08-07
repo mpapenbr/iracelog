@@ -71,11 +71,10 @@ export const CarPitstopsContainer: React.FC<{}> = () => {
       <Row gutter={16}>
         <CarFilter {...props} />
 
-        <Col offset={9} span={1}>
-          <Popover content={<PitstopControl />} title="Configure settings">
-            <Button icon={<SettingOutlined />} />
-          </Popover>
-        </Col>
+        <Popover content={<PitstopControl />} title="Configure settings">
+          <Button icon={<SettingOutlined />} />
+        </Popover>
+        <Col offset={7} span={1}></Col>
       </Row>
 
       <CarPitstopsNivo {...graphProps} />

@@ -9,6 +9,7 @@ import { globalSettings, stintsSettings } from "../stores/ui/actions";
 
 export const CarStintsContainer: React.FC<{}> = () => {
   const cars = useSelector((state: ApplicationState) => state.raceData.availableCars);
+  const carInfo = useSelector((state: ApplicationState) => state.raceData.carInfo);
   const carStints = useSelector((state: ApplicationState) => state.raceData.carStints);
   const carClasses = useSelector((state: ApplicationState) => state.raceData.availableCarClasses);
   const userSettings = useSelector((state: ApplicationState) => state.userSettings.stints);
@@ -61,6 +62,7 @@ export const CarStintsContainer: React.FC<{}> = () => {
   const graphProps = {
     showCars: showCars,
     carStints: carStints,
+    carInfo: carInfo,
     showAsLabel: userSettings.showAsLabel,
   };
   const onShowModeChange = (e: RadioChangeEvent) => {

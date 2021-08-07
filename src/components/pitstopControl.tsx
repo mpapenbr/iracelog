@@ -39,11 +39,16 @@ const PitstopControl: React.FC<{}> = () => {
           onChange={onThresholdChange}
         />
       </Row>
+
+      {/*
+       temp deactivated. Not sure if this is practical. 
+       Main reason: OUT may be a temporary state (connection loss/driver change). 
+       We may need to have an OUT_CANDIDATE intermediate state to solve this
       <Row>
         <Checkbox defaultChecked={userSettings.showRunningOnly} onChange={onCheckboxShowRunningOnly}>
           Running cars only
         </Checkbox>
-      </Row>
+      </Row> */}
     </>
   );
 };

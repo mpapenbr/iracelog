@@ -87,7 +87,7 @@ value: 77.66666666553647
     tooltip: (d: any) => CustomTooltip(d),
     enableGridY: false,
     enableGridX: false,
-    margin: { top: 50, right: 130, bottom: 50, left: 60 },
+    margin: { top: 20, right: 130, bottom: 50, left: 60 },
     labelSkipWidth: 20,
     axisLeft: { format: (value: any) => `#${value}` },
     // the following props don't get recognized. error message is like: "string" not valid here
@@ -95,9 +95,9 @@ value: 77.66666666553647
     // valueScale: {type: "linear"  },
     // indexScale: {type: "band", round:true},
   };
-
+  const calcHeight = Math.min(1200, Math.max(150, pitData.length * 30));
   const InternalGraph = (
-    <div style={{ height: "750px" }}>
+    <div style={{ height: `${calcHeight}px` }}>
       {guessNumToDraw > 300 ? (
         // Canvas looks a little blurry, so we use it only when we think the standard way would take too long
         <ResponsiveBarCanvas
