@@ -13,6 +13,7 @@ import { RaceGraphContainer } from "../container/RaceGraphContainer";
 import { RacePositionsContainer } from "../container/RacePositionsContainer";
 import { ReplayCircleOfDoomContainer } from "../container/ReplayCircleOfDoomContainer";
 import { StintLapsContainer } from "../container/StintLapsContainer";
+import { StintSummaryContainer } from "../container/StintSummaryContainer";
 import { TestContainer } from "../container/Test";
 
 interface IStateProps {}
@@ -28,7 +29,7 @@ const OtherContent: React.FC<{}> = () => <div>Here goes other content</div>;
 export const AnalysisMainPage: React.FC<MyProps> = (props: MyProps) => {
   return (
     <Layout>
-      <Sider theme="light" width={200}>
+      <Sider theme="light" width={170}>
         <Menu theme="light" mode="inline">
           <Menu.Item key="classification" className="race-sidebar">
             <Link to="/analysis/classification">Classification</Link>
@@ -63,6 +64,9 @@ export const AnalysisMainPage: React.FC<MyProps> = (props: MyProps) => {
           <Menu.Item key="stintLaps" className="race-sidebar">
             <Link to="/analysis/stintLaps">Stint Laps</Link>
           </Menu.Item>
+          <Menu.Item key="stintSummary" className="race-sidebar">
+            <Link to="/analysis/stintSummary">Stint Summary</Link>
+          </Menu.Item>
           <Menu.Item key="messages" className="race-sidebar">
             <Link to="/analysis/messages">Messages</Link>
           </Menu.Item>
@@ -91,6 +95,7 @@ export const AnalysisMainPage: React.FC<MyProps> = (props: MyProps) => {
 
           <Route path="/analysis/stintDurations" component={CarStintsContainer} />
           <Route path="/analysis/stintLaps" component={StintLapsContainer} />
+          <Route path="/analysis/stintSummary" component={StintSummaryContainer} />
           <Route path="/analysis/messages" component={RaceMessages} />
           <Route path="/analysis/replayCOD" component={ReplayCircleOfDoomContainer} />
           <Route path="/analysis/test" component={TestContainer} />

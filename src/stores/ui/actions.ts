@@ -15,6 +15,7 @@ import {
   IRacePositionsSettings,
   IReplaySettings,
   IStintsSettings,
+  IStintSummarySettings,
   UiComponent,
 } from "./types";
 
@@ -41,6 +42,7 @@ export const racePositionsSettings = actionCreator<IRacePositionsSettings>("RACE
 export const driverLapsSettings = actionCreator<IDriverLapsSettings>("DRIVERLAPS_SETTINGS");
 export const pitstopsSettings = actionCreator<IPitstopsSettings>("PITSTOPS_SETTINGS");
 export const stintsSettings = actionCreator<IStintsSettings>("STINTS_SETTINGS");
+export const stintSummarySettings = actionCreator<IStintSummarySettings>("STINT_SUMMARY_SETTINGS");
 export const driverStintsSettings = actionCreator<IDriverStintsSettings>("DRIVER_STINTS_SETTINGS");
 export const circleOfDoomSettings = actionCreator<ICircleOfDoomSettings>("CIRCLE_OF_DOOM_SETTINGS");
 

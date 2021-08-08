@@ -65,14 +65,21 @@ export interface IPitstopsSettings {
   filterCarClasses: string[]; // empty = all classes, otherwise only selected
   hideLongPitstops: boolean; // if true, long pitstop will hide the car row
   hideThreshold: number; // threshold (in sec) to hide a car row
-  showRunningOnly: boolean; // if true, show only cars that are still running
+  showRunningOnly: boolean; // if true, show only cars that are still running (TBD if this will be used)
 }
 export interface IStintsSettings {
   showCars: string[];
   selectableCars: ICarBaseData[]; // the cars to show in the dropdown as selectable
   filterCarClasses: string[]; // empty = all classes, otherwise only selected
   showAsLabel: string;
-  showRunningOnly: boolean; // if true, show only cars that are still running
+  showRunningOnly: boolean; // if true, show only cars that are still running (TBD if this will be used)
+}
+
+export interface IStintSummarySettings {
+  carNum?: string;
+  selectableCars: ICarBaseData[]; // the cars to show in the dropdown as selectable
+  filterCarClasses: string[]; // empty = all classes, otherwise only selected
+  deltaRange: number; // used in both direction (positive and negativ to reference)
 }
 export interface IRaceStintSharedSettings {
   showCars: string[];
@@ -149,6 +156,7 @@ export interface IUserSettings {
   driverLaps: IDriverLapsSettings;
   pitstops: IPitstopsSettings;
   stints: IStintsSettings;
+  stintSummary: IStintSummarySettings;
   driverStints: IDriverStintsSettings;
   circleOfDoom: ICircleOfDoomSettings;
   replay: IReplaySettings;

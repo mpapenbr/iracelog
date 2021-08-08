@@ -41,7 +41,7 @@
 
 .site-layout-content {
   min-height: 280px;
-  padding: 24px;
+  padding: 12px 6px;
   background: #fff;
 }
 
@@ -81,8 +81,20 @@ div.iracelog-compact td {
   padding-bottom: 2px;
 }
 
+div.iracelog-stint-summary th,
+div.iracelog-stint-summary td {
+  padding-right: 4px;
+  padding-left: 4px;
+  padding-top: 4px;
+  padding-bottom: 4px;
+}
+
 div.iracelog-standings-select-cols th,
 div.iracelog-standings-select-cols td {
   padding-top: 1px;
   padding-bottom: 1px;
+}
+
+div.iracelog-stint-tooltip {
+  /* background-color: #24c6f3; */
 }

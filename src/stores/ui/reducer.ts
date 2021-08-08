@@ -7,7 +7,7 @@ import {
   ICircleOfDoomSettings,
   IClassificationSettings,
   IDriverLapsSettings,
-  IDriverStintsSettings as IDriverStintsSettings,
+  IDriverStintsSettings,
   IGlobalSettings,
   IMessagesSettings,
   IPitstopsSettings,
@@ -16,6 +16,7 @@ import {
   IRacePositionsSettings,
   IReplaySettings,
   IStintsSettings,
+  IStintSummarySettings,
   IUiState,
   IUserSettings,
   UiComponent,
@@ -146,6 +147,18 @@ const StintsSettingsReducer = reducerWithInitialState(initialStints).case(
   (state, settings) => settings
 );
 
+// Stint summary (single selection)
+const initialStintSummary: IStintSummarySettings = {
+  selectableCars: [],
+  filterCarClasses: [],
+  deltaRange: 120,
+  carNum: undefined,
+};
+const StintSummarySettingsReducer = reducerWithInitialState(initialStintSummary).case(
+  UiActions.stintSummarySettings,
+  (state, settings) => settings
+);
+
 // DriverStints
 const initialDriverStints: IDriverStintsSettings = {
   carNum: "",
@@ -214,6 +227,7 @@ export const defaultStateData: IUserSettings = {
   driverLaps: initialDriverLaps,
   pitstops: initialPitstops,
   stints: initialStints,
+  stintSummary: initialStintSummary,
   driverStints: initialDriverStints,
   circleOfDoom: initialCircleOfDoom,
   replay: initialReplaySettings,
@@ -229,6 +243,7 @@ const combinedReducers = combineReducers<IUserSettings>({
   driverLaps: DriverLapsSettingsReducer,
   pitstops: PitstopsSettingsReducer,
   stints: StintsSettingsReducer,
+  stintSummary: StintSummarySettingsReducer,
   driverStints: DriverStintsSettingsReducer,
   circleOfDoom: CircleOfDoomSettingsReducer,
   replay: ReplaySettingsReducer,

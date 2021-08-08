@@ -218,3 +218,15 @@ export const extractCarClasses = (carInfo: ICarInfo[]): ICarClass[] => {
     .sort()
     .map((v) => ({ name: v }));
 };
+
+/**
+ *
+ * @param carInfo
+ * @param stint
+ * @returns the IDriverInfo of the driving the stint
+ */
+export const findDriverByStint = (carInfo: ICarInfo, stint: IStintInfo) =>
+  carInfo.drivers.find((v) =>
+    // allow 5s on leave time to cope with possible resets due to disconnects
+    v.seatTime.find((st) => st.enterCarTime <= stint.exitTime && st.leaveCarTime + 5 >= stint.enterTime)
+  );
