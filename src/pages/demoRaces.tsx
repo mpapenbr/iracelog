@@ -8,7 +8,7 @@ import {
   ICarStintInfo,
   IMessage,
   IProcessRaceStateData,
-  IRaceGraph
+  IRaceGraph,
 } from "@mpapenbr/iracelog-analysis/dist/stints/types";
 import { Button, Col, List, Modal, Row } from "antd";
 import autobahn, { Session } from "autobahn";
@@ -34,7 +34,7 @@ import {
   updateInfoMessages,
   updateRaceGraph,
   updateSessionInfo,
-  updateTrackInfo
+  updateTrackInfo,
 } from "../stores/racedata/actions";
 import { ICarBaseData, ICarClass, ITrackInfo } from "../stores/racedata/types";
 import {
@@ -49,7 +49,8 @@ import {
   raceGraphSettings,
   racePositionsSettings,
   replaySettings,
-  stintsSettings
+  stintsSettings,
+  stintSummarySettings,
 } from "../stores/ui/actions";
 import { defaultStateData, initialReplaySettings } from "../stores/ui/reducer";
 import { connectedToServer, reset, setManifests, updateManifests } from "../stores/wamp/actions";
@@ -110,7 +111,7 @@ export const DemoRaces: React.FC<MyProps> = (props: MyProps) => {
       const rh = new ReplayDataHolder(s, settings);
       globalWamp.replayHolder = rh;
       globalWamp.currentLiveId = undefined;
-      
+
       setLoading(false);
       history.push("/analysis");
     };
@@ -228,6 +229,7 @@ export const DemoRaces: React.FC<MyProps> = (props: MyProps) => {
     dispatch(driverLapsSettings(defaultStateData.driverLaps));
     dispatch(pitstopsSettings(defaultStateData.pitstops));
     dispatch(stintsSettings(defaultStateData.stints));
+    dispatch(stintSummarySettings(defaultStateData.stintSummary));
     dispatch(driverStintsSettings(defaultStateData.driverStints));
     dispatch(circleOfDoomSettings(defaultStateData.circleOfDoom));
     dispatch(replaySettings(defaultStateData.replay));
@@ -287,7 +289,7 @@ export const DemoRaces: React.FC<MyProps> = (props: MyProps) => {
 
   return (
     <Row gutter={16}>
-      <Col span={6}>
+      <Col span={10}>
         <List
           header={<h3>Demo races</h3>}
           dataSource={events}
@@ -317,8 +319,7 @@ export const DemoRaces: React.FC<MyProps> = (props: MyProps) => {
               <Col span={12}>
                 <h3>Live data</h3>
               </Col>
-              <Col offset={10}>
-                {" "}
+              <Col offset={8}>
                 <Button icon={<ReloadOutlined />} onClick={onReloadRequested} />
               </Col>
             </Row>

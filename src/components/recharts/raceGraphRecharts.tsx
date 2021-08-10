@@ -9,7 +9,7 @@ import { globalWamp } from "../../commons/globals";
 import { ApplicationState } from "../../stores";
 import { uiUpdateBrushSettings } from "../../stores/ui/actions";
 import { IBrushInterval, UiComponent } from "../../stores/ui/types";
-import { strokeColors } from "../live/colors";
+import { cat10Colors } from "../live/colors";
 import { extractSomeCarData2 } from "../live/util";
 
 interface IGraphData {
@@ -112,7 +112,8 @@ const RaceGraphRecharts: React.FC<{}> = () => {
   });
 
   const colorCode = (carNum: string): string => {
-    return strokeColors[allCarNums.indexOf(carNum) % strokeColors.length];
+    const colors = cat10Colors;
+    return colors[allCarNums.indexOf(carNum) % colors.length];
   };
 
   var timerId: any;

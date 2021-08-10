@@ -54,7 +54,7 @@ const CarStintsNivo: React.FC<MyProps> = (props: MyProps) => {
     const curCarInfo = props.carInfo.find((v) => v.carNum === cur);
     const newCarData = si.reduce((res, siCur) => {
       const driver = curCarInfo?.drivers.find((d) =>
-        d.seatTime.find((s) => s.enterCarTime <= siCur.exitTime && s.leaveCarTime >= siCur.enterTime)
+        d.seatTime.find((s) => s.enterCarTime <= siCur.exitTime && s.leaveCarTime + 5 >= siCur.enterTime)
       );
 
       // return ["res"];

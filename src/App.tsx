@@ -44,7 +44,7 @@ const App: React.FC<AppProps> = (props: AppProps) => {
               )}
             </Menu>
           </Header>
-          <Content style={{ padding: "0 50px" }}>
+          <Content style={{ padding: "0 5px" }}>
             <div className="site-layout-content">
               <Switch>
                 <Route exact path="/events">
