@@ -11,6 +11,8 @@ import { colorsBySeatTime } from "./commons";
 interface MyProps {
   carNum?: string;
   width?: number;
+  height?: number;
+  showCarNum?: boolean;
 }
 
 /**
@@ -69,69 +71,94 @@ const StintStretch: React.FC<MyProps> = (props: MyProps) => {
     { minTime: Number.MAX_SAFE_INTEGER, maxTime: 0 }
   );
   const w = props.width ? props.width : 600;
-  const h = 50;
-  const step = w / (maxTime - minTime);
+  const h = props.height ? props.height : 50;
+  const barHeight = (h - 5) >> 1;
+  const textHeight = Math.min(12, barHeight);
+  const carNumLabel = props.showCarNum ? 40 : 0;
+
+  const step = (w - carNumLabel) / (maxTime - minTime);
   // console.log(`min: ${minTime}, max: ${maxTime}, step: ${step}`);
   const InternalGraph = (
     <svg width={w} height={h}>
-      <g transform="translate( 0 0) ">
-        {combined
-          .filter((c) => c.type === "pit")
-          .map((c) => {
-            return (
-              <rect
-                key={c.ref + c.idx}
-                x={(c.minTime - minTime) * step}
-                y="0"
-                width={(c.data as IPitInfo).laneTime * step}
-                height={20}
-                style={{ fill: "green" }}
-              />
-            );
-          })}
-        {combined
-          // .slice(0, 1)
-          .filter((c) => c.type === "stint")
-          .map((c) => {
-            return (
-              <Tooltip
-                color={c.color}
-                overlay={
-                  <StintTooltip
-                    stintInfo={c.data as IStintInfo}
-                    no={c.idx}
-                    driver={findDriverByStint(currentCarInfo, c.data as IStintInfo)?.driverName ?? "n.a."}
-                  />
-                }
-              >
+      {props.showCarNum ? (
+        <g>
+          <text
+            key={props.carNum}
+            x={carNumLabel - 2}
+            y={textHeight + (barHeight - textHeight) / 2}
+            fontSize={Math.min(12, textHeight)}
+            textAnchor="end"
+          >
+            {`#${props.carNum}`}
+          </text>
+        </g>
+      ) : (
+        <></>
+      )}
+      <g transform={`translate( ${carNumLabel} 0 )`}>
+        <g transform="translate( 0 0) ">
+          {combined
+            .filter((c) => c.type === "pit")
+            .map((c) => {
+              return (
                 <rect
                   key={c.ref + c.idx}
                   x={(c.minTime - minTime) * step}
                   y="0"
-                  width={(c.data as IStintInfo).stintTime * step}
-                  height={20}
-                  style={{ fill: c.color }}
+                  width={(c.data as IPitInfo).laneTime * step}
+                  height={barHeight}
+                  style={{ fill: "green" }}
                 />
-              </Tooltip>
-            );
-          })}
-      </g>
-      <g transform="translate(0 35) ">
-        {combined
-          .filter((c) => c.type === "pit")
-          .map((c) => {
-            const pit = c.data as IPitInfo;
-            return (
-              <text
-                key={"t" + c.ref + c.idx}
-                x={(c.minTime - minTime + pit.laneTime / 2) * step}
-                y="0"
-                textAnchor="middle"
-              >
-                {secAsMMSS(pit.laneTime)}
-              </text>
-            );
-          })}
+              );
+            })}
+          {combined
+            // .slice(0, 1)
+            .filter((c) => c.type === "stint")
+            .map((c) => {
+              return (
+                <Tooltip
+                  color={c.color}
+                  overlay={
+                    <StintTooltip
+                      stintInfo={c.data as IStintInfo}
+                      no={c.idx}
+                      driver={findDriverByStint(currentCarInfo, c.data as IStintInfo)?.driverName ?? "n.a."}
+                    />
+                  }
+                >
+                  <rect
+                    key={c.ref + c.idx}
+                    x={(c.minTime - minTime) * step}
+                    y="0"
+                    width={(c.data as IStintInfo).stintTime * step}
+                    height={barHeight}
+                    style={{ fill: c.color }}
+                  />
+                </Tooltip>
+              );
+            })}
+        </g>
+        {/* <g transform={`translate(0 ${pitstopTextOffset})`}> */}
+        <g transform={`translate(0 ${barHeight})`}>
+          {combined
+            .filter((c) => c.type === "pit")
+            .map((c) => {
+              const pit = c.data as IPitInfo;
+              return (
+                <text
+                  key={"t" + c.ref + c.idx}
+                  x={(c.minTime - minTime + pit.laneTime / 2) * step}
+                  y={textHeight}
+                  // y={Math.min(12, barHeight)}
+                  // fontSizeAdjust={1.75}
+                  fontSize={Math.min(12, textHeight)}
+                  textAnchor="middle"
+                >
+                  {secAsMMSS(pit.laneTime)}
+                </text>
+              );
+            })}
+        </g>
       </g>
     </svg>
   );

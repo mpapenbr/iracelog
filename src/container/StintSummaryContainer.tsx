@@ -3,6 +3,7 @@ import * as React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import CarClassFilter from "../components/live/carClassFilter";
 import StintSeatTime from "../components/nivo/stintsummary/seattime";
+import StintBoxplot from "../components/nivo/stintsummary/stintboxplot";
 import StintCircle from "../components/nivo/stintsummary/stintcircle";
 import StintLaps from "../components/nivo/stintsummary/stintlaps";
 import StintStretch from "../components/nivo/stintsummary/stintstretch";
@@ -95,10 +96,10 @@ export const StintSummaryContainer: React.FC<{}> = () => {
                   <StintCircleWithPits {...props} />
                 </Col> */}
               </Row>
-              {/* out of order - the nivo bullets don't really fit as boxplots
+
               <Row>
-                <StintBullets {...props} />
-              </Row> */}
+                <StintBoxplot {...props} />
+              </Row>
             </Col>
           </Row>
         </>
