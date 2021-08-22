@@ -2,8 +2,11 @@ import { Col, Divider, Empty, Row, Select } from "antd";
 import * as React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import BoxPlot from "../components/dashboard/boxplot";
+import Delta from "../components/dashboard/delta";
 import Lapchart from "../components/dashboard/lapchart";
 import CarFilter from "../components/live/carFilter";
+import { CircleOfDoom } from "../components/live/circleofdoom";
+import { collectCarsByCarClassFilter, processCarClassSelectionNew } from "../components/live/util";
 import StintStretch from "../components/nivo/stintsummary/stintstretch";
 import { ApplicationState } from "../stores";
 import { dashboardSettings, globalSettings } from "../stores/ui/actions";
@@ -21,10 +24,22 @@ export const DashboardContainer: React.FC<{}> = () => {
   const filterCarClasses = useSelector((state: ApplicationState) => state.userSettings.dashboard.filterCarClasses);
 
   const selectableCars = userSettings.selectableCars.length > 0 ? userSettings.selectableCars : cars;
+  console.log(selectableCars);
   const dispatch = useDispatch();
 
   const onSelectCarClassChange = (values: string[]) => {
-    const curSettings = { ...userSettings, filterCarClasses: values };
+    const newShowcars = processCarClassSelectionNew({
+      cars: cars,
+      currentFilter: userSettings.filterCarClasses,
+      currentShowCars: userSettings.showCars,
+      newSelection: values,
+    });
+    const curSettings = {
+      ...userSettings,
+      filterCarClasses: values,
+      selectableCars: collectCarsByCarClassFilter(cars, values),
+    };
+    // const curSettings = { ...userSettings, filterCarClasses: values };
     dispatch(dashboardSettings(curSettings));
   };
 
@@ -51,10 +66,34 @@ export const DashboardContainer: React.FC<{}> = () => {
     },
     onSelectCarClassFilter: onSelectCarClassChange,
   };
+  const onSelectReferenceCar = (value: any) => {
+    const curSettings = { ...userSettings, referenceCarNum: value as string };
+    dispatch(dashboardSettings(curSettings));
+    dispatch(globalSettings({ ...stateGlobalSettings, referenceCarNum: value as string }));
+  };
 
+  const referenceOptions = selectableCars
+    .filter((v) => showCars.includes(v.carNum))
+    .map((d) => (
+      <Option key={d.carNum} value={d.carNum}>
+        #{d.carNum} {d.name}
+      </Option>
+    ));
   return (
     <>
       <Row gutter={16}>
+        <Col span={4}>
+          <Select
+            style={{ width: "100%" }}
+            allowClear
+            value={userSettings.referenceCarNum}
+            placeholder="Select reference car"
+            onChange={onSelectReferenceCar}
+            maxTagCount="responsive"
+          >
+            {referenceOptions}
+          </Select>
+        </Col>
         <CarFilter {...props} />
       </Row>
       {userSettings.showCars.length > 0 ? (
@@ -71,6 +110,14 @@ export const DashboardContainer: React.FC<{}> = () => {
             </Col>
             <Col span={12}>
               <BoxPlot />
+            </Col>
+          </Row>
+          <Row gutter={16}>
+            <Col span={12}>
+              <Delta />
+            </Col>
+            <Col span={12}>
+              <CircleOfDoom referenceCarNum={""} pitstopTime={0} showCars={showCars} />
             </Col>
           </Row>
         </>

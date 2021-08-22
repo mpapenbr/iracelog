@@ -34,9 +34,11 @@ const Lapchart: React.FC = () => {
   const work = statsDataFor(computeCarLaps.flatMap((v) => v.laps.map((l) => l.lapTime)));
   // console.log(work);
 
+  // some strange ant-design/charts bug: https://github.com/ant-design/ant-design-charts/issues/797
+  // workaround is to use strings for xaxis...
   const lapData = allCarLaps
     .sort((a, b) => showCars.indexOf(a.carNum) - showCars.indexOf(b.carNum))
-    .map((v) => v.laps.map((l) => ({ carNum: `#${v.carNum}`, ...l })))
+    .map((v) => v.laps.map((l) => ({ carNum: `#${v.carNum}`, ...l, lapNoStr: "" + l.lapNo })))
     .flatMap((a) => [...a]);
   // console.log(lapData);
   const sliderData = globalWamp.currentLiveId ? undefined : { start: 0, end: 1 };
@@ -44,7 +46,7 @@ const Lapchart: React.FC = () => {
   const config = {
     data: lapData,
 
-    xField: "lapNo",
+    xField: "lapNoStr",
     yField: "lapTime",
     seriesField: "carNum",
     point: {

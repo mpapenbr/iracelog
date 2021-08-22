@@ -1,5 +1,4 @@
 import { Box } from "@ant-design/charts";
-import { IStintInfo } from "@mpapenbr/iracelog-analysis/dist/stints/types";
 import { Empty } from "antd";
 import React from "react";
 import { useSelector } from "react-redux";
@@ -23,29 +22,6 @@ const StintBoxplot: React.FC<MyProps> = (props: MyProps) => {
   }
 
   const currentCarLaps = carLaps.find((v) => v.carNum === props.carNum)!;
-
-  const quantile = (sorted: number[], q: number) => {
-    const pos = (sorted.length - 1) * q;
-    const base = Math.floor(pos);
-    const rest = pos - base;
-    if (sorted[base + 1] !== undefined) {
-      return sorted[base] + rest * (sorted[base + 1] - sorted[base]);
-    } else {
-      return sorted[base];
-    }
-  };
-  const stintData = (si: IStintInfo) => {
-    // exclude in and outlap from calculation
-    const laps = currentCarLaps.laps.filter((v) => v.lapNo >= si.lapExit && v.lapNo <= si.lapEnter).slice(1, -1);
-    const sorted = laps.map((d) => d.lapTime).sort((a, b) => a - b);
-    return {
-      minTime: sorted[0],
-      maxTime: sorted[sorted.length - 1],
-      q1: quantile(sorted, 0.25),
-      q2: quantile(sorted, 0.5),
-      q3: quantile(sorted, 0.75),
-    };
-  };
 
   const boxData = getCarStints(carStints, props.carNum)
     .map((s, idx) => ({ ...s, stintNo: (idx + 1).toString() }))

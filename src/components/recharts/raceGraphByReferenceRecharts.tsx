@@ -54,14 +54,16 @@ const RaceGraphByReferenceRecharts: React.FC<{}> = () => {
       const carEntry = current.gaps.find((gi) => gi.carNum === carNum);
       if (carEntry !== undefined && refCarEntry !== undefined) {
         if (isNumber(carEntry.gap) && !isNaN(carEntry.gap) && carEntry.lapNo > 0) {
-          prev.push({ lapNo: current.lapNo, carNum: carNum, gap: carEntry.gap - refCarEntry.gap });
+          prev.push({ lapNo: current.lapNo, carNum: carNum, gap: refCarEntry.gap - carEntry.gap });
         }
       }
       return prev;
     }, [] as IGraphData[]);
   };
 
-  const graphDataOrig = uiSettings.showCars.map((carNum) => dataForCar(carNum));
+  const graphDataOrig = uiSettings.showCars
+    .filter((v) => v !== uiSettings.referenceCarNum)
+    .map((carNum) => dataForCar(carNum));
   interface MyData {
     [x: string]: number;
   }
@@ -145,19 +147,21 @@ const RaceGraphByReferenceRecharts: React.FC<{}> = () => {
       <Col span={22}>
         <ResponsiveContainer width="100%" height={750}>
           <LineChart width={1500} height={750} data={gaps}>
-            {uiSettings.showCars.map((carNum) => (
-              <Line
-                key={_.uniqueId()}
-                type="monotone"
-                isAnimationActive={false}
-                dot={false}
-                stroke={colorCode(carNum)}
-                name={`#${carNum}`}
-                dataKey={(d) => {
-                  return d["#" + carNum];
-                }}
-              />
-            ))}
+            {uiSettings.showCars
+              .filter((v) => v !== uiSettings.referenceCarNum)
+              .map((carNum) => (
+                <Line
+                  key={_.uniqueId()}
+                  type="monotone"
+                  isAnimationActive={false}
+                  dot={false}
+                  stroke={colorCode(carNum)}
+                  name={`#${carNum}`}
+                  dataKey={(d) => {
+                    return d["#" + carNum];
+                  }}
+                />
+              ))}
 
             <CartesianGrid strokeDasharray="3 3" />
             <XAxis dataKey="lapNo" axisLine={false} />

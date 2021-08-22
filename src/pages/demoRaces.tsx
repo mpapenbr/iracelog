@@ -40,6 +40,7 @@ import { ICarBaseData, ICarClass, ITrackInfo } from "../stores/racedata/types";
 import {
   circleOfDoomSettings,
   classificationSettings,
+  dashboardSettings,
   driverLapsSettings,
   driverStintsSettings,
   globalSettings,
@@ -234,6 +235,7 @@ export const DemoRaces: React.FC<MyProps> = (props: MyProps) => {
     dispatch(circleOfDoomSettings(defaultStateData.circleOfDoom));
     dispatch(replaySettings(defaultStateData.replay));
     dispatch(globalSettings(defaultStateData.global));
+    dispatch(dashboardSettings(defaultStateData.dashboard));
     dispatch(updateAvailableStandingsColumns([]));
     dispatch(updateAvailableCars([]));
     dispatch(updateAvailableCarClasses([]));
