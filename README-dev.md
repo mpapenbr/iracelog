@@ -7,10 +7,20 @@
 **Tasks:**
 
 ```
-yarn version
+yarn release:patch|minor|major
 ```
 
-This will increment that version number in `package.json`, run the tests and create a tag of the version with prefix `v`
+This will do the following:
+
+- increment that version number in `package.json`
+- run the tests
+- create a tag of the version with prefix `v`
+- update the `CHANGELOG.md`
+
+_Note:_ It is important to keep the version in `CHANGELOG.md` and `package.json` in sync. In general, this works out of the box as designed.
+We use changelog (https://github.com/lob/generate-changelog) for generating the `CHANGELOG.md `. The github workflow uses https://github.com/ScottBrenner/generate-changelog-action to generate the changelog for the release.
+
+Therefore, the commit messages should comply to these rules: https://github.com/lob/generate-changelog#usage
 
 ## Own packages on Github
 
