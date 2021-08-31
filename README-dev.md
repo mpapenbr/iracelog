@@ -2,6 +2,16 @@
 
 ## New version
 
+**Precondition:** We want a new release on main. No changes apart from new version numbers (and/or changelog infos) should be made.
+
+**Tasks:**
+
+```
+yarn version
+```
+
+This will increment that version number in `package.json`, run the tests and create a tag of the version with prefix `v`
+
 ## Own packages on Github
 
 At the moment (2021-04-25) there is no way to get packages from github repository (https://npm.pkg.github.com) without using a personal access token (PAT).  
