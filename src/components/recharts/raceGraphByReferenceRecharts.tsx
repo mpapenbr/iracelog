@@ -28,7 +28,12 @@ interface IGraphData {
 }
 const { Option } = Select;
 
-const RaceGraphByReferenceRecharts: React.FC<{}> = () => {
+interface MyProps {
+  showCars: string[];
+  referenceCarNum?: string;
+}
+
+const RaceGraphByReferenceRecharts: React.FC<MyProps> = (props) => {
   // const wamp = useSelector((state: ApplicationState) => state.wamp.data);
   const cars = useSelector((state: ApplicationState) => state.raceData.availableCars);
   const raceGraph = useSelector((state: ApplicationState) => state.raceData.raceGraph);
@@ -46,22 +51,24 @@ const RaceGraphByReferenceRecharts: React.FC<{}> = () => {
     };
   }, []);
 
+  const { showCars, referenceCarNum } = props;
+
   const allCarNums = cars.map((c) => c.carNum);
   const dataForCar = (carNum: string) => {
     return raceGraph.reduce((prev, current) => {
       if (current.carClass.localeCompare("overall") !== 0) return prev;
-      const refCarEntry = current.gaps.find((gi) => gi.carNum === uiSettings.referenceCarNum);
+      const refCarEntry = current.gaps.find((gi) => gi.carNum === referenceCarNum);
       const carEntry = current.gaps.find((gi) => gi.carNum === carNum);
       if (carEntry !== undefined && refCarEntry !== undefined) {
         if (isNumber(carEntry.gap) && !isNaN(carEntry.gap) && carEntry.lapNo > 0) {
-          prev.push({ lapNo: current.lapNo, carNum: carNum, gap: carEntry.gap - refCarEntry.gap });
+          prev.push({ lapNo: current.lapNo, carNum: carNum, gap: refCarEntry.gap - carEntry.gap });
         }
       }
       return prev;
     }, [] as IGraphData[]);
   };
 
-  const graphDataOrig = uiSettings.showCars.map((carNum) => dataForCar(carNum));
+  const graphDataOrig = showCars.filter((v) => v !== referenceCarNum).map((carNum) => dataForCar(carNum));
   interface MyData {
     [x: string]: number;
   }
@@ -145,19 +152,21 @@ const RaceGraphByReferenceRecharts: React.FC<{}> = () => {
       <Col span={22}>
         <ResponsiveContainer width="100%" height={750}>
           <LineChart width={1500} height={750} data={gaps}>
-            {uiSettings.showCars.map((carNum) => (
-              <Line
-                key={_.uniqueId()}
-                type="monotone"
-                isAnimationActive={false}
-                dot={false}
-                stroke={colorCode(carNum)}
-                name={`#${carNum}`}
-                dataKey={(d) => {
-                  return d["#" + carNum];
-                }}
-              />
-            ))}
+            {showCars
+              .filter((v) => v !== referenceCarNum)
+              .map((carNum) => (
+                <Line
+                  key={_.uniqueId()}
+                  type="monotone"
+                  isAnimationActive={false}
+                  dot={false}
+                  stroke={colorCode(carNum)}
+                  name={`#${carNum}`}
+                  dataKey={(d) => {
+                    return d["#" + carNum];
+                  }}
+                />
+              ))}
 
             <CartesianGrid strokeDasharray="3 3" />
             <XAxis dataKey="lapNo" axisLine={false} />
@@ -189,7 +198,7 @@ const RaceGraphByReferenceRecharts: React.FC<{}> = () => {
     </Row>
   );
 
-  return <>{uiSettings.referenceCarNum === "" ? <Empty description="Select reference car" /> : InternalRaceGraph}</>;
+  return <>{referenceCarNum === "" ? <Empty description="Select reference car" /> : InternalRaceGraph}</>;
 };
 
 export default RaceGraphByReferenceRecharts;

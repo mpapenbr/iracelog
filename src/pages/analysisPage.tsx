@@ -7,6 +7,7 @@ import RaceMessages from "../components/live/raceMessages";
 import { API_LOCAL_DEV_MODE } from "../constants";
 import { CarPitstopsContainer } from "../container/CarPitstopsContainer";
 import { CarStintsContainer } from "../container/CarStintsContainer";
+import { DashboardContainer } from "../container/DashboardContainer";
 import { DriverLapsContainer } from "../container/DriverLapsContainer";
 import { RaceGraphByReferenceContainer } from "../container/RaceGraphByReferenceContainer";
 import { RaceGraphContainer } from "../container/RaceGraphContainer";
@@ -51,6 +52,10 @@ export const AnalysisMainPage: React.FC<MyProps> = (props: MyProps) => {
             <Link to="/analysis/racePositionsNivo">Race positions</Link>
           </Menu.Item>
 
+          <Menu.Item key="dashboard" className="race-sidebar">
+            <Link to="/analysis/dashboard">Dashboard</Link>
+          </Menu.Item>
+
           <Menu.Item key="driverLapsRecharts" className="race-sidebar">
             <Link to="/analysis/driverLapsRecharts">Driver laps </Link>
           </Menu.Item>
@@ -83,12 +88,14 @@ export const AnalysisMainPage: React.FC<MyProps> = (props: MyProps) => {
       <Content>
         <Switch>
           <Route path="/analysis/classification" component={Classification} />
+          <Route path="/analysis/replayCOD" component={ReplayCircleOfDoomContainer} />
 
           <Route path="/analysis/raceGraphARecharts" component={RaceGraphContainer} />
 
           <Route path="/analysis/raceGraphBRecharts" component={RaceGraphByReferenceContainer} />
 
           <Route path="/analysis/racePositionsNivo" component={RacePositionsContainer} />
+          <Route path="/analysis/dashboard" component={DashboardContainer} />
 
           <Route path="/analysis/driverLapsRecharts" component={DriverLapsContainer} />
           <Route path="/analysis/carPitstops" component={CarPitstopsContainer} />
@@ -97,7 +104,6 @@ export const AnalysisMainPage: React.FC<MyProps> = (props: MyProps) => {
           <Route path="/analysis/stintLaps" component={StintLapsContainer} />
           <Route path="/analysis/stintSummary" component={StintSummaryContainer} />
           <Route path="/analysis/messages" component={RaceMessages} />
-          <Route path="/analysis/replayCOD" component={ReplayCircleOfDoomContainer} />
           <Route path="/analysis/test" component={TestContainer} />
         </Switch>
       </Content>

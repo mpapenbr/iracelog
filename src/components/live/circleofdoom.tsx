@@ -97,7 +97,7 @@ export const CircleOfDoom: React.FC<MyProps> = (props: MyProps) => {
           let h = sectorMarkerLen;
           const y = circleExtendSize - h / 2;
           return (
-            <g transform={`rotate(${pos} ${circleSize} ${circleSize})`}>
+            <g key={`sector-${item.SectorNum}`} transform={`rotate(${pos} ${circleSize} ${circleSize})`}>
               <rect x={circleSize} y={y} width={w} height={h} style={{ fill: color }} />
             </g>
           );

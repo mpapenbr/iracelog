@@ -2,11 +2,11 @@ import { Col, InputNumber, Row, Select } from "antd";
 import * as React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { sprintf } from "sprintf-js";
+import Delta from "../components/antcharts/deltagraph";
 import CarFilter from "../components/live/carFilter";
 import { collectCarsByCarClassFilter, processCarClassSelectionNew } from "../components/live/util";
-import RaceGraphByReferenceRecharts from "../components/recharts/raceGraphByReferenceRecharts";
 import { ApplicationState } from "../stores";
-import { raceGraphRelativeSettings } from "../stores/ui/actions";
+import { globalSettings, raceGraphRelativeSettings } from "../stores/ui/actions";
 
 const { Option } = Select;
 
@@ -16,18 +16,37 @@ export const RaceGraphByReferenceContainer: React.FC<{}> = () => {
 
   const userSettings = useSelector((state: ApplicationState) => state.userSettings.raceGraphRelative);
 
-  const showCars = useSelector((state: ApplicationState) => state.userSettings.raceGraphRelative.showCars);
-  const filterCarClasses = useSelector(
-    (state: ApplicationState) => state.userSettings.raceGraphRelative.filterCarClasses
-  );
+  // const showCars = useSelector((state: ApplicationState) => state.userSettings.raceGraphRelative.showCars);
+  // const filterCarClasses = useSelector(
+  //   (state: ApplicationState) => state.userSettings.raceGraphRelative.filterCarClasses
+  // );
+  const stateGlobalSettings = useSelector((state: ApplicationState) => state.userSettings.global);
+
+  const selectSettings = () => {
+    if (stateGlobalSettings.syncSelection) {
+      return {
+        showCars: stateGlobalSettings.showCars,
+        filterCarClasses: stateGlobalSettings.filterCarClasses,
+        referenceCarNum: stateGlobalSettings.referenceCarNum,
+      };
+    } else {
+      return {
+        showCars: userSettings.showCars,
+        filterCarClasses: userSettings.filterCarClasses,
+        referenceCarNum: userSettings.referenceCarNum,
+      };
+    }
+  };
+
+  const { showCars, filterCarClasses, referenceCarNum } = selectSettings();
   const dispatch = useDispatch();
   const selectableCars = userSettings.selectableCars.length > 0 ? userSettings.selectableCars : cars;
 
   const onSelectCarClassChange = (values: string[]) => {
     const newShowcars = processCarClassSelectionNew({
       cars: cars,
-      currentFilter: userSettings.filterCarClasses,
-      currentShowCars: userSettings.showCars,
+      currentFilter: filterCarClasses,
+      currentShowCars: showCars,
       newSelection: values,
     });
     const curSettings = {
@@ -37,6 +56,9 @@ export const RaceGraphByReferenceContainer: React.FC<{}> = () => {
       selectableCars: collectCarsByCarClassFilter(cars, values),
     };
     dispatch(raceGraphRelativeSettings(curSettings));
+    if (stateGlobalSettings.syncSelection) {
+      dispatch(globalSettings({ ...stateGlobalSettings, filterCarClasses: values }));
+    }
   };
 
   const onDeltaRangeChange = (value: any) => {
@@ -47,6 +69,9 @@ export const RaceGraphByReferenceContainer: React.FC<{}> = () => {
   const onSelectReferenceCar = (value: any) => {
     const curSettings = { ...userSettings, referenceCarNum: value as string };
     dispatch(raceGraphRelativeSettings(curSettings));
+    if (stateGlobalSettings.syncSelection) {
+      dispatch(globalSettings({ ...stateGlobalSettings, referenceCarNum: value as string }));
+    }
   };
 
   const referenceOptions = selectableCars.map((d) => (
@@ -63,10 +88,13 @@ export const RaceGraphByReferenceContainer: React.FC<{}> = () => {
     onSelectCarFilter: (selection: string[]) => {
       const curSettings = { ...userSettings, showCars: selection };
       dispatch(raceGraphRelativeSettings(curSettings));
+      if (stateGlobalSettings.syncSelection) {
+        dispatch(globalSettings({ ...stateGlobalSettings, showCars: selection }));
+      }
     },
     onSelectCarClassFilter: onSelectCarClassChange,
   };
-
+  const graphProps = { showCars, referenceCarNum };
   return (
     <>
       <Row gutter={16}>
@@ -74,7 +102,7 @@ export const RaceGraphByReferenceContainer: React.FC<{}> = () => {
           <Select
             style={{ width: "100%" }}
             allowClear
-            value={userSettings.referenceCarNum}
+            value={referenceCarNum}
             placeholder="Select reference car"
             onChange={onSelectReferenceCar}
             maxTagCount="responsive"
@@ -96,7 +124,8 @@ export const RaceGraphByReferenceContainer: React.FC<{}> = () => {
         </Col>
       </Row>
 
-      <RaceGraphByReferenceRecharts />
+      <Delta {...graphProps} />
+      {/* <RaceGraphByReferenceRecharts {...graphProps} /> */}
     </>
   );
 };

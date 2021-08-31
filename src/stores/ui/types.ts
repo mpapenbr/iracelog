@@ -81,6 +81,12 @@ export interface IStintSummarySettings {
   filterCarClasses: string[]; // empty = all classes, otherwise only selected
   deltaRange: number; // used in both direction (positive and negativ to reference)
 }
+export interface IDashboardSettings {
+  showCars: string[];
+  selectableCars: ICarBaseData[]; // the cars to show in the dropdown as selectable
+  filterCarClasses: string[]; // empty = all classes, otherwise only selected
+  referenceCarNum?: string; // used for delta
+}
 export interface IRaceStintSharedSettings {
   showCars: string[];
   filterCarClasses: string[]; // empty = all classes, otherwise only selected
@@ -121,6 +127,7 @@ export interface IGlobalSettings {
   syncSelection: boolean; // if true, selection for showCars,referenceCars are pushed to all relevant pages
   showCars: string[];
   filterCarClasses: string[]; // empty = all classes, otherwise only selected
+  referenceCarNum?: string; // used for graphs where a reference is needed
 }
 export interface IUiData {
   stint: IUiStints;
@@ -157,6 +164,7 @@ export interface IUserSettings {
   pitstops: IPitstopsSettings;
   stints: IStintsSettings;
   stintSummary: IStintSummarySettings;
+  dashboard: IDashboardSettings;
   driverStints: IDriverStintsSettings;
   circleOfDoom: ICircleOfDoomSettings;
   replay: IReplaySettings;

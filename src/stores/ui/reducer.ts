@@ -6,6 +6,7 @@ import {
   defaultUiData,
   ICircleOfDoomSettings,
   IClassificationSettings,
+  IDashboardSettings,
   IDriverLapsSettings,
   IDriverStintsSettings,
   IGlobalSettings,
@@ -159,6 +160,17 @@ const StintSummarySettingsReducer = reducerWithInitialState(initialStintSummary)
   (state, settings) => settings
 );
 
+// Stint summary (single selection)
+const initialDashboard: IDashboardSettings = {
+  showCars: [],
+  selectableCars: [],
+  filterCarClasses: [],
+};
+const DashboardSettingsReducer = reducerWithInitialState(initialDashboard).case(
+  UiActions.dashboardSettings,
+  (state, settings) => settings
+);
+
 // DriverStints
 const initialDriverStints: IDriverStintsSettings = {
   carNum: "",
@@ -228,6 +240,7 @@ export const defaultStateData: IUserSettings = {
   pitstops: initialPitstops,
   stints: initialStints,
   stintSummary: initialStintSummary,
+  dashboard: initialDashboard,
   driverStints: initialDriverStints,
   circleOfDoom: initialCircleOfDoom,
   replay: initialReplaySettings,
@@ -244,6 +257,7 @@ const combinedReducers = combineReducers<IUserSettings>({
   pitstops: PitstopsSettingsReducer,
   stints: StintsSettingsReducer,
   stintSummary: StintSummarySettingsReducer,
+  dashboard: DashboardSettingsReducer,
   driverStints: DriverStintsSettingsReducer,
   circleOfDoom: CircleOfDoomSettingsReducer,
   replay: ReplaySettingsReducer,

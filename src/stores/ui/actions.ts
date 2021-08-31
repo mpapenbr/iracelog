@@ -5,6 +5,7 @@ import {
   IBrushInterval,
   ICircleOfDoomSettings,
   IClassificationSettings,
+  IDashboardSettings,
   IDriverLapsSettings,
   IDriverStintsSettings,
   IGlobalSettings,
@@ -43,6 +44,7 @@ export const driverLapsSettings = actionCreator<IDriverLapsSettings>("DRIVERLAPS
 export const pitstopsSettings = actionCreator<IPitstopsSettings>("PITSTOPS_SETTINGS");
 export const stintsSettings = actionCreator<IStintsSettings>("STINTS_SETTINGS");
 export const stintSummarySettings = actionCreator<IStintSummarySettings>("STINT_SUMMARY_SETTINGS");
+export const dashboardSettings = actionCreator<IDashboardSettings>("DASHBOARD_SETTINGS");
 export const driverStintsSettings = actionCreator<IDriverStintsSettings>("DRIVER_STINTS_SETTINGS");
 export const circleOfDoomSettings = actionCreator<ICircleOfDoomSettings>("CIRCLE_OF_DOOM_SETTINGS");
 
