@@ -70,7 +70,7 @@ const Lapchart: React.FC = () => {
         // minLimit: Math.floor(work.minTime),
         // maxLimit: Math.ceil(work.q95),
 
-        tickCount: 10,
+        tickCount: 9,
       },
     },
     animation: animate,

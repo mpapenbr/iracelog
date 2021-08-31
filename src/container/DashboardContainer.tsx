@@ -1,6 +1,7 @@
 import { Col, Divider, Empty, Row, Select } from "antd";
 import * as React from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { globalWamp } from "../commons/globals";
 import BoxPlot from "../components/dashboard/boxplot";
 import Delta from "../components/dashboard/delta";
 import Lapchart from "../components/dashboard/lapchart";
@@ -24,7 +25,7 @@ export const DashboardContainer: React.FC<{}> = () => {
   const filterCarClasses = useSelector((state: ApplicationState) => state.userSettings.dashboard.filterCarClasses);
 
   const selectableCars = userSettings.selectableCars.length > 0 ? userSettings.selectableCars : cars;
-  console.log(selectableCars);
+  // console.log(selectableCars);
   const dispatch = useDispatch();
 
   const onSelectCarClassChange = (values: string[]) => {
@@ -41,6 +42,9 @@ export const DashboardContainer: React.FC<{}> = () => {
     };
     // const curSettings = { ...userSettings, filterCarClasses: values };
     dispatch(dashboardSettings(curSettings));
+    if (stateGlobalSettings.syncSelection) {
+      dispatch(globalSettings({ ...stateGlobalSettings, filterCarClasses: values }));
+    }
   };
 
   const props = {
@@ -112,14 +116,22 @@ export const DashboardContainer: React.FC<{}> = () => {
               <BoxPlot />
             </Col>
           </Row>
-          <Row gutter={16}>
-            <Col span={12}>
-              <Delta />
-            </Col>
-            <Col span={12}>
-              <CircleOfDoom referenceCarNum={""} pitstopTime={0} showCars={showCars} />
-            </Col>
-          </Row>
+          {globalWamp.currentLiveId ? (
+            <Row gutter={16}>
+              <Col span={12}>
+                <Delta />
+              </Col>
+              <Col span={12}>
+                <CircleOfDoom referenceCarNum={""} pitstopTime={0} showCars={showCars} />
+              </Col>
+            </Row>
+          ) : (
+            <Row gutter={16}>
+              <Col span={24}>
+                <Delta />
+              </Col>
+            </Row>
+          )}
         </>
       ) : (
         <Empty />

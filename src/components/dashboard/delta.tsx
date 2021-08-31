@@ -1,8 +1,10 @@
 import { Line } from "@ant-design/charts";
+import { Types } from "@antv/g2/lib";
 import { Empty } from "antd";
 import { isNumber } from "lodash";
 import { useSelector } from "react-redux";
 import { sprintf } from "sprintf-js";
+import { firstBy } from "thenby";
 import { globalWamp } from "../../commons/globals";
 import { ApplicationState } from "../../stores";
 import { cat10Colors } from "../live/colors";
@@ -74,6 +76,17 @@ const Delta: React.FC = () => {
       // maxLimit: Math.ceil(work.q95),
       // label: {formatter: (d: number) => lapTimeString(d)},
     },
+    tooltip: {
+      customItems: (orig: Types.TooltipItem[]) => {
+        return orig.sort(
+          firstBy<Types.TooltipItem>((a, b) => Math.sign(b.data.gap) - Math.sign(a.data.gap)).thenBy(
+            (a, b) => b.data.gap - a.data.gap
+          )
+        );
+
+        // return orig.sort((a, b) => a.data.gap - b.data.gap);
+      },
+    },
     interactions: globalWamp.currentLiveId ? [] : [{ type: "brush" }],
     meta: {
       gap: {
@@ -82,6 +95,9 @@ const Delta: React.FC = () => {
         // maxLimit: Math.ceil(work.q95),
 
         tickCount: 10,
+      },
+      carNum: {
+        formatter: (d: string) => "#" + d,
       },
     },
 

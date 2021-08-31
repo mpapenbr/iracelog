@@ -2,9 +2,9 @@ import { Checkbox, Col, InputNumber, Row } from "antd";
 import * as React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { sprintf } from "sprintf-js";
+import LeaderGraph from "../components/antcharts/leadergraph";
 import CarFilter from "../components/live/carFilter";
 import { collectCarsByCarClassFilter, processCarClassSelectionNew } from "../components/live/util";
-import RaceGraphRecharts from "../components/recharts/raceGraphRecharts";
 import { ApplicationState } from "../stores";
 import { raceGraphSettings } from "../stores/ui/actions";
 
@@ -81,7 +81,8 @@ export const RaceGraphContainer: React.FC<{}> = () => {
         </Col>
       </Row>
 
-      <RaceGraphRecharts />
+      <LeaderGraph showCars={showCars} />
+      {/* <RaceGraphRecharts /> */}
     </>
   );
 };

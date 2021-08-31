@@ -46,7 +46,7 @@ const BoxPlot: React.FC = () => {
       );
     }, [] as IBoxPlotDataExtended[]);
 
-  console.log(boxData);
+  // console.log(boxData);
 
   const bounds = boxData.reduce(
     (prev, cur) => ({

@@ -29,8 +29,10 @@ interface IGraphData {
 }
 
 const { Option } = Select;
-
-const StintLapsRecharts: React.FC<{}> = () => {
+interface MyProps {
+  carNum?: string;
+}
+const StintLapsRecharts: React.FC<MyProps> = (props) => {
   const carLaps = useSelector((state: ApplicationState) => state.raceData.carLaps);
 
   const carStints = useSelector((state: ApplicationState) => state.raceData.carStints);
@@ -53,9 +55,9 @@ const StintLapsRecharts: React.FC<{}> = () => {
       return found.laps.map((v) => ({ carNum: carNum, lapNo: v.lapNo, lapTime: getValue(v.lapTime) }));
     } else return [];
   };
-
-  const stints = getCarStints(carStints, uiSettings.carNum);
-  const graphDataOrig = dataForCar(uiSettings.carNum);
+  const carNum = props.carNum;
+  const stints = getCarStints(carStints, carNum ?? "");
+  const graphDataOrig = dataForCar(carNum ?? "");
 
   // outsource
   const floatAvgRaw = (data: IGraphData[]): Map<number, { avg: number }> =>
@@ -231,7 +233,7 @@ const StintLapsRecharts: React.FC<{}> = () => {
       <Col span={22}>
         <ResponsiveContainer width="100%" height={500}>
           <LineChart width={1500} height={250} data={laps}>
-            {[uiSettings.carNum].map((carNum) => (
+            {[carNum].map((carNum) => (
               <Line
                 key={_.uniqueId()}
                 type="monotone"
@@ -246,7 +248,7 @@ const StintLapsRecharts: React.FC<{}> = () => {
               />
             ))}
 
-            {[uiSettings.carNum].map((carNum) => (
+            {[carNum].map((carNum) => (
               <Line
                 key={_.uniqueId()}
                 type="monotone"
@@ -259,7 +261,7 @@ const StintLapsRecharts: React.FC<{}> = () => {
                 dataKey="avg"
               />
             ))}
-            {/* {[uiSettings.carNum].map((carNum) => (
+            {/* {[carNum].map((carNum) => (
               <Line
                 key={_.uniqueId()}
                 type="basisOpen" // this will be a basic spline
@@ -320,12 +322,10 @@ const StintLapsRecharts: React.FC<{}> = () => {
     </Row>
   );
   const bla = () => {
-    if (uiSettings.carNum) {
+    if (carNum) {
     }
   };
-  return (
-    <>{uiSettings.carNum && uiSettings.carNum.length > 0 ? InternalLapGraph : <Empty description="Select car" />}</>
-  );
+  return <>{carNum && carNum.length > 0 ? InternalLapGraph : <Empty description="Select car" />}</>;
 };
 
 export default StintLapsRecharts;

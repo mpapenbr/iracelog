@@ -5,7 +5,6 @@ import { sprintf } from "sprintf-js";
 import Delta from "../components/antcharts/deltagraph";
 import CarFilter from "../components/live/carFilter";
 import { collectCarsByCarClassFilter, processCarClassSelectionNew } from "../components/live/util";
-import RaceGraphByReferenceRecharts from "../components/recharts/raceGraphByReferenceRecharts";
 import { ApplicationState } from "../stores";
 import { globalSettings, raceGraphRelativeSettings } from "../stores/ui/actions";
 
@@ -57,6 +56,9 @@ export const RaceGraphByReferenceContainer: React.FC<{}> = () => {
       selectableCars: collectCarsByCarClassFilter(cars, values),
     };
     dispatch(raceGraphRelativeSettings(curSettings));
+    if (stateGlobalSettings.syncSelection) {
+      dispatch(globalSettings({ ...stateGlobalSettings, filterCarClasses: values }));
+    }
   };
 
   const onDeltaRangeChange = (value: any) => {
@@ -92,7 +94,7 @@ export const RaceGraphByReferenceContainer: React.FC<{}> = () => {
     },
     onSelectCarClassFilter: onSelectCarClassChange,
   };
-
+  const graphProps = { showCars, referenceCarNum };
   return (
     <>
       <Row gutter={16}>
@@ -122,8 +124,8 @@ export const RaceGraphByReferenceContainer: React.FC<{}> = () => {
         </Col>
       </Row>
 
-      <Delta />
-      <RaceGraphByReferenceRecharts />
+      <Delta {...graphProps} />
+      {/* <RaceGraphByReferenceRecharts {...graphProps} /> */}
     </>
   );
 };

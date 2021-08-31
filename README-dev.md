@@ -1,5 +1,7 @@
 # Developer notes
 
+## New version
+
 ## Own packages on Github
 
 At the moment (2021-04-25) there is no way to get packages from github repository (https://npm.pkg.github.com) without using a personal access token (PAT).  
@@ -9,6 +11,14 @@ So we need to put one in place at `~/.npmrc` which looks like this
 @mpapenbr:registry=https://npm.pkg.github.com/
 //npm.pkg.github.com/:_authToken=<READ_ACCESS_TOKEN>
 ```
+
+## antd charts
+
+Seems to be pretty new so I'm sure some of the glitches are going to be fixed soon.  
+For now:
+
+- avoid using x-values as number. Use strings instead (https://github.com/ant-design/ant-design-charts/issues/797)
+- boxplot-outliers (https://github.com/ant-design/ant-design-charts/issues/800)
 
 # Solved issues
 
