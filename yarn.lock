@@ -2,10 +2,10 @@
 # yarn lockfile v1
 
 
-"@ant-design/charts@^1.2.10":
-  version "1.2.10"
-  resolved "https://registry.yarnpkg.com/@ant-design/charts/-/charts-1.2.10.tgz#ae8803ceeaa0c568b694ca5cab80d122330612b1"
-  integrity sha512-Gp3wS0VZUd0KyPTlafPgUAzR/Q5d/VxC+0oeHJR4efTEb4aeFpIFDc/4cYIRge/iW0JcVpdpyzOP6BOGj3B5yg==
+"@ant-design/charts@^1.2.11":
+  version "1.2.11"
+  resolved "https://registry.yarnpkg.com/@ant-design/charts/-/charts-1.2.11.tgz#392e734e557effe0bfc9d50e8cf8cb775911b32f"
+  integrity sha512-sjwQTlT5CPys+akT7S7M2cVTblwHgzFAhhbriR2GKAcZd+1bgxyxyV9NWDBB1HukqqLmB0I4P4RPur9Kbfnb0A==
   dependencies:
     "@antv/g2plot" "^2.2.11"
     "@antv/g6" "4.2.4"
@@ -2157,10 +2157,10 @@
     "@types/yargs" "^15.0.0"
     chalk "^4.0.0"
 
-"@mpapenbr/iracelog-analysis@^1.0.9":
-  version "1.0.9"
-  resolved "https://npm.pkg.github.com/download/@mpapenbr/iracelog-analysis/1.0.9/aae8ce969790f853754dd468e51cd502707b3a1b4d4424acf7d5616cf12b90e3#bb3f728c5b2707d9ba8324fdcfa71090a1ae24d4"
-  integrity sha512-doOUPIOn7JAss6d2o9c83vsBchLH7wtZzX1BO4uQmVTVVVO+heBkXfDSjBqKhrCuCKWaZapry/oPAQucLX3+FA==
+"@mpapenbr/iracelog-analysis@^1.1.1":
+  version "1.1.1"
+  resolved "https://npm.pkg.github.com/download/@mpapenbr/iracelog-analysis/1.1.1/281e767e1c405e23e8566575eb3ce9029b75e50591b588d17216a16fafc430fa#87fe788860c891c9764e238396b62bd4760886f5"
+  integrity sha512-P5o49+J9lKer+EbpZSMAtlVI4OMmN/G1TM/ZoX3xv5PQbO3XyDxx9lQE1NWOlrx1DDoLZpycxTptzf1x6FhpcA==
   dependencies:
     lodash "^4.17.21"
 
