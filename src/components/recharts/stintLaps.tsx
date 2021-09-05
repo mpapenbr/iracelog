@@ -32,7 +32,7 @@ const { Option } = Select;
 interface MyProps {
   carNum?: string;
 }
-const StintLapsRecharts: React.FC<MyProps> = (props) => {
+const StintLapsRecharts: React.FC<MyProps> = (props: MyProps) => {
   const carLaps = useSelector((state: ApplicationState) => state.raceData.carLaps);
 
   const carStints = useSelector((state: ApplicationState) => state.raceData.carStints);
@@ -83,7 +83,6 @@ const StintLapsRecharts: React.FC<MyProps> = (props) => {
     // console.log("Stint:", { s }, " start:", start, " end:", end);
     return a.slice(start, end === -1 ? a.length : end + 1); // may happen on last stint
   };
-  let carStintRollAvg = new Map<number, { avg: number }>();
 
   const cur = graphDataOrig
     .reduce((prev, cur) => {
@@ -96,7 +95,7 @@ const StintLapsRecharts: React.FC<MyProps> = (props) => {
     [x: string]: number;
   }
 
-  let byLapLookup = graphDataOrig.reduce((prev, cur) => {
+  const byLapLookup = graphDataOrig.reduce((prev, cur) => {
     graphDataOrig.forEach((gd) => {
       if (!prev.has(gd.lapNo)) {
         prev.set(gd.lapNo, [{ ["#" + gd.carNum]: gd.lapTime }]);
@@ -124,7 +123,7 @@ const StintLapsRecharts: React.FC<MyProps> = (props) => {
     }
   });
 
-  let laps = [] as any[];
+  const laps = [] as any[];
   byLapLookup.forEach((v, lapNo) => {
     laps.push(
       v.reduce(
@@ -137,7 +136,7 @@ const StintLapsRecharts: React.FC<MyProps> = (props) => {
   });
   // console.log(laps);
 
-  var timerId: any;
+  let timerId: any;
   const brushChanged = (range: any) => {
     // Note: range is a BrushStartEndIndex but it is not exported. IBrushInterval has the same props
     // setBrushKeeper(range);
@@ -321,10 +320,7 @@ const StintLapsRecharts: React.FC<MyProps> = (props) => {
       </Col>
     </Row>
   );
-  const bla = () => {
-    if (carNum) {
-    }
-  };
+
   return <>{carNum && carNum.length > 0 ? InternalLapGraph : <Empty description="Select car" />}</>;
 };
 

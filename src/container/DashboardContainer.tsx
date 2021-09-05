@@ -14,7 +14,7 @@ import { dashboardSettings, globalSettings } from "../stores/ui/actions";
 
 const { Option } = Select;
 
-export const DashboardContainer: React.FC<{}> = () => {
+export const DashboardContainer: React.FC = () => {
   const cars = useSelector((state: ApplicationState) => state.raceData.availableCars);
   const carClasses = useSelector((state: ApplicationState) => state.raceData.availableCarClasses);
   const userSettings = useSelector((state: ApplicationState) => state.userSettings.dashboard);
@@ -104,7 +104,7 @@ export const DashboardContainer: React.FC<{}> = () => {
         <>
           <Divider />
           {userSettings.showCars.map((c) => (
-            <Row gutter={16}>
+            <Row gutter={16} key={c}>
               <StintStretch carNum={c} height={30} showCarNum width={800} />
             </Row>
           ))}

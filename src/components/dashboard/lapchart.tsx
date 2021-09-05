@@ -1,5 +1,6 @@
 import { Line } from "@ant-design/charts";
 import { ICarLaps, IStintInfo } from "@mpapenbr/iracelog-analysis/dist/stints/types";
+import React from "react";
 import { useSelector } from "react-redux";
 import { globalWamp } from "../../commons/globals";
 import { ApplicationState } from "../../stores";

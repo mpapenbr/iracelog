@@ -17,17 +17,11 @@ import { StintLapsContainer } from "../container/StintLapsContainer";
 import { StintSummaryContainer } from "../container/StintSummaryContainer";
 import { TestContainer } from "../container/Test";
 
-interface IStateProps {}
-interface IDispachProps {
-  // loadEvents: () => any;
-}
-type MyProps = IStateProps & IDispachProps;
-
 const { Header, Sider, Content } = Layout;
 
-const OtherContent: React.FC<{}> = () => <div>Here goes other content</div>;
+const OtherContent: React.FC = () => <div>Here goes other content</div>;
 
-export const AnalysisMainPage: React.FC<MyProps> = (props: MyProps) => {
+export const AnalysisMainPage: React.FC = () => {
   return (
     <Layout>
       <Sider theme="light" width={170}>

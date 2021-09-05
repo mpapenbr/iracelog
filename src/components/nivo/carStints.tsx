@@ -75,8 +75,8 @@ indexValue: "12" // my car num
 theme: {background: "transparent", fontFamily: "sans-serif", fontSize: 11, textColor: "#333333", axis: {…}, …}
 value: 77.66666666553647
 */
-    var matchRE = /Stint (\d+)/g;
-    var match = matchRE.exec(data.id);
+    const matchRE = /Stint (\d+)/g;
+    const match = matchRE.exec(data.id);
     const stintInfo = dataLookup.get(data.indexValue)!;
 
     const stintIdx = parseInt(match![1]) - 1;

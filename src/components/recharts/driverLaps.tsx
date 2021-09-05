@@ -28,7 +28,7 @@ interface IGraphData {
 
 const { Option } = Select;
 
-const DriverLapsRecharts: React.FC<{}> = () => {
+const DriverLapsRecharts: React.FC = () => {
   // const wamp = useSelector((state: ApplicationState) => state.wamp.data);
   const cars = useSelector((state: ApplicationState) => state.raceData.availableCars);
   const carLaps = useSelector((state: ApplicationState) => state.raceData.carLaps);
@@ -66,14 +66,14 @@ const DriverLapsRecharts: React.FC<{}> = () => {
     } else return [];
   };
 
-  let carDataLookup = new Map<string, IGraphData[]>();
+  const carDataLookup = new Map<string, IGraphData[]>();
   uiSettings.showCars.forEach((carNum) => carDataLookup.set(carNum, dataForCar(carNum)));
 
   const graphDataOrig = uiSettings.showCars.map((carNum) => dataForCar(carNum));
   interface MyData {
     [x: string]: number;
   }
-  let byLapLookup = graphDataOrig.reduce((prev, cur) => {
+  const byLapLookup = graphDataOrig.reduce((prev, cur) => {
     cur.forEach((gd) => {
       if (!prev.has(gd.lapNo)) {
         prev.set(gd.lapNo, [{ ["#" + gd.carNum]: gd.lapTime }]);
@@ -84,7 +84,7 @@ const DriverLapsRecharts: React.FC<{}> = () => {
     return prev;
   }, new Map<number, MyData[]>());
 
-  let graphDataByLapLookup = graphDataOrig.reduce((prev, cur) => {
+  const graphDataByLapLookup = graphDataOrig.reduce((prev, cur) => {
     cur.forEach((gd) => {
       if (!prev.has(gd.lapNo)) {
         prev.set(gd.lapNo, [gd]);
@@ -95,7 +95,7 @@ const DriverLapsRecharts: React.FC<{}> = () => {
     return prev;
   }, new Map<number, IGraphData[]>());
 
-  let gaps = [] as any[];
+  const gaps = [] as any[];
   byLapLookup.forEach((v, lapNo) => {
     gaps.push(
       v.reduce(
@@ -152,7 +152,7 @@ const DriverLapsRecharts: React.FC<{}> = () => {
               <tbody>
                 {data.map((v) => (
                   // <p className="custom-tooltip" style={{ color: colorCode(v.carNum) }}>
-                  <tr style={{ color: colorCode(v.carNum) }}>
+                  <tr key={"row-tt-" + v.carNum} style={{ color: colorCode(v.carNum) }}>
                     <td align="right">#{v.carNum}</td>
                     <td align="right">{lapTimeString(v.lapTime)}</td>
                   </tr>

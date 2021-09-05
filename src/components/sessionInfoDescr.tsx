@@ -1,12 +1,13 @@
 import { getValueViaSpec } from "@mpapenbr/iracelog-analysis/dist/stints/util";
 import { Descriptions, Empty } from "antd";
+import React from "react";
 import { useSelector } from "react-redux";
 import { sprintf } from "sprintf-js";
 import { ApplicationState } from "../stores";
 import { SessionManifest } from "../stores/wamp/types";
 import { secAsString } from "../utils/output";
 
-const SessionInfoDescription: React.FC<{}> = () => {
+const SessionInfoDescription: React.FC = () => {
   const sInfo = useSelector((state: ApplicationState) => state.raceData.sessionInfo);
   const getValue = (key: string) => {
     return getValueViaSpec(sInfo.data, SessionManifest, key);

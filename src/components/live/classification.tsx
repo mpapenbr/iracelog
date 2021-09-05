@@ -9,7 +9,7 @@ import { secAsString } from "../../utils/output";
 import { Standings } from "../standings";
 import StandingsColumnControl from "../standingsColumnControl";
 
-const Classification: React.FC<{}> = () => {
+const Classification: React.FC = () => {
   const cars = useSelector((state: ApplicationState) => state.raceData.availableCars).map((v) => v.carNum);
   return (
     <>
@@ -34,7 +34,7 @@ const Classification: React.FC<{}> = () => {
 };
 export default Classification;
 
-const SessionInfoData: React.FC<{}> = () => {
+const SessionInfoData: React.FC = () => {
   const sessionData: [] = useSelector(
     (state: ApplicationState) =>
       // state.wamp.data.session ? state.wamp.data.session.data : []

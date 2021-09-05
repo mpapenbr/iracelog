@@ -2,9 +2,6 @@ import { IDataEntrySpec, IManifests } from "@mpapenbr/iracelog-analysis/dist/sti
 import { Reducer } from "redux";
 import { globalWamp } from "../../commons/globals";
 import { WampActionTypes } from "./actions";
-import { processForLapGraph } from "./compute/lapGraph";
-import { processForRaceGraph } from "./compute/raceGraph";
-import { processForRaceOrder } from "./compute/raceOrder";
 import { defaultWampData, IWampState } from "./types";
 
 const initialState: IWampState = {
@@ -43,23 +40,6 @@ const reducer: Reducer<IWampState> = (state = initialState, action) => {
     case WampActionTypes.UPDATE_SESSION: {
       if (Array.isArray(action.payload)) {
         return { ...state, data: { ...state.data, session: action.payload[0] } };
-      } else return state;
-    }
-    case WampActionTypes.UPDATE_CARS: {
-      if (Array.isArray(action.payload)) {
-        const raceGraph = processForRaceGraph(state.data, state.data.raceGraph, action.payload[0].data);
-        const carLaps = processForLapGraph(state.data, action.payload[0].data);
-        const raceOrder = processForRaceOrder(state.data, action.payload[0].data);
-        return {
-          ...state,
-          data: {
-            ...state.data,
-            cars: action.payload[0],
-            raceGraph: raceGraph,
-            carLaps: carLaps,
-            raceOrder: raceOrder,
-          },
-        };
       } else return state;
     }
 

@@ -13,9 +13,8 @@ import { lapTimeString } from "../utils/output";
 interface MyProps {
   showCars: string[];
 }
-interface DispatchProps {}
 
-type Props = MyProps & DispatchProps;
+type Props = MyProps;
 
 export const Standings: React.FC<Props> = (props: Props) => {
   const uiSettings = useSelector((state: ApplicationState) => state.userSettings.classification);
@@ -66,6 +65,7 @@ export const Standings: React.FC<Props> = (props: Props) => {
       </svg>
     );
   };
+  // eslint-disable-next-line @typescript-eslint/ban-types
   const columns: ColumnsType<{}> = [
     { key: "pos", title: "Pos", render: (d) => getValue(d, "pos"), width: 20, align: "right" },
     { key: "pic", title: "PIC", render: (d) => getValue(d, "pic"), width: 20, align: "right" },

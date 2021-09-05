@@ -13,7 +13,7 @@ import { globalSettings, stintSummarySettings } from "../stores/ui/actions";
 
 const { Option } = Select;
 
-export const StintSummaryContainer: React.FC<{}> = () => {
+export const StintSummaryContainer: React.FC = () => {
   const cars = useSelector((state: ApplicationState) => state.raceData.availableCars);
   const carClasses = useSelector((state: ApplicationState) => state.raceData.availableCarClasses);
   const userSettings = useSelector((state: ApplicationState) => state.userSettings.stintSummary);

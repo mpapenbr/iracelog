@@ -42,7 +42,7 @@ const StintStretch: React.FC<MyProps> = (props: MyProps) => {
     maxTime: number;
     color?: string;
   }
-  var work: Combined[] = getCarStints(carStints, props.carNum).map((d, idx) => {
+  const work: Combined[] = getCarStints(carStints, props.carNum).map((d, idx) => {
     const driver = findDriverByStint(currentCarInfo, d);
     return {
       type: "stint",
@@ -51,7 +51,7 @@ const StintStretch: React.FC<MyProps> = (props: MyProps) => {
       idx: idx + 1,
       minTime: d.exitTime,
       maxTime: d.enterTime,
-      color: colorLookup.get(driver?.driverName!),
+      color: colorLookup.get(driver?.driverName ?? "n.a"),
     };
   });
   const x: Combined[] = getCarPitStops(carPits, props.carNum).map((d, idx) => ({
@@ -117,6 +117,7 @@ const StintStretch: React.FC<MyProps> = (props: MyProps) => {
             .map((c) => {
               return (
                 <Tooltip
+                  key={"tt-" + c.data.carNum}
                   color={c.color}
                   overlay={
                     <StintTooltip

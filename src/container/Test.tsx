@@ -4,7 +4,7 @@ import { useSelector } from "react-redux";
 import { ReplayControlDummy } from "../components/replayControlDummy";
 import { ApplicationState } from "../stores";
 
-export const TestContainer: React.FC<{}> = () => {
+export const TestContainer: React.FC = () => {
   const value = useSelector((state: ApplicationState) => state.userSettings.counter);
 
   return (

@@ -1,4 +1,5 @@
 import { IStintInfo } from "@mpapenbr/iracelog-analysis/dist/stints/types";
+import React from "react";
 import { secAsHHMMSS } from "../../utils/output";
 
 interface MyProps {

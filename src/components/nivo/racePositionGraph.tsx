@@ -11,7 +11,7 @@ interface IGraphData {
   y: number;
 }
 
-const RacePositionGraphNivo: React.FC<{}> = () => {
+const RacePositionGraphNivo: React.FC = () => {
   // const wamp = useSelector((state: ApplicationState) => state.wamp.data);
   const uiSettings = useSelector((state: ApplicationState) => state.userSettings.racePositions);
   const raceGraph = useSelector((state: ApplicationState) => state.raceData.raceGraph);
@@ -23,7 +23,7 @@ const RacePositionGraphNivo: React.FC<{}> = () => {
   const carOrder = [...uiSettings.showCars].sort(sortCarNumberStr).reverse();
 
   const dataLookup = raceGraph.reduce((prev, cur) => {
-    let entry = prev.get(cur.carClass);
+    const entry = prev.get(cur.carClass);
     if (entry !== undefined) {
       prev.set(cur.carClass, entry.concat(cur));
     } else {

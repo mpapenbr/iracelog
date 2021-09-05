@@ -1,5 +1,6 @@
 import { Box } from "@ant-design/charts";
 import { Empty } from "antd";
+import React from "react";
 import { useSelector } from "react-redux";
 import { globalWamp } from "../../commons/globals";
 import { ApplicationState } from "../../stores";
@@ -20,8 +21,8 @@ const BoxPlot: React.FC = () => {
     .filter((v) => showCars.includes(v.carNum))
 
     .reduce((collect, v) => {
-      var ret = [];
-      var curIdx = 0; //
+      const ret = [];
+      let curIdx = 0; //
       const stints = getCarStints(carStints, v.carNum).slice(-2);
       if (stints.length === 2) {
         const prevStint = stintLaps(stints[0], currentCarLaps(v.carNum)!).flatMap((v) => v.lapTime);

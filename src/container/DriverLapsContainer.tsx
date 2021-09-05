@@ -8,7 +8,7 @@ import DriverLapsRecharts from "../components/recharts/driverLaps";
 import { ApplicationState } from "../stores";
 import { driverLapsSettings } from "../stores/ui/actions";
 
-export const DriverLapsContainer: React.FC<{}> = () => {
+export const DriverLapsContainer: React.FC = () => {
   const cars = useSelector((state: ApplicationState) => state.raceData.availableCars);
   const carClasses = useSelector((state: ApplicationState) => state.raceData.availableCarClasses);
   const userSettings = useSelector((state: ApplicationState) => state.userSettings.driverLaps);

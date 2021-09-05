@@ -34,7 +34,7 @@ const StintCircle: React.FC<MyProps> = (props: MyProps) => {
       id: "Stint " + (idx + 1),
       label: driver?.driverName ?? "n.a.",
       value: d.stintTime,
-      color: colorLookup.get(driver?.driverName!),
+      color: colorLookup.get(driver?.driverName ?? "n.a"),
     };
   });
 

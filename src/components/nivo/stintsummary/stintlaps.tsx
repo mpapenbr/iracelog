@@ -32,7 +32,7 @@ const StintLaps: React.FC<MyProps> = (props: MyProps) => {
     getCarStints(carStints, props.carNum)
       .reduce((prev, cur) => {
         const driver = findDriverByStint(currentCarInfo, cur)!;
-        var found = prev.get(driver?.driverName);
+        let found = prev.get(driver?.driverName);
         if (!found) {
           found = { id: driver?.driverName, label: driver?.driverName, value: cur.numLaps };
           prev.set(driver?.driverName, found);

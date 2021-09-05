@@ -8,7 +8,7 @@ import { collectCarsByCarClassFilter, processCarClassSelectionNew } from "../com
 import { ApplicationState } from "../stores";
 import { raceGraphSettings } from "../stores/ui/actions";
 
-export const RaceGraphContainer: React.FC<{}> = () => {
+export const RaceGraphContainer: React.FC = () => {
   const cars = useSelector((state: ApplicationState) => state.raceData.availableCars);
   const carClasses = useSelector((state: ApplicationState) => state.raceData.availableCarClasses);
   const userSettings = useSelector((state: ApplicationState) => state.userSettings.raceGraph);

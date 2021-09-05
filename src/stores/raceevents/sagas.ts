@@ -19,9 +19,7 @@ import {
 } from "./actions";
 import { IEventSummary, IRaceContainer, IRaceEvent } from "./types";
 
-function* fetchRaceEvents(
-  action: IBaseAction
-): //: Generator<StrictEffect,void, Stint[]>
+function* fetchRaceEvents(action: IBaseAction): //: Generator<StrictEffect,void, Stint[]>
 Generator {
   try {
     const token: string = action.payload;
@@ -33,9 +31,7 @@ Generator {
   }
 }
 
-function* deleteRaceEvent(
-  action: IBaseAction
-): //: Generator<StrictEffect,void, Stint[]>
+function* deleteRaceEvent(action: IBaseAction): //: Generator<StrictEffect,void, Stint[]>
 Generator {
   try {
     const { token, id } = action.payload;
@@ -52,9 +48,7 @@ Generator {
   }
 }
 
-function* fetchEventData(
-  action: IBaseAction
-): //: Generator<StrictEffect,void, Stint[]>
+function* fetchEventData(action: IBaseAction): //: Generator<StrictEffect,void, Stint[]>
 Generator {
   try {
     const { token, id } = action.payload;
@@ -75,9 +69,7 @@ Generator {
   }
 }
 
-function* fetchEventStints(
-  action: IBaseAction
-): //: Generator<StrictEffect,void, Stint[]>
+function* fetchEventStints(action: IBaseAction): //: Generator<StrictEffect,void, Stint[]>
 Generator {
   try {
     const { token, id, sessionNum } = action.payload;
@@ -92,9 +84,7 @@ Generator {
   }
 }
 
-function* ensureEventData(
-  action: IBaseAction
-): //: Generator<StrictEffect,void, Stint[]>
+function* ensureEventData(action: IBaseAction): //: Generator<StrictEffect,void, Stint[]>
 Generator {
   try {
     const { token, id } = action.payload;
@@ -110,9 +100,7 @@ Generator {
   }
 }
 
-function* ensureEventStints(
-  action: IBaseAction
-): //: Generator<StrictEffect,void, Stint[]>
+function* ensureEventStints(action: IBaseAction): //: Generator<StrictEffect,void, Stint[]>
 Generator {
   try {
     const { token, id } = action.payload;
@@ -133,7 +121,7 @@ Generator {
 }
 
 function* dummy(action: IBaseAction): Generator<string, string, string> {
-  return "dummy";
+  return yield "dummy";
 }
 export default function* raceEventsSaga() {
   yield all([

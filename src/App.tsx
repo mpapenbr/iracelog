@@ -16,7 +16,7 @@ interface AppProps {
   store: Store<ApplicationState>;
 }
 
-const OtherContent: React.FC<{}> = () => <div>Here goes other content</div>;
+const OtherContent: React.FC = () => <div>Here goes other content</div>;
 
 const App: React.FC<AppProps> = (props: AppProps) => {
   return (

@@ -7,7 +7,7 @@ import RacePositionGraphNivo from "../components/nivo/racePositionGraph";
 import { ApplicationState } from "../stores";
 import { racePositionsSettings } from "../stores/ui/actions";
 
-export const RacePositionsContainer: React.FC<{}> = () => {
+export const RacePositionsContainer: React.FC = () => {
   const cars = useSelector((state: ApplicationState) => state.raceData.availableCars);
   const carClasses = useSelector((state: ApplicationState) => state.raceData.availableCarClasses);
   const userSettings = useSelector((state: ApplicationState) => state.userSettings.racePositions);

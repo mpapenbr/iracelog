@@ -3,6 +3,7 @@ import { Types } from "@antv/g2/lib";
 import { IRaceGraph } from "@mpapenbr/iracelog-analysis/dist/stints/types";
 import { Empty } from "antd";
 import _, { isNumber } from "lodash";
+import React from "react";
 import { useSelector } from "react-redux";
 import { sprintf } from "sprintf-js";
 import { globalWamp } from "../../commons/globals";
@@ -14,7 +15,7 @@ import { extractSomeCarData2 } from "../live/util";
 interface MyProps {
   showCars: string[];
 }
-const LeaderGraph: React.FC<MyProps> = (props) => {
+const LeaderGraph: React.FC<MyProps> = (props: MyProps) => {
   const carLaps = useSelector((state: ApplicationState) => state.raceData.carLaps);
 
   const carInfos = useSelector((state: ApplicationState) => state.raceData.carInfo);
@@ -25,6 +26,7 @@ const LeaderGraph: React.FC<MyProps> = (props) => {
   const currentCarLaps = (carNum: string) => carLaps.find((v) => v.carNum === carNum);
 
   const selectSettings = () => {
+    // eslint-disable-next-line no-constant-condition
     if (false && stateGlobalSettings.syncSelection) {
       return {
         showCars: stateGlobalSettings.showCars,
@@ -52,7 +54,7 @@ const LeaderGraph: React.FC<MyProps> = (props) => {
   }
 
   const dataLookup = raceGraph.reduce((prev, cur) => {
-    let entry = prev.get(cur.carClass);
+    const entry = prev.get(cur.carClass);
     if (entry !== undefined) {
       prev.set(cur.carClass, entry.concat(cur));
     } else {

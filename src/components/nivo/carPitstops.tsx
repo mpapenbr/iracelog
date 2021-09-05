@@ -63,8 +63,8 @@ indexValue: "12" // my car num
 theme: {background: "transparent", fontFamily: "sans-serif", fontSize: 11, textColor: "#333333", axis: {…}, …}
 value: 77.66666666553647
 */
-    var matchRE = /Pitstop (\d+)/g;
-    var match = matchRE.exec(data.id);
+    const matchRE = /Pitstop (\d+)/g;
+    const match = matchRE.exec(data.id);
     const pitInfo = dataLookup.get(data.indexValue)!;
 
     const pitIdx = parseInt(match![1]) - 1;

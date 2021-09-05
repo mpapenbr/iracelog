@@ -2,6 +2,7 @@ import { Line } from "@ant-design/charts";
 import { Types } from "@antv/g2/lib";
 import { Empty } from "antd";
 import _, { isNumber } from "lodash";
+import React from "react";
 import { useSelector } from "react-redux";
 import { sprintf } from "sprintf-js";
 import { firstBy } from "thenby";
@@ -13,7 +14,7 @@ interface MyProps {
   showCars: string[];
   referenceCarNum?: string;
 }
-const Delta: React.FC<MyProps> = (props) => {
+const Delta: React.FC<MyProps> = (props: MyProps) => {
   const carLaps = useSelector((state: ApplicationState) => state.raceData.carLaps);
   const carStints = useSelector((state: ApplicationState) => state.raceData.carStints);
   const raceGraph = useSelector((state: ApplicationState) => state.raceData.raceGraph);
@@ -23,6 +24,7 @@ const Delta: React.FC<MyProps> = (props) => {
   const currentCarLaps = (carNum: string) => carLaps.find((v) => v.carNum === carNum);
 
   const selectSettings = () => {
+    // eslint-disable-next-line no-constant-condition
     if (false && stateGlobalSettings.syncSelection) {
       return {
         showCars: stateGlobalSettings.showCars,

@@ -8,9 +8,8 @@ import { IPitstopMeta } from "../stores/types/pitstops";
 import { ICarStintData, IStintData } from "../stores/types/stints";
 import { jsonDateEnhancer } from "../utils/jsonUtils";
 
-export interface RaceEvent {}
 export default class RaceEventService {
-  public static raceEventList(token: string): Promise<RaceEvent[]> {
+  public static raceEventList(token: string): Promise<[]> {
     return new Promise((resolve, reject) => {
       fetch(API_BASE_URL + "/raceevents", {
         method: "GET",
@@ -41,7 +40,7 @@ export default class RaceEventService {
       });
     });
   }
-  public static deleteEvent(token: string, id: string): Promise<{}> {
+  public static deleteEvent(token: string, id: string): Promise<Record<string, never>> {
     return new Promise((resolve, reject) => {
       fetch(API_BASE_URL + "/raceevents/" + id, {
         method: "DELETE",

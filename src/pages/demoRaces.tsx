@@ -57,13 +57,7 @@ import { defaultStateData, initialReplaySettings } from "../stores/ui/reducer";
 import { connectedToServer, reset, setManifests, updateManifests } from "../stores/wamp/actions";
 import { postProcessManifest } from "../stores/wamp/reducer";
 
-interface IStateProps {}
-interface IDispachProps {
-  // loadEvents: () => any;
-}
-type MyProps = IStateProps & IDispachProps;
-
-export const DemoRaces: React.FC<MyProps> = (props: MyProps) => {
+export const DemoRaces: React.FC = () => {
   const dispatch = useDispatch();
   const history = useHistory();
 
@@ -81,7 +75,7 @@ export const DemoRaces: React.FC<MyProps> = (props: MyProps) => {
   const onLoadForReplayButtonClicked = (e: React.MouseEvent<HTMLButtonElement>) => {
     const arg = e.currentTarget.value;
     // readData(arg, dispatch, doInfo);
-    var conn = new autobahn.Connection({ url: API_CROSSBAR_URL + "/ws", realm: "racelog" });
+    const conn = new autobahn.Connection({ url: API_CROSSBAR_URL + "/ws", realm: "racelog" });
     conn.onopen = async (s: Session) => {
       setLoading(true);
       const eventInfo = (await s.call("racelog.archive.event_info", [arg])) as any;
@@ -182,7 +176,7 @@ export const DemoRaces: React.FC<MyProps> = (props: MyProps) => {
   };
 
   const connectToLiveData = (id: string) => {
-    var conn = new autobahn.Connection({ url: API_CROSSBAR_URL + "/ws", realm: "racelog" });
+    const conn = new autobahn.Connection({ url: API_CROSSBAR_URL + "/ws", realm: "racelog" });
 
     conn.onopen = (s: Session) => {
       s.call("racelog.analysis.live", [id]).then((data: any) => {
@@ -265,7 +259,7 @@ export const DemoRaces: React.FC<MyProps> = (props: MyProps) => {
 
   const onReloadRequested = () => {
     console.log("fetching current live data providers");
-    var conn = new autobahn.Connection({ url: API_CROSSBAR_URL + "/ws", realm: "racelog" });
+    const conn = new autobahn.Connection({ url: API_CROSSBAR_URL + "/ws", realm: "racelog" });
     conn.onopen = (s: Session) => {
       s.call("racelog.list_providers").then((data: any) => {
         setLivedata(data.map((v: any) => ({ key: v.key, title: v.name, description: v.description })));
@@ -277,7 +271,7 @@ export const DemoRaces: React.FC<MyProps> = (props: MyProps) => {
 
   const onLoadEvents = () => {
     console.log("fetching events");
-    var conn = new autobahn.Connection({ url: API_CROSSBAR_URL + "/ws", realm: "racelog" });
+    const conn = new autobahn.Connection({ url: API_CROSSBAR_URL + "/ws", realm: "racelog" });
     conn.onopen = (s: Session) => {
       s.call("racelog.archive.events").then((data: any) => {
         setEvents(
@@ -301,7 +295,12 @@ export const DemoRaces: React.FC<MyProps> = (props: MyProps) => {
                 // <Button value={item.key} type="default" onClick={onLoadButtonClicked_OoO}>
                 //   Load
                 // </Button>,
-                <Button value={item.eventId} type="default" onClick={onLoadForReplayButtonClicked}>
+                <Button
+                  key={"bt-replay" + item.eventId}
+                  value={item.eventId}
+                  type="default"
+                  onClick={onLoadForReplayButtonClicked}
+                >
                   Load
                 </Button>,
               ]}
@@ -330,7 +329,7 @@ export const DemoRaces: React.FC<MyProps> = (props: MyProps) => {
           renderItem={(item: any) => (
             <List.Item
               actions={[
-                <Button value={item.key} type="default" onClick={onLiveButtonClicked}>
+                <Button key={"bt-live" + item.eventId} value={item.key} type="default" onClick={onLiveButtonClicked}>
                   Connect
                 </Button>,
               ]}

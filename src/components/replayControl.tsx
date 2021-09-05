@@ -20,7 +20,7 @@ import { secAsHHMMSS } from "../utils/output";
 
 const { Option } = Select;
 
-export const ReplayControl: React.FC<{}> = () => {
+export const ReplayControl: React.FC = () => {
   const dispatch = useDispatch();
   const settings = useSelector((state: ApplicationState) => state.userSettings.replay);
 

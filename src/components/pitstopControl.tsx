@@ -1,10 +1,11 @@
 import { Checkbox, InputNumber, Row } from "antd";
+import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { sprintf } from "sprintf-js";
 import { ApplicationState } from "../stores";
 import { pitstopsSettings } from "../stores/ui/actions";
 
-const PitstopControl: React.FC<{}> = () => {
+const PitstopControl: React.FC = () => {
   const userSettings = useSelector((state: ApplicationState) => state.userSettings.pitstops);
 
   const dispatch = useDispatch();

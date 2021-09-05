@@ -8,7 +8,7 @@ import { demoSettings, replaySettings } from "../stores/ui/actions";
 
 const { Option } = Select;
 
-var th: NodeJS.Timeout;
+let th: NodeJS.Timeout;
 
 function useInterval(callback: () => void, delay: number | null) {
   const savedCallback = useRef(callback);
@@ -31,7 +31,7 @@ function useInterval(callback: () => void, delay: number | null) {
   }, [delay]);
 }
 
-export const ReplayControlDummy: React.FC<{}> = () => {
+export const ReplayControlDummy: React.FC = () => {
   const dispatch = useDispatch();
   const settings = useSelector((state: ApplicationState) => state.userSettings.replay);
   const extCounter = useSelector((state: ApplicationState) => state.userSettings.counter);

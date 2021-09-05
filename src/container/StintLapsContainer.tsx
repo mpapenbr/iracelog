@@ -9,7 +9,7 @@ import { driverStintsSettings, globalSettings } from "../stores/ui/actions";
 
 const { Option } = Select;
 
-export const StintLapsContainer: React.FC<{}> = () => {
+export const StintLapsContainer: React.FC = () => {
   const cars = useSelector((state: ApplicationState) => state.raceData.availableCars);
   const carClasses = useSelector((state: ApplicationState) => state.raceData.availableCarClasses);
   const userSettings = useSelector((state: ApplicationState) => state.userSettings.driverStints);

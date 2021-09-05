@@ -93,8 +93,8 @@ export const CircleOfDoom: React.FC<MyProps> = (props: MyProps) => {
           const pos = item.SectorStartPct * 360;
           const color = "grey";
 
-          let w = 1;
-          let h = sectorMarkerLen;
+          const w = 1;
+          const h = sectorMarkerLen;
           const y = circleExtendSize - h / 2;
           return (
             <g key={`sector-${item.SectorNum}`} transform={`rotate(${pos} ${circleSize} ${circleSize})`}>
@@ -169,7 +169,7 @@ export const CircleOfDoom: React.FC<MyProps> = (props: MyProps) => {
             }
             const y = circleExtendSize - h;
             return (
-              <g transform={`rotate(${pos} ${circleSize} ${circleSize})`}>
+              <g key={`car-${item.carNum}`} transform={`rotate(${pos} ${circleSize} ${circleSize})`}>
                 <rect x={circleSize} y={y} width={w} height={h} style={{ fill: color }} />
                 <text
                   x={circleSize + w / 2}
@@ -196,7 +196,7 @@ export const CircleOfDoom: React.FC<MyProps> = (props: MyProps) => {
             }
             const y = circleExtendSize;
             return (
-              <g transform={`rotate(${pos} ${circleSize} ${circleSize})`}>
+              <g key={`car-${item.carNum}`} transform={`rotate(${pos} ${circleSize} ${circleSize})`}>
                 <rect x={circleSize} y={y} width={w} height={h} style={{ fill: color }} />
                 <text
                   x={circleSize}

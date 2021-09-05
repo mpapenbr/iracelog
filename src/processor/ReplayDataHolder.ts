@@ -49,7 +49,7 @@ export class ReplayDataHolder {
     return this.idx < this.data.length ? this.data[this.idx++] : undefined;
   }
 
-  private internalLoad(startTs: number, num: number = 30) {
+  private internalLoad(startTs: number, num = 30) {
     console.log("requesting " + num + " entries starting at ts: " + startTs);
     this.s.call("racelog.archive.wamp.delta", [this.settings.eventId, startTs, num]).then((res: any) => {
       this.preFetching = false;

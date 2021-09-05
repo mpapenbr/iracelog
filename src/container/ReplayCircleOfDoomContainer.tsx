@@ -15,7 +15,7 @@ import { circleOfDoomSettings, globalSettings } from "../stores/ui/actions";
 
 const { Option } = Select;
 
-export const ReplayCircleOfDoomContainer: React.FC<{}> = () => {
+export const ReplayCircleOfDoomContainer: React.FC = () => {
   const cars = useSelector((state: ApplicationState) => state.raceData.availableCars);
   const carClasses = useSelector((state: ApplicationState) => state.raceData.availableCarClasses);
   const userSettings = useSelector((state: ApplicationState) => state.userSettings.circleOfDoom);
@@ -88,7 +88,7 @@ export const ReplayCircleOfDoomContainer: React.FC<{}> = () => {
     onSelectCarClassFilter: onSelectCarClassChange,
   };
 
-  const SelectPitStopParam: React.FC<{}> = () => {
+  const SelectPitStopParam: React.FC = () => {
     return (
       <>
         <Select

@@ -7,7 +7,7 @@ import CarStintsNivo from "../components/nivo/carStints";
 import { ApplicationState } from "../stores";
 import { globalSettings, stintsSettings } from "../stores/ui/actions";
 
-export const CarStintsContainer: React.FC<{}> = () => {
+export const CarStintsContainer: React.FC = () => {
   const cars = useSelector((state: ApplicationState) => state.raceData.availableCars);
   const carInfo = useSelector((state: ApplicationState) => state.raceData.carInfo);
   const carStints = useSelector((state: ApplicationState) => state.raceData.carStints);

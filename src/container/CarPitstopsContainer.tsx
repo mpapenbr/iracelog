@@ -9,7 +9,7 @@ import PitstopControl from "../components/pitstopControl";
 import { ApplicationState } from "../stores";
 import { globalSettings, pitstopsSettings } from "../stores/ui/actions";
 
-export const CarPitstopsContainer: React.FC<{}> = () => {
+export const CarPitstopsContainer: React.FC = () => {
   const cars = useSelector((state: ApplicationState) => state.raceData.availableCars);
   const carPits = useSelector((state: ApplicationState) => state.raceData.carPits);
   const carClasses = useSelector((state: ApplicationState) => state.raceData.availableCarClasses);

@@ -1,12 +1,12 @@
 import { Empty, List, Table } from "antd";
 import { ColumnsType } from "antd/lib/table";
-import { Key } from "react";
+import React, { Key } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { ApplicationState } from "../stores";
 import { classificationSettings } from "../stores/ui/actions";
 import { IColumnInfo } from "../stores/ui/types";
 
-const StandingsColumnControlList: React.FC<{}> = () => {
+const StandingsColumnControlList: React.FC = () => {
   const allCols = useSelector((state: ApplicationState) => state.baseData.availableStandingsColumns);
 
   console.log(allCols);
@@ -19,7 +19,7 @@ const StandingsColumnControlList: React.FC<{}> = () => {
   );
 };
 
-const StandingsColumnControlTable: React.FC<{}> = () => {
+const StandingsColumnControlTable: React.FC = () => {
   const allCols = useSelector((state: ApplicationState) => state.baseData.availableStandingsColumns);
   const uiSettings = useSelector((state: ApplicationState) => state.userSettings.classification);
   const selCols = uiSettings.showCols;

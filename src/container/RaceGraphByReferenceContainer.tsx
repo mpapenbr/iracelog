@@ -10,7 +10,7 @@ import { globalSettings, raceGraphRelativeSettings } from "../stores/ui/actions"
 
 const { Option } = Select;
 
-export const RaceGraphByReferenceContainer: React.FC<{}> = () => {
+export const RaceGraphByReferenceContainer: React.FC = () => {
   const cars = useSelector((state: ApplicationState) => state.raceData.availableCars);
   const carClasses = useSelector((state: ApplicationState) => state.raceData.availableCarClasses);
 

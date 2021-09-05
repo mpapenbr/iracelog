@@ -2,6 +2,7 @@ import { Line } from "@ant-design/charts";
 import { Types } from "@antv/g2/lib";
 import { Empty } from "antd";
 import { isNumber } from "lodash";
+import React from "react";
 import { useSelector } from "react-redux";
 import { sprintf } from "sprintf-js";
 import { firstBy } from "thenby";

@@ -1,6 +1,7 @@
 import { Col, Row, Table } from "antd";
 import { ColumnsType, TablePaginationConfig } from "antd/lib/table";
 import _ from "lodash";
+import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { ApplicationState } from "../../stores";
 import { messagesSettings } from "../../stores/ui/actions";
@@ -13,7 +14,7 @@ interface IInfoMsgData {
   carClass: string;
   msg: string;
 }
-const RaceMessages: React.FC<{}> = () => {
+const RaceMessages: React.FC = () => {
   const uiSettings = useSelector((state: ApplicationState) => state.userSettings.messages);
   const infoMsgRaw = useSelector((state: ApplicationState) => state.raceData.infoMessages);
   const dispatch = useDispatch();

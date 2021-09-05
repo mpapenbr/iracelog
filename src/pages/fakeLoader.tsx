@@ -2,13 +2,7 @@ import { Col, Empty, Row } from "antd";
 import React from "react";
 import { useDispatch } from "react-redux";
 
-interface IStateProps {}
-interface IDispachProps {
-  // loadEvents: () => any;
-}
-type MyProps = IStateProps & IDispachProps;
-
-export const FakeLoaderPage: React.FC<MyProps> = (props: MyProps) => {
+export const FakeLoaderPage: React.FC = () => {
   const dispatch = useDispatch();
 
   return (
