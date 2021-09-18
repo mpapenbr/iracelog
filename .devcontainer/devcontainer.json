@@ -6,7 +6,8 @@
 
   // Set *default* container specific settings.json values on container create.
   "settings": {
-    "terminal.integrated.shell.linux": "/bin/bash",
+    // "terminal.integrated.shell.linux": "/bin/bash",
+    "terminal.integrated.defaultProfile.linux": "zsh",
     "prettier.printWidth": 120,
     "editor.tabSize": 2,
     "editor.formatOnSave": true,
