@@ -9,7 +9,7 @@
     "@nivo/bullet": "^0.73.0",
     "@nivo/core": "^0.73.0",
     "@nivo/line": "^0.73.0",
-    "@nivo/pie": "^0.73.0",
+    "@nivo/pie": "^0.74.0",
     "antd": "^4.16.13",
     "autobahn": "^20.9.2",
     "deep-object-diff": "^1.1.0",
