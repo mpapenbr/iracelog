@@ -51,9 +51,7 @@ const App: React.FC<AppProps> = (props: AppProps) => {
                   {/* <RaceEventListPage /> */}
                   <DemoRaces />
                 </Route>
-                {/* <Route path="/live">
-                  <LiveContent />
-                </Route> */}
+
                 <Route path="/analysis">
                   <AnalysisMainPage />
                 </Route>

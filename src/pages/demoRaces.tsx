@@ -18,7 +18,6 @@ import { useDispatch } from "react-redux";
 import { useHistory } from "react-router";
 import { sprintf } from "sprintf-js";
 import { globalWamp } from "../commons/globals";
-import { API_CROSSBAR_URL } from "../constants";
 import { distributeChanges } from "../processor/processData";
 import { ReplayDataHolder } from "../processor/ReplayDataHolder";
 import { updateAvailableStandingsColumns } from "../stores/basedata/actions";
@@ -66,7 +65,9 @@ export const DemoRaces: React.FC = () => {
   const [info, setInfo] = useState("Loading data....");
   const [livedata, setLivedata] = useState([] as any[]);
   const [events, setEvents] = useState([] as any[]);
+  // const [config, setConfig] = useState({ crossbar: { url: "xx", realm: "yy" } } as Config);
 
+  const config = globalWamp.backendConfig;
   useEffect(() => {
     onReloadRequested();
     onLoadEvents();
@@ -75,7 +76,8 @@ export const DemoRaces: React.FC = () => {
   const onLoadForReplayButtonClicked = (e: React.MouseEvent<HTMLButtonElement>) => {
     const arg = e.currentTarget.value;
     // readData(arg, dispatch, doInfo);
-    const conn = new autobahn.Connection({ url: API_CROSSBAR_URL + "/ws", realm: "racelog" });
+
+    const conn = new autobahn.Connection({ url: config.crossbar.url, realm: config.crossbar.realm });
     conn.onopen = async (s: Session) => {
       setLoading(true);
       const eventInfo = (await s.call("racelog.archive.event_info", [arg])) as any;
@@ -176,7 +178,7 @@ export const DemoRaces: React.FC = () => {
   };
 
   const connectToLiveData = (id: string) => {
-    const conn = new autobahn.Connection({ url: API_CROSSBAR_URL + "/ws", realm: "racelog" });
+    const conn = new autobahn.Connection({ url: config.crossbar.url, realm: config.crossbar.realm });
 
     conn.onopen = (s: Session) => {
       s.call("racelog.analysis.live", [id]).then((data: any) => {
@@ -257,9 +259,10 @@ export const DemoRaces: React.FC = () => {
     // setTimeout(() => setLoading(false), 2000);
   };
 
-  const onReloadRequested = () => {
+  const onReloadRequested = async () => {
     console.log("fetching current live data providers");
-    const conn = new autobahn.Connection({ url: API_CROSSBAR_URL + "/ws", realm: "racelog" });
+
+    const conn = new autobahn.Connection({ url: config.crossbar.url, realm: config.crossbar.realm });
     conn.onopen = (s: Session) => {
       s.call("racelog.list_providers").then((data: any) => {
         setLivedata(data.map((v: any) => ({ key: v.key, title: v.name, description: v.description })));
@@ -271,7 +274,7 @@ export const DemoRaces: React.FC = () => {
 
   const onLoadEvents = () => {
     console.log("fetching events");
-    const conn = new autobahn.Connection({ url: API_CROSSBAR_URL + "/ws", realm: "racelog" });
+    const conn = new autobahn.Connection({ url: config.crossbar.url, realm: config.crossbar.realm });
     conn.onopen = (s: Session) => {
       s.call("racelog.archive.events").then((data: any) => {
         setEvents(
