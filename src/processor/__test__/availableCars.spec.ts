@@ -20,7 +20,7 @@ describe("available cars", () => {
   });
 
   it("should invoke change handler", () => {
-    var result: ICarBaseData[] = [];
+    let result: ICarBaseData[] = [];
     const onChangedAvailableCars = (cars: ICarBaseData[]) => {
       result = cars;
     };
