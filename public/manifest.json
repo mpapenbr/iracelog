@@ -1,6 +1,6 @@
 {
-  "short_name": "React App",
-  "name": "Create React App Sample",
+  "short_name": "iRacelog",
+  "name": "Frontend for viewing race data collected during iRacing races.",
   "icons": [
     {
       "src": "favicon.ico",
