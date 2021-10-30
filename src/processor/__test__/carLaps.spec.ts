@@ -19,7 +19,7 @@ describe("available cars", () => {
   });
 
   it("should detect additional lap to car", () => {
-    var result: ICarLaps[] = [];
+    let result: ICarLaps[] = [];
     const onChangedCarLaps = (data: ICarLaps[]) => {
       result = data;
     };
@@ -53,7 +53,7 @@ describe("available cars", () => {
   });
 
   it("should detect additional car entry", () => {
-    var result: ICarLaps[] = [];
+    let result: ICarLaps[] = [];
     const onChangedCarLaps = (data: ICarLaps[]) => {
       result = data;
     };
