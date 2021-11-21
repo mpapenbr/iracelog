@@ -117,7 +117,7 @@ const StintStretch: React.FC<MyProps> = (props: MyProps) => {
             .map((c) => {
               return (
                 <Tooltip
-                  key={"tt-" + c.data.carNum}
+                  key={"tt-" + c.data.carNum + "-" + c.idx}
                   color={c.color}
                   overlay={
                     <StintTooltip
