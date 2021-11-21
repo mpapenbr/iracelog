@@ -31,7 +31,7 @@ export class ReplayDataHolder {
     this.data = [];
     this.idx = 0;
     this.preFetching = true;
-    const res = await this.s.call("racelog.archive.wamp.delta", [this.settings.eventId, startTs, 15]);
+    const res = await this.s.call("racelog.public.archive.state.delta", [this.settings.eventId, startTs, 15]);
     this.processDataFromWamp(res);
     this.preFetching = false;
   }
@@ -51,7 +51,7 @@ export class ReplayDataHolder {
 
   private internalLoad(startTs: number, num = 30) {
     console.log("requesting " + num + " entries starting at ts: " + startTs);
-    this.s.call("racelog.archive.wamp.delta", [this.settings.eventId, startTs, num]).then((res: any) => {
+    this.s.call("racelog.public.archive.state.delta", [this.settings.eventId, startTs, num]).then((res: any) => {
       this.preFetching = false;
       console.log("got " + res.length + " items");
       this.processDataFromWamp(res);

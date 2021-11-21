@@ -80,7 +80,7 @@ export const DemoRaces: React.FC = () => {
     const conn = new autobahn.Connection({ url: config.crossbar.url, realm: config.crossbar.realm });
     conn.onopen = async (s: Session) => {
       setLoading(true);
-      const eventInfo = (await s.call("racelog.archive.event_info", [arg])) as any;
+      const eventInfo = (await s.call("racelog.public.get_event_info", [arg])) as any;
       console.log(eventInfo);
       dispatch(reset());
       resetUi();
@@ -97,10 +97,10 @@ export const DemoRaces: React.FC = () => {
       dispatch(replaySettings(settings));
       dispatch(updateEventInfo(eventInfo.data.info));
 
-      const trackInfo = (await s.call("racelog.get_track_info", [eventInfo.data.info.trackId])) as ITrackInfo;
+      const trackInfo = (await s.call("racelog.public.get_track_info", [eventInfo.data.info.trackId])) as ITrackInfo;
       dispatch(updateTrackInfo(trackInfo));
       // const mData = JSON.parse(manifestData);
-      const data = (await s.call("racelog.analysis.archive", [eventInfo.eventKey])) as any;
+      const data = (await s.call("racelog.public.archive.get_event_analysis", [eventInfo.id])) as any;
 
       doDistribute(defaultProcessRaceStateData, data);
       dispatch(updateManifests(eventInfo.data.manifests));
@@ -177,11 +177,11 @@ export const DemoRaces: React.FC = () => {
     });
   };
 
-  const connectToLiveData = (id: string) => {
+  const connectToLiveData = (eventKey: string) => {
     const conn = new autobahn.Connection({ url: config.crossbar.url, realm: config.crossbar.realm });
 
     conn.onopen = (s: Session) => {
-      s.call("racelog.analysis.live", [id]).then((data: any) => {
+      s.call("racelog.public.live.get_event_analysis", [eventKey]).then((data: any) => {
         console.log(data); // we  will always get an array here (due to WAMP)
         // dispatch(updateManifests(data.manifests)); // these are the "small" manifests
         const manifests = postProcessManifest(data.manifests);
@@ -193,13 +193,13 @@ export const DemoRaces: React.FC = () => {
       });
       dispatch(connectedToServer());
       // TODO: maybe combine this with above call
-      s.call("racelog.get_event_info", [id]).then(async (data: any) => {
+      s.call("racelog.public.get_event_info_by_key", [eventKey]).then(async (data: any) => {
         console.log(data);
-        dispatch(updateEventInfo(data[0]));
-        const trackInfo = (await s.call("racelog.get_track_info", [data[0].trackId])) as ITrackInfo;
+        dispatch(updateEventInfo(data.data));
+        const trackInfo = (await s.call("racelog.public.get_track_info", [data.data.trackId])) as ITrackInfo;
         dispatch(updateTrackInfo(trackInfo));
       });
-      s.subscribe(sprintf("racelog.state.%s", id), (data) => {
+      s.subscribe(sprintf("racelog.public.live.state.%s", eventKey), (data) => {
         const theProc = globalWamp.processor;
         // important, otherwise we don't detect changes on carLaps,carStints,.... (all those Array.from(...) attrs of BulkProcessor)
         // raceGraph would be ok though. Needs further investigation
@@ -214,7 +214,7 @@ export const DemoRaces: React.FC = () => {
     conn.open();
 
     globalWamp.conn = conn;
-    globalWamp.currentLiveId = id;
+    globalWamp.currentLiveId = eventKey;
   };
 
   const resetUi = () => {
@@ -264,8 +264,9 @@ export const DemoRaces: React.FC = () => {
 
     const conn = new autobahn.Connection({ url: config.crossbar.url, realm: config.crossbar.realm });
     conn.onopen = (s: Session) => {
-      s.call("racelog.list_providers").then((data: any) => {
-        setLivedata(data.map((v: any) => ({ key: v.key, title: v.name, description: v.description })));
+      s.call("racelog.public.list_providers").then((data: any) => {
+        console.log(data);
+        setLivedata(data.map((v: any) => ({ key: v.eventKey, title: v.info.name, description: v.info.description })));
         conn.close();
       });
     };
@@ -276,9 +277,9 @@ export const DemoRaces: React.FC = () => {
     console.log("fetching events");
     const conn = new autobahn.Connection({ url: config.crossbar.url, realm: config.crossbar.realm });
     conn.onopen = (s: Session) => {
-      s.call("racelog.archive.events").then((data: any) => {
+      s.call("racelog.public.get_events").then((data: any) => {
         setEvents(
-          data.map((v: any) => ({ key: v.eventKey, title: v.name, description: v.description, eventId: v.id }))
+          data.map((v: any) => ({ key: v.eventKey, title: v.name, description: v.description, eventId: v.dbId }))
         );
         conn.close();
       });
