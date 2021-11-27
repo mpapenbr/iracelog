@@ -279,7 +279,7 @@ export const DemoRaces: React.FC = () => {
     conn.onopen = (s: Session) => {
       s.call("racelog.public.get_events").then((data: any) => {
         setEvents(
-          data.map((v: any) => ({ key: v.eventKey, title: v.name, description: v.description, eventId: v.dbId }))
+          data.map((v: any) => ({ key: v.eventKey, title: v.name, description: v.description, eventId: v.id }))
         );
         conn.close();
       });
