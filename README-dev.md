@@ -40,6 +40,12 @@ For now:
 - avoid using x-values as number. Use strings instead (https://github.com/ant-design/ant-design-charts/issues/797)
 - boxplot-outliers (https://github.com/ant-design/ant-design-charts/issues/800)
 
+## eslint >8.0
+
+At the moment (2021-11-27) the reason not updating eslint to >8 is the _react-scripts_ module. Version 4.0.3 requires eslint ^7.11.0.
+
+see https://github.com/facebook/create-react-app/issues/11549 for example
+
 # Solved issues
 
 ## Nivo
