@@ -1,3 +1,35 @@
+### 0.11.0 (2021-11-28)
+
+##### Build System / Dependencies
+
+* **deps:**
+  *  bump dns-packet from 1.3.1 to 1.3.4 (#126) (50b49f16)
+  *  bump ws from 6.2.1 to 6.2.2 (#124) (3f6df59c)
+  *  bump url-parse from 1.5.1 to 1.5.3 (#125) (363ad2dd)
+  *  bump tmpl from 1.0.4 to 1.0.5 (#121) (2a820e7c)
+  *  bump path-parse from 1.0.6 to 1.0.7 (#122) (dc45e13b)
+  *  bump tar from 6.1.0 to 6.1.11 (#123) (ab879ad6)
+  *  minor @types updates (dd03096f)
+  *  antd 4.17.2, ant-design charts 1.3.1 (92b7551f)
+  *  bump typescript 4.5.2 (0300bcda)
+
+##### Chores
+
+*  update dependabot.yml (4ce04fc4)
+
+##### Documentation Changes
+
+*  how to customzie docker container (64263237)
+
+##### New Features
+
+*  adapt to new wamp endpoints (27d28418)
+
+##### Bug Fixes
+
+*  id mapping for loaded events (573a8415)
+*  unique tooltip key for stretch (afa43544)
+
 ### 0.10.0 (2021-10-31)
 
 ##### Build System / Dependencies
