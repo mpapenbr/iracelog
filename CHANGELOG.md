@@ -1,3 +1,17 @@
+#### 0.11.1 (2021-12-03)
+
+##### Build System / Dependencies
+
+* **deps-dev:**  bump @types/node from 16.11.10 to 16.11.11 (#128) (9a9949fc)
+
+##### Bug Fixes
+
+*  event data for live events (a7afc310)
+
+##### Other Changes
+
+* mpapenbr/iracelog into main (feb7d0bc)
+
 ### 0.11.0 (2021-11-28)
 
 ##### Build System / Dependencies
