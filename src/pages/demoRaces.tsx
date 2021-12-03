@@ -195,8 +195,8 @@ export const DemoRaces: React.FC = () => {
       // TODO: maybe combine this with above call
       s.call("racelog.public.get_event_info_by_key", [eventKey]).then(async (data: any) => {
         console.log(data);
-        dispatch(updateEventInfo(data.data));
-        const trackInfo = (await s.call("racelog.public.get_track_info", [data.data.trackId])) as ITrackInfo;
+        dispatch(updateEventInfo(data.data.info));
+        const trackInfo = (await s.call("racelog.public.get_track_info", [data.data.info.trackId])) as ITrackInfo;
         dispatch(updateTrackInfo(trackInfo));
       });
       s.subscribe(sprintf("racelog.public.live.state.%s", eventKey), (data) => {
