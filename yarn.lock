@@ -7,10 +7,10 @@
   resolved "https://registry.yarnpkg.com/@amap/amap-jsapi-loader/-/amap-jsapi-loader-0.0.3.tgz#5d676f1670213de0927c74da77475723e5de2380"
   integrity sha512-3Tz50UdmRY2BiONK/mafEQzshYGUinK2hmDlKjYtoJHC/aVydiMOolHENWmP98F603RcrWTM7aLxOFMgesFfug==
 
-"@ant-design/charts@^1.3.1":
-  version "1.3.1"
-  resolved "https://registry.yarnpkg.com/@ant-design/charts/-/charts-1.3.1.tgz#d1c8717fdf9fe4f4601852573681540ee5f241ee"
-  integrity sha512-tit5YWPKQQDzG2uCHNN9wbdRo40xTM9IsgLqgeu4yZRQQlLFdr91f+9bA/14KqL2TkvxrN3e3m0lW093hJn5Qg==
+"@ant-design/charts@^1.3.2":
+  version "1.3.2"
+  resolved "https://registry.yarnpkg.com/@ant-design/charts/-/charts-1.3.2.tgz#a7b418a81f386660402e347a31c10f7a75794ca9"
+  integrity sha512-aUmhvzZKMDIqug1xeFDPCzw2My5k3PKraLV3s1R7wXLDKdVXE20KWJAqVXhXiOv5vnOFctDdrQfWerpsVE7ZrA==
   dependencies:
     "@ant-design/flowchart" "^1.0.2"
     "@ant-design/graphs" "^1.0.1"
