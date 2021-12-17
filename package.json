@@ -8,7 +8,7 @@
     "@nivo/bar": "^0.74.0",
     "@nivo/bullet": "^0.74.0",
     "@nivo/core": "^0.74.0",
-    "@nivo/line": "^0.74.0",
+    "@nivo/line": "^0.75.0",
     "@nivo/pie": "^0.74.0",
     "antd": "^4.17.2",
     "autobahn": "^20.9.2",
