@@ -3,7 +3,7 @@
   "version": "0.11.1",
   "private": true,
   "dependencies": {
-    "@ant-design/charts": "^1.3.1",
+    "@ant-design/charts": "^1.3.3",
     "@mpapenbr/iracelog-analysis": "^1.1.1",
     "@nivo/bar": "^0.74.0",
     "@nivo/bullet": "^0.74.0",
