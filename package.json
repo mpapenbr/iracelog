@@ -10,7 +10,7 @@
     "@nivo/core": "^0.74.0",
     "@nivo/line": "^0.74.0",
     "@nivo/pie": "^0.74.0",
-    "antd": "^4.17.2",
+    "antd": "^4.18.0",
     "autobahn": "^20.9.2",
     "deep-object-diff": "^1.1.0",
     "lodash": "^4.17.20",
