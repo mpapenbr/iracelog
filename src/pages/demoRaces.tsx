@@ -15,7 +15,8 @@ import autobahn, { Session } from "autobahn";
 import _ from "lodash";
 import React, { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
-import { useHistory } from "react-router";
+import { useNavigate } from "react-router";
+// import { useHistory } from "react-router";
 import { sprintf } from "sprintf-js";
 import { globalWamp } from "../commons/globals";
 import { distributeChanges } from "../processor/processData";
@@ -58,7 +59,7 @@ import { postProcessManifest } from "../stores/wamp/reducer";
 
 export const DemoRaces: React.FC = () => {
   const dispatch = useDispatch();
-  const history = useHistory();
+  const navigate = useNavigate();
 
   const [loadTrigger, setLoadTrigger] = useState(0);
   const [loading, setLoading] = useState(false);
@@ -110,7 +111,7 @@ export const DemoRaces: React.FC = () => {
       globalWamp.currentLiveId = undefined;
 
       setLoading(false);
-      history.push("/analysis");
+      navigate("/analysis/" + eventInfo.eventKey);
     };
 
     conn.open();
@@ -255,7 +256,7 @@ export const DemoRaces: React.FC = () => {
     }
 
     resetUi();
-    history.push("/analysis");
+    navigate("/analysis", { state: { id: id } });
     // setTimeout(() => setLoading(false), 2000);
   };
 

@@ -1,7 +1,7 @@
 import { Layout, Menu } from "antd";
 import React from "react";
 import { Provider } from "react-redux";
-import { BrowserRouter as Router, Link, Route, Switch } from "react-router-dom";
+import { BrowserRouter as Router, Link, Route, Routes } from "react-router-dom";
 import { Store } from "redux";
 import "./App.css";
 import { API_LOCAL_DEV_MODE } from "./constants";
@@ -44,32 +44,25 @@ const App: React.FC<AppProps> = (props: AppProps) => {
               )}
             </Menu>
           </Header>
+
           <Content style={{ padding: "0 5px" }}>
             <div className="site-layout-content">
-              <Switch>
-                <Route exact path="/events">
-                  {/* <RaceEventListPage /> */}
-                  <DemoRaces />
-                </Route>
+              <Routes>
+                <Route path="/events" element={<DemoRaces />} />
 
-                <Route path="/analysis">
-                  <AnalysisMainPage />
-                </Route>
-                {API_LOCAL_DEV_MODE ? (
-                  <Route path="/devloader">
-                    <FakeLoaderPage />
-                  </Route>
-                ) : (
-                  <></>
-                )}
-              </Switch>
+                <Route path="/analysis/:eventId/*" element={<AnalysisMainPage />} />
+
+                {API_LOCAL_DEV_MODE ? <Route path="/devloader" element={<FakeLoaderPage />} /> : <></>}
+              </Routes>
             </div>
           </Content>
-          <Footer style={{ textAlign: "center" }}>iRacelog ©2021 Markus Papenbrock</Footer>
+          <Footer style={{ textAlign: "center" }}>iRacelog ©2022 Markus Papenbrock</Footer>
         </Layout>
       </Router>
     </Provider>
   );
 };
+
+const FakeEvents = React;
 
 export default App;
