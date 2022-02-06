@@ -47,6 +47,12 @@ export const AnalysisMainPage: React.FC = () => {
     <Layout>
       <Sider theme="light" width={170}>
         <Menu theme="light" mode="inline">
+          <Menu.Item key="events" className="race-sidebar">
+            <Link to="/events">Events</Link>
+          </Menu.Item>
+
+          <Menu.Divider />
+
           <Menu.Item key="classification" className="race-sidebar">
             <Link to="classification">Classification</Link>
           </Menu.Item>
