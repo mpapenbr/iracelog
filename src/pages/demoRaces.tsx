@@ -1,16 +1,7 @@
 import { ReloadOutlined } from "@ant-design/icons";
 import { BulkProcessor } from "@mpapenbr/iracelog-analysis";
-import {
-  defaultProcessRaceStateData,
-  ICarInfo,
-  ICarLaps,
-  ICarPitInfo,
-  ICarStintInfo,
-  IMessage,
-  IProcessRaceStateData,
-  IRaceGraph,
-} from "@mpapenbr/iracelog-analysis/dist/stints/types";
-import { Button, Col, List, Modal, Row } from "antd";
+import { defaultProcessRaceStateData } from "@mpapenbr/iracelog-analysis/dist/stints/types";
+import { Button, Col, List, Row } from "antd";
 import autobahn, { Session } from "autobahn";
 import _ from "lodash";
 import React, { useEffect, useState } from "react";
@@ -19,43 +10,12 @@ import { useNavigate } from "react-router";
 // import { useHistory } from "react-router";
 import { sprintf } from "sprintf-js";
 import { globalWamp } from "../commons/globals";
-import { distributeChanges } from "../processor/processData";
-import { ReplayDataHolder } from "../processor/ReplayDataHolder";
 import { updateAvailableStandingsColumns } from "../stores/basedata/actions";
-import {
-  updateAvailableCarClasses,
-  updateAvailableCars,
-  updateCarInfo,
-  updateCarLaps,
-  updateCarPits,
-  updateCarStints,
-  updateClassification,
-  updateEventInfo,
-  updateInfoMessages,
-  updateRaceGraph,
-  updateSessionInfo,
-  updateTrackInfo,
-} from "../stores/racedata/actions";
-import { ICarBaseData, ICarClass, ITrackInfo } from "../stores/racedata/types";
-import {
-  circleOfDoomSettings,
-  classificationSettings,
-  dashboardSettings,
-  driverLapsSettings,
-  driverStintsSettings,
-  globalSettings,
-  messagesSettings,
-  pitstopsSettings,
-  raceGraphRelativeSettings,
-  raceGraphSettings,
-  racePositionsSettings,
-  replaySettings,
-  stintsSettings,
-  stintSummarySettings,
-} from "../stores/ui/actions";
-import { defaultStateData, initialReplaySettings } from "../stores/ui/reducer";
-import { connectedToServer, reset, setManifests, updateManifests } from "../stores/wamp/actions";
+import { updateEventInfo, updateTrackInfo } from "../stores/racedata/actions";
+import { ITrackInfo } from "../stores/racedata/types";
+import { connectedToServer, setManifests } from "../stores/wamp/actions";
 import { postProcessManifest } from "../stores/wamp/reducer";
+import { doDistribute } from "./datahandler";
 
 export const DemoRaces: React.FC = () => {
   const dispatch = useDispatch();
@@ -63,7 +23,7 @@ export const DemoRaces: React.FC = () => {
 
   const [loadTrigger, setLoadTrigger] = useState(0);
   const [loading, setLoading] = useState(false);
-  const [info, setInfo] = useState("Loading data....");
+
   const [livedata, setLivedata] = useState([] as any[]);
   const [events, setEvents] = useState([] as any[]);
   // const [config, setConfig] = useState({ crossbar: { url: "xx", realm: "yy" } } as Config);
@@ -76,106 +36,8 @@ export const DemoRaces: React.FC = () => {
 
   const onLoadForReplayButtonClicked = (e: React.MouseEvent<HTMLButtonElement>) => {
     const arg = e.currentTarget.value;
-    // readData(arg, dispatch, doInfo);
-
-    const conn = new autobahn.Connection({ url: config.crossbar.url, realm: config.crossbar.realm });
-    conn.onopen = async (s: Session) => {
-      setLoading(true);
-      const eventInfo = (await s.call("racelog.public.get_event_info", [arg])) as any;
-      console.log(eventInfo);
-      dispatch(reset());
-      resetUi();
-      const settings = {
-        ...initialReplaySettings,
-        minTimestamp: eventInfo.data.replayInfo.minTimestamp,
-        currentSessionTime: eventInfo.data.replayInfo.minSessionTime,
-        minSessionTime: eventInfo.data.replayInfo.minSessionTime,
-        maxSessionTime: eventInfo.data.replayInfo.maxSessionTime,
-        enabled: true,
-        eventKey: eventInfo.eventKey,
-        eventId: eventInfo.id,
-      };
-      dispatch(replaySettings(settings));
-      dispatch(updateEventInfo(eventInfo.data.info));
-
-      const trackInfo = (await s.call("racelog.public.get_track_info", [eventInfo.data.info.trackId])) as ITrackInfo;
-      dispatch(updateTrackInfo(trackInfo));
-      // const mData = JSON.parse(manifestData);
-      const data = (await s.call("racelog.public.archive.get_event_analysis", [eventInfo.id])) as any;
-
-      doDistribute(defaultProcessRaceStateData, data);
-      dispatch(updateManifests(eventInfo.data.manifests));
-      // conn.close();
-      const rh = new ReplayDataHolder(s, settings);
-      globalWamp.replayHolder = rh;
-      globalWamp.currentLiveId = undefined;
-
-      setLoading(false);
-      navigate("/analysis/" + eventInfo.eventKey);
-    };
-
-    conn.open();
-    // setTimeout(() => setLoading(false), 2000);
-  };
-  const onChangeSession = (message: IMessage) => {
-    // console.log(message);
-    dispatch(updateSessionInfo(message));
-  };
-  const onChangeClassification = (message: IMessage) => {
-    // console.log(message);
-    dispatch(updateClassification(message));
-  };
-
-  const onChangeInfoMessages = (data: IMessage[]) => {
-    console.log("onChangeInfoMessages: " + data.length);
-    dispatch(updateInfoMessages(data));
-  };
-  const onChangedAvailableCars = (data: ICarBaseData[]) => {
-    console.log("onChangedAvailableCars: " + data.length);
-    dispatch(updateAvailableCars(data));
-  };
-  const onChangedAvailableCarClasses = (data: ICarClass[]) => {
-    console.log("onChangedAvailableCarClasses: " + data.length);
-    dispatch(updateAvailableCarClasses(data));
-  };
-
-  const onChangeCarInfos = (data: ICarInfo[]) => {
-    // console.log(message);
-    dispatch(updateCarInfo(data));
-  };
-  const onChangeRaceGraph = (data: IRaceGraph[]) => {
-    console.log("onChangeRaceGraph: " + data.length);
-    dispatch(updateRaceGraph(data));
-  };
-  const onChangeCarLaps = (data: ICarLaps[]) => {
-    // console.log(message);
-    dispatch(updateCarLaps(data));
-  };
-  const onChangeCarStints = (data: ICarStintInfo[]) => {
-    // console.log("onChangeCarStints:" + data.length);
-    dispatch(updateCarStints(data));
-  };
-  const onChangeCarPits = (data: ICarPitInfo[]) => {
-    // console.log(message);
-    // console.log("onChangeCarPits:" + data.length);
-    dispatch(updateCarPits(data));
-  };
-
-  const doDistribute = (currentData: IProcessRaceStateData, newData: IProcessRaceStateData) => {
-    distributeChanges({
-      currentData: currentData,
-      newData: newData,
-      onChangedSession: onChangeSession,
-      onChangedClassification: onChangeClassification,
-      onChangedAvailableCars: onChangedAvailableCars,
-      onChangedAvailableCarClasses: onChangedAvailableCarClasses,
-      onChangedRaceGraph: onChangeRaceGraph,
-      onChangedCarInfos: onChangeCarInfos,
-      onChangedCarLaps: onChangeCarLaps,
-      onChangedCarStints: onChangeCarStints,
-      onChangedCarPits: onChangeCarPits,
-      onChangedInfoMessages: onChangeInfoMessages,
-    });
+    globalWamp.currentLiveId = undefined;
+    navigate("/analysis/" + arg);
   };
 
   const connectToLiveData = (eventKey: string) => {
@@ -187,9 +49,10 @@ export const DemoRaces: React.FC = () => {
         // dispatch(updateManifests(data.manifests)); // these are the "small" manifests
         const manifests = postProcessManifest(data.manifests);
         dispatch(setManifests(manifests));
+        dispatch(updateAvailableStandingsColumns([])); // reset here, trigger standings page recompute
         globalWamp.processor = new BulkProcessor(manifests, data.processedData);
 
-        doDistribute(defaultProcessRaceStateData, data.processedData);
+        doDistribute(dispatch, defaultProcessRaceStateData, data.processedData);
         globalWamp.currentData = data.processedData;
       });
       dispatch(connectedToServer());
@@ -208,7 +71,7 @@ export const DemoRaces: React.FC = () => {
 
         const newData = theProc!.process([data[0]]);
 
-        doDistribute(curData, newData);
+        doDistribute(dispatch, curData, newData);
         globalWamp.currentData = { ...newData };
       });
     };
@@ -216,26 +79,6 @@ export const DemoRaces: React.FC = () => {
 
     globalWamp.conn = conn;
     globalWamp.currentLiveId = eventKey;
-  };
-
-  const resetUi = () => {
-    dispatch(classificationSettings(defaultStateData.classification));
-    dispatch(messagesSettings(defaultStateData.messages));
-    dispatch(raceGraphSettings(defaultStateData.raceGraph));
-    dispatch(raceGraphRelativeSettings(defaultStateData.raceGraphRelative));
-    dispatch(racePositionsSettings(defaultStateData.racePositions));
-    dispatch(driverLapsSettings(defaultStateData.driverLaps));
-    dispatch(pitstopsSettings(defaultStateData.pitstops));
-    dispatch(stintsSettings(defaultStateData.stints));
-    dispatch(stintSummarySettings(defaultStateData.stintSummary));
-    dispatch(driverStintsSettings(defaultStateData.driverStints));
-    dispatch(circleOfDoomSettings(defaultStateData.circleOfDoom));
-    dispatch(replaySettings(defaultStateData.replay));
-    dispatch(globalSettings(defaultStateData.global));
-    dispatch(dashboardSettings(defaultStateData.dashboard));
-    dispatch(updateAvailableStandingsColumns([]));
-    dispatch(updateAvailableCars([]));
-    dispatch(updateAvailableCarClasses([]));
   };
 
   const onLiveButtonClicked = (e: React.MouseEvent<HTMLButtonElement>) => {
@@ -255,8 +98,8 @@ export const DemoRaces: React.FC = () => {
       }
     }
 
-    resetUi();
-    navigate("/analysis", { state: { id: id } });
+    // navigate("/analysis/" + id, { state: { id: id } });
+    navigate("/analysis/" + id);
     // setTimeout(() => setLoading(false), 2000);
   };
 
@@ -302,7 +145,7 @@ export const DemoRaces: React.FC = () => {
                 // </Button>,
                 <Button
                   key={"bt-replay" + item.eventId}
-                  value={item.eventId}
+                  value={item.key}
                   type="default"
                   onClick={onLoadForReplayButtonClicked}
                 >
@@ -314,9 +157,6 @@ export const DemoRaces: React.FC = () => {
             </List.Item>
           )}
         />
-        <Modal title="Loading" visible={loading} closable={false} footer={<></>}>
-          {info}
-        </Modal>
       </Col>
       <Col span={8}>
         <List

@@ -1,7 +1,8 @@
-import { Layout, Menu } from "antd";
-import React from "react";
+import { Layout, Menu, Modal, notification } from "antd";
+import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { Link, Route, Routes, useParams } from "react-router-dom";
+import { globalWamp } from "../commons/globals";
 import Classification from "../components/live/classification";
 import RaceMessages from "../components/live/raceMessages";
 import { API_LOCAL_DEV_MODE } from "../constants";
@@ -17,6 +18,7 @@ import { StintLapsContainer } from "../container/StintLapsContainer";
 import { StintSummaryContainer } from "../container/StintSummaryContainer";
 import { TestContainer } from "../container/Test";
 import { ApplicationState } from "../stores";
+import { LoaderPage } from "./loader";
 
 const { Header, Sider, Content } = Layout;
 
@@ -25,11 +27,22 @@ const OtherContent: React.FC = () => <div>Here goes other content</div>;
 export const AnalysisMainPage: React.FC = () => {
   const params = useParams();
   const replaySettings = useSelector((state: ApplicationState) => state.userSettings.replay);
+  const [loadTrigger, setLoadTrigger] = useState(0);
+  const [loading, setLoading] = useState(false);
 
-  console.log(params);
-  if (replaySettings.eventKey !== params.eventId) {
-    console.log("should load " + params.eventId);
-  }
+  // console.log(params);
+  useEffect(() => {
+    // if live event is running, we don't need to do anything here
+    if (globalWamp.currentLiveId) {
+      return;
+    }
+    if (replaySettings.eventKey !== params.eventKey) {
+      console.log("should load " + params.eventKey);
+      setLoading(true);
+    } else {
+      console.log("event " + params.eventId + " already loaded");
+    }
+  }, [loadTrigger]);
   return (
     <Layout>
       <Sider theme="light" width={170}>
@@ -88,6 +101,21 @@ export const AnalysisMainPage: React.FC = () => {
         </Menu>
       </Sider>
       <Content>
+        <Modal title="Loading" visible={loading} closable={false} footer={<></>}>
+          {/* {info} */}
+          <LoaderPage
+            eventKey={params.eventKey}
+            onFinished={(success) => {
+              if (!success) {
+                notification["error"]({
+                  message: "Load event",
+                  description: `The requested event ${params.eventKey} does not exist.`,
+                });
+              }
+              setLoading(false);
+            }}
+          />
+        </Modal>
         <Routes>
           <Route path="classification" element={<Classification />} />
           <Route index element={<Classification />} />
