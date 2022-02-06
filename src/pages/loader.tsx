@@ -1,5 +1,4 @@
 import { defaultProcessRaceStateData } from "@mpapenbr/iracelog-analysis/dist/stints/types";
-import { List } from "antd";
 import autobahn, { Session } from "autobahn";
 import React, { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
@@ -23,16 +22,14 @@ export const LoaderPage: React.FC<MyProps> = (props: MyProps) => {
   const navigate = useNavigate();
   const config = globalWamp.backendConfig;
   const [loadTrigger, setLoadTrigger] = useState(0);
-  const [tasks, setTasks] = useState([] as string[]);
-
-  let workTasks = [] as string[];
+  const [task, setTasks] = useState("");
 
   useEffect(() => {
     const conn = new autobahn.Connection({ url: config.crossbar.url, realm: config.crossbar.realm });
     conn.onopen = async (s: Session) => {
       try {
-        workTasks = workTasks.concat("Loading event info");
-        setTasks(workTasks);
+        setTasks("Loading event info");
+
         const eventInfo = (await s.call("racelog.public.get_event_info_by_key", [props.eventKey])) as any;
 
         console.log(eventInfo);
@@ -50,14 +47,14 @@ export const LoaderPage: React.FC<MyProps> = (props: MyProps) => {
         };
         dispatch(replaySettings(settings));
         dispatch(updateEventInfo(eventInfo.data.info));
-        workTasks = workTasks.concat("Loading track info");
-        setTasks(workTasks);
+        setTasks("Loading track info");
+
         const trackInfo = (await s.call("racelog.public.get_track_info", [eventInfo.data.info.trackId])) as ITrackInfo;
 
         dispatch(updateTrackInfo(trackInfo));
         // const mData = JSON.parse(manifestData);
-        workTasks = workTasks.concat("Loading analysis data");
-        setTasks(workTasks);
+        setTasks("Loading analysis data");
+
         const data = (await s.call("racelog.public.archive.get_event_analysis", [eventInfo.id])) as any;
 
         doDistribute(dispatch, defaultProcessRaceStateData, data);
@@ -82,9 +79,5 @@ export const LoaderPage: React.FC<MyProps> = (props: MyProps) => {
     conn.open();
   }, [loadTrigger]);
 
-  return (
-    <>
-      <List size="small" dataSource={tasks} renderItem={(item) => <List.Item>{item}</List.Item>} />
-    </>
-  );
+  return <>{task}</>;
 };
