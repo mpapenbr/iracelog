@@ -50,7 +50,7 @@ const App: React.FC<AppProps> = (props: AppProps) => {
               <Routes>
                 <Route path="/events" element={<DemoRaces />} />
 
-                <Route path="/analysis/:eventId/*" element={<AnalysisMainPage />} />
+                <Route path="/analysis/:eventKey/*" element={<AnalysisMainPage />} />
 
                 {API_LOCAL_DEV_MODE ? <Route path="/devloader" element={<FakeLoaderPage />} /> : <></>}
               </Routes>
