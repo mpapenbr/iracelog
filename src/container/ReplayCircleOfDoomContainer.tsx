@@ -7,7 +7,6 @@ import CarFilter from "../components/live/carFilter";
 import { CircleOfDoom } from "../components/live/circleofdoom";
 import { collectCarsByCarClassFilter, processCarClassSelectionNew } from "../components/live/util";
 import { ReplayControl } from "../components/replayControl";
-import SessionInfoDescription from "../components/sessionInfoDescr";
 import { Standings } from "../components/standings";
 import StandingsColumnControl from "../components/standingsColumnControl";
 import { ApplicationState } from "../stores";
@@ -148,11 +147,6 @@ export const ReplayCircleOfDoomContainer: React.FC = () => {
             </Col>
 
             <Col span="12">{replaySettings.enabled ? <ReplayControl /> : <></>}</Col>
-          </Row>
-          <Row>
-            <Col span="23">
-              <SessionInfoDescription />
-            </Col>
           </Row>
         </Col>
       </Row>

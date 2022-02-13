@@ -14,9 +14,7 @@ const Classification: React.FC = () => {
   return (
     <>
       <Row align="bottom">
-        <Col span={23}>
-          <SessionInfoData />
-        </Col>
+        <Col span={23} />
         <Col>
           <Popover content={<StandingsColumnControl />} title="Select columns">
             <Button icon={<SettingOutlined />} />

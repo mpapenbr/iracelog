@@ -5,6 +5,7 @@ import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import { Store } from "redux";
 import "./App.css";
 import { API_LOCAL_DEV_MODE } from "./constants";
+import { EventHeaderContainer } from "./container/EventHeaderContainer";
 import { AnalysisMainPage } from "./pages/analysisPage";
 import { DemoRaces } from "./pages/demoRaces";
 import { FakeLoaderPage } from "./pages/fakeLoader";
@@ -24,7 +25,7 @@ const App: React.FC<AppProps> = (props: AppProps) => {
       <Router>
         <Layout className="layout">
           <Header>
-            <div className="logo" />
+            <EventHeaderContainer />
           </Header>
 
           <Content style={{ padding: "0 5px" }}>

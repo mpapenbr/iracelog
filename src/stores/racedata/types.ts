@@ -13,6 +13,7 @@ export interface ISector {
   SectorStartPct: number;
 }
 export interface IEventInfo {
+  name: string;
   trackId: number;
   teamRacing: boolean;
   irSessionId: number;

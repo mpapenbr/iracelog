@@ -15,6 +15,7 @@
 
 .App-header {
   background-color: #282c34;
+
   min-height: 100vh;
   display: flex;
   flex-direction: column;
@@ -38,6 +39,18 @@
 }
 
 @import "~antd/dist/antd.css";
+
+.ant-layout-header {
+  background: rgba(29, 34, 36, 0.835);
+  color: azure;
+  /* height: 5em; */
+  /* min-height: 10vh; */
+  /* color: rgb(224, 56, 56); */
+}
+
+.ant-layout-header .custom-entry {
+  line-height: 1em;
+}
 
 .site-layout-content {
   min-height: 280px;
@@ -97,4 +110,24 @@ div.iracelog-standings-select-cols td {
 
 div.iracelog-stint-tooltip {
   /* background-color: #24c6f3; */
+}
+
+div.iracelog-background-checkered {
+  height: 40px;
+  width: 40px;
+
+  background: #eee
+    url('data:image/svg+xml,\
+     <svg xmlns="http://www.w3.org/2000/svg" width="400" height="400" fill-opacity=".75" >\
+              <rect x="200" width="200" height="200" />\
+              <rect y="200" width="200" height="200" />\
+              </svg>');
+  background-size: 15px 15px;
+  background-position: center;
+}
+
+div.iracelog-background-green {
+  height: 40px;
+  width: 40px;
+  background-color: green;
 }
