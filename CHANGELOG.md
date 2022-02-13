@@ -1,3 +1,29 @@
+### 0.12.0 (2022-02-13)
+
+##### Build System / Dependencies
+
+* **deps:**
+  *  recharts 2.1.9, antd 4.18.6, typescript-eslint 5.11.0 (7f1f8bfe)
+  *  adaptions to react-router v6 (0c021bbd)
+  *  devdeps upgraded (40eaa9ce)
+  *  nivo 0.79.1, antd charts 1.3.5, antd 4.18.5, ts 4.5.5 (034889b1)
+  *  bump nanoid from 3.1.30 to 3.2.0 (#217) (528b0e5b)
+  *  bump follow-redirects from 1.14.6 to 1.14.7 (#208) (4ff3ad3f)
+  *  bump antd from 4.18.2 to 4.18.3 (#201) (db3de448)
+  *  antd-charts 1.3.4, antd 4.18.2, nivo 0.78 (ea83a910)
+  *  needed when moving from webpack 4 to 5 (f9928829)
+  *  Update dependencies - nivo to 0.75 - antd to 4.18.0 - antd-charts to 1.3.3 - various eslint/react deps + additional to get this all working again Fixes #174 (deeb15c0)
+* **deps-dev:**
+  *  bump @typescript-eslint/eslint-plugin (#199) (8fc926e1)
+  *  bump @typescript-eslint/parser from 5.9.0 to 5.9.1 (#200) (c83c3bc6)
+
+##### New Features
+
+* **layout:**  session info moved to header Fixes #23 (96ecc7b8)
+* **routing:**
+  *  reworked menus (8ce07fe2)
+  *  external links preparations (b48918a2)
+
 #### 0.11.1 (2021-12-03)
 
 ##### Build System / Dependencies
