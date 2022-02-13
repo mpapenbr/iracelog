@@ -8,13 +8,15 @@ import { sprintf } from "sprintf-js";
 import { firstBy } from "thenby";
 import { globalWamp } from "../../commons/globals";
 import { ApplicationState } from "../../stores";
-import { cat10Colors } from "../live/colors";
+import { sortCarNumberStr } from "../../utils/output";
+import { assignCarColors } from "../live/colorAssignment";
 
 interface MyProps {
   showCars: string[];
   referenceCarNum?: string;
 }
 const Delta: React.FC<MyProps> = (props: MyProps) => {
+  const availableCars = useSelector((state: ApplicationState) => state.raceData.availableCars);
   const carLaps = useSelector((state: ApplicationState) => state.raceData.carLaps);
   const carStints = useSelector((state: ApplicationState) => state.raceData.carStints);
   const raceGraph = useSelector((state: ApplicationState) => state.raceData.raceGraph);
@@ -62,9 +64,17 @@ const Delta: React.FC<MyProps> = (props: MyProps) => {
       return prev;
     }, [] as IGraphData[]);
   };
+  const assignedCarColors = assignCarColors(availableCars);
+  const localColors = showCars
+    .sort(sortCarNumberStr)
+    .filter((v) => v !== referenceCarNum)
+    // .map((carNum) => cat10Colors[showCars.indexOf(carNum) % cat10Colors.length]);
+    .map((carNum) => assignedCarColors.get(carNum) ?? "black");
 
+  // console.log(localColors);
   const graphDataOrig = showCars
     .filter((v) => v !== referenceCarNum)
+    .sort(sortCarNumberStr)
     .map((carNum) => dataForCar(carNum))
     .flatMap((a) => [...a]);
   // console.log(graphDataOrig);
@@ -88,8 +98,8 @@ const Delta: React.FC<MyProps> = (props: MyProps) => {
     //   shape: "diamond",
     // },
     line: { size: 2 },
-    colorField: "carNum",
-    color: cat10Colors,
+
+    color: localColors,
     slider: sliderData,
     yAxis: {
       nice: true,

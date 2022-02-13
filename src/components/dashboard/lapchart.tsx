@@ -4,12 +4,13 @@ import React from "react";
 import { useSelector } from "react-redux";
 import { globalWamp } from "../../commons/globals";
 import { ApplicationState } from "../../stores";
-import { lapTimeString } from "../../utils/output";
-import { cat10Colors } from "../live/colors";
+import { lapTimeString, sortCarNumberStr } from "../../utils/output";
+import { assignCarColors } from "../live/colorAssignment";
 import { statsDataFor, stintLaps } from "../live/statsutil";
 import { getCarStints } from "../live/util";
 
 const Lapchart: React.FC = () => {
+  const availableCars = useSelector((state: ApplicationState) => state.raceData.availableCars);
   const carLaps = useSelector((state: ApplicationState) => state.raceData.carLaps);
   const carStints = useSelector((state: ApplicationState) => state.raceData.carStints);
   const userSettings = useSelector((state: ApplicationState) => state.userSettings.dashboard);
@@ -21,6 +22,12 @@ const Lapchart: React.FC = () => {
     const x = stints.flatMap((v) => ({ carNum: v.carNum, laps: myStintLaps(v) }));
     return x;
   };
+
+  const assignedCarColors = assignCarColors(availableCars);
+  const localColors = userSettings.showCars
+    .sort(sortCarNumberStr)
+    // .map((carNum) => cat10Colors[showCars.indexOf(carNum) % cat10Colors.length]);
+    .map((carNum) => assignedCarColors.get(carNum) ?? "black");
 
   const allCarLaps: ICarLaps[] = carStints
     .filter((v) => showCars.includes(v.carNum))
@@ -55,8 +62,8 @@ const Lapchart: React.FC = () => {
       shape: "diamond",
     },
     line: { size: 0 },
-    colorField: "carNum",
-    color: cat10Colors,
+
+    color: localColors,
     slider: sliderData,
     yAxis: {
       nice: true,

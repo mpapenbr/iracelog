@@ -8,10 +8,12 @@ import { sprintf } from "sprintf-js";
 import { firstBy } from "thenby";
 import { globalWamp } from "../../commons/globals";
 import { ApplicationState } from "../../stores";
-import { cat10Colors } from "../live/colors";
+import { sortCarNumberStr } from "../../utils/output";
+import { assignCarColors } from "../live/colorAssignment";
 
 const Delta: React.FC = () => {
   const carLaps = useSelector((state: ApplicationState) => state.raceData.carLaps);
+  const availableCars = useSelector((state: ApplicationState) => state.raceData.availableCars);
   const carStints = useSelector((state: ApplicationState) => state.raceData.carStints);
   const raceGraph = useSelector((state: ApplicationState) => state.raceData.raceGraph);
   const userSettings = useSelector((state: ApplicationState) => state.userSettings.dashboard);
@@ -43,8 +45,16 @@ const Delta: React.FC = () => {
     }, [] as IGraphData[]);
   };
 
+  const assignedCarColors = assignCarColors(availableCars);
+  const localColors = userSettings.showCars
+    .sort(sortCarNumberStr)
+    .filter((v) => v !== refCar)
+    // .map((carNum) => cat10Colors[showCars.indexOf(carNum) % cat10Colors.length]);
+    .map((carNum) => assignedCarColors.get(carNum) ?? "black");
+
   const graphDataOrig = userSettings.showCars
     .filter((v) => v !== refCar)
+    .sort(sortCarNumberStr)
     .map((carNum) => dataForCar(carNum))
     .flatMap((a) => [...a]);
   // console.log(graphDataOrig);
@@ -67,8 +77,8 @@ const Delta: React.FC = () => {
     //   shape: "diamond",
     // },
     line: { size: 2 },
-    colorField: "carNum",
-    color: cat10Colors,
+
+    color: localColors,
     slider: sliderData,
     yAxis: {
       nice: true,

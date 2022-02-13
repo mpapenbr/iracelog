@@ -9,13 +9,14 @@ import { sprintf } from "sprintf-js";
 import { globalWamp } from "../../commons/globals";
 import { ApplicationState } from "../../stores";
 import { sortCarNumberStr } from "../../utils/output";
-import { cat10Colors } from "../live/colors";
+import { assignCarColors } from "../live/colorAssignment";
 import { extractSomeCarData2 } from "../live/util";
 
 interface MyProps {
   showCars: string[];
 }
 const LeaderGraph: React.FC<MyProps> = (props: MyProps) => {
+  const availableCars = useSelector((state: ApplicationState) => state.raceData.availableCars);
   const carLaps = useSelector((state: ApplicationState) => state.raceData.carLaps);
 
   const carInfos = useSelector((state: ApplicationState) => state.raceData.carInfo);
@@ -87,6 +88,13 @@ const LeaderGraph: React.FC<MyProps> = (props: MyProps) => {
     .map((carNum) => dataForCar(carNum))
     .flatMap((a) => [...a]);
 
+  const carColors = assignCarColors(availableCars);
+  const getColor = (carNum: string): string => carColors.get(carNum) ?? "black";
+  const localColors = showCars
+    .sort(sortCarNumberStr)
+    .filter((carNum) => allCarNums.includes(carNum))
+    .map((carNum) => getColor(carNum));
+
   const sliderData = globalWamp.currentLiveId ? undefined : { start: 0, end: 1 };
 
   const noAnimationOption = {
@@ -106,7 +114,7 @@ const LeaderGraph: React.FC<MyProps> = (props: MyProps) => {
     // },
     line: { size: 2 },
     colorField: "carNum",
-    color: cat10Colors,
+    color: localColors,
     slider: sliderData,
     yAxis: {
       nice: true,
