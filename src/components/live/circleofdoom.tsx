@@ -3,7 +3,8 @@ import * as React from "react";
 import { useSelector } from "react-redux";
 import { ApplicationState } from "../../stores";
 import { ICarBaseData } from "../../stores/racedata/types";
-import { strokeColors } from "./colors";
+import { assignCarColors } from "./colorAssignment";
+import { cat10Colors } from "./colors";
 
 type TrackPosData = {
   carNum: string;
@@ -42,6 +43,10 @@ export const CircleOfDoom: React.FC<MyProps> = (props: MyProps) => {
   }));
   const data = dataRaw.filter((c) => props.showCars.includes(c.carNum));
   // console.log(data);
+
+  // for each car class the catcolors are assigned from scratch
+  const carColors = assignCarColors(carInfos);
+  const getColor = (carNum: string): string => carColors.get(carNum) ?? "black";
 
   const OptionalDisplays = () => {
     if (!props.referenceCarNum?.length) {
@@ -136,13 +141,15 @@ export const CircleOfDoom: React.FC<MyProps> = (props: MyProps) => {
     }
   };
 
-  const colorCat = strokeColors;
+  // const colorCat = strokeColors;
+  const colorCat = cat10Colors;
   const circleSize = 150;
   const margin = 30;
   const emphasizeLen = 30;
   const standardLen = 15;
   const circleExtendSize = 60; // how many pixels do we need on outer circle area
-  const getColor = (carNum: string): string => colorCat[allCarNums.indexOf(carNum) % colorCat.length];
+  // const getColor = (carNum: string): string => colorCat[allCarNums.indexOf(carNum) % colorCat.length];
+
   const InternalGraph = (
     <svg width={2 * circleSize + margin} height={2 * circleSize + margin}>
       <g transform="translate( 15 10 ) ">
