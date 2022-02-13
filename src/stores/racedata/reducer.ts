@@ -99,6 +99,7 @@ export const InfoMessagesReducer = reducerWithInitialState([] as IMessage[]).cas
 
 // event info
 export const initialEventInfo: IEventInfo = {
+  name: "",
   trackId: 0,
   teamRacing: false,
   irSessionId: 0,
