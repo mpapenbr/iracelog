@@ -38,6 +38,7 @@ import {
   replaySettings,
   stintsSettings,
   stintSummarySettings,
+  strategySettings,
 } from "../stores/ui/actions";
 import { defaultStateData } from "../stores/ui/reducer";
 
@@ -100,6 +101,7 @@ export const resetUi = (dispatch: Dispatch) => {
   dispatch(replaySettings(defaultStateData.replay));
   dispatch(globalSettings(defaultStateData.global));
   dispatch(dashboardSettings(defaultStateData.dashboard));
+  dispatch(strategySettings(defaultStateData.strategy));
   dispatch(updateAvailableStandingsColumns([]));
   dispatch(updateAvailableCars([]));
   dispatch(updateAvailableCarClasses([]));

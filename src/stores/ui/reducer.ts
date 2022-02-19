@@ -18,6 +18,7 @@ import {
   IReplaySettings,
   IStintsSettings,
   IStintSummarySettings,
+  IStrategySettings,
   IUiState,
   IUserSettings,
   UiComponent,
@@ -161,7 +162,7 @@ const StintSummarySettingsReducer = reducerWithInitialState(initialStintSummary)
   (state, settings) => settings
 );
 
-// Stint summary (single selection)
+// Dashboard
 const initialDashboard: IDashboardSettings = {
   showCars: [],
   selectableCars: [],
@@ -171,6 +172,17 @@ const initialDashboard: IDashboardSettings = {
 };
 const DashboardSettingsReducer = reducerWithInitialState(initialDashboard).case(
   UiActions.dashboardSettings,
+  (state, settings) => settings
+);
+
+// Strategy overview
+const initialStrategy: IStrategySettings = {
+  showCars: [],
+  selectableCars: [],
+  filterCarClasses: [],
+};
+const StrategySettingsReducer = reducerWithInitialState(initialStrategy).case(
+  UiActions.strategySettings,
   (state, settings) => settings
 );
 
@@ -244,6 +256,7 @@ export const defaultStateData: IUserSettings = {
   stints: initialStints,
   stintSummary: initialStintSummary,
   dashboard: initialDashboard,
+  strategy: initialStrategy,
   driverStints: initialDriverStints,
   circleOfDoom: initialCircleOfDoom,
   replay: initialReplaySettings,
@@ -261,6 +274,7 @@ const combinedReducers = combineReducers<IUserSettings>({
   stints: StintsSettingsReducer,
   stintSummary: StintSummarySettingsReducer,
   dashboard: DashboardSettingsReducer,
+  strategy: StrategySettingsReducer,
   driverStints: DriverStintsSettingsReducer,
   circleOfDoom: CircleOfDoomSettingsReducer,
   replay: ReplaySettingsReducer,

@@ -1,7 +1,10 @@
+import { IStintInfo } from "@mpapenbr/iracelog-analysis/dist/stints/types";
 import { Col, Divider, Empty, Row, Select } from "antd";
 import * as React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import CarClassFilter from "../components/live/carClassFilter";
+import { findDriverByStint, getCarPitStops, getCarStints } from "../components/live/util";
+import { colorsBySeatTime, getCombinedStintData } from "../components/nivo/stintsummary/commons";
 import StintSeatTime from "../components/nivo/stintsummary/seattime";
 import StintBoxplot from "../components/nivo/stintsummary/stintboxplot";
 import StintCircle from "../components/nivo/stintsummary/stintcircle";
@@ -18,6 +21,9 @@ export const StintSummaryContainer: React.FC = () => {
   const carClasses = useSelector((state: ApplicationState) => state.raceData.availableCarClasses);
   const userSettings = useSelector((state: ApplicationState) => state.userSettings.stintSummary);
   const stateGlobalSettings = useSelector((state: ApplicationState) => state.userSettings.global);
+  const carInfo = useSelector((state: ApplicationState) => state.raceData.carInfo);
+  const carStints = useSelector((state: ApplicationState) => state.raceData.carStints);
+  const carPits = useSelector((state: ApplicationState) => state.raceData.carPits);
 
   const dispatch = useDispatch();
 
@@ -61,7 +67,24 @@ export const StintSummaryContainer: React.FC = () => {
     dispatch(globalSettings({ ...stateGlobalSettings, referenceCarNum: curSettings.carNum }));
   };
 
-  const props = { carNum: referenceCarNum };
+  const currentCarInfo = carInfo.find((v) => v.carNum === referenceCarNum)!;
+  const { colorLookup } = colorsBySeatTime(currentCarInfo?.drivers ?? []);
+
+  const driverColor = (si: IStintInfo): string =>
+    colorLookup.get(findDriverByStint(currentCarInfo, si)!.driverName) ?? "black";
+  const combinedData = getCombinedStintData(
+    getCarStints(carStints, referenceCarNum!),
+    getCarPitStops(carPits, referenceCarNum!),
+    driverColor
+  );
+  const combinedDataMinMax = combinedData.reduce(
+    (a, b) => {
+      return { minTime: Math.min(a.minTime, b.minTime), maxTime: Math.max(a.maxTime, b.maxTime) };
+    },
+    { minTime: Number.MAX_SAFE_INTEGER, maxTime: 0 }
+  );
+  const props = { carNum: referenceCarNum, combinedStintData: combinedData, ...combinedDataMinMax };
+  console.log(props);
   return (
     <>
       <Row gutter={16}>

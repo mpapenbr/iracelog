@@ -1,18 +1,21 @@
 import { IPitInfo, IStintInfo } from "@mpapenbr/iracelog-analysis/dist/stints/types";
-import { Empty, Tooltip } from "antd";
+import { Tooltip } from "antd";
 import React from "react";
 import { useSelector } from "react-redux";
 import { ApplicationState } from "../../../stores";
 import { secAsMMSS } from "../../../utils/output";
-import { findDriverByStint, getCarPitStops, getCarStints } from "../../live/util";
+import { findDriverByStint } from "../../live/util";
 import StintTooltip from "../stintTooltip";
-import { colorsBySeatTime } from "./commons";
+import { CombinedStintData } from "./commons";
 
 interface MyProps {
   carNum?: string;
   width?: number;
   height?: number;
   showCarNum?: boolean;
+  minTime: number; // already external computed values to be used
+  maxTime: number; // already external computed values to be used
+  combinedStintData: CombinedStintData[];
 }
 
 /**
@@ -27,49 +30,15 @@ const StintStretch: React.FC<MyProps> = (props: MyProps) => {
 
   const carStint = carStints.find((v) => v.carNum === props.carNum);
   if (!props.carNum || !carStint) {
-    return <Empty />;
+    return <></>;
+    // return <Empty />;
   }
   const currentCarInfo = carInfo.find((v) => v.carNum === props.carNum)!;
+  const combined = props.combinedStintData;
 
-  const { colorLookup } = colorsBySeatTime(currentCarInfo.drivers);
+  const minTime = props.minTime;
+  const maxTime = props.maxTime;
 
-  interface Combined {
-    type: "stint" | "pit";
-    data: IStintInfo | IPitInfo;
-    ref: number;
-    idx: number;
-    minTime: number;
-    maxTime: number;
-    color?: string;
-  }
-  const work: Combined[] = getCarStints(carStints, props.carNum).map((d, idx) => {
-    const driver = findDriverByStint(currentCarInfo, d);
-    return {
-      type: "stint",
-      data: d,
-      ref: d.exitTime,
-      idx: idx + 1,
-      minTime: d.exitTime,
-      maxTime: d.enterTime,
-      color: colorLookup.get(driver?.driverName ?? "n.a"),
-    };
-  });
-  const x: Combined[] = getCarPitStops(carPits, props.carNum).map((d, idx) => ({
-    type: "pit",
-    data: d,
-    ref: d.enterTime,
-    idx: idx + 1,
-    minTime: d.enterTime,
-    maxTime: d.exitTime,
-  }));
-  const combined = work.concat(x).sort((a, b) => a.ref - b.ref);
-
-  const { minTime, maxTime } = combined.reduce(
-    (a, b) => {
-      return { minTime: Math.min(a.minTime, b.minTime), maxTime: Math.max(a.maxTime, b.maxTime) };
-    },
-    { minTime: Number.MAX_SAFE_INTEGER, maxTime: 0 }
-  );
   const w = props.width ? props.width : 600;
   const h = props.height ? props.height : 50;
   const barHeight = (h - 5) >> 1;

@@ -16,6 +16,7 @@ import { RacePositionsContainer } from "../container/RacePositionsContainer";
 import { ReplayCircleOfDoomContainer } from "../container/ReplayCircleOfDoomContainer";
 import { StintLapsContainer } from "../container/StintLapsContainer";
 import { StintSummaryContainer } from "../container/StintSummaryContainer";
+import { StrategyContainer } from "../container/StrategyContainer";
 import { TestContainer } from "../container/Test";
 import { ApplicationState } from "../stores";
 import { LoaderPage } from "./loader";
@@ -61,12 +62,12 @@ export const AnalysisMainPage: React.FC = () => {
             <Link to="replayCOD">Circle of doom</Link>
           </Menu.Item>
 
-          <Menu.Item key="raceGraphARecharts" className="race-sidebar">
-            <Link to="raceGraphARecharts">Race graph (Leader)</Link>
+          <Menu.Item key="raceGraphA" className="race-sidebar">
+            <Link to="raceGraphA">Race graph (Leader)</Link>
           </Menu.Item>
 
-          <Menu.Item key="raceGraphBRecharts" className="race-sidebar">
-            <Link to="raceGraphBRecharts">Race graph (Car)</Link>
+          <Menu.Item key="raceGraphB" className="race-sidebar">
+            <Link to="raceGraphB">Race graph (Car)</Link>
           </Menu.Item>
 
           <Menu.Item key="racePositionsNivo" className="race-sidebar">
@@ -76,9 +77,12 @@ export const AnalysisMainPage: React.FC = () => {
           <Menu.Item key="dashboard" className="race-sidebar">
             <Link to="dashboard">Dashboard</Link>
           </Menu.Item>
+          <Menu.Item key="strategy" className="race-sidebar">
+            <Link to="strategy">Strategy</Link>
+          </Menu.Item>
 
-          <Menu.Item key="driverLapsRecharts" className="race-sidebar">
-            <Link to="driverLapsRecharts">Driver laps </Link>
+          <Menu.Item key="driverLaps" className="race-sidebar">
+            <Link to="driverLaps">Driver laps </Link>
           </Menu.Item>
 
           <Menu.Item key="carPitstops" className="race-sidebar">
@@ -128,14 +132,15 @@ export const AnalysisMainPage: React.FC = () => {
 
           <Route path="replayCOD" element={<ReplayCircleOfDoomContainer />} />
 
-          <Route path="raceGraphARecharts" element={<RaceGraphContainer />} />
+          <Route path="raceGraphA" element={<RaceGraphContainer />} />
 
-          <Route path="raceGraphBRecharts" element={<RaceGraphByReferenceContainer />} />
+          <Route path="raceGraphB" element={<RaceGraphByReferenceContainer />} />
 
           <Route path="racePositionsNivo" element={<RacePositionsContainer />} />
           <Route path="dashboard" element={<DashboardContainer />} />
+          <Route path="strategy" element={<StrategyContainer />} />
 
-          <Route path="driverLapsRecharts" element={<DriverLapsContainer />} />
+          <Route path="driverLaps" element={<DriverLapsContainer />} />
           <Route path="carPitstops" element={<CarPitstopsContainer />} />
 
           <Route path="stintDurations" element={<CarStintsContainer />} />
