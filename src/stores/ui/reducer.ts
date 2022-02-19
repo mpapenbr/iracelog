@@ -115,6 +115,7 @@ const initialDriverLaps: IDriverLapsSettings = {
   selectableCars: [],
   filterCarClasses: [],
   filterSecs: 2,
+  limitLastLaps: 30,
 };
 const DriverLapsSettingsReducer = reducerWithInitialState(initialDriverLaps).case(
   UiActions.driverLapsSettings,
@@ -165,6 +166,8 @@ const initialDashboard: IDashboardSettings = {
   showCars: [],
   selectableCars: [],
   filterCarClasses: [],
+  deltaRange: 10,
+  limitLastLaps: 30,
 };
 const DashboardSettingsReducer = reducerWithInitialState(initialDashboard).case(
   UiActions.dashboardSettings,

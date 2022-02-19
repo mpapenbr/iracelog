@@ -1,7 +1,7 @@
 import { Line } from "@ant-design/charts";
 import { Types } from "@antv/g2/lib";
 import { Empty } from "antd";
-import { isNumber } from "lodash";
+import _, { isNumber } from "lodash";
 import React from "react";
 import { useSelector } from "react-redux";
 import { sprintf } from "sprintf-js";
@@ -32,17 +32,19 @@ const Delta: React.FC = () => {
   }
 
   const dataForCar = (carNum: string) => {
-    return raceGraph.reduce((prev, current) => {
-      if (current.carClass.localeCompare("overall") !== 0) return prev;
-      const refCarEntry = current.gaps.find((gi) => gi.carNum === refCar);
-      const carEntry = current.gaps.find((gi) => gi.carNum === carNum);
-      if (carEntry !== undefined && refCarEntry !== undefined) {
-        if (isNumber(carEntry.gap) && !isNaN(carEntry.gap) && carEntry.lapNo > 0) {
-          prev.push({ lapNo: "" + current.lapNo, carNum: carNum, gap: refCarEntry.gap - carEntry.gap });
+    return raceGraph
+      .reduce((prev, current) => {
+        if (current.carClass.localeCompare("overall") !== 0) return prev;
+        const refCarEntry = current.gaps.find((gi) => gi.carNum === refCar);
+        const carEntry = current.gaps.find((gi) => gi.carNum === carNum);
+        if (carEntry !== undefined && refCarEntry !== undefined) {
+          if (isNumber(carEntry.gap) && !isNaN(carEntry.gap) && carEntry.lapNo > 0) {
+            prev.push({ lapNo: "" + current.lapNo, carNum: carNum, gap: refCarEntry.gap - carEntry.gap });
+          }
         }
-      }
-      return prev;
-    }, [] as IGraphData[]);
+        return prev;
+      }, [] as IGraphData[])
+      .slice(globalWamp.currentLiveId && userSettings.limitLastLaps > 0 ? -userSettings.limitLastLaps : 0);
   };
 
   const assignedCarColors = assignCarColors(availableCars);
@@ -66,6 +68,7 @@ const Delta: React.FC = () => {
   const noAnimationOption = {
     duration: 0,
   };
+
   const config = {
     data: graphDataOrig,
 
@@ -83,8 +86,8 @@ const Delta: React.FC = () => {
     yAxis: {
       nice: true,
 
-      // minLimit: Math.floor(work.minTime),
-      // maxLimit: Math.ceil(work.q95),
+      minLimit: Math.floor(Math.max(_.minBy(graphDataOrig, (d) => d.gap)!.gap, -userSettings.deltaRange)),
+      maxLimit: Math.ceil(Math.min(_.maxBy(graphDataOrig, (d) => d.gap)!.gap, userSettings.deltaRange)),
       // label: {formatter: (d: number) => lapTimeString(d)},
     },
     tooltip: {
