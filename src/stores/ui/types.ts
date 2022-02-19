@@ -90,6 +90,12 @@ export interface IDashboardSettings {
   deltaRange: number; // show only delta sec within this range
   limitLastLaps: number; // if > 0 show only last X laps in driverLaps (live mode)
 }
+export interface IStrategySettings {
+  showCars: string[];
+  selectableCars: ICarBaseData[]; // the cars to show in the dropdown as selectable
+  filterCarClasses: string[]; // empty = all classes, otherwise only selected
+}
+
 export interface IRaceStintSharedSettings {
   showCars: string[];
   filterCarClasses: string[]; // empty = all classes, otherwise only selected
@@ -168,6 +174,7 @@ export interface IUserSettings {
   stints: IStintsSettings;
   stintSummary: IStintSummarySettings;
   dashboard: IDashboardSettings;
+  strategy: IStrategySettings;
   driverStints: IDriverStintsSettings;
   circleOfDoom: ICircleOfDoomSettings;
   replay: IReplaySettings;
