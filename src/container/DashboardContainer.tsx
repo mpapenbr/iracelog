@@ -1,6 +1,7 @@
-import { Col, Divider, Empty, Row, Select } from "antd";
+import { Col, Divider, Empty, InputNumber, Row, Select } from "antd";
 import * as React from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { sprintf } from "sprintf-js";
 import { globalWamp } from "../commons/globals";
 import BoxPlot from "../components/dashboard/boxplot";
 import Delta from "../components/dashboard/delta";
@@ -76,6 +77,16 @@ export const DashboardContainer: React.FC = () => {
     dispatch(globalSettings({ ...stateGlobalSettings, referenceCarNum: value as string }));
   };
 
+  const onDeltaRangeChange = (value: any) => {
+    const curSettings = { ...userSettings, deltaRange: value };
+    dispatch(dashboardSettings(curSettings));
+  };
+
+  const onLimitLastLapsChange = (value: any) => {
+    const curSettings = { ...userSettings, limitLastLaps: value };
+    dispatch(dashboardSettings(curSettings));
+  };
+
   const referenceOptions = selectableCars
     .filter((v) => showCars.includes(v.carNum))
     .map((d) => (
@@ -99,6 +110,30 @@ export const DashboardContainer: React.FC = () => {
           </Select>
         </Col>
         <CarFilter {...props} />
+        <Col span={6}>
+          <InputNumber
+            defaultValue={userSettings.deltaRange}
+            precision={0}
+            step={2}
+            min={0}
+            formatter={(v) => sprintf("%d sec", v)}
+            parser={(v) => (v !== undefined ? parseInt(v.replace("sec", "")) : 0)}
+            onChange={onDeltaRangeChange}
+          />
+          {globalWamp.currentLiveId ? (
+            <InputNumber
+              defaultValue={userSettings.limitLastLaps}
+              precision={0}
+              step={5}
+              min={0}
+              formatter={(v) => sprintf("%d laps", v)}
+              parser={(v) => (v !== undefined ? parseInt(v.replace("laps", "")) : 0)}
+              onChange={onLimitLastLapsChange}
+            />
+          ) : (
+            <></>
+          )}
+        </Col>
       </Row>
       {userSettings.showCars.length > 0 ? (
         <>

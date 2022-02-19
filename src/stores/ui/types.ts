@@ -35,6 +35,7 @@ export interface IDriverLapsSettings {
   filterCarClasses: string[]; // empty = all classes, otherwise only selected
   filterSecs: number;
   brushInterval?: IBrushInterval;
+  limitLastLaps: number; // if > 0 show only last X laps in driverLaps (live mode)
 }
 export interface IRaceGraphRelativeSettings {
   referenceCarNum?: string;
@@ -86,6 +87,8 @@ export interface IDashboardSettings {
   selectableCars: ICarBaseData[]; // the cars to show in the dropdown as selectable
   filterCarClasses: string[]; // empty = all classes, otherwise only selected
   referenceCarNum?: string; // used for delta
+  deltaRange: number; // show only delta sec within this range
+  limitLastLaps: number; // if > 0 show only last X laps in driverLaps (live mode)
 }
 export interface IRaceStintSharedSettings {
   showCars: string[];
@@ -192,6 +195,7 @@ export const defaultUiData: IUiData = {
       selectableCars: [],
       filterCarClasses: [],
       filterSecs: 2,
+      limitLastLaps: 30,
     },
   },
   raceGraphRelativeSettings: {

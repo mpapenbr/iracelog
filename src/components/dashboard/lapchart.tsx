@@ -1,5 +1,5 @@
 import { Line } from "@ant-design/charts";
-import { ICarLaps, IStintInfo } from "@mpapenbr/iracelog-analysis/dist/stints/types";
+import { ICarLaps, ILapInfo, IStintInfo } from "@mpapenbr/iracelog-analysis/dist/stints/types";
 import React from "react";
 import { useSelector } from "react-redux";
 import { globalWamp } from "../../commons/globals";
@@ -20,7 +20,7 @@ const Lapchart: React.FC = () => {
   const mergeComputeCarLaps = (stints: IStintInfo[]): ICarLaps[] => {
     const myStintLaps = (v: IStintInfo) => stintLaps(v, currentCarLaps(v.carNum)!);
     const x = stints.flatMap((v) => ({ carNum: v.carNum, laps: myStintLaps(v) }));
-    return x;
+    return globalWamp.currentLiveId && userSettings.limitLastLaps > 0 ? x.slice(-userSettings.limitLastLaps) : x;
   };
 
   const assignedCarColors = assignCarColors(availableCars);
@@ -41,12 +41,13 @@ const Lapchart: React.FC = () => {
 
   const work = statsDataFor(computeCarLaps.flatMap((v) => v.laps.map((l) => l.lapTime)));
   // console.log(work);
-
+  const toShowLaps = (laps: ILapInfo[]): ILapInfo[] =>
+    globalWamp.currentLiveId && userSettings.limitLastLaps > 0 ? laps.slice(-userSettings.limitLastLaps) : laps;
   // some strange ant-design/charts bug: https://github.com/ant-design/ant-design-charts/issues/797
   // workaround is to use strings for xaxis...
   const lapData = allCarLaps
     .sort((a, b) => showCars.indexOf(a.carNum) - showCars.indexOf(b.carNum))
-    .map((v) => v.laps.map((l) => ({ carNum: `#${v.carNum}`, ...l, lapNoStr: "" + l.lapNo })))
+    .map((v) => toShowLaps(v.laps).map((l) => ({ carNum: `#${v.carNum}`, ...l, lapNoStr: "" + l.lapNo })))
     .flatMap((a) => [...a]);
   // console.log(lapData);
   const sliderData = globalWamp.currentLiveId ? undefined : { start: 0, end: 1 };

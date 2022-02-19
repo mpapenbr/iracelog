@@ -2,9 +2,10 @@ import { Col, InputNumber, Row } from "antd";
 import * as React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { sprintf } from "sprintf-js";
+import { globalWamp } from "../commons/globals";
+import Lapchart from "../components/antcharts/lapchart";
 import CarFilter from "../components/live/carFilter";
 import { collectCarsByCarClassFilter, processCarClassSelectionNew } from "../components/live/util";
-import DriverLapsRecharts from "../components/recharts/driverLaps";
 import { ApplicationState } from "../stores";
 import { driverLapsSettings } from "../stores/ui/actions";
 
@@ -37,6 +38,11 @@ export const DriverLapsContainer: React.FC = () => {
     dispatch(driverLapsSettings(curSettings));
   };
 
+  const onLimitLastLapsChange = (value: any) => {
+    const curSettings = { ...userSettings, limitLastLaps: value };
+    dispatch(driverLapsSettings(curSettings));
+  };
+
   const props = {
     availableCars: selectableCars,
     availableClasses: carClasses.map((v) => v.name),
@@ -53,20 +59,35 @@ export const DriverLapsContainer: React.FC = () => {
     <>
       <Row gutter={16}>
         <CarFilter {...props} />
-        <Col span={4}>
+        <Col span={6}>
           <InputNumber
             defaultValue={userSettings.filterSecs}
             precision={0}
-            step={10}
+            step={2}
             min={0}
             formatter={(v) => sprintf("%d sec", v)}
             parser={(v) => (v !== undefined ? parseInt(v.replace("sec", "")) : 0)}
             onChange={onFilterRangeChange}
           />
+          {globalWamp.currentLiveId ? (
+            <InputNumber
+              defaultValue={userSettings.limitLastLaps}
+              precision={0}
+              step={5}
+              min={0}
+              formatter={(v) => sprintf("%d laps", v)}
+              parser={(v) => (v !== undefined ? parseInt(v.replace("laps", "")) : 0)}
+              onChange={onLimitLastLapsChange}
+            />
+          ) : (
+            <></>
+          )}
         </Col>
       </Row>
 
-      <DriverLapsRecharts />
+      <div style={{ height: 600 }}>
+        <Lapchart />
+      </div>
     </>
   );
 };
