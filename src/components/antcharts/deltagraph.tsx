@@ -52,17 +52,19 @@ const Delta: React.FC<MyProps> = (props: MyProps) => {
   }
 
   const dataForCar = (carNum: string) => {
-    return raceGraph.reduce((prev, current) => {
-      if (current.carClass.localeCompare("overall") !== 0) return prev;
-      const refCarEntry = current.gaps.find((gi) => gi.carNum === referenceCarNum);
-      const carEntry = current.gaps.find((gi) => gi.carNum === carNum);
-      if (carEntry !== undefined && refCarEntry !== undefined) {
-        if (isNumber(carEntry.gap) && !isNaN(carEntry.gap) && carEntry.lapNo > 0) {
-          prev.push({ lapNo: "" + current.lapNo, carNum: carNum, gap: refCarEntry.gap - carEntry.gap });
+    return raceGraph
+      .reduce((prev, current) => {
+        if (current.carClass.localeCompare("overall") !== 0) return prev;
+        const refCarEntry = current.gaps.find((gi) => gi.carNum === referenceCarNum);
+        const carEntry = current.gaps.find((gi) => gi.carNum === carNum);
+        if (carEntry !== undefined && refCarEntry !== undefined) {
+          if (isNumber(carEntry.gap) && !isNaN(carEntry.gap) && carEntry.lapNo > 0) {
+            prev.push({ lapNo: "" + current.lapNo, carNum: carNum, gap: refCarEntry.gap - carEntry.gap });
+          }
         }
-      }
-      return prev;
-    }, [] as IGraphData[]);
+        return prev;
+      }, [] as IGraphData[])
+      .slice(globalWamp.currentLiveId && userSettings.limitLastLaps > 0 ? -userSettings.limitLastLaps : 0);
   };
   const assignedCarColors = assignCarColors(availableCars);
   const localColors = showCars
@@ -104,8 +106,8 @@ const Delta: React.FC<MyProps> = (props: MyProps) => {
     yAxis: {
       nice: true,
 
-      minLimit: Math.floor(Math.max(_.minBy(graphDataOrig, (d) => d.gap)!.gap, -userSettings.deltaRange)),
-      maxLimit: Math.ceil(Math.min(_.maxBy(graphDataOrig, (d) => d.gap)!.gap, userSettings.deltaRange)),
+      minLimit: Math.floor(Math.max(_.minBy(graphDataOrig, (d) => d.gap)?.gap ?? 0, -userSettings.deltaRange)),
+      maxLimit: Math.ceil(Math.min(_.maxBy(graphDataOrig, (d) => d.gap)?.gap ?? 0, userSettings.deltaRange)),
       // label: {formatter: (d: number) => lapTimeString(d)},
     },
     tooltip: {

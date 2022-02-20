@@ -2,6 +2,7 @@ import { Col, InputNumber, Row, Select } from "antd";
 import * as React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { sprintf } from "sprintf-js";
+import { globalWamp } from "../commons/globals";
 import Delta from "../components/antcharts/deltagraph";
 import CarFilter from "../components/live/carFilter";
 import { collectCarsByCarClassFilter, processCarClassSelectionNew } from "../components/live/util";
@@ -73,6 +74,10 @@ export const RaceGraphByReferenceContainer: React.FC = () => {
       dispatch(globalSettings({ ...stateGlobalSettings, referenceCarNum: value as string }));
     }
   };
+  const onLimitLastLapsChange = (value: any) => {
+    const curSettings = { ...userSettings, limitLastLaps: value };
+    dispatch(raceGraphRelativeSettings(curSettings));
+  };
 
   const referenceOptions = selectableCars.map((d) => (
     <Option key={d.carNum} value={d.carNum}>
@@ -121,6 +126,19 @@ export const RaceGraphByReferenceContainer: React.FC = () => {
             parser={(v) => (v !== undefined ? parseInt(v.replace("sec", "")) : 0)}
             onChange={onDeltaRangeChange}
           />
+          {globalWamp.currentLiveId ? (
+            <InputNumber
+              defaultValue={userSettings.limitLastLaps}
+              precision={0}
+              step={5}
+              min={0}
+              formatter={(v) => sprintf("%d laps", v)}
+              parser={(v) => (v !== undefined ? parseInt(v.replace("laps", "")) : 0)}
+              onChange={onLimitLastLapsChange}
+            />
+          ) : (
+            <></>
+          )}
         </Col>
       </Row>
 
