@@ -1,3 +1,21 @@
+### 0.13.0 (2022-02-20)
+
+##### Build System / Dependencies
+
+* **deps:**
+  *  antd 4.18.7, typescript-eslint 5.12.0 (27111e28)
+  *  bump follow-redirects from 1.14.7 to 1.14.8 (#239) (92e7b6dd)
+* **deps-dev:**  bump eslint from 8.8.0 to 8.9.0 (9ebb4163)
+
+##### New Features
+
+* **gui:**
+  *  use only last X laps in delta graph(s) when in live mode (81eddac3)
+  *  strategy overview (60990bdf)
+  *  customizable show last X laps in live mode (fcb5c65e)
+  *  use antd-charts for driver laps (f0aa8f97)
+  *  use same colors for graphs Fixes #240 (77c0e33e)
+
 ### 0.12.0 (2022-02-13)
 
 ##### Build System / Dependencies
