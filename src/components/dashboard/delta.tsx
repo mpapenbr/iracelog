@@ -86,8 +86,8 @@ const Delta: React.FC = () => {
     yAxis: {
       nice: true,
 
-      minLimit: Math.floor(Math.max(_.minBy(graphDataOrig, (d) => d.gap)!.gap, -userSettings.deltaRange)),
-      maxLimit: Math.ceil(Math.min(_.maxBy(graphDataOrig, (d) => d.gap)!.gap, userSettings.deltaRange)),
+      minLimit: Math.floor(Math.max(_.minBy(graphDataOrig, (d) => d.gap)?.gap ?? 0, -userSettings.deltaRange)),
+      maxLimit: Math.ceil(Math.min(_.maxBy(graphDataOrig, (d) => d.gap)?.gap ?? 0, userSettings.deltaRange)),
       // label: {formatter: (d: number) => lapTimeString(d)},
     },
     tooltip: {

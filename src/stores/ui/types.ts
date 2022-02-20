@@ -44,6 +44,7 @@ export interface IRaceGraphRelativeSettings {
   filterCarClasses: string[]; // empty = all classes, otherwise only selected
   deltaRange: number; // used in both direction (positive and negativ to reference)
   brushInterval?: IBrushInterval;
+  limitLastLaps: number; // if > 0 consider only last X laps (live mode)
 }
 export interface IRaceGraphSettings {
   showCars: string[];
@@ -52,6 +53,7 @@ export interface IRaceGraphSettings {
   gapRelativeToClassLeader: boolean; // if true, compute gap relative to class leader
   deltaRange: number; // used in both direction (positive and negativ to reference)
   brushInterval?: IBrushInterval;
+  limitLastLaps: number; // if > 0 consider only last X laps (live mode)
 }
 export interface IRacePositionsSettings {
   showCars: string[];
@@ -212,6 +214,7 @@ export const defaultUiData: IUiData = {
       showCars: [],
       filterCarClasses: [],
       deltaRange: 10,
+      limitLastLaps: 30,
     },
   },
   raceGraphSettings: {
@@ -220,6 +223,7 @@ export const defaultUiData: IUiData = {
       selectableCars: [],
       filterCarClasses: [],
       deltaRange: 120,
+      limitLastLaps: 30,
       gapRelativeToClassLeader: false,
     },
   },

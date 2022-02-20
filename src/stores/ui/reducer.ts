@@ -78,6 +78,7 @@ const initialRaceGraphSettings: IRaceGraphSettings = {
   selectableCars: [],
   filterCarClasses: [],
   deltaRange: 120,
+  limitLastLaps: 30,
   gapRelativeToClassLeader: false,
 };
 const RaceGraphSettingsReducer = reducerWithInitialState(initialRaceGraphSettings).case(
@@ -91,6 +92,7 @@ const initialRaceGraphRelativeSettings: IRaceGraphRelativeSettings = {
   selectableCars: [],
   filterCarClasses: [],
   deltaRange: 120,
+  limitLastLaps: 30,
   referenceCarNum: undefined,
 };
 const RaceGraphRelativeSettingsReducer = reducerWithInitialState(initialRaceGraphRelativeSettings).case(
