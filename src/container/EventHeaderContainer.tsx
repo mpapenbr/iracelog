@@ -1,4 +1,3 @@
-import { SessionManifest } from "@mpapenbr/iracelog-analysis/dist/stints/types";
 import { getValueViaSpec } from "@mpapenbr/iracelog-analysis/dist/stints/util";
 import { Col, Row } from "antd";
 import * as React from "react";
@@ -72,12 +71,13 @@ export const EventHeaderContainer: React.FC = () => {
 
   const eventInfo = useSelector((state: ApplicationState) => state.raceData.eventInfo);
   const sInfo = useSelector((state: ApplicationState) => state.raceData.sessionInfo);
+  const manifestData = useSelector((state: ApplicationState) => state.wamp.data.manifests.session);
 
   if (!sInfo.data?.length) {
     return <></>;
   }
   const getValue = (key: string) => {
-    return getValueViaSpec(sInfo.data, SessionManifest, key);
+    return getValueViaSpec(sInfo.data, manifestData, key);
   };
   const numOut = (key: string) => {
     return sprintf("%.1f", getValue(key));
