@@ -33,11 +33,9 @@ export const StrategyContainer: React.FC = () => {
 
   const showCars = useSelector((state: ApplicationState) => state.userSettings.strategy.showCars);
   const filterCarClasses = useSelector((state: ApplicationState) => state.userSettings.strategy.filterCarClasses);
-  // -- sort start
+
   const stateCarManifest = useSelector((state: ApplicationState) => state.wamp.data.manifests.car);
-
   const raceOrder = useSelector((state: ApplicationState) => state.raceData.classification);
-
   const createSelectableCars = (cars: ICarBaseData[]): ICarBaseData[] => {
     return sortedSelectableCars(cars, stateGlobalSettings.filterOrderByPosition, () =>
       orderedCarNumsByPosition(raceOrder, stateCarManifest)
@@ -46,7 +44,6 @@ export const StrategyContainer: React.FC = () => {
   const selectableCars = createSelectableCars(
     userSettings.selectableCars.length > 0 ? userSettings.selectableCars : cars
   );
-  // -- sort end
 
   // console.log(selectableCars);
   const dispatch = useDispatch();
@@ -58,12 +55,15 @@ export const StrategyContainer: React.FC = () => {
       currentShowCars: showCars,
       newSelection: values,
     });
-    console.log(newShowcars);
+
+    const sortedSelectabled = createSelectableCars(collectCarsByCarClassFilter(cars, values));
+
+    const reorderedShowCars = sortedSelectabled.map((c) => c.carNum).filter((carNum) => newShowcars.includes(carNum));
     const curSettings = {
       ...userSettings,
       filterCarClasses: values,
-      showCars: newShowcars,
-      selectableCars: collectCarsByCarClassFilter(cars, values),
+      showCars: reorderedShowCars,
+      selectableCars: sortedSelectabled,
     };
     // const curSettings = { ...userSettings, filterCarClasses: values };
     dispatch(strategySettings(curSettings));

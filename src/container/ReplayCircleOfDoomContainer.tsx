@@ -5,11 +5,17 @@ import { useDispatch, useSelector } from "react-redux";
 import { sprintf } from "sprintf-js";
 import CarFilter from "../components/live/carFilter";
 import { CircleOfDoom } from "../components/live/circleofdoom";
-import { collectCarsByCarClassFilter, processCarClassSelectionNew } from "../components/live/util";
+import {
+  collectCarsByCarClassFilter,
+  orderedCarNumsByPosition,
+  processCarClassSelectionNew,
+  sortedSelectableCars,
+} from "../components/live/util";
 import { ReplayControl } from "../components/replayControl";
 import { Standings } from "../components/standings";
 import StandingsColumnControl from "../components/standingsColumnControl";
 import { ApplicationState } from "../stores";
+import { ICarBaseData } from "../stores/racedata/types";
 import { circleOfDoomSettings, globalSettings } from "../stores/ui/actions";
 
 const { Option } = Select;
@@ -29,10 +35,21 @@ export const ReplayCircleOfDoomContainer: React.FC = () => {
       return { showCars: userSettings.showCars, filterCarClasses: userSettings.filterCarClasses };
     }
   };
+
+  const stateCarManifest = useSelector((state: ApplicationState) => state.wamp.data.manifests.car);
+  const raceOrder = useSelector((state: ApplicationState) => state.raceData.classification);
+  const createSelectableCars = (cars: ICarBaseData[]): ICarBaseData[] => {
+    return sortedSelectableCars(cars, stateGlobalSettings.filterOrderByPosition, () =>
+      orderedCarNumsByPosition(raceOrder, stateCarManifest)
+    );
+  };
+  const selectableCars = createSelectableCars(
+    userSettings.selectableCars.length > 0 ? userSettings.selectableCars : cars
+  );
   const { showCars, filterCarClasses } = selectSettings();
 
   const dispatch = useDispatch();
-  const selectableCars = userSettings.selectableCars.length > 0 ? userSettings.selectableCars : cars;
+
   const onSelectCarClassChange = (values: string[]) => {
     const newShowcars = processCarClassSelectionNew({
       cars: cars,
@@ -40,15 +57,21 @@ export const ReplayCircleOfDoomContainer: React.FC = () => {
       currentShowCars: showCars,
       newSelection: values,
     });
+
+    const sortedSelectabled = createSelectableCars(collectCarsByCarClassFilter(cars, values));
+
+    const reorderedShowCars = sortedSelectabled.map((c) => c.carNum).filter((carNum) => newShowcars.includes(carNum));
+
     const curSettings = {
       ...userSettings,
       filterCarClasses: values,
-      showCars: newShowcars,
-      selectableCars: collectCarsByCarClassFilter(cars, values),
+      showCars: reorderedShowCars,
+      selectableCars: sortedSelectabled,
     };
+    // const curSettings = { ...userSettings, filterCarClasses: values };
     dispatch(circleOfDoomSettings(curSettings));
     if (stateGlobalSettings.syncSelection) {
-      dispatch(globalSettings({ ...stateGlobalSettings, showCars: newShowcars, filterCarClasses: values }));
+      dispatch(globalSettings({ ...stateGlobalSettings, showCars: reorderedShowCars, filterCarClasses: values }));
     }
   };
 
