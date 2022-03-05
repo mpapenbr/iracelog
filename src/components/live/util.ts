@@ -164,7 +164,8 @@ export const processCarClassSelectionNew = (args: ICarClassProcessorArgs2): stri
 
 export const collectCarsByCarClassFilter = (cars: ICarBaseData[], filterCarClasses: string[]): ICarBaseData[] => {
   if (filterCarClasses === undefined) return cars;
-  if (filterCarClasses.length === 0 || filterCarClasses === ["All"]) {
+  // console.log(filterCarClasses, filterCarClasses.includes("All"));
+  if (filterCarClasses.length === 0 || filterCarClasses.includes("All")) {
     return cars;
   }
   return cars.filter((c) => filterCarClasses.find((cc) => cc === c.carClass));

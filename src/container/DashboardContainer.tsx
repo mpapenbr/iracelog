@@ -14,11 +14,14 @@ import {
   findDriverByStint,
   getCarPitStops,
   getCarStints,
+  orderedCarNumsByPosition,
   processCarClassSelectionNew,
+  sortedSelectableCars,
 } from "../components/live/util";
 import { colorsBySeatTime, getCombinedStintData } from "../components/nivo/stintsummary/commons";
 import StintStretch from "../components/nivo/stintsummary/stintstretch";
 import { ApplicationState } from "../stores";
+import { ICarBaseData } from "../stores/racedata/types";
 import { dashboardSettings, globalSettings } from "../stores/ui/actions";
 
 const { Option } = Select;
@@ -36,21 +39,36 @@ export const DashboardContainer: React.FC = () => {
   const showCars = useSelector((state: ApplicationState) => state.userSettings.dashboard.showCars);
   const filterCarClasses = useSelector((state: ApplicationState) => state.userSettings.dashboard.filterCarClasses);
 
-  const selectableCars = userSettings.selectableCars.length > 0 ? userSettings.selectableCars : cars;
+  const stateCarManifest = useSelector((state: ApplicationState) => state.wamp.data.manifests.car);
+  const raceOrder = useSelector((state: ApplicationState) => state.raceData.classification);
+  const createSelectableCars = (cars: ICarBaseData[]): ICarBaseData[] => {
+    return sortedSelectableCars(cars, stateGlobalSettings.filterOrderByPosition, () =>
+      orderedCarNumsByPosition(raceOrder, stateCarManifest)
+    );
+  };
+  const selectableCars = createSelectableCars(
+    userSettings.selectableCars.length > 0 ? userSettings.selectableCars : cars
+  );
+
   // console.log(selectableCars);
   const dispatch = useDispatch();
 
   const onSelectCarClassChange = (values: string[]) => {
     const newShowcars = processCarClassSelectionNew({
       cars: cars,
-      currentFilter: userSettings.filterCarClasses,
-      currentShowCars: userSettings.showCars,
+      currentFilter: filterCarClasses,
+      currentShowCars: showCars,
       newSelection: values,
     });
+
+    const sortedSelectabled = createSelectableCars(collectCarsByCarClassFilter(cars, values));
+
+    const reorderedShowCars = sortedSelectabled.map((c) => c.carNum).filter((carNum) => newShowcars.includes(carNum));
     const curSettings = {
       ...userSettings,
       filterCarClasses: values,
-      selectableCars: collectCarsByCarClassFilter(cars, values),
+      showCars: reorderedShowCars,
+      selectableCars: sortedSelectabled,
     };
     // const curSettings = { ...userSettings, filterCarClasses: values };
     dispatch(dashboardSettings(curSettings));

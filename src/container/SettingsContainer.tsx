@@ -25,7 +25,7 @@ export const SettingsContainer: React.FC = () => {
   return (
     <>
       <Row>
-        <Col span={6}>
+        <Col span={10}>
           <Card title="Global settings">
             <p>
               <Checkbox checked={stateGlobalSettings.syncSelection} onChange={onGlobalSynchChange}>
@@ -34,7 +34,7 @@ export const SettingsContainer: React.FC = () => {
             </p>
             <p>
               <Checkbox checked={stateGlobalSettings.filterOrderByPosition} onChange={onGlobalFilterOrdering}>
-                Order cars in filter by position
+                Order cars in filter by race position
               </Checkbox>
             </p>
           </Card>
