@@ -136,6 +136,7 @@ export interface IReplaySettings {
 
 export interface IGlobalSettings {
   syncSelection: boolean; // if true, selection for showCars,referenceCars are pushed to all relevant pages
+  filterOrderByPosition: boolean; // if true, cars in selections will be ordered by race position
   showCars: string[];
   filterCarClasses: string[]; // empty = all classes, otherwise only selected
   referenceCarNum?: string; // used for graphs where a reference is needed
