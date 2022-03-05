@@ -2,10 +2,13 @@ import {
   ICarInfo,
   ICarPitInfo,
   ICarStintInfo,
+  IDataEntrySpec,
+  IMessage,
   IPitInfo,
   IProcessRaceStateData,
   IStintInfo,
 } from "@mpapenbr/iracelog-analysis/dist/stints/types";
+import { getValueViaSpec } from "@mpapenbr/iracelog-analysis/dist/stints/util";
 import _ from "lodash";
 import { ICarBaseData, ICarClass } from "../../stores/racedata/types";
 import { sortCarNumberStr } from "../../utils/output";
@@ -230,3 +233,38 @@ export const findDriverByStint = (carInfo: ICarInfo, stint: IStintInfo) =>
     // allow 5s on leave time to cope with possible resets due to disconnects
     v.seatTime.find((st) => st.enterCarTime <= stint.exitTime && st.leaveCarTime + 5 >= stint.enterTime)
   );
+
+/**
+ *
+ * @param carMsg the latest message containing carData
+ * @param carManifest the manifest for the data in carRawData.data
+ * @returns carNums order by current race positions
+ */
+export const orderedCarNumsByPosition = (carMsg: IMessage, carManifest: IDataEntrySpec[]): string[] => {
+  const createCarNumsByPos = (carDataRaw: any): string[] => {
+    return carDataRaw.map((d: any) => getValueViaSpec(d, carManifest, "carNum"));
+  };
+  return createCarNumsByPos(carMsg.data);
+};
+
+/**
+ *
+ * @param cars
+ * @param orderByPosition if true cars are ordered by race position
+ * @param provideOrderedCarNums a function that provides the carNums ordered by the current race positions
+ * @returns a sorted copy cars
+ */
+export const sortedSelectableCars = (
+  cars: ICarBaseData[],
+  orderByPosition: boolean,
+  provideOrderedCarNums: () => string[]
+): ICarBaseData[] => {
+  if (orderByPosition) {
+    const carNumsByPos = provideOrderedCarNums();
+    const sortBySetting = (a: ICarBaseData, b: ICarBaseData): number => {
+      return carNumsByPos.indexOf(a.carNum) - carNumsByPos.indexOf(b.carNum);
+    };
+    return cars.slice().sort(sortBySetting);
+  }
+  return cars.slice().sort((a, b) => sortCarNumberStr(a.carNum, b.carNum));
+};
