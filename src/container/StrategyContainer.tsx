@@ -8,11 +8,14 @@ import {
   findDriverByStint,
   getCarPitStops,
   getCarStints,
+  orderedCarNumsByPosition,
   processCarClassSelectionNew,
+  sortedSelectableCars,
 } from "../components/live/util";
 import { colorsBySeatTime, getCombinedStintData } from "../components/nivo/stintsummary/commons";
 import StintStretch from "../components/nivo/stintsummary/stintstretch";
 import { ApplicationState } from "../stores";
+import { ICarBaseData } from "../stores/racedata/types";
 import { globalSettings, strategySettings } from "../stores/ui/actions";
 
 const { Option } = Select;
@@ -23,14 +26,28 @@ export const StrategyContainer: React.FC = () => {
   const userSettings = useSelector((state: ApplicationState) => state.userSettings.strategy);
 
   const stateGlobalSettings = useSelector((state: ApplicationState) => state.userSettings.global);
+
   const carInfo = useSelector((state: ApplicationState) => state.raceData.carInfo);
   const carStints = useSelector((state: ApplicationState) => state.raceData.carStints);
   const carPits = useSelector((state: ApplicationState) => state.raceData.carPits);
 
   const showCars = useSelector((state: ApplicationState) => state.userSettings.strategy.showCars);
   const filterCarClasses = useSelector((state: ApplicationState) => state.userSettings.strategy.filterCarClasses);
+  // -- sort start
+  const stateCarManifest = useSelector((state: ApplicationState) => state.wamp.data.manifests.car);
 
-  const selectableCars = userSettings.selectableCars.length > 0 ? userSettings.selectableCars : cars;
+  const raceOrder = useSelector((state: ApplicationState) => state.raceData.classification);
+
+  const createSelectableCars = (cars: ICarBaseData[]): ICarBaseData[] => {
+    return sortedSelectableCars(cars, stateGlobalSettings.filterOrderByPosition, () =>
+      orderedCarNumsByPosition(raceOrder, stateCarManifest)
+    );
+  };
+  const selectableCars = createSelectableCars(
+    userSettings.selectableCars.length > 0 ? userSettings.selectableCars : cars
+  );
+  // -- sort end
+
   // console.log(selectableCars);
   const dispatch = useDispatch();
 
@@ -41,6 +58,7 @@ export const StrategyContainer: React.FC = () => {
       currentShowCars: showCars,
       newSelection: values,
     });
+    console.log(newShowcars);
     const curSettings = {
       ...userSettings,
       filterCarClasses: values,
