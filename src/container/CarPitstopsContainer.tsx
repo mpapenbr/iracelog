@@ -3,10 +3,16 @@ import { Button, Col, Popover, Row } from "antd";
 import * as React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import CarFilter from "../components/live/carFilter";
-import { collectCarsByCarClassFilter, processCarClassSelectionNew } from "../components/live/util";
+import {
+  collectCarsByCarClassFilter,
+  orderedCarNumsByPosition,
+  processCarClassSelectionNew,
+  sortedSelectableCars,
+} from "../components/live/util";
 import CarPitstopsNivo from "../components/nivo/carPitstops";
 import PitstopControl from "../components/pitstopControl";
 import { ApplicationState } from "../stores";
+import { ICarBaseData } from "../stores/racedata/types";
 import { globalSettings, pitstopsSettings } from "../stores/ui/actions";
 
 export const CarPitstopsContainer: React.FC = () => {
@@ -16,11 +22,26 @@ export const CarPitstopsContainer: React.FC = () => {
   const userSettings = useSelector((state: ApplicationState) => state.userSettings.pitstops);
   const stateGlobalSettings = useSelector((state: ApplicationState) => state.userSettings.global);
 
+  const stateCarManifest = useSelector((state: ApplicationState) => state.wamp.data.manifests.car);
+  const raceOrder = useSelector((state: ApplicationState) => state.raceData.classification);
+  const createSelectableCars = (cars: ICarBaseData[]): ICarBaseData[] => {
+    return sortedSelectableCars(cars, stateGlobalSettings.filterOrderByPosition, () =>
+      orderedCarNumsByPosition(raceOrder, stateCarManifest)
+    );
+  };
+  const orderedShowCars = (carNums: string[]): string[] => {
+    return createSelectableCars(cars)
+      .filter((c) => carNums.includes(c.carNum))
+      .map((c) => c.carNum);
+  };
   const selectSettings = () => {
     if (stateGlobalSettings.syncSelection) {
-      return { showCars: stateGlobalSettings.showCars, filterCarClasses: stateGlobalSettings.filterCarClasses };
+      return {
+        showCars: orderedShowCars(stateGlobalSettings.showCars),
+        filterCarClasses: stateGlobalSettings.filterCarClasses,
+      };
     } else {
-      return { showCars: userSettings.showCars, filterCarClasses: userSettings.filterCarClasses };
+      return { showCars: orderedShowCars(userSettings.showCars), filterCarClasses: userSettings.filterCarClasses };
     }
   };
   const { showCars, filterCarClasses } = selectSettings();
@@ -33,15 +54,21 @@ export const CarPitstopsContainer: React.FC = () => {
       currentShowCars: showCars,
       newSelection: values,
     });
+
+    const sortedSelectabled = createSelectableCars(collectCarsByCarClassFilter(cars, values));
+
+    const reorderedShowCars = sortedSelectabled.map((c) => c.carNum).filter((carNum) => newShowcars.includes(carNum));
+
     const curSettings = {
       ...userSettings,
       filterCarClasses: values,
-      showCars: newShowcars,
-      selectableCars: collectCarsByCarClassFilter(cars, values),
+      showCars: reorderedShowCars,
+      selectableCars: sortedSelectabled,
     };
+    // const curSettings = { ...userSettings, filterCarClasses: values };
     dispatch(pitstopsSettings(curSettings));
     if (stateGlobalSettings.syncSelection) {
-      dispatch(globalSettings({ ...stateGlobalSettings, showCars: newShowcars, filterCarClasses: values }));
+      dispatch(globalSettings({ ...stateGlobalSettings, showCars: reorderedShowCars, filterCarClasses: values }));
     }
   };
 

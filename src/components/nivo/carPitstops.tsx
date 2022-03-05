@@ -3,7 +3,7 @@ import { Empty, Select } from "antd";
 import _ from "lodash";
 import React from "react";
 import { ICarPitInfo, IPitInfo } from "../../stores/wamp/types";
-import { secAsHHMMSS, secAsMMSS, sortCarNumberStr } from "../../utils/output";
+import { secAsHHMMSS, secAsMMSS } from "../../utils/output";
 
 const { Option } = Select;
 
@@ -18,7 +18,7 @@ const CarPitstopsNivo: React.FC<MyProps> = (props: MyProps) => {
   // const carPits = useSelector((state: ApplicationState) => state.raceData.carPits);
   // const uiSettings = useSelector((state: ApplicationState) => state.userSettings.pitstops);
 
-  const carOrder = [...props.showCars].sort(sortCarNumberStr).reverse();
+  const carOrder = [...props.showCars].reverse(); //.sort(sortCarNumberStr).reverse();
 
   const numEntries = (item: ICarPitInfo) => item.history.length + (item.current.isCurrentPitstop ? 1 : 0);
   const maxPitstops = props.carPits.reduce((a, b) => (numEntries(b) > a ? numEntries(b) : a), 0);
@@ -45,7 +45,7 @@ const CarPitstopsNivo: React.FC<MyProps> = (props: MyProps) => {
     }
     return { ...work };
   });
-  console.log(pitData);
+
   const guessNumToDraw = props.carPits
     .filter((v) => props.showCars.includes(v.carNum))
     .reduce((prev, cur) => {
