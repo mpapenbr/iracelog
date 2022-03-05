@@ -3,7 +3,7 @@ import { Empty } from "antd";
 import _ from "lodash";
 import React from "react";
 import { ICarInfo, ICarStintInfo, IStintInfo } from "../../stores/wamp/types";
-import { secAsHHMMSS, secAsMMSS, sortCarNumberStr } from "../../utils/output";
+import { secAsHHMMSS, secAsMMSS } from "../../utils/output";
 
 interface MyProps {
   carStints: ICarStintInfo[];
@@ -12,7 +12,7 @@ interface MyProps {
   showAsLabel: string;
 }
 const CarStintsNivo: React.FC<MyProps> = (props: MyProps) => {
-  const carOrder = [...props.showCars].sort(sortCarNumberStr).reverse();
+  const carOrder = [...props.showCars].reverse();
   const numEntries = (item: ICarStintInfo) => item.history.length + (item.current.isCurrentStint ? 1 : 0);
   const maxStints = props.carStints.reduce((a, b) => (numEntries(b) > a ? numEntries(b) : a), 0);
 
@@ -120,7 +120,7 @@ value: 77.66666666553647
     // indexScale: {type: "band", round:true},
   };
 
-  console.log(guessNumToDraw);
+  // console.log(guessNumToDraw);
   const calcHeight = Math.min(1200, Math.max(150, carOrder.length * 30));
   const InternalGraph = (
     <div style={{ height: `${calcHeight}px` }}>
