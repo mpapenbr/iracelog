@@ -1,3 +1,25 @@
+### 0.14.0 (2022-03-06)
+
+##### Build System / Dependencies
+
+* **deps:**
+  *  typescript 4.6.2,  smaller dev-deps changes (8effd826)
+  *  antd 4.18.8, some types in devDeps updated (3a61c1a3)
+* **deps-dev:**  eslint 8.10.0 (3eb46f2f)
+
+##### New Features
+
+* **gui:**
+  *  ordering of car entries in filter (num vs race position)  in race graphs (d4385b98)
+  *  ordering of car entries in filter (num vs race position)  in stints, pitstops (d50a9f3c)
+  *  ordering of car entries in filter (num vs race position)  in dashboard, circle of doom, strategy (ff12d7a6)
+  *  ordering of car entries in filter (num vs race position) (0dd40b39)
+  *  settings page (e08bdf8c)
+
+##### Bug Fixes
+
+*  use session manifest from event data (c5301a95)
+
 ### 0.13.0 (2022-02-20)
 
 ##### Build System / Dependencies
