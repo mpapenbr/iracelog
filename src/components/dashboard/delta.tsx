@@ -8,7 +8,6 @@ import { sprintf } from "sprintf-js";
 import { firstBy } from "thenby";
 import { globalWamp } from "../../commons/globals";
 import { ApplicationState } from "../../stores";
-import { sortCarNumberStr } from "../../utils/output";
 import { assignCarColors } from "../live/colorAssignment";
 
 const Delta: React.FC = () => {
@@ -49,14 +48,14 @@ const Delta: React.FC = () => {
 
   const assignedCarColors = assignCarColors(availableCars);
   const localColors = userSettings.showCars
-    .sort(sortCarNumberStr)
+    // .sort(sortCarNumberStr)
     .filter((v) => v !== refCar)
     // .map((carNum) => cat10Colors[showCars.indexOf(carNum) % cat10Colors.length]);
     .map((carNum) => assignedCarColors.get(carNum) ?? "black");
 
   const graphDataOrig = userSettings.showCars
     .filter((v) => v !== refCar)
-    .sort(sortCarNumberStr)
+    // .sort(sortCarNumberStr)
     .map((carNum) => dataForCar(carNum))
     .flatMap((a) => [...a]);
   // console.log(graphDataOrig);

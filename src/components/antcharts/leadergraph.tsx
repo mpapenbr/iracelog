@@ -8,7 +8,6 @@ import { useSelector } from "react-redux";
 import { sprintf } from "sprintf-js";
 import { globalWamp } from "../../commons/globals";
 import { ApplicationState } from "../../stores";
-import { sortCarNumberStr } from "../../utils/output";
 import { assignCarColors } from "../live/colorAssignment";
 import { extractSomeCarData2 } from "../live/util";
 
@@ -42,7 +41,7 @@ const LeaderGraph: React.FC<MyProps> = (props: MyProps) => {
     }
   };
   const { showCars } = props;
-
+  console.log(showCars);
   if (!showCars.length) return <Empty description="Please select cars to show" />;
 
   const carDataContainer = extractSomeCarData2(carInfos);
@@ -84,14 +83,14 @@ const LeaderGraph: React.FC<MyProps> = (props: MyProps) => {
   };
 
   const graphDataOrig = showCars
-    .sort(sortCarNumberStr)
+    // .sort(sortCarNumberStr)
     .map((carNum) => dataForCar(carNum))
     .flatMap((a) => [...a]);
 
   const carColors = assignCarColors(availableCars);
   const getColor = (carNum: string): string => carColors.get(carNum) ?? "black";
   const localColors = showCars
-    .sort(sortCarNumberStr)
+    // .sort(sortCarNumberStr)
     .filter((carNum) => allCarNums.includes(carNum))
     .map((carNum) => getColor(carNum));
 
