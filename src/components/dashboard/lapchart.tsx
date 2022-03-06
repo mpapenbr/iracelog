@@ -4,7 +4,7 @@ import React from "react";
 import { useSelector } from "react-redux";
 import { globalWamp } from "../../commons/globals";
 import { ApplicationState } from "../../stores";
-import { lapTimeString, sortCarNumberStr } from "../../utils/output";
+import { lapTimeString } from "../../utils/output";
 import { assignCarColors } from "../live/colorAssignment";
 import { statsDataFor, stintLaps } from "../live/statsutil";
 import { getCarStints } from "../live/util";
@@ -25,7 +25,7 @@ const Lapchart: React.FC = () => {
 
   const assignedCarColors = assignCarColors(availableCars);
   const localColors = userSettings.showCars
-    .sort(sortCarNumberStr)
+    // .sort(sortCarNumberStr)
     // .map((carNum) => cat10Colors[showCars.indexOf(carNum) % cat10Colors.length]);
     .map((carNum) => assignedCarColors.get(carNum) ?? "black");
 

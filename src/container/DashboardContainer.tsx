@@ -36,7 +36,7 @@ export const DashboardContainer: React.FC = () => {
   const carStints = useSelector((state: ApplicationState) => state.raceData.carStints);
   const carPits = useSelector((state: ApplicationState) => state.raceData.carPits);
 
-  const showCars = useSelector((state: ApplicationState) => state.userSettings.dashboard.showCars);
+  const rawShowCars = useSelector((state: ApplicationState) => state.userSettings.dashboard.showCars);
   const filterCarClasses = useSelector((state: ApplicationState) => state.userSettings.dashboard.filterCarClasses);
 
   const stateCarManifest = useSelector((state: ApplicationState) => state.wamp.data.manifests.car);
@@ -50,6 +50,12 @@ export const DashboardContainer: React.FC = () => {
     userSettings.selectableCars.length > 0 ? userSettings.selectableCars : cars
   );
 
+  const orderedShowCars = (carNums: string[]): string[] => {
+    return createSelectableCars(cars)
+      .filter((c) => carNums.includes(c.carNum))
+      .map((c) => c.carNum);
+  };
+  const showCars = orderedShowCars(rawShowCars);
   // console.log(selectableCars);
   const dispatch = useDispatch();
 
@@ -63,7 +69,7 @@ export const DashboardContainer: React.FC = () => {
 
     const sortedSelectabled = createSelectableCars(collectCarsByCarClassFilter(cars, values));
 
-    const reorderedShowCars = sortedSelectabled.map((c) => c.carNum).filter((carNum) => newShowcars.includes(carNum));
+    const reorderedShowCars = sortedSelectabled.map((c) => c.carNum).filter((carNum) => showCars.includes(carNum));
     const curSettings = {
       ...userSettings,
       filterCarClasses: values,
@@ -76,6 +82,7 @@ export const DashboardContainer: React.FC = () => {
       dispatch(globalSettings({ ...stateGlobalSettings, filterCarClasses: values }));
     }
   };
+  // console.log(showCars);
 
   const props = {
     availableCars: selectableCars,
