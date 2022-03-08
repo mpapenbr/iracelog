@@ -51,7 +51,7 @@
     "@types/sprintf-js": "^1.1.2",
     "@types/uuid": "^8.3.4",
     "@typescript-eslint/eslint-plugin": "^5.13.0",
-    "@typescript-eslint/parser": "^5.13.0",
+    "@typescript-eslint/parser": "^5.14.0",
     "eslint": "^8.10.0",
     "eslint-plugin-react": "^7.29.3",
     "generate-changelog": "^1.8.0",
