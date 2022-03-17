@@ -35,10 +35,9 @@
     "sleistner.vscode-fileutils",
     "patbenatar.advanced-new-file",
     "formulahendry.auto-rename-tag",
-    "coenraads.bracket-pair-colorizer",
+
     "wallabyjs.quokka-vscode",
     "dsznajder.es7-react-js-snippets"
-
   ],
 
   // Use 'forwardPorts' to make a list of ports inside the container available locally.
@@ -48,5 +47,6 @@
   // "postCreateCommand": "yarn install",
 
   // Uncomment to connect as a non-root user. See https://aka.ms/vscode-remote/containers/non-root.
-  "remoteUser": "node"
+  "remoteUser": "node",
+  "runArgs": ["--add-host=host.docker.internal:host-gateway"]
 }
