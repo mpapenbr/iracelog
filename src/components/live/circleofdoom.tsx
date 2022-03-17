@@ -43,13 +43,15 @@ export const CircleOfDoom: React.FC<MyProps> = (props: MyProps) => {
   }));
   const data = dataRaw.filter((c) => props.showCars.includes(c.carNum));
   // console.log(data);
+  // console.table(props);
 
   // for each car class the catcolors are assigned from scratch
   const carColors = assignCarColors(carInfos);
   const getColor = (carNum: string): string => carColors.get(carNum) ?? "black";
 
   const OptionalDisplays = () => {
-    if (!props.referenceCarNum?.length) {
+    if (!props.referenceCarNum?.length || dataRaw.length === 0) {
+      console.log("early leave");
       return <></>;
     }
     const carData = carLookup.get(props.referenceCarNum)!;
@@ -62,9 +64,9 @@ export const CircleOfDoom: React.FC<MyProps> = (props: MyProps) => {
       .sort();
     if (sortedLaps === undefined) sortedLaps = [];
     const meanLap = sortedLaps![Math.ceil(sortedLaps!.length / 2)];
-    console.log("meanLap: " + meanLap);
+    // console.log("meanLap: " + meanLap);
     const avgSpeed = eventInfo.trackLength / meanLap;
-    console.log("avgSpeed: " + avgSpeed);
+    // console.log("avgSpeed: " + avgSpeed);
     const data = dataRaw.find((c) => c.carNum === carData.carNum)!;
     const pitInfo = carPits.find((item) => item.carNum === carData.carNum)!;
     let inPits = 0;
@@ -73,7 +75,7 @@ export const CircleOfDoom: React.FC<MyProps> = (props: MyProps) => {
       inPits = pitInfo.current.laneTime;
     }
     const newPos = ((1 + data.trackPos - (avgSpeed * (props.pitstopTime - inPits)) / eventInfo.trackLength) % 1) * 360;
-
+    console.log(newPos);
     const color = getColor(data.carNum);
     return (
       <>
