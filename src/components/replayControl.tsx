@@ -45,8 +45,8 @@ export const ReplayControl: React.FC = () => {
 
   const requestData = () => {
     const d = globalWamp.replayHolder?.next();
-    console.log(d);
-    console.log("settings.playing: " + settings.playing + " local.playing: " + playing);
+    // console.log(d);
+    // console.log("settings.playing: " + settings.playing + " local.playing: " + playing);
     if (d) {
       dispatch(updateClassification({ msgType: d.msgType, timestamp: d.timestamp, data: d.data.cars }));
       dispatch(updateSessionInfo({ msgType: d.msgType, timestamp: d.timestamp, data: d.data.session }));
@@ -102,7 +102,7 @@ export const ReplayControl: React.FC = () => {
   };
 
   const onStep = async (e: React.MouseEvent<HTMLButtonElement>) => {
-    console.log("step:" + e.currentTarget.value);
+    // console.log("step:" + e.currentTarget.value);
     const step = parseInt(e.currentTarget.value);
 
     await globalWamp.replayHolder?.syncLoadData(currentTs + step);
