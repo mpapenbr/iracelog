@@ -53,7 +53,7 @@
     "@typescript-eslint/eslint-plugin": "^5.15.0",
     "@typescript-eslint/parser": "^5.15.0",
     "eslint": "^8.11.0",
-    "eslint-plugin-react": "^7.29.3",
+    "eslint-plugin-react": "^7.29.4",
     "generate-changelog": "^1.8.0",
     "react-scripts": "5.0.0",
     "redux-saga-test-plan": "^4.0.4",
