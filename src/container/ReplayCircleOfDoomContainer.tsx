@@ -1,4 +1,6 @@
 import { SettingOutlined } from "@ant-design/icons";
+import { ICarLaps, ICarPitInfo } from "@mpapenbr/iracelog-analysis/dist/stints/types";
+import { getValueViaSpec } from "@mpapenbr/iracelog-analysis/dist/stints/util";
 import { Button, Col, Form, InputNumber, Popover, Row, Select, Slider } from "antd";
 import * as React from "react";
 import { useDispatch, useSelector } from "react-redux";
@@ -7,23 +9,104 @@ import CarFilter from "../components/live/carFilter";
 import { CircleOfDoom } from "../components/live/circleofdoom";
 import {
   collectCarsByCarClassFilter,
+  ICarFilterData,
   orderedCarNumsByPosition,
   processCarClassSelectionNew,
   sortedSelectableCars,
 } from "../components/live/util";
+import { ZoomTrackPos } from "../components/live/zoomTrackPos";
 import { ReplayControl } from "../components/replayControl";
 import { Standings } from "../components/standings";
 import StandingsColumnControl from "../components/standingsColumnControl";
 import { ApplicationState } from "../stores";
-import { ICarBaseData } from "../stores/racedata/types";
+import { ICarBaseData, IEventInfo } from "../stores/racedata/types";
 import { circleOfDoomSettings, globalSettings } from "../stores/ui/actions";
 
 const { Option } = Select;
 
+interface SelectPitstopProps {
+  availableCars: ICarFilterData[];
+  selectedCarNum: string;
+  pitstopTime: number;
+  onSelectCar: (value: string) => void;
+  onPitStopTimeChanged: (value: any) => void;
+}
+
+const SelectPitStopParam: React.FC<SelectPitstopProps> = (props: SelectPitstopProps) => {
+  const referenceOptions = props.availableCars.map((d) => (
+    <Option key={d.carNum} value={d.carNum}>
+      #{d.carNum} {d.name}
+    </Option>
+  ));
+  return (
+    <>
+      <Select
+        style={{ width: "100%" }}
+        allowClear
+        value={props.selectedCarNum}
+        placeholder="Select car for pitstop"
+        onChange={props.onSelectCar}
+        maxTagCount="responsive"
+      >
+        {referenceOptions}
+      </Select>
+      <Form>
+        <Form.Item label="Pitstop time">
+          <InputNumber
+            defaultValue={props.pitstopTime}
+            placeholder="pitstop time"
+            precision={0}
+            step={1}
+            min={0}
+            formatter={(v) => sprintf("%d sec", v)}
+            parser={(v) => (v !== undefined ? parseInt(v.replace("sec", "")) : 0)}
+            onChange={props.onPitStopTimeChanged}
+          />
+        </Form.Item>
+        <Form.Item label="Pitstop time">
+          <Slider min={0} max={120} defaultValue={props.pitstopTime} onAfterChange={props.onPitStopTimeChanged} />
+        </Form.Item>
+      </Form>
+    </>
+  );
+};
+
+interface IProcData {
+  carLaps: ICarLaps;
+  pitInfo: ICarPitInfo;
+  eventInfo: IEventInfo;
+  pitstopTime: number;
+  trackPos: number;
+}
+const newPosAfterPitstop = (procData: IProcData): number => {
+  let sortedLaps = procData.carLaps?.laps.map((v) => v.lapTime).sort();
+  if (sortedLaps === undefined) sortedLaps = [];
+  const meanLap = sortedLaps[Math.ceil(sortedLaps.length / 2)];
+  console.log("meanLap: " + meanLap);
+  const avgSpeed = procData.eventInfo.trackLength / meanLap;
+  console.log("avgSpeed: " + avgSpeed);
+  // console.table(procData.pitInfo);
+
+  let inPits = 0;
+  if (procData.pitInfo && procData.pitInfo.current.isCurrentPitstop) {
+    console.log("car is in pits for " + procData.pitInfo.current.laneTime);
+    inPits = procData.pitInfo.current.laneTime;
+  }
+  const newPos =
+    (1 + procData.trackPos - (avgSpeed * (procData.pitstopTime - inPits)) / procData.eventInfo.trackLength) % 1;
+  return newPos;
+};
+
 export const ReplayCircleOfDoomContainer: React.FC = () => {
   const cars = useSelector((state: ApplicationState) => state.raceData.availableCars);
+  const carsRaw = useSelector((state: ApplicationState) => state.raceData.classification.data);
   const carClasses = useSelector((state: ApplicationState) => state.raceData.availableCarClasses);
   const userSettings = useSelector((state: ApplicationState) => state.userSettings.circleOfDoom);
+  const carLaps = useSelector((state: ApplicationState) => state.raceData.carLaps);
+  const carPits = useSelector((state: ApplicationState) => state.raceData.carPits);
+  const trackInfo = useSelector((state: ApplicationState) => state.raceData.trackInfo);
+  const carInfos = useSelector((state: ApplicationState) => state.raceData.availableCars);
+  const eventInfo = useSelector((state: ApplicationState) => state.raceData.eventInfo);
 
   const replaySettings = useSelector((state: ApplicationState) => state.userSettings.replay);
   const stateGlobalSettings = useSelector((state: ApplicationState) => state.userSettings.global);
@@ -88,13 +171,6 @@ export const ReplayCircleOfDoomContainer: React.FC = () => {
     dispatch(circleOfDoomSettings(curSettings));
   };
 
-  const referenceOptions = selectableCars
-    .filter((d) => showCars.includes(d.carNum))
-    .map((d) => (
-      <Option key={d.carNum} value={d.carNum}>
-        #{d.carNum} {d.name}
-      </Option>
-    ));
   const props = {
     availableCars: selectableCars,
     availableClasses: carClasses.map((v) => v.name),
@@ -110,38 +186,31 @@ export const ReplayCircleOfDoomContainer: React.FC = () => {
     onSelectCarClassFilter: onSelectCarClassChange,
   };
 
-  const SelectPitStopParam: React.FC = () => {
-    return (
-      <>
-        <Select
-          style={{ width: "100%" }}
-          allowClear
-          value={userSettings.referenceCarNum}
-          placeholder="Select car for pitstop"
-          onChange={onSelectReferenceCar}
-          maxTagCount="responsive"
-        >
-          {referenceOptions}
-        </Select>
-        <Form>
-          <Form.Item label="Pitstop time">
-            <InputNumber
-              defaultValue={userSettings.pitstopTime}
-              placeholder="pitstop time"
-              precision={0}
-              step={1}
-              min={0}
-              formatter={(v) => sprintf("%d sec", v)}
-              parser={(v) => (v !== undefined ? parseInt(v.replace("sec", "")) : 0)}
-              onChange={onPitStopTimeChanged}
-            />
-          </Form.Item>
-          <Form.Item label="Pitstop time">
-            <Slider min={0} max={120} defaultValue={userSettings.pitstopTime} onAfterChange={onPitStopTimeChanged} />
-          </Form.Item>
-        </Form>
-      </>
-    );
+  const dataRaw = carsRaw.map((c: any, idx: number) => ({
+    carNum: getValueViaSpec(c, stateCarManifest, "carNum"),
+    trackPos: getValueViaSpec(c, stateCarManifest, "trackPos"),
+    // state: getValueViaSpec(c, stateCarManifest, "state"),
+    // pos: idx,
+    // pic: getValueViaSpec(c, stateCarManifest, "pic"),
+    // lap: getValueViaSpec(c, stateCarManifest, "lap"),
+  }));
+  // console.log(`${dataRaw}`);
+  const trackPos = dataRaw.find((c: any) => c.carNum === userSettings.referenceCarNum)?.trackPos ?? -1;
+  // .filter((c: any) => c.carNum == userSettings.referenceCarNum);
+  const posAfterPit = newPosAfterPitstop({
+    carLaps: carLaps.find((c) => c.carNum === userSettings.referenceCarNum)!,
+    pitInfo: carPits.find((c) => c.carNum === userSettings.referenceCarNum)!,
+    eventInfo,
+    pitstopTime: userSettings.pitstopTime,
+    trackPos,
+  });
+  console.log(`${posAfterPit}`);
+  const pitstopProps: SelectPitstopProps = {
+    pitstopTime: userSettings.pitstopTime,
+    selectedCarNum: userSettings.referenceCarNum,
+    availableCars: selectableCars,
+    onPitStopTimeChanged: onPitStopTimeChanged,
+    onSelectCar: onSelectReferenceCar,
   };
 
   return (
@@ -163,14 +232,40 @@ export const ReplayCircleOfDoomContainer: React.FC = () => {
             pitstopTime={userSettings.pitstopTime}
           />
         </Col>
-        <Col span="18">
-          <Row gutter={16}>
-            <Col span="12">
-              <SelectPitStopParam />
+        <Col span={18}>
+          <Row>
+            <Col span="24">
+              <Row gutter={16}>
+                <Col span="12">
+                  <SelectPitStopParam {...pitstopProps} />
+                </Col>
+                <Col span="12">{replaySettings.enabled ? <ReplayControl /> : <></>}</Col>
+              </Row>
             </Col>
-
-            <Col span="12">{replaySettings.enabled ? <ReplayControl /> : <></>}</Col>
           </Row>
+          {userSettings.referenceCarNum ? (
+            <Row>
+              <Col span="24">
+                <ZoomTrackPos showCars={showCars} referenceCarNum={userSettings.referenceCarNum} trackPos={trackPos} />
+              </Col>
+            </Row>
+          ) : (
+            <></>
+          )}
+
+          {userSettings.referenceCarNum && userSettings.pitstopTime > 0 ? (
+            <Row>
+              <Col span="24">
+                <ZoomTrackPos
+                  showCars={showCars}
+                  referenceCarNum={userSettings.referenceCarNum}
+                  trackPos={posAfterPit}
+                />
+              </Col>
+            </Row>
+          ) : (
+            <></>
+          )}
         </Col>
       </Row>
 
