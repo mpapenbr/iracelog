@@ -1,3 +1,20 @@
+### 0.15.0 (2022-03-17)
+
+##### Build System / Dependencies
+
+* **dev-deps:**  typescript-eslint (86cdf5b6)
+* **deps:**  antd 4.19.1, minor dev-deps updates (b8cc8938)
+
+##### Chores
+
+*  access docker network from devcontainer (50bfeba3)
+
+##### New Features
+
+* **gui:**
+  *  improved selection for pit stop in circle of doom (c9a7292a)
+  *  zoom view for pitstop car in circle of doom (a72ed6f4)
+
 ### 0.14.0 (2022-03-06)
 
 ##### Build System / Dependencies
