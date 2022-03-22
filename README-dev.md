@@ -48,6 +48,24 @@ see https://github.com/facebook/create-react-app/issues/11549 for example
 
 # Solved issues
 
+## "embedded" security issues
+
+The following devDependencies were added in order to fix security issues in embedded packages
+
+- minimist:1.2.6
+- nth-check: 2.0.1
+
+They override the embedded references via resolutions in package.json.
+
+```json
+ "resolutions": {
+   "minimist": "^1.2.6",
+    "nth-check": "^2.0.1"
+  },
+```
+
+See https://itnext.io/fixing-security-vulnerabilities-in-npm-dependencies-in-less-than-3-mins-a53af735261d for details.
+
 ## Nivo
 
 **FIXED with nivo@0.68**
