@@ -57,7 +57,7 @@
     "generate-changelog": "^1.8.0",
     "minimist": "^1.2.6",
     "nth-check": "^2.0.1",
-    "react-scripts": "5.0.0",
+    "react-scripts": "5.0.1",
     "redux-saga-test-plan": "^4.0.4",
     "ts-jest": "^27.1.4",
     "typescript": "^4.6.3"
