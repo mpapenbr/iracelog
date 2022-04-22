@@ -1,3 +1,48 @@
+#### 0.15.1 (2022-04-22)
+
+##### Build System / Dependencies
+
+* **deps:**
+  *  redux 4.2.0, react-redux 8.0.1 (1ffb06bd)
+  *  bump moment from 2.29.1 to 2.29.2 (60f827e5)
+  *  iracelog-analysis 1.1.2 (31a24424)
+  *  bump react-redux from 7.2.7 to 7.2.8 (c318cfb3)
+  *  bump antd from 4.19.4 to 4.19.5 (fb51eaa7)
+  *  bump react-redux from 7.2.6 to 7.2.7 (6c8a9619)
+  *  bump react-router-dom from 6.2.2 to 6.3.0 (5510adb0)
+  *  bump antd from 4.19.3 to 4.19.4 (ec67a705)
+  *  bump @ant-design/charts from 1.3.5 to 1.3.6 (1135759c)
+  *  bump antd from 4.19.2 to 4.19.3 (eb4ab6e4)
+  *  bump antd from 4.19.1 to 4.19.2 (6a92038d)
+* **dev-deps:**  lodash 4.14.182, eslint/* 5.20.0 (51926a68)
+* **deps-dev:**
+  *  various fixes/minor updates (80cbc5c5)
+  *  bump @testing-library/jest-dom from 5.16.3 to 5.16.4 (4a1471b9)
+  *  bump @typescript-eslint/eslint-plugin (e7c4737c)
+  *  bump @typescript-eslint/parser from 5.17.0 to 5.18.0 (0141703e)
+  *  bump @testing-library/user-event from 14.0.3 to 14.0.4 (770ba30b)
+  *  bump @testing-library/react from 12.1.4 to 13.0.0 (63f7bde5)
+  *  bump @testing-library/user-event from 14.0.0 to 14.0.3 (e723da6e)
+  *  bump @testing-library/user-event from 13.5.0 to 14.0.0 (af93cc3d)
+  *  bump @types/lodash from 4.14.180 to 4.14.181 (c79ab7d6)
+  *  bump @typescript-eslint/parser from 5.16.0 to 5.17.0 (928dcb02)
+  *  bump @typescript-eslint/eslint-plugin (dbfafc0d)
+  *  bump eslint from 8.11.0 to 8.12.0 (349c4c3d)
+  *  bump typescript from 4.6.2 to 4.6.3 (a7e5f01e)
+  *  bump @types/react from 17.0.42 to 17.0.43 (cf730cce)
+  *  bump ts-jest from 27.1.3 to 27.1.4 (77f5ee5e)
+  *  bump @testing-library/jest-dom from 5.16.2 to 5.16.3 (51ad1a65)
+  *  bump @types/react from 17.0.41 to 17.0.42 (1cade547)
+  *  bump @typescript-eslint/parser from 5.15.0 to 5.16.0 (a0e18d63)
+  *  bump @typescript-eslint/eslint-plugin (3bdac10a)
+  *  bump @types/react-dom from 17.0.13 to 17.0.14 (dd39a9ae)
+  *  bump @types/react from 17.0.40 to 17.0.41 (46c941ee)
+  *  bump eslint-plugin-react from 7.29.3 to 7.29.4 (bed53356)
+
+##### Bug Fixes
+
+* **security:**  override modules with security issues (0e8caf81)
+
 ### 0.15.0 (2022-03-17)
 
 ##### Build System / Dependencies
