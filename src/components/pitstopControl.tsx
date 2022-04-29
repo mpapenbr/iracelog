@@ -1,7 +1,6 @@
 import { Checkbox, InputNumber, Row } from "antd";
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { sprintf } from "sprintf-js";
 import { ApplicationState } from "../stores";
 import { pitstopsSettings } from "../stores/ui/actions";
 
@@ -31,12 +30,15 @@ const PitstopControl: React.FC = () => {
         </Checkbox>
 
         <InputNumber
-          defaultValue={userSettings.hideThreshold}
+          // defaultValue={userSettings.hideThreshold}
+          value={userSettings.hideThreshold}
           precision={0}
           step={10}
           min={0}
-          formatter={(v) => sprintf("%d sec", v)}
-          parser={(v) => (v !== undefined ? parseInt(v.replace("sec", "")) : 0)}
+          style={{ width: "14ch" }}
+          addonAfter={"sec"}
+          // formatter={(v) => sprintf("%d sec", v)}
+          // parser={(v) => (v !== undefined ? parseInt(v.replace("sec", "")) : 0)}
           onChange={onThresholdChange}
         />
       </Row>

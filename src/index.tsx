@@ -1,5 +1,5 @@
 import React from "react";
-import ReactDOM from "react-dom";
+import { createRoot } from "react-dom/client";
 import App from "./App";
 import { checkForExternalConfig } from "./commons/backend";
 import { globalWamp } from "./commons/globals";
@@ -9,17 +9,18 @@ import reportWebVitals from "./reportWebVitals";
 
 const initialState = window.INITIAL_REDUX_STATE;
 const store = configureStore(initialState);
+
 (async () => {
   const config = await checkForExternalConfig();
   // console.log(y);
   globalWamp.backendConfig = config;
-
+  const container = document.getElementById("root");
+  const root = createRoot(container!);
   // console.log("After sync");
-  ReactDOM.render(
+  root.render(
     <React.StrictMode>
       <App store={store} />
-    </React.StrictMode>,
-    document.getElementById("root")
+    </React.StrictMode>
   );
 
   // If you want to start measuring performance in your app, pass a function
