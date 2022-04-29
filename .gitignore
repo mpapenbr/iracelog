@@ -27,3 +27,4 @@ yarn-error.log*
 # own
 private.tar
 .npmrc
+.gitconfig.local
