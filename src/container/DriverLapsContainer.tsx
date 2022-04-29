@@ -1,7 +1,6 @@
 import { Col, InputNumber, Row } from "antd";
 import * as React from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { sprintf } from "sprintf-js";
 import { globalWamp } from "../commons/globals";
 import Lapchart from "../components/antcharts/lapchart";
 import CarFilter from "../components/live/carFilter";
@@ -61,22 +60,28 @@ export const DriverLapsContainer: React.FC = () => {
         <CarFilter {...props} />
         <Col span={6}>
           <InputNumber
-            defaultValue={userSettings.filterSecs}
+            // defaultValue={userSettings.filterSecs}
+            value={userSettings.filterSecs}
             precision={0}
             step={2}
             min={0}
-            formatter={(v) => sprintf("%d sec", v)}
-            parser={(v) => (v !== undefined ? parseInt(v.replace("sec", "")) : 0)}
+            style={{ width: "14ch" }}
+            addonAfter={"sec"}
+            // formatter={(v) => sprintf("%d sec", v)}
+            // parser={(v) => (v !== undefined ? parseInt(v.replace("sec", "")) : 0)}
             onChange={onFilterRangeChange}
           />
           {globalWamp.currentLiveId ? (
             <InputNumber
-              defaultValue={userSettings.limitLastLaps}
+              // defaultValue={userSettings.limitLastLaps}
+              value={userSettings.limitLastLaps}
               precision={0}
               step={5}
               min={0}
-              formatter={(v) => sprintf("%d laps", v)}
-              parser={(v) => (v !== undefined ? parseInt(v.replace("laps", "")) : 0)}
+              style={{ width: "14ch" }}
+              addonAfter={"laps"}
+              // formatter={(v) => sprintf("%d laps", v)}
+              // parser={(v) => (v !== undefined ? parseInt(v.replace("laps", "")) : 0)}
               onChange={onLimitLastLapsChange}
             />
           ) : (

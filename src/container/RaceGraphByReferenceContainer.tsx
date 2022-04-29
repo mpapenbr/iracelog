@@ -1,7 +1,6 @@
 import { Col, InputNumber, Row, Select } from "antd";
 import * as React from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { sprintf } from "sprintf-js";
 import { globalWamp } from "../commons/globals";
 import Delta from "../components/antcharts/deltagraph";
 import CarFilter from "../components/live/carFilter";
@@ -140,24 +139,31 @@ export const RaceGraphByReferenceContainer: React.FC = () => {
           </Select>
         </Col>
         <CarFilter {...props} />
-        <Col span={4}>
+        <Col span={6}>
           <InputNumber
-            defaultValue={userSettings.deltaRange}
+            // defaultValue={userSettings.deltaRange}
+            value={userSettings.deltaRange}
             precision={0}
             step={10}
             min={0}
-            formatter={(v) => sprintf("%d sec", v)}
-            parser={(v) => (v !== undefined ? parseInt(v.replace("sec", "")) : 0)}
+            style={{ width: "14ch" }}
+            addonAfter={"sec"}
+            // formatter={(v) => sprintf("%d sec", v)}
+            // parser={(v) => (v !== undefined ? parseInt(v.replace("sec", "")) : 0)}
             onChange={onDeltaRangeChange}
           />
+
           {globalWamp.currentLiveId ? (
             <InputNumber
-              defaultValue={userSettings.limitLastLaps}
+              // defaultValue={userSettings.limitLastLaps}
+              value={userSettings.limitLastLaps}
               precision={0}
               step={5}
               min={0}
-              formatter={(v) => sprintf("%d laps", v)}
-              parser={(v) => (v !== undefined ? parseInt(v.replace("laps", "")) : 0)}
+              style={{ width: "14ch" }}
+              addonAfter={"laps"}
+              // formatter={(v) => sprintf("%d laps", v)}
+              // parser={(v) => (v !== undefined ? parseInt(v.replace("laps", "")) : 0)}
               onChange={onLimitLastLapsChange}
             />
           ) : (

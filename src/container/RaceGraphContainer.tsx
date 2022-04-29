@@ -1,7 +1,6 @@
 import { Checkbox, Col, InputNumber, Row } from "antd";
 import * as React from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { sprintf } from "sprintf-js";
 import LeaderGraph from "../components/antcharts/leadergraph";
 import CarFilter from "../components/live/carFilter";
 import {
@@ -105,14 +104,17 @@ export const RaceGraphContainer: React.FC = () => {
     <>
       <Row gutter={16}>
         <CarFilter {...props} />
-        <Col span={4}>
+        <Col span={5}>
           <InputNumber
-            defaultValue={userSettings.deltaRange}
+            value={userSettings.deltaRange}
             precision={0}
             step={10}
             min={0}
-            formatter={(v) => sprintf("%d sec", v)}
-            parser={(v) => (v !== undefined ? parseInt(v.replace("sec", "")) : 0)}
+            style={{ width: "22ch" }}
+            addonAfter={"sec"}
+            addonBefore={"Delta"}
+            // formatter={(v) => sprintf("%d sec", v)}
+            // parser={(v) => (v !== undefined ? parseInt(v.replace("sec", "")) : 0)}
             onChange={onDeltaRangeChange}
           />
         </Col>
@@ -122,7 +124,7 @@ export const RaceGraphContainer: React.FC = () => {
             checked={userSettings.gapRelativeToClassLeader}
             onChange={onCheckboxChange}
           >
-            Gaps relative to class leader
+            Gaps to class leader
           </Checkbox>
         </Col>
       </Row>

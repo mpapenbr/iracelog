@@ -4,7 +4,6 @@ import { getValueViaSpec } from "@mpapenbr/iracelog-analysis/dist/stints/util";
 import { Button, Col, Form, InputNumber, Popover, Row, Select, Slider } from "antd";
 import * as React from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { sprintf } from "sprintf-js";
 import CarFilter from "../components/live/carFilter";
 import { CircleOfDoom } from "../components/live/circleofdoom";
 import {
@@ -51,18 +50,22 @@ const SelectPitStopParam: React.FC<SelectPitstopProps> = (props: SelectPitstopPr
         {referenceOptions}
       </Select>
       <Form>
-        <Form.Item label="Pitstop time">
-          <InputNumber
-            defaultValue={props.pitstopTime}
-            placeholder="pitstop time"
-            precision={0}
-            step={1}
-            min={0}
-            formatter={(v) => sprintf("%d sec", v)}
-            parser={(v) => (v !== undefined ? parseInt(v.replace("sec", "")) : 0)}
-            onChange={props.onPitStopTimeChanged}
-          />
-        </Form.Item>
+        <InputNumber
+          // defaultValue={props.pitstopTime}
+          value={props.pitstopTime}
+          placeholder="pitstop time"
+          // prefix="Pitstop"
+          style={{ width: "27ch" }}
+          addonAfter={"sec"}
+          addonBefore={"Pitstop time"}
+          precision={0}
+          step={1}
+          min={0}
+          // formatter={(v) => sprintf("%d sec", v)}
+          // parser={(v) => (v !== undefined ? parseInt(v.replace("sec", "")) : 0)}
+          onChange={props.onPitStopTimeChanged}
+        />
+
         <Form.Item label="Pitstop time">
           <Slider min={0} max={120} defaultValue={props.pitstopTime} onAfterChange={props.onPitStopTimeChanged} />
         </Form.Item>

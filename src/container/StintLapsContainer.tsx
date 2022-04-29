@@ -1,7 +1,6 @@
 import { Col, InputNumber, Row, Select } from "antd";
 import * as React from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { sprintf } from "sprintf-js";
 import CarClassFilter from "../components/live/carClassFilter";
 import StintLapsRecharts from "../components/recharts/stintLaps";
 import { ApplicationState } from "../stores";
@@ -80,12 +79,15 @@ export const StintLapsContainer: React.FC = () => {
         />
         <Col span={4}>
           <InputNumber
-            defaultValue={userSettings.filterSecs}
+            // defaultValue={userSettings.filterSecs}
+            value={userSettings.filterSecs}
             precision={0}
             step={1}
             min={0}
-            formatter={(v) => sprintf("%d sec", v)}
-            parser={(v) => (v !== undefined ? parseInt(v.replace("sec", "")) : 0)}
+            style={{ width: "14ch" }}
+            addonAfter={"sec"}
+            // formatter={(v) => sprintf("%d sec", v)}
+            // parser={(v) => (v !== undefined ? parseInt(v.replace("sec", "")) : 0)}
             onChange={onFilterSecsChange}
           />
         </Col>
