@@ -1,3 +1,24 @@
+#### 0.15.2 (2022-05-01)
+
+##### Build System / Dependencies
+
+* **chore:**  temp remove disturbing yarn.lock (294bfb38)
+* **deps:**
+  *  react 18.1.0, antd 4.20.1 (5e820060)
+  *  react 18 preparations (4fcaf1a8)
+
+##### Chores
+
+* **git:**
+  *  restored yarn.lock (5e1f083a)
+  *  Merge branch 'mpapenbr/issue338' into main (4f75007e)
+  *  Merge branch 'main' into mpapenbr/issue338 (1e63f838)
+*  .gitignore (169108f0)
+
+##### New Features
+
+*  InputNumber adjustments. Label and/or units now outside of input (8640871b)
+
 #### 0.15.1 (2022-04-22)
 
 ##### Build System / Dependencies
