@@ -1,4 +1,4 @@
-import { IMessage } from "@mpapenbr/iracelog-analysis/dist/stints/types";
+import { IManifests, IMessage } from "@mpapenbr/iracelog-analysis/dist/stints/types";
 import { Session } from "autobahn";
 import _ from "lodash";
 import { IReplaySettings } from "../stores/ui/types";
@@ -10,14 +10,16 @@ export class ReplayDataHolder {
   private data: IMessage[];
   private preFetching: boolean;
   private idx: number; // current index to dispatch
+  private manifests: IManifests;
 
-  constructor(s: Session, settings: IReplaySettings) {
+  constructor(s: Session, settings: IReplaySettings, manifests: IManifests) {
     this.s = s;
     this.settings = settings;
     this.data = [];
     this.idx = 0;
     this.preFetching = true;
     this.internalLoad(this.settings.minTimestamp, 20);
+    this.manifests = manifests;
   }
 
   public loadData(startTs: number) {
@@ -72,6 +74,9 @@ export class ReplayDataHolder {
             const row = item[0];
             const col = item[1];
             const value = item[2];
+            if (work.payload.cars.length <= row) {
+              work.payload.cars = [...work.payload.cars, Array(this.manifests.car.length).fill(undefined)];
+            }
             work.payload.cars[row][col] = value;
           });
           d.payload.session.forEach((item: any[]) => {
