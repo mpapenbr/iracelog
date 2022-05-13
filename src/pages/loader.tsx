@@ -63,7 +63,7 @@ export const LoaderPage: React.FC<MyProps> = (props: MyProps) => {
         // already be called before this method is finished.
         dispatch(updateAvailableStandingsColumns([]));
 
-        const rh = new ReplayDataHolder(s, settings);
+        const rh = new ReplayDataHolder(s, settings, eventInfo.data.manifests);
         globalWamp.replayHolder = rh;
         globalWamp.currentLiveId = undefined;
 
