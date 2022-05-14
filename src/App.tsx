@@ -4,7 +4,7 @@ import { Provider } from "react-redux";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import { Store } from "redux";
 import "./App.css";
-import { API_LOCAL_DEV_MODE } from "./constants";
+import { API_LOCAL_DEV_MODE, APP_VERSION_DISPLAY } from "./constants";
 import { EventHeaderContainer } from "./container/EventHeaderContainer";
 import { AnalysisMainPage } from "./pages/analysisPage";
 import { DemoRaces } from "./pages/demoRaces";
@@ -40,7 +40,13 @@ const App: React.FC<AppProps> = (props: AppProps) => {
               </Routes>
             </div>
           </Content>
-          <Footer style={{ textAlign: "center" }}>iRacelog ©2022 Markus Papenbrock</Footer>
+          <Footer style={{ textAlign: "center" }}>
+            iRacelog{" "}
+            <a target={"_blank"} rel="noreferrer" href="https://github.com/mpapenbr/iracelog/blob/main/CHANGELOG.md">
+              {APP_VERSION_DISPLAY}
+            </a>{" "}
+            ©2022 Markus Papenbrock
+          </Footer>
         </Layout>
       </Router>
     </Provider>
