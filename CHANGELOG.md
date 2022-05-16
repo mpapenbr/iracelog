@@ -1,3 +1,32 @@
+### 0.16.0 (2022-05-16)
+
+##### Build System / Dependencies
+
+* **deps-dev:**
+  *  bump @typescript-eslint/eslint-plugin (89aa83df)
+  *  bump @typescript-eslint/parser from 5.21.0 to 5.22.0 (c27b9684)
+  *  bump @types/jest from 27.4.1 to 27.5.0 (63d0fa25)
+  *  bump @testing-library/react from 13.1.1 to 13.2.0 (b8929164)
+  *  bump ts-jest from 27.1.4 to 28.0.2 (e467f8ef)
+  *  bump eslint from 8.14.0 to 8.15.0 (73f5213d)
+  *  bump @types/react from 18.0.8 to 18.0.9 (d04add11)
+* **deps:**
+  *  bump antd from 4.20.2 to 4.20.3 (717af2e9)
+  *  bump antd from 4.20.1 to 4.20.2 (0838d260)
+
+##### Chores
+
+*  updated .gitignore (79874c2a)
+*  dependabot changed to weekly (fc529903)
+
+##### New Features
+
+*  Display current version in footer !minor (1421f96b)
+
+##### Bug Fixes
+
+*  processing of delta states for cars on change from PARADE to GREEN (e562d2ad)
+
 #### 0.15.2 (2022-05-01)
 
 ##### Build System / Dependencies
