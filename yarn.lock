@@ -2275,10 +2275,10 @@
   resolved "https://registry.yarnpkg.com/@mapbox/whoots-js/-/whoots-js-3.1.0.tgz#497c67a1cef50d1a2459ba60f315e448d2ad87fe"
   integrity sha512-Es6WcD0nO5l+2BOQS4uLfNPYQaNDfbot3X1XUoloz+x0mPDS3eeORZJl06HXjwBG1fOGwCRnzK88LMdxKRrd6Q==
 
-"@mpapenbr/iracelog-analysis@^1.1.2":
-  version "1.1.2"
-  resolved "https://npm.pkg.github.com/download/@mpapenbr/iracelog-analysis/1.1.2/ea5e76e82769d32856e3be670cb3471aa4449e7883e6cc6bc3d2adefb7de1468#b1cc1d6ff8feafd1aa58e80353c657041134abb1"
-  integrity sha512-Sy6yFJQxObqlivy4ulCef5XVAjY3jeHyRWDZzXny8uOcHXp4fBoOQuAWp5palBmNKPGz7Pdvtp0WA+A3HAK7Pg==
+"@mpapenbr/iracelog-analysis@^1.1.3":
+  version "1.1.3"
+  resolved "https://npm.pkg.github.com/download/@mpapenbr/iracelog-analysis/1.1.3/e55993a7676d6e5cc6b617600eee318dd36783bb0096d601a985485f512c741c#85c63932920a8e8fe65f48990f13e1f349edbd44"
+  integrity sha512-AWtJXCTE7qCNjkg9A0ahxcENUJ4DadGbRaedDJkUUQf2Y+aY7+/JHlDmo51y4kgVn//ZAWr8OZIqYGKSpGoyew==
   dependencies:
     lodash "^4.17.21"
 
