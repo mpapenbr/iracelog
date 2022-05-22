@@ -1,3 +1,11 @@
+#### 0.16.3 (2022-05-22)
+
+##### Build System / Dependencies
+
+* **deps:**
+  *  iracelog-analysis 1.1.3 (09efb39f)
+  *  antd 4.20.5, recharts 2.1.10 + some dev-deps (aedf5947)
+
 #### 0.16.2 (2022-05-16)
 
 #### 0.16.1 (2022-05-16)
