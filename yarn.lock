@@ -3664,15 +3664,15 @@ ansicolors@~0.2.1:
   resolved "https://registry.yarnpkg.com/ansicolors/-/ansicolors-0.2.1.tgz#be089599097b74a5c9c4a84a0cdbcdb62bd87aef"
   integrity sha512-tOIuy1/SK/dr94ZA0ckDohKXNeBNqZ4us6PjMVLs5h1w2GBB6uPtOknp2+VF4F/zcy9LI70W+Z+pE2Soajky1w==
 
-antd@^4.21.3:
-  version "4.21.3"
-  resolved "https://registry.yarnpkg.com/antd/-/antd-4.21.3.tgz#a87a5936b3fbb92c0112a6b6fc8f1305ec6d4bdc"
-  integrity sha512-TETxAqqkgzpmQl/74kG2JiY6cd6E7LmrXjU7PN3Kxs8oPfQk7CGxez4smCMdpbTI2NU2qvOw0ugnvqzES82VJQ==
+antd@^4.21.5:
+  version "4.21.5"
+  resolved "https://registry.yarnpkg.com/antd/-/antd-4.21.5.tgz#32a6c604b9153f6fe69d3d5aa154de0da00165a4"
+  integrity sha512-S6L29rmbiQvE4/kn1hPBscHFZ405Pbtuw3DCpXVnMt409JtY6sDaUbUcWfl4i21XkABEogKzqxjYVGogf1QIWQ==
   dependencies:
     "@ant-design/colors" "^6.0.0"
     "@ant-design/icons" "^4.7.0"
     "@ant-design/react-slick" "~0.29.1"
-    "@babel/runtime" "^7.12.5"
+    "@babel/runtime" "^7.18.3"
     "@ctrl/tinycolor" "^3.4.0"
     classnames "^2.2.6"
     copy-to-clipboard "^3.2.0"
@@ -3711,7 +3711,7 @@ antd@^4.21.3:
     rc-tree-select "~5.4.0"
     rc-trigger "^5.2.10"
     rc-upload "~4.3.0"
-    rc-util "^5.20.0"
+    rc-util "^5.22.5"
     scroll-into-view-if-needed "^2.2.25"
 
 anymatch@^3.0.3, anymatch@~3.1.2:
@@ -9882,7 +9882,7 @@ rc-util@^4.15.7:
     react-lifecycles-compat "^3.0.4"
     shallowequal "^1.1.0"
 
-rc-util@^5.0.1, rc-util@^5.0.6, rc-util@^5.12.0, rc-util@^5.14.0, rc-util@^5.15.0, rc-util@^5.16.1, rc-util@^5.17.0, rc-util@^5.18.1, rc-util@^5.19.2, rc-util@^5.2.0, rc-util@^5.2.1, rc-util@^5.20.0, rc-util@^5.20.1, rc-util@^5.21.0, rc-util@^5.3.0, rc-util@^5.4.0, rc-util@^5.5.0, rc-util@^5.6.1, rc-util@^5.7.0, rc-util@^5.8.0, rc-util@^5.9.4, rc-util@^5.9.8:
+rc-util@^5.0.1, rc-util@^5.0.6, rc-util@^5.12.0, rc-util@^5.14.0, rc-util@^5.15.0, rc-util@^5.16.1, rc-util@^5.17.0, rc-util@^5.18.1, rc-util@^5.19.2, rc-util@^5.2.0, rc-util@^5.2.1, rc-util@^5.20.1, rc-util@^5.21.0, rc-util@^5.22.5, rc-util@^5.3.0, rc-util@^5.4.0, rc-util@^5.5.0, rc-util@^5.6.1, rc-util@^5.7.0, rc-util@^5.8.0, rc-util@^5.9.4, rc-util@^5.9.8:
   version "5.22.5"
   resolved "https://registry.yarnpkg.com/rc-util/-/rc-util-5.22.5.tgz#d4d6d886c5ecb6a2a51dde1840d780a2b70f5179"
   integrity sha512-awD2TGMGU97OZftT2R3JwrHWjR8k/xIwqjwcivPskciweUdgXE7QsyXkBKVSBHXS+c17AWWMDWuKWsJSheQy8g==
