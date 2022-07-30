@@ -68,11 +68,12 @@ export const DemoRaces: React.FC = () => {
         // important, otherwise we don't detect changes on carLaps,carStints,.... (all those Array.from(...) attrs of BulkProcessor)
         // raceGraph would be ok though. Needs further investigation
         const curData = _.cloneDeep(globalWamp.currentData!);
+        if (data != undefined) {
+          const newData = theProc!.process([data[0]]);
 
-        const newData = theProc!.process([data[0]]);
-
-        doDistribute(dispatch, curData, newData);
-        globalWamp.currentData = { ...newData };
+          doDistribute(dispatch, curData, newData);
+          globalWamp.currentData = { ...newData };
+        }
       });
     };
     conn.open();
