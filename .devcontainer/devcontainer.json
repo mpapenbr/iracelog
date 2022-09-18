@@ -44,9 +44,10 @@
   "forwardPorts": [3000],
 
   // Use 'postCreateCommand' to run commands after the container is created.
-  // "postCreateCommand": "yarn install",
+  "postCreateCommand": "./devinit.sh",
 
   // Uncomment to connect as a non-root user. See https://aka.ms/vscode-remote/containers/non-root.
   "remoteUser": "node",
-  "runArgs": ["--add-host=host.docker.internal:host-gateway"]
+  // "runArgs": ["--add-host=host.docker.internal:host-gateway"]
+  "runArgs": ["--network=host"]
 }
