@@ -5,12 +5,12 @@
   "dependencies": {
     "@ant-design/charts": "^1.4.2",
     "@mpapenbr/iracelog-analysis": "^1.1.3",
-    "@nivo/bar": "^0.79.1",
-    "@nivo/bullet": "^0.79.1",
-    "@nivo/core": "^0.79.0",
-    "@nivo/line": "^0.79.1",
-    "@nivo/pie": "^0.79.1",
-    "antd": "^4.22.7",
+    "@nivo/bar": "^0.80.0",
+    "@nivo/bullet": "^0.80.0",
+    "@nivo/core": "^0.80.0",
+    "@nivo/line": "^0.80.0",
+    "@nivo/pie": "^0.80.0",
+    "antd": "^4.23.2",
     "assert": "^2.0.0",
     "autobahn": "^20.9.2",
     "deep-object-diff": "^1.1.7",
@@ -18,10 +18,10 @@
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-redux": "^8.0.2",
-    "react-router": "^6.2.2",
-    "react-router-dom": "^6.3.0",
+    "react-router": "^6.4.0",
+    "react-router-dom": "^6.4.0",
     "react-use": "^17.4.0",
-    "recharts": "^2.1.13",
+    "recharts": "^2.1.14",
     "redux": "^4.2.0",
     "redux-devtools-extension": "^2.13.8",
     "redux-saga": "^1.2.1",
@@ -32,8 +32,7 @@
     "typescript-fsa-reducers": "^1.2.2",
     "typescript-fsa-redux-saga": "^2.0.0",
     "util": "^0.12.4",
-    "uuid": "^8.3.2",
-    "web-vitals": "^2.1.4"
+    "web-vitals": "^3.0.2"
   },
   "devDependencies": {
     "@babel/preset-react": "^7.18.6",
@@ -49,7 +48,6 @@
     "@types/react-dom": "^18.0.6",
     "@types/react-redux": "^7.1.24",
     "@types/sprintf-js": "^1.1.2",
-    "@types/uuid": "^8.3.4",
     "@typescript-eslint/eslint-plugin": "^5.33.1",
     "@typescript-eslint/parser": "^5.33.1",
     "eslint": "^8.22.0",
@@ -58,9 +56,9 @@
     "minimist": "^1.2.6",
     "nth-check": "^2.1.1",
     "react-scripts": "5.0.1",
-    "redux-saga-test-plan": "^4.0.4",
+    "redux-saga-test-plan": "^4.0.6",
     "ts-jest": "^28.0.8",
-    "typescript": "^4.7.4"
+    "typescript": "^4.8.3"
   },
   "resolutions": {
     "minimist": "^1.2.6",
