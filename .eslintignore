@@ -1,0 +1,7 @@
+// .eslintignore
+
+node_modules/*
+public/*
+src/react-app-env.d.ts
+src/reportWebVitals.ts
+webpack.config.js

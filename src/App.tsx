@@ -36,13 +36,21 @@ const App: React.FC<AppProps> = (props: AppProps) => {
 
                 <Route path="/analysis/:eventKey/*" element={<AnalysisMainPage />} />
 
-                {API_LOCAL_DEV_MODE ? <Route path="/devloader" element={<FakeLoaderPage />} /> : <></>}
+                {API_LOCAL_DEV_MODE ? (
+                  <Route path="/devloader" element={<FakeLoaderPage />} />
+                ) : (
+                  <></>
+                )}
               </Routes>
             </div>
           </Content>
           <Footer style={{ textAlign: "center" }}>
             iRacelog{" "}
-            <a target={"_blank"} rel="noreferrer" href="https://github.com/mpapenbr/iracelog/blob/main/CHANGELOG.md">
+            <a
+              target={"_blank"}
+              rel="noreferrer"
+              href="https://github.com/mpapenbr/iracelog/blob/main/CHANGELOG.md"
+            >
               {APP_VERSION_DISPLAY}
             </a>{" "}
             ©2022 Markus Papenbrock
