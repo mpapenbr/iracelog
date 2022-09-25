@@ -6,3 +6,11 @@ if [ ! -e $HOME/.gitconfig.local ]; then
     fi    
 fi
 
+# linking .npmrc
+if [ ! -e $HOME/.npmrc ]; then
+    if [ -f .npmrc ];  then
+        echo "Linking .npmrc"
+        ln -s $PWD/.npmrc $HOME/.npmrc
+    fi    
+fi
+

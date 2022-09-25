@@ -34,42 +34,42 @@ export const AvailableCarsReducer = reducerWithInitialState([] as ICarBaseData[]
   RaceActions.updateAvailableCars,
   (state, cars) => {
     return [...cars];
-  }
+  },
 );
 
 // available car classes
 export const AvailableCarClassesReducer = reducerWithInitialState([] as ICarClass[]).case(
   RaceActions.updateAvailableCarClasses,
-  (state, classes) => [...classes]
+  (state, classes) => [...classes],
 );
 
 // car info
 export const CarInfoReducer = reducerWithInitialState([] as ICarInfo[]).case(
   RaceActions.updateCarInfo,
-  (state, data) => [...data]
+  (state, data) => [...data],
 );
 // race graph
 export const RaceGraphReducer = reducerWithInitialState([] as IRaceGraph[]).case(
   RaceActions.updateRaceGraph,
-  (state, data) => [...data]
+  (state, data) => [...data],
 );
 
 // car laps
 export const CarLapsReducer = reducerWithInitialState([] as ICarLaps[]).case(
   RaceActions.updateCarLaps,
-  (state, data) => [...data]
+  (state, data) => [...data],
 );
 
 // car pits
 export const CarStintsReducer = reducerWithInitialState([] as ICarStintInfo[]).case(
   RaceActions.updateCarStints,
-  (state, data) => [...data]
+  (state, data) => [...data],
 );
 
 // car pits
 export const CarPitsReducer = reducerWithInitialState([] as ICarPitInfo[]).case(
   RaceActions.updateCarPits,
-  (state, data) => [...data]
+  (state, data) => [...data],
 );
 
 // session info
@@ -78,7 +78,7 @@ export const SessionInfoReducer = reducerWithInitialState(initialSessionInfo).ca
   RaceActions.updateSessionInfo,
   (state, info) => ({
     ...info,
-  })
+  }),
 );
 
 // classification
@@ -87,14 +87,14 @@ export const ClassificationReducer = reducerWithInitialState(initialClassificati
   RaceActions.updateClassification,
   (state, arg) => ({
     ...arg,
-  })
+  }),
 );
 
 // info messages
 
 export const InfoMessagesReducer = reducerWithInitialState([] as IMessage[]).case(
   RaceActions.updateInfoMessages,
-  (state, arg) => [...arg]
+  (state, arg) => [...arg],
 );
 
 // event info
@@ -109,10 +109,14 @@ export const initialEventInfo: IEventInfo = {
   trackLength: 3000,
   eventTime: new Date().toISOString(),
   sectors: [],
+  raceLoggerVersion: "",
+  multiClass: false,
+  numCarClasses: 1,
+  numCarTypes: 1,
 };
 export const EventInfoReducer = reducerWithInitialState(initialEventInfo).case(
   RaceActions.updateEventInfo,
-  (state, arg) => ({ ...arg })
+  (state, arg) => ({ ...arg }),
 );
 
 export const initialTrackInfo: ITrackInfo = {
@@ -126,7 +130,7 @@ export const initialTrackInfo: ITrackInfo = {
 };
 export const TrackInfoReducer = reducerWithInitialState(initialTrackInfo).case(
   RaceActions.updateTrackInfo,
-  (state, arg) => ({ ...arg })
+  (state, arg) => ({ ...arg }),
 );
 
 const combinedReducers = combineReducers<IRaceData>({
