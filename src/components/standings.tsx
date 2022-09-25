@@ -18,8 +18,11 @@ type Props = MyProps;
 
 export const Standings: React.FC<Props> = (props: Props) => {
   const uiSettings = useSelector((state: ApplicationState) => state.userSettings.classification);
-  const stateColumnsAvail = useSelector((state: ApplicationState) => state.baseData.availableStandingsColumns);
+  const stateColumnsAvail = useSelector(
+    (state: ApplicationState) => state.baseData.availableStandingsColumns,
+  );
   const carsRaw = useSelector((state: ApplicationState) => state.raceData.classification.data);
+  const carClasses = useSelector((state: ApplicationState) => state.raceData.availableCarClasses);
   const stateCarManifest = useSelector((state: ApplicationState) => state.wamp.data.manifests.car);
   const dispatch = useDispatch();
   const getValue = (d: [], key: string) => getValueViaSpec(d, stateCarManifest, key);
@@ -75,7 +78,13 @@ export const Standings: React.FC<Props> = (props: Props) => {
     { key: "state", title: "State", render: (d) => getValue(d, "state") },
     { key: "userName", title: "Driver", render: (d) => getValue(d, "userName"), ellipsis: false },
     { key: "laps", title: "Lap", render: (d) => lapsOutput(d), width: 20, align: "right" },
-    { key: "last", title: "Last", render: (d) => coloredTimeData(d, "last"), width: 60, align: "right" },
+    {
+      key: "last",
+      title: "Last",
+      render: (d) => coloredTimeData(d, "last"),
+      width: 60,
+      align: "right",
+    },
     {
       key: "best",
       title: "Best",
@@ -101,7 +110,13 @@ export const Standings: React.FC<Props> = (props: Props) => {
       width: 20,
       align: "right",
     },
-    { key: "gap", title: "Gap", render: (d) => nullAwareOutput(getValue(d, "gap"), "%.1f"), width: 20, align: "right" },
+    {
+      key: "gap",
+      title: "Gap",
+      render: (d) => nullAwareOutput(getValue(d, "gap"), "%.1f"),
+      width: 20,
+      align: "right",
+    },
     {
       key: "interval",
       title: "Int",
@@ -145,10 +160,18 @@ export const Standings: React.FC<Props> = (props: Props) => {
         render: (d) => coloredTimeData(d, v.name),
         width: 45,
         align: "right",
-      })
+      }),
     );
   // console.log(data);
   // className="istint-compact"
+
+  // remove carClass column if there are no car classes
+  if (carClasses.length === 0) {
+    const idx = columns.findIndex((c) => c.key === "carClass");
+    if (idx != -1) {
+      columns.splice(idx, 1);
+    }
+  }
 
   const cars = carsRaw.filter((c: any) => props.showCars.includes(getValue(c, "carNum")));
   const pagination: TablePaginationConfig = {
@@ -166,7 +189,9 @@ export const Standings: React.FC<Props> = (props: Props) => {
     dispatch(availableStandingsColumns(updateData));
     dispatch(classificationSettings({ ...uiSettings, showCols: updateData }));
   }
-  const filteredColumns = columns.filter((c) => uiSettings.showCols.map((sc) => sc.name).includes(c.key as string));
+  const filteredColumns = columns.filter((c) =>
+    uiSettings.showCols.map((sc) => sc.name).includes(c.key as string),
+  );
 
   return (
     <Table
