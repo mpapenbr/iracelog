@@ -10,9 +10,11 @@ import { useNavigate } from "react-router";
 // import { useHistory } from "react-router";
 import { sprintf } from "sprintf-js";
 import { globalWamp } from "../commons/globals";
+import { processCarData } from "../processor/processCarData";
+import { processSpeedmap } from "../processor/processSpeedmap";
 import { updateAvailableStandingsColumns } from "../stores/basedata/actions";
 import { updateEventInfo, updateTrackInfo } from "../stores/racedata/actions";
-import { ITrackInfo } from "../stores/racedata/types";
+import { ISpeedmapMessage, ITrackInfo } from "../stores/racedata/types";
 import { connectedToServer, setManifests } from "../stores/wamp/actions";
 import { postProcessManifest } from "../stores/wamp/reducer";
 import { doDistribute } from "./datahandler";
@@ -41,9 +43,12 @@ export const DemoRaces: React.FC = () => {
   };
 
   const connectToLiveData = (eventKey: string) => {
-    const conn = new autobahn.Connection({ url: config.crossbar.url, realm: config.crossbar.realm });
+    const conn = new autobahn.Connection({
+      url: config.crossbar.url,
+      realm: config.crossbar.realm,
+    });
 
-    conn.onopen = (s: Session) => {
+    conn.onopen = async (s: Session) => {
       s.call("racelog.public.live.get_event_analysis", [eventKey]).then((data: any) => {
         console.log(data); // we  will always get an array here (due to WAMP)
         // dispatch(updateManifests(data.manifests)); // these are the "small" manifests
@@ -57,12 +62,24 @@ export const DemoRaces: React.FC = () => {
       });
       dispatch(connectedToServer());
       // TODO: maybe combine this with above call
-      s.call("racelog.public.get_event_info_by_key", [eventKey]).then(async (data: any) => {
+      await s.call("racelog.public.get_event_info_by_key", [eventKey]).then(async (data: any) => {
         console.log(data);
         dispatch(updateEventInfo(data.data.info));
-        const trackInfo = (await s.call("racelog.public.get_track_info", [data.data.info.trackId])) as ITrackInfo;
+        const trackInfo = (await s.call("racelog.public.get_track_info", [
+          data.data.info.trackId,
+        ])) as ITrackInfo;
         dispatch(updateTrackInfo(trackInfo));
       });
+
+      s.call("racelog.public.get_event_cars_by_key", [eventKey]).then(async (data: any) => {
+        // console.log(data);
+        processCarData(dispatch, data);
+      });
+      s.call("racelog.public.get_event_speedmap_by_key", [eventKey]).then(async (data: any) => {
+        console.log(data);
+        processSpeedmap(dispatch, data);
+      });
+
       s.subscribe(sprintf("racelog.public.live.state.%s", eventKey), (data) => {
         const theProc = globalWamp.processor;
         // important, otherwise we don't detect changes on carLaps,carStints,.... (all those Array.from(...) attrs of BulkProcessor)
@@ -75,6 +92,14 @@ export const DemoRaces: React.FC = () => {
           globalWamp.currentData = { ...newData };
         }
       });
+      s.subscribe(
+        sprintf("racelog.public.live.speedmap.%s", eventKey),
+        (data: any[] | undefined) => {
+          if (data != undefined) {
+            processSpeedmap(dispatch, data[0] as ISpeedmapMessage);
+          }
+        },
+      );
     };
     conn.open();
 
@@ -107,11 +132,20 @@ export const DemoRaces: React.FC = () => {
   const onReloadRequested = async () => {
     console.log("fetching current live data providers");
 
-    const conn = new autobahn.Connection({ url: config.crossbar.url, realm: config.crossbar.realm });
+    const conn = new autobahn.Connection({
+      url: config.crossbar.url,
+      realm: config.crossbar.realm,
+    });
     conn.onopen = (s: Session) => {
       s.call("racelog.public.list_providers").then((data: any) => {
         console.log(data);
-        setLivedata(data.map((v: any) => ({ key: v.eventKey, title: v.info.name, description: v.info.description })));
+        setLivedata(
+          data.map((v: any) => ({
+            key: v.eventKey,
+            title: v.info.name,
+            description: v.info.description,
+          })),
+        );
         conn.close();
       });
     };
@@ -120,11 +154,19 @@ export const DemoRaces: React.FC = () => {
 
   const onLoadEvents = () => {
     console.log("fetching events");
-    const conn = new autobahn.Connection({ url: config.crossbar.url, realm: config.crossbar.realm });
+    const conn = new autobahn.Connection({
+      url: config.crossbar.url,
+      realm: config.crossbar.realm,
+    });
     conn.onopen = (s: Session) => {
       s.call("racelog.public.get_events").then((data: any) => {
         setEvents(
-          data.map((v: any) => ({ key: v.eventKey, title: v.name, description: v.description, eventId: v.id }))
+          data.map((v: any) => ({
+            key: v.eventKey,
+            title: v.name,
+            description: v.description,
+            eventId: v.id,
+          })),
         );
         conn.close();
       });
@@ -175,7 +217,12 @@ export const DemoRaces: React.FC = () => {
           renderItem={(item: any) => (
             <List.Item
               actions={[
-                <Button key={"bt-live" + item.eventId} value={item.key} type="default" onClick={onLiveButtonClicked}>
+                <Button
+                  key={"bt-live" + item.eventId}
+                  value={item.key}
+                  type="default"
+                  onClick={onLiveButtonClicked}
+                >
                   Connect
                 </Button>,
               ]}

@@ -15,6 +15,7 @@ import { RaceGraphContainer } from "../container/RaceGraphContainer";
 import { RacePositionsContainer } from "../container/RacePositionsContainer";
 import { ReplayCircleOfDoomContainer } from "../container/ReplayCircleOfDoomContainer";
 import { SettingsContainer } from "../container/SettingsContainer";
+import { SpeedmapContainer } from "../container/SpeedmapContainer";
 import { StintLapsContainer } from "../container/StintLapsContainer";
 import { StintSummaryContainer } from "../container/StintSummaryContainer";
 import { StrategyContainer } from "../container/StrategyContainer";
@@ -98,6 +99,9 @@ export const AnalysisMainPage: React.FC = () => {
           <Menu.Item key="stintSummary" className="race-sidebar">
             <Link to="stintSummary">Stint Summary</Link>
           </Menu.Item>
+          <Menu.Item key="speedmap" className="race-sidebar">
+            <Link to="speedmap">Speedmap</Link>
+          </Menu.Item>
           <Menu.Item key="messages" className="race-sidebar">
             <Link to="messages">Messages</Link>
           </Menu.Item>
@@ -153,6 +157,7 @@ export const AnalysisMainPage: React.FC = () => {
           <Route path="messages" element={<RaceMessages />} />
           <Route path="settings" element={<SettingsContainer />} />
           <Route path="test" element={<TestContainer />} />
+          <Route path="speedmap" element={<SpeedmapContainer />} />
         </Routes>
       </Content>
     </Layout>

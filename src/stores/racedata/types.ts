@@ -49,3 +49,8 @@ export interface IReplayMessage {
   timestamp: number;
   payload: any;
 }
+export interface ISpeedmapMessage {
+  type: number;
+  timestamp: number;
+  payload: any;
+}
