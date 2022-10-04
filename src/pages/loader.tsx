@@ -4,10 +4,12 @@ import React, { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router";
 import { globalWamp } from "../commons/globals";
+import { processCarData } from "../processor/processCarData";
 import { ReplayDataHolder } from "../processor/ReplayDataHolder";
 import { updateAvailableStandingsColumns } from "../stores/basedata/actions";
 import { updateEventInfo, updateTrackInfo } from "../stores/racedata/actions";
 import { ITrackInfo } from "../stores/racedata/types";
+import { updateSpeedmapData } from "../stores/speedmap/actions";
 import { replaySettings } from "../stores/ui/actions";
 import { initialReplaySettings } from "../stores/ui/reducer";
 import { reset, updateManifests } from "../stores/wamp/actions";
@@ -25,12 +27,17 @@ export const LoaderPage: React.FC<MyProps> = (props: MyProps) => {
   const [task, setTasks] = useState("");
 
   useEffect(() => {
-    const conn = new autobahn.Connection({ url: config.crossbar.url, realm: config.crossbar.realm });
+    const conn = new autobahn.Connection({
+      url: config.crossbar.url,
+      realm: config.crossbar.realm,
+    });
     conn.onopen = async (s: Session) => {
       try {
         setTasks("Loading event info");
 
-        const eventInfo = (await s.call("racelog.public.get_event_info_by_key", [props.eventKey])) as any;
+        const eventInfo = (await s.call("racelog.public.get_event_info_by_key", [
+          props.eventKey,
+        ])) as any;
 
         console.log(eventInfo);
         dispatch(reset());
@@ -49,19 +56,31 @@ export const LoaderPage: React.FC<MyProps> = (props: MyProps) => {
         dispatch(updateEventInfo(eventInfo.data.info));
         setTasks("Loading track info");
 
-        const trackInfo = (await s.call("racelog.public.get_track_info", [eventInfo.data.info.trackId])) as ITrackInfo;
+        const trackInfo = (await s.call("racelog.public.get_track_info", [
+          eventInfo.data.info.trackId,
+        ])) as ITrackInfo;
 
         dispatch(updateTrackInfo(trackInfo));
         // const mData = JSON.parse(manifestData);
         setTasks("Loading analysis data");
 
-        const data = (await s.call("racelog.public.archive.get_event_analysis", [eventInfo.id])) as any;
+        const data = (await s.call("racelog.public.archive.get_event_analysis", [
+          eventInfo.id,
+        ])) as any;
 
         doDistribute(dispatch, defaultProcessRaceStateData, data);
         dispatch(updateManifests(eventInfo.data.manifests));
         // we need to reset here since standings page is defined as index page and will
         // already be called before this method is finished.
         dispatch(updateAvailableStandingsColumns([]));
+
+        const carData = (await s.call("racelog.public.get_event_cars", [eventInfo.id])) as any;
+
+        processCarData(dispatch, carData);
+
+        const speedmap = (await s.call("racelog.public.get_event_speedmap", [eventInfo.id])) as any;
+        // console.log(speedmap)
+        dispatch(updateSpeedmapData(speedmap.payload));
 
         const rh = new ReplayDataHolder(s, settings, eventInfo.data.manifests);
         globalWamp.replayHolder = rh;

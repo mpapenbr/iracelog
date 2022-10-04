@@ -1,10 +1,14 @@
 import { combineReducers } from "redux";
 import { all, fork } from "redux-saga/effects";
 import { baseDataReducers, IBaseData } from "./basedata/reducer";
+import { carDataReducers } from "./cars/reducers";
+import { ICarInfoContainer } from "./cars/types";
 import { IRaceData, raceDataReducers } from "./racedata/reducer";
 import { raceEventsReducer } from "./raceevents/reducer";
 import raceEventsSaga from "./raceevents/sagas";
 import { IRaceEventsState } from "./raceevents/types";
+import { speedmapReducers } from "./speedmap/reducer";
+import { ISpeedmap } from "./speedmap/types";
 import { uiReducer, userSettingsReducer } from "./ui/reducer";
 import { IUiState, IUserSettings } from "./ui/types";
 import { wampReducer } from "./wamp/reducer";
@@ -17,6 +21,8 @@ export interface ApplicationState {
   userSettings: IUserSettings;
   raceData: IRaceData;
   baseData: IBaseData;
+  speedmap: ISpeedmap;
+  carData: ICarInfoContainer;
 }
 
 // export interface IMetaActions extends PayloadMetaAction<TypeConstant,IMeta> {}
@@ -29,6 +35,8 @@ export const createRootReducer = () =>
     baseData: baseDataReducers,
     raceData: raceDataReducers, // this is new place for everything concerning the race data of a single event
     userSettings: userSettingsReducer, // this is the new place for user settings
+    speedmap: speedmapReducers,
+    carData: carDataReducers,
   });
 
 export function* rootSaga() {
