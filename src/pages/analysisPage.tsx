@@ -10,6 +10,7 @@ import { CarPitstopsContainer } from "../container/CarPitstopsContainer";
 import { CarStintsContainer } from "../container/CarStintsContainer";
 import { DashboardContainer } from "../container/DashboardContainer";
 import { DriverLapsContainer } from "../container/DriverLapsContainer";
+import { RaceEntriesContainer } from "../container/RaceEntriesContainer";
 import { RaceGraphByReferenceContainer } from "../container/RaceGraphByReferenceContainer";
 import { RaceGraphContainer } from "../container/RaceGraphContainer";
 import { RacePositionsContainer } from "../container/RacePositionsContainer";
@@ -102,6 +103,9 @@ export const AnalysisMainPage: React.FC = () => {
           <Menu.Item key="speedmap" className="race-sidebar">
             <Link to="speedmap">Speedmap</Link>
           </Menu.Item>
+          <Menu.Item key="raceEntries" className="race-sidebar">
+            <Link to="raceEntries">Race entries</Link>
+          </Menu.Item>
           <Menu.Item key="messages" className="race-sidebar">
             <Link to="messages">Messages</Link>
           </Menu.Item>
@@ -158,6 +162,7 @@ export const AnalysisMainPage: React.FC = () => {
           <Route path="settings" element={<SettingsContainer />} />
           <Route path="test" element={<TestContainer />} />
           <Route path="speedmap" element={<SpeedmapContainer />} />
+          <Route path="raceEntries" element={<RaceEntriesContainer />} />
         </Routes>
       </Content>
     </Layout>
