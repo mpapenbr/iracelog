@@ -19,7 +19,7 @@
     "react-dom": "^18.2.0",
     "react-redux": "^8.0.4",
     "react-router": "^6.4.1",
-    "react-router-dom": "^6.4.1",
+    "react-router-dom": "^6.4.2",
     "react-use": "^17.4.0",
     "recharts": "^2.1.14",
     "redux": "^4.2.0",
