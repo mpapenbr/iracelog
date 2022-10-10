@@ -32,7 +32,7 @@
     "typescript-fsa-reducers": "^1.2.2",
     "typescript-fsa-redux-saga": "^2.0.0",
     "util": "^0.12.4",
-    "web-vitals": "^3.0.2"
+    "web-vitals": "^3.0.3"
   },
   "devDependencies": {
     "@babel/preset-react": "^7.18.6",
