@@ -51,7 +51,7 @@
     "@typescript-eslint/eslint-plugin": "^5.38.0",
     "@typescript-eslint/parser": "^5.38.0",
     "eslint": "^8.24.0",
-    "eslint-plugin-react": "^7.31.8",
+    "eslint-plugin-react": "^7.31.9",
     "generate-changelog": "^1.8.0",
     "minimist": "^1.2.6",
     "nth-check": "^2.1.1",
