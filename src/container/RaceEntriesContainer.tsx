@@ -1,7 +1,9 @@
 import { Col, Row, Select } from "antd";
 import * as React from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { CarClasses } from "../components/raceentries/carclasses";
 import { Cars } from "../components/raceentries/cars";
+import { Drivers } from "../components/raceentries/drivers";
 import { ApplicationState } from "../stores";
 import { globalSettings } from "../stores/ui/actions";
 
@@ -31,8 +33,17 @@ export const RaceEntriesContainer: React.FC = () => {
   return (
     <>
       <Row>
-        <Col span={24}>
+        <Col span={17}>
           <Cars />
+        </Col>
+        <Col span={7}>
+          <CarClasses />
+        </Col>
+      </Row>
+
+      <Row>
+        <Col span={24}>
+          <Drivers />
         </Col>
       </Row>
     </>
