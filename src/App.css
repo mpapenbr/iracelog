@@ -86,12 +86,20 @@
   margin: 16px 0 16px 24px;
 }
 
-div.iracelog-compact th,
-div.iracelog-compact td {
+div.iracelog-standings th,
+div.iracelog-standings td {
   padding-right: 2px;
   padding-left: 2px;
   padding-top: 2px;
   padding-bottom: 2px;
+}
+
+div.iracelog-compact th,
+div.iracelog-compact td {
+  padding-right: 4px;
+  padding-left: 4px;
+  padding-top: 4px;
+  padding-bottom: 4px;
 }
 
 div.iracelog-stint-summary th,

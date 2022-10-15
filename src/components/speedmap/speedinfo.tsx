@@ -47,5 +47,7 @@ export const SpeedInfo: React.FC = () => {
       align: "right",
     },
   ];
-  return <Table dataSource={data} columns={columns} pagination={false} />;
+  return (
+    <Table className="iracelog-compact" dataSource={data} columns={columns} pagination={false} />
+  );
 };

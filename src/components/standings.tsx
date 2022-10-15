@@ -195,7 +195,7 @@ export const Standings: React.FC<Props> = (props: Props) => {
 
   return (
     <Table
-      className="iracelog-compact"
+      className="iracelog-standings"
       pagination={pagination}
       columns={filteredColumns}
       dataSource={cars}

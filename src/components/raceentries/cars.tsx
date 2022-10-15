@@ -38,54 +38,54 @@ export const Cars: React.FC = () => {
 
   // eslint-disable-next-line @typescript-eslint/ban-types
   const columns: ColumnsType<{}> = [
-    { key: "name", title: "Car", render: (d) => d.name, width: "30%", align: "left" },
+    { key: "name", title: "Car", render: (d) => d.nameShort, align: "left" },
     {
       key: "carClass",
       title: "Car class",
       render: (d) => d.carClassName,
-      width: "20%",
+      // width: "20%",
       align: "left",
     },
     {
       key: "fuelPct",
       title: "Fuel",
       render: (d) => sprintf("%.0f %%", d.fuelPct * 100),
-      width: 20,
+      width: 60,
       align: "right",
     },
     {
       key: "powerAdjust",
       title: "Power",
       render: (d) => sprintf("%.1f %%", 100 + d.powerAdjust),
-      width: 20,
+      width: 60,
       align: "right",
     },
     {
       key: "weight",
       title: "Weight",
       render: (d) => sprintf("%.0f kg", d.weightPenalty),
-      width: 20,
+      width: 50,
       align: "right",
     },
     {
       key: "entries",
-      title: "Entries",
+      title: "Num",
       render: (d) => numEntriesLookup[d.carId],
-      width: 10,
+      width: 50,
       align: "right",
     },
     {
       key: "irating",
-      title: "Avg iRating",
+      title: "SOF",
       render: (d) => sprintf("%.0f", avgiRatingLookup.get(d.carId.toString()) ?? 0),
-      width: 10,
+      width: 50,
       align: "right",
     },
   ];
 
   return (
     <Card title="Cars">
-      <Table columns={columns} dataSource={cars} pagination={false} />
+      <Table className="iracelog-compact" columns={columns} dataSource={cars} pagination={false} />
     </Card>
   );
 };
