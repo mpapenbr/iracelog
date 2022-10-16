@@ -1,3 +1,50 @@
+### 0.17.0 (2022-10-16)
+
+##### Build System / Dependencies
+
+*  dependency updates (c6ebe49e)
+* **devdeps:**
+  *  eslint + companions (a6ec639d)
+  *  typescript 4.8.3 (3b10268b)
+* **deps:**
+  *  antd 4.23.2, nivo 0.80.0, react-router 6.4.0, web-vitals 3.0.2 (9198b224)
+  *  bump antd from 4.22.6 to 4.22.7 (06af0b66)
+  *  bump redux-saga from 1.2.0 to 1.2.1 (20e1a00b)
+  *  antd 4.22,6, redux-saga 1.2.0, dev-deps changes (b6011f21)
+  *  antd 4.22,2, ant-design/charts 1.4.2, recharts 2.1.13,  minor dev-deps changes (05f343d7)
+  *  bump moment from 2.29.3 to 2.29.4 (4c375424)
+  *  bump antd from 4.21.3 to 4.21.7 (e9dce234)
+  *  bump terser from 5.14.1 to 5.14.2 (1aadc22b)
+  *  bump antd from 4.20.7 to 4.21.0 (09e9c735)
+* **deps-dev:**
+  *  bump @types/lodash from 4.14.183 to 4.14.184 (db8ffa92)
+  *  bump @typescript-eslint/parser from 5.27.0 to 5.27.1 (98e5aab4)
+  *  bump @typescript-eslint/eslint-plugin (e2d15f4a)
+  *  bump eslint from 8.16.0 to 8.17.0 (0fba9543)
+  *  bump @types/jest from 28.1.0 to 28.1.1 (4bae8e53)
+  *  bump typescript from 4.7.2 to 4.7.3 (dea71c73)
+  *  bump @types/react from 18.0.10 to 18.0.12 (8cfd1189)
+* **dev-deps:**
+  *  several deps + dev-deps upgraded (88a80229)
+  *  severall deps + dev-deps upgraded (58dab26f)
+
+##### Chores
+
+*  dev-env updated (ef9bdbbd)
+*  safeguard to make compiler happy !minor (b3da4620)
+
+##### New Features
+
+*  show speedmap + raceentries only for racelogger >= 0.4.3 (0d65a99c)
+*  Extended event info page #521 (5bc0339c)
+*  Extended event info page #521 (53bae0d9)
+*  Speedmap (#522) (552611a1)
+*  adjustments for racelogger 0.5.0 (fbc2f5d1)
+
+##### Bug Fixes
+
+*  adjusted topic (ec83c68f)
+
 #### 0.16.3 (2022-05-22)
 
 ##### Build System / Dependencies
