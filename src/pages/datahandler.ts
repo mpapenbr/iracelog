@@ -10,6 +10,7 @@ import {
 import { Dispatch } from "redux";
 import { distributeChanges } from "../processor/processData";
 import { updateAvailableStandingsColumns } from "../stores/basedata/actions";
+import { updateCarClasses, updateCarEntries, updateCarInfos } from "../stores/cars/actions";
 import {
   updateAvailableCarClasses,
   updateAvailableCars,
@@ -23,6 +24,8 @@ import {
   updateSessionInfo,
 } from "../stores/racedata/actions";
 import { ICarBaseData, ICarClass } from "../stores/racedata/types";
+import { updateSpeedmapData } from "../stores/speedmap/actions";
+import { initialSpeedmapData } from "../stores/speedmap/types";
 import {
   circleOfDoomSettings,
   classificationSettings,
@@ -105,12 +108,16 @@ export const resetUi = (dispatch: Dispatch) => {
   dispatch(updateAvailableStandingsColumns([]));
   dispatch(updateAvailableCars([]));
   dispatch(updateAvailableCarClasses([]));
+  dispatch(updateSpeedmapData(initialSpeedmapData));
+  dispatch(updateCarInfos([]));
+  dispatch(updateCarClasses([]));
+  dispatch(updateCarEntries([]));
 };
 
 export const doDistribute = (
   dispatch: Dispatch,
   currentData: IProcessRaceStateData,
-  newData: IProcessRaceStateData
+  newData: IProcessRaceStateData,
 ) => {
   distributeChanges({
     currentData: currentData,

@@ -76,7 +76,7 @@ export const DemoRaces: React.FC = () => {
         processCarData(dispatch, data);
       });
       s.call("racelog.public.get_event_speedmap_by_key", [eventKey]).then(async (data: any) => {
-        console.log(data);
+        // console.log(data);
         processSpeedmap(dispatch, data);
       });
 
@@ -100,6 +100,11 @@ export const DemoRaces: React.FC = () => {
           }
         },
       );
+      s.subscribe(sprintf("racelog.public.live.cardata.%s", eventKey), (data: any) => {
+        if (data != undefined) {
+          processCarData(dispatch, data);
+        }
+      });
     };
     conn.open();
 

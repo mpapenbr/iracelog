@@ -23,7 +23,7 @@ export interface IEventInfo {
   trackLength: number;
   eventTime: string;
   sectors: ISector[];
-  raceLoggerVersion: string;
+  raceloggerVersion: string;
   multiClass: boolean;
   numCarClasses: number;
   numCarTypes: number;

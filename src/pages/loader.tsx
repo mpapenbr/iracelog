@@ -3,6 +3,7 @@ import autobahn, { Session } from "autobahn";
 import React, { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router";
+import { Comparator } from "semver";
 import { globalWamp } from "../commons/globals";
 import { processCarData } from "../processor/processCarData";
 import { ReplayDataHolder } from "../processor/ReplayDataHolder";
@@ -74,13 +75,22 @@ export const LoaderPage: React.FC<MyProps> = (props: MyProps) => {
         // already be called before this method is finished.
         dispatch(updateAvailableStandingsColumns([]));
 
-        const carData = (await s.call("racelog.public.get_event_cars", [eventInfo.id])) as any;
+        const versionCheck = new Comparator(">=0.4.4");
+        // console.log(eventInfo);
+        if (versionCheck.test(eventInfo.data.info.raceloggerVersion)) {
+          console.log("Yes, compatible racelogger ", eventInfo.raceloggerVersion, " found");
 
-        processCarData(dispatch, carData);
+          const carData = (await s.call("racelog.public.get_event_cars", [eventInfo.id])) as any;
+          // console.log(carData);
 
-        const speedmap = (await s.call("racelog.public.get_event_speedmap", [eventInfo.id])) as any;
-        // console.log(speedmap)
-        dispatch(updateSpeedmapData(speedmap.payload));
+          processCarData(dispatch, carData);
+
+          const speedmap = (await s.call("racelog.public.get_event_speedmap", [
+            eventInfo.id,
+          ])) as any;
+          // console.log(speedmap)
+          dispatch(updateSpeedmapData(speedmap.payload));
+        }
 
         const rh = new ReplayDataHolder(s, settings, eventInfo.data.manifests);
         globalWamp.replayHolder = rh;
