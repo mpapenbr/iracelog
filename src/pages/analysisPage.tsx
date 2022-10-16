@@ -2,6 +2,7 @@ import { Layout, Menu, Modal, notification } from "antd";
 import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { Link, Route, Routes, useParams } from "react-router-dom";
+import { Comparator } from "semver";
 import { globalWamp } from "../commons/globals";
 import Classification from "../components/live/classification";
 import RaceMessages from "../components/live/raceMessages";
@@ -31,6 +32,7 @@ const OtherContent: React.FC = () => <div>Here goes other content</div>;
 export const AnalysisMainPage: React.FC = () => {
   const params = useParams();
   const replaySettings = useSelector((state: ApplicationState) => state.userSettings.replay);
+  const eventInfo = useSelector((state: ApplicationState) => state.raceData.eventInfo);
   const [loadTrigger, setLoadTrigger] = useState(0);
   const [loading, setLoading] = useState(false);
 
@@ -47,6 +49,10 @@ export const AnalysisMainPage: React.FC = () => {
       console.log("event " + params.eventId + " already loaded");
     }
   }, [loadTrigger]);
+  console.log(eventInfo);
+  const speedmapReady = new Comparator(">=0.4.4").test(eventInfo.raceloggerVersion);
+  const raceEntriesReady = new Comparator(">=0.4.4").test(eventInfo.raceloggerVersion);
+
   return (
     <Layout>
       <Sider theme="light" width={170}>
@@ -100,12 +106,20 @@ export const AnalysisMainPage: React.FC = () => {
           <Menu.Item key="stintSummary" className="race-sidebar">
             <Link to="stintSummary">Stint Summary</Link>
           </Menu.Item>
-          <Menu.Item key="speedmap" className="race-sidebar">
-            <Link to="speedmap">Speedmap</Link>
-          </Menu.Item>
-          <Menu.Item key="raceEntries" className="race-sidebar">
-            <Link to="raceEntries">Race entries</Link>
-          </Menu.Item>
+          {speedmapReady ? (
+            <Menu.Item key="speedmap" className="race-sidebar">
+              <Link to="speedmap">Speedmap</Link>
+            </Menu.Item>
+          ) : (
+            <></>
+          )}
+          {raceEntriesReady ? (
+            <Menu.Item key="raceEntries" className="race-sidebar">
+              <Link to="raceEntries">Race entries</Link>
+            </Menu.Item>
+          ) : (
+            <></>
+          )}
           <Menu.Item key="messages" className="race-sidebar">
             <Link to="messages">Messages</Link>
           </Menu.Item>

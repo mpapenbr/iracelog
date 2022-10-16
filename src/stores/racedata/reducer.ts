@@ -109,7 +109,7 @@ export const initialEventInfo: IEventInfo = {
   trackLength: 3000,
   eventTime: new Date().toISOString(),
   sectors: [],
-  raceLoggerVersion: "",
+  raceloggerVersion: "",
   multiClass: false,
   numCarClasses: 1,
   numCarTypes: 1,
