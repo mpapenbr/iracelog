@@ -1,3 +1,15 @@
+#### 0.17.1 (2022-10-22)
+
+##### Build System / Dependencies
+
+* **deps:**
+  *  updated deps+devdeps (0e2f1cff)
+  *  bump util from 0.12.4 to 0.12.5 (8671cde7)
+
+##### Bug Fixes
+
+*  handle events without raceloggerVersion (3613a20e)
+
 ### 0.17.0 (2022-10-16)
 
 ##### Build System / Dependencies
