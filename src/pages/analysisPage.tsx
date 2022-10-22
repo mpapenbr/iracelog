@@ -50,8 +50,8 @@ export const AnalysisMainPage: React.FC = () => {
     }
   }, [loadTrigger]);
   console.log(eventInfo);
-  const speedmapReady = new Comparator(">=0.4.4").test(eventInfo.raceloggerVersion);
-  const raceEntriesReady = new Comparator(">=0.4.4").test(eventInfo.raceloggerVersion);
+  const speedmapReady = new Comparator(">=0.4.4").test(eventInfo.raceloggerVersion ?? "0.0.0");
+  const raceEntriesReady = new Comparator(">=0.4.4").test(eventInfo.raceloggerVersion ?? "0.0.0");
 
   return (
     <Layout>

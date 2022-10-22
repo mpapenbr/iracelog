@@ -77,7 +77,7 @@ export const LoaderPage: React.FC<MyProps> = (props: MyProps) => {
 
         const versionCheck = new Comparator(">=0.4.4");
         // console.log(eventInfo);
-        if (versionCheck.test(eventInfo.data.info.raceloggerVersion)) {
+        if (versionCheck.test(eventInfo.data.info.raceloggerVersion ?? "0.0.0")) {
           console.log("Yes, compatible racelogger ", eventInfo.raceloggerVersion, " found");
 
           const carData = (await s.call("racelog.public.get_event_cars", [eventInfo.id])) as any;
