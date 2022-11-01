@@ -4,16 +4,16 @@ import React, { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router";
 import { Comparator } from "semver";
-import { globalWamp } from "../commons/globals";
-import { processCarData } from "../processor/processCarData";
-import { ReplayDataHolder } from "../processor/ReplayDataHolder";
-import { updateAvailableStandingsColumns } from "../stores/basedata/actions";
-import { updateEventInfo, updateTrackInfo } from "../stores/racedata/actions";
-import { ITrackInfo } from "../stores/racedata/types";
-import { updateSpeedmapData } from "../stores/speedmap/actions";
-import { replaySettings } from "../stores/ui/actions";
-import { initialReplaySettings } from "../stores/ui/reducer";
-import { reset, updateManifests } from "../stores/wamp/actions";
+import { globalWamp } from "../../commons/globals";
+import { processCarData } from "../../processor/processCarData";
+import { ReplayDataHolder } from "../../processor/ReplayDataHolder";
+import { updateAvailableStandingsColumns } from "../../stores/basedata/actions";
+import { updateEventInfo, updateTrackInfo } from "../../stores/racedata/actions";
+import { ITrackInfo } from "../../stores/racedata/types";
+import { updateSpeedmapData } from "../../stores/speedmap/actions";
+import { replaySettings } from "../../stores/ui/actions";
+import { initialReplaySettings } from "../../stores/ui/reducer";
+import { reset, updateManifests } from "../../stores/wamp/actions";
 import { doDistribute, resetUi } from "./datahandler";
 
 interface MyProps {

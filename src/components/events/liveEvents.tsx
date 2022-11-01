@@ -1,46 +1,33 @@
 import { ReloadOutlined } from "@ant-design/icons";
 import { BulkProcessor } from "@mpapenbr/iracelog-analysis";
 import { defaultProcessRaceStateData } from "@mpapenbr/iracelog-analysis/dist/stints/types";
-import { Button, Col, List, Row } from "antd";
+import { Button, Col, Descriptions, List, Row } from "antd";
 import { Connection, Session } from "autobahn";
 import _ from "lodash";
 import React, { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router";
-// import { useHistory } from "react-router";
 import { sprintf } from "sprintf-js";
-import { globalWamp } from "../commons/globals";
-import { doDistribute } from "../components/events/datahandler";
-import { processCarData } from "../processor/processCarData";
-import { processSpeedmap } from "../processor/processSpeedmap";
-import { updateAvailableStandingsColumns } from "../stores/basedata/actions";
-import { updateEventInfo, updateTrackInfo } from "../stores/racedata/actions";
-import { ISpeedmapMessage, ITrackInfo } from "../stores/racedata/types";
-import { connectedToServer, setManifests } from "../stores/wamp/actions";
-import { postProcessManifest } from "../stores/wamp/reducer";
+import { globalWamp } from "../../commons/globals";
+import { processCarData } from "../../processor/processCarData";
+import { processSpeedmap } from "../../processor/processSpeedmap";
+import { updateAvailableStandingsColumns } from "../../stores/basedata/actions";
+import { updateEventInfo, updateTrackInfo } from "../../stores/racedata/actions";
+import { ISpeedmapMessage, ITrackInfo } from "../../stores/racedata/types";
+import { connectedToServer, setManifests } from "../../stores/wamp/actions";
+import { postProcessManifest } from "../../stores/wamp/reducer";
+import { doDistribute } from "./datahandler";
 
-export const DemoRaces: React.FC = () => {
-  const dispatch = useDispatch();
+export const LiveEvents: React.FC = () => {
   const navigate = useNavigate();
-
-  const [loadTrigger, setLoadTrigger] = useState(0);
-  const [loading, setLoading] = useState(false);
-
+  const dispatch = useDispatch();
   const [livedata, setLivedata] = useState([] as any[]);
-  const [events, setEvents] = useState([] as any[]);
-  // const [config, setConfig] = useState({ crossbar: { url: "xx", realm: "yy" } } as Config);
-
+  const [loadTrigger, setLoadTrigger] = useState(0);
   const config = globalWamp.backendConfig;
+
   useEffect(() => {
     onReloadRequested();
-    onLoadEvents();
   }, [loadTrigger]);
-
-  const onLoadForReplayButtonClicked = (e: React.MouseEvent<HTMLButtonElement>) => {
-    const arg = e.currentTarget.value;
-    globalWamp.currentLiveId = undefined;
-    navigate("/analysis/" + arg);
-  };
 
   const connectToLiveData = (eventKey: string) => {
     const conn = new Connection({
@@ -148,30 +135,11 @@ export const DemoRaces: React.FC = () => {
         setLivedata(
           data.map((v: any) => ({
             key: v.eventKey,
-            title: v.info.name,
+            name: v.info.name,
             description: v.info.description,
-          })),
-        );
-        conn.close();
-      });
-    };
-    conn.open();
-  };
-
-  const onLoadEvents = () => {
-    console.log("fetching events");
-    const conn = new Connection({
-      url: config.crossbar.url,
-      realm: config.crossbar.realm,
-    });
-    conn.onopen = (s: Session) => {
-      s.call("racelog.public.get_events").then((data: any) => {
-        setEvents(
-          data.map((v: any) => ({
-            key: v.eventKey,
-            title: v.name,
-            description: v.description,
-            eventId: v.id,
+            track: {
+              name: v.info.trackDisplayName,
+            },
           })),
         );
         conn.close();
@@ -181,63 +149,52 @@ export const DemoRaces: React.FC = () => {
   };
 
   return (
-    <Row gutter={16}>
-      <Col span={10}>
-        <List
-          header={<h3>Demo races</h3>}
-          dataSource={events}
-          renderItem={(item: any) => (
-            <List.Item
-              actions={[
-                // <Button value={item.key} type="default" onClick={onLoadButtonClicked_OoO}>
-                //   Load
-                // </Button>,
-                <Button
-                  key={"bt-replay" + item.eventId}
-                  value={item.key}
-                  type="default"
-                  onClick={onLoadForReplayButtonClicked}
-                >
-                  Load
-                </Button>,
-              ]}
+    <List
+      header={
+        <Row justify="space-between">
+          <Col span={12}>
+            <h3>Live data</h3>
+          </Col>
+          <Col offset={8}>
+            <Button icon={<ReloadOutlined />} onClick={onReloadRequested} />
+          </Col>
+        </Row>
+      }
+      dataSource={livedata}
+      renderItem={(item: any) => (
+        <List.Item
+          actions={[
+            <Button
+              key={"bt-live" + item.eventId}
+              value={item.key}
+              type="default"
+              onClick={onLiveButtonClicked}
             >
-              <List.Item.Meta title={item.title} description={item.description} />
-            </List.Item>
-          )}
-        />
-      </Col>
-      <Col span={8}>
-        <List
-          header={
-            <Row justify="space-between">
-              <Col span={12}>
-                <h3>Live data</h3>
-              </Col>
-              <Col offset={8}>
-                <Button icon={<ReloadOutlined />} onClick={onReloadRequested} />
-              </Col>
-            </Row>
-          }
-          dataSource={livedata}
-          renderItem={(item: any) => (
-            <List.Item
-              actions={[
-                <Button
-                  key={"bt-live" + item.eventId}
-                  value={item.key}
-                  type="default"
-                  onClick={onLiveButtonClicked}
-                >
-                  Connect
-                </Button>,
-              ]}
-            >
-              <List.Item.Meta title={item.title} description={item.description} />
-            </List.Item>
-          )}
-        />
-      </Col>
-    </Row>
+              Connect
+            </Button>,
+          ]}
+        >
+          <Descriptions size="small" column={2} colon={false}>
+            <Descriptions.Item span={item.description ? 1 : 2}>
+              <b>{item.name}</b>
+            </Descriptions.Item>
+            {item.description ? (
+              <Descriptions.Item>
+                <div className="iracelog-event-description">{item.description}</div>
+              </Descriptions.Item>
+            ) : (
+              <></>
+            )}
+            <Descriptions.Item span={2} label={item.track.name}>
+              {/* {new Date(item.recordDate).toLocaleDateString(undefined, {
+                year: "numeric",
+                month: "2-digit",
+                day: "2-digit",
+              })} */}
+            </Descriptions.Item>
+          </Descriptions>
+        </List.Item>
+      )}
+    />
   );
 };

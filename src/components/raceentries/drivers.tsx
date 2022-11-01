@@ -5,6 +5,7 @@ import * as React from "react";
 import { useSelector } from "react-redux";
 import { ApplicationState } from "../../stores";
 import { ICarClass, ICarInfo, IDriverEntry, IEntry } from "../../stores/cars/types";
+import { sortCarNumberStr } from "../../utils/output";
 
 export const Drivers: React.FC = () => {
   const carClasses: ICarClass[] = useSelector(
@@ -35,12 +36,13 @@ export const Drivers: React.FC = () => {
       render: (d) => d.entry.car.carNumber,
       width: 50,
       align: "right",
-      sorter: (a, b) => a.entry.car.carNumberRaw - b.entry.car.carNumberRaw,
+      // sorter: (a, b) => a.entry.car.carNumberRaw - b.entry.car.carNumberRaw,
+      sorter: (a, b) => sortCarNumberStr(a.entry.car.carNumber, b.entry.car.carNumber),
       sortDirections: ["ascend", "descend", "ascend"],
       defaultSortOrder: "ascend",
     },
     {
-      key: "name",
+      key: "drivers_name",
       title: "Name",
       render: (d) => d.name,
       // width: "20%",
@@ -66,7 +68,7 @@ export const Drivers: React.FC = () => {
       onFilter: (value, record) => record.entry.team.name.startsWith(value as string),
     },
     {
-      key: "carClass",
+      key: "driver_carClass",
       title: "Car class",
       render: (d) => d.carClassName,
       // width: "12%",
@@ -80,7 +82,7 @@ export const Drivers: React.FC = () => {
       onFilter: (value, record) => record.carClassName === value,
     },
     {
-      key: "carName",
+      key: "driver_carName",
       title: "Car",
       render: (d) => d.entry.car.name,
       // width: "15%",

@@ -38,9 +38,9 @@ export const Cars: React.FC = () => {
 
   // eslint-disable-next-line @typescript-eslint/ban-types
   const columns: ColumnsType<{}> = [
-    { key: "name", title: "Car", render: (d) => d.nameShort, align: "left" },
+    { key: "cars_name", title: "Car", render: (d) => d.nameShort, align: "left" },
     {
-      key: "carClass",
+      key: "cars_carClass",
       title: "Car class",
       render: (d) => d.carClassName,
       // width: "20%",
@@ -68,14 +68,14 @@ export const Cars: React.FC = () => {
       align: "right",
     },
     {
-      key: "entries",
+      key: "cars_entries",
       title: "Num",
       render: (d) => numEntriesLookup[d.carId],
       width: 50,
       align: "right",
     },
     {
-      key: "irating",
+      key: "cars_sof",
       title: "SOF",
       render: (d) => sprintf("%.0f", avgiRatingLookup.get(d.carId.toString()) ?? 0),
       width: 50,

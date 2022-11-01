@@ -4,6 +4,7 @@ import { useSelector } from "react-redux";
 import { Link, Route, Routes, useParams } from "react-router-dom";
 import { Comparator } from "semver";
 import { globalWamp } from "../commons/globals";
+import { LoaderPage } from "../components/events/loader";
 import Classification from "../components/live/classification";
 import RaceMessages from "../components/live/raceMessages";
 import { API_LOCAL_DEV_MODE } from "../constants";
@@ -23,7 +24,6 @@ import { StintSummaryContainer } from "../container/StintSummaryContainer";
 import { StrategyContainer } from "../container/StrategyContainer";
 import { TestContainer } from "../container/Test";
 import { ApplicationState } from "../stores";
-import { LoaderPage } from "./loader";
 
 const { Header, Sider, Content } = Layout;
 

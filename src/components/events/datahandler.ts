@@ -8,9 +8,9 @@ import {
   IRaceGraph,
 } from "@mpapenbr/iracelog-analysis/dist/stints/types";
 import { Dispatch } from "redux";
-import { distributeChanges } from "../processor/processData";
-import { updateAvailableStandingsColumns } from "../stores/basedata/actions";
-import { updateCarClasses, updateCarEntries, updateCarInfos } from "../stores/cars/actions";
+import { distributeChanges } from "../../processor/processData";
+import { updateAvailableStandingsColumns } from "../../stores/basedata/actions";
+import { updateCarClasses, updateCarEntries, updateCarInfos } from "../../stores/cars/actions";
 import {
   updateAvailableCarClasses,
   updateAvailableCars,
@@ -22,10 +22,10 @@ import {
   updateInfoMessages,
   updateRaceGraph,
   updateSessionInfo,
-} from "../stores/racedata/actions";
-import { ICarBaseData, ICarClass } from "../stores/racedata/types";
-import { updateSpeedmapData } from "../stores/speedmap/actions";
-import { initialSpeedmapData } from "../stores/speedmap/types";
+} from "../../stores/racedata/actions";
+import { ICarBaseData, ICarClass } from "../../stores/racedata/types";
+import { updateSpeedmapData } from "../../stores/speedmap/actions";
+import { initialSpeedmapData } from "../../stores/speedmap/types";
 import {
   circleOfDoomSettings,
   classificationSettings,
@@ -42,8 +42,8 @@ import {
   stintsSettings,
   stintSummarySettings,
   strategySettings,
-} from "../stores/ui/actions";
-import { defaultStateData } from "../stores/ui/reducer";
+} from "../../stores/ui/actions";
+import { defaultStateData } from "../../stores/ui/reducer";
 
 const onChangeSession = (dispatch: Dispatch, message: IMessage) => {
   // console.log(message);
