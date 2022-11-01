@@ -2,7 +2,7 @@ import { ReloadOutlined } from "@ant-design/icons";
 import { BulkProcessor } from "@mpapenbr/iracelog-analysis";
 import { defaultProcessRaceStateData } from "@mpapenbr/iracelog-analysis/dist/stints/types";
 import { Button, Col, List, Row } from "antd";
-import autobahn, { Session } from "autobahn";
+import { Connection, Session } from "autobahn";
 import _ from "lodash";
 import React, { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
@@ -43,7 +43,7 @@ export const DemoRaces: React.FC = () => {
   };
 
   const connectToLiveData = (eventKey: string) => {
-    const conn = new autobahn.Connection({
+    const conn = new Connection({
       url: config.crossbar.url,
       realm: config.crossbar.realm,
     });
@@ -138,7 +138,7 @@ export const DemoRaces: React.FC = () => {
   const onReloadRequested = async () => {
     console.log("fetching current live data providers");
 
-    const conn = new autobahn.Connection({
+    const conn = new Connection({
       url: config.crossbar.url,
       realm: config.crossbar.realm,
     });
@@ -160,7 +160,7 @@ export const DemoRaces: React.FC = () => {
 
   const onLoadEvents = () => {
     console.log("fetching events");
-    const conn = new autobahn.Connection({
+    const conn = new Connection({
       url: config.crossbar.url,
       realm: config.crossbar.realm,
     });

@@ -1,5 +1,5 @@
 import { defaultProcessRaceStateData } from "@mpapenbr/iracelog-analysis/dist/stints/types";
-import autobahn, { Session } from "autobahn";
+import { Connection, Session } from "autobahn";
 import React, { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router";
@@ -28,7 +28,7 @@ export const LoaderPage: React.FC<MyProps> = (props: MyProps) => {
   const [task, setTasks] = useState("");
 
   useEffect(() => {
-    const conn = new autobahn.Connection({
+    const conn = new Connection({
       url: config.crossbar.url,
       realm: config.crossbar.realm,
     });
