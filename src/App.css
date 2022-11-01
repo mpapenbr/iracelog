@@ -139,3 +139,7 @@ div.iracelog-background-green {
   width: 40px;
   background-color: green;
 }
+
+div.iracelog-event-description {
+  color: rgba(0, 0, 0, 0.45);
+}

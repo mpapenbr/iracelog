@@ -37,16 +37,16 @@ export const CarClasses: React.FC = () => {
 
   // eslint-disable-next-line @typescript-eslint/ban-types
   const columns: ColumnsType<{}> = [
-    { key: "name", title: "Car", render: (d) => d.name, align: "left" },
+    { key: "carclass_name", title: "Car", render: (d) => d.name, align: "left" },
     {
-      key: "entries",
+      key: "carclass_entries",
       title: "Num",
       render: (d) => numEntriesLookup[d.id],
       width: 10,
       align: "right",
     },
     {
-      key: "irating",
+      key: "carclass_sof",
       title: "SOF",
       render: (d) => sprintf("%.0f", avgiRatingLookup.get(d.id.toString()) ?? 0),
       width: 10,

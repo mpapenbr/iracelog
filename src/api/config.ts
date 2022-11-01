@@ -6,4 +6,7 @@ export interface Config {
     url: string;
     realm: string;
   };
+  graphql: {
+    url: string;
+  };
 }
