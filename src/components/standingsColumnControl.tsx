@@ -1,4 +1,4 @@
-import { Empty, List, Table } from "antd";
+import { Empty, Table } from "antd";
 import { ColumnsType } from "antd/lib/table";
 import React, { Key } from "react";
 import { useDispatch, useSelector } from "react-redux";
@@ -6,21 +6,8 @@ import { ApplicationState } from "../stores";
 import { classificationSettings } from "../stores/ui/actions";
 import { IColumnInfo } from "../stores/ui/types";
 
-const StandingsColumnControlList: React.FC = () => {
-  const allCols = useSelector((state: ApplicationState) => state.baseData.availableStandingsColumns);
-
-  console.log(allCols);
-  return allCols.length > 0 ? (
-    <>
-      <List size="small" dataSource={allCols} renderItem={(item) => <List.Item>{item.title}</List.Item>} />
-    </>
-  ) : (
-    <Empty description="No data available" />
-  );
-};
-
 const StandingsColumnControlTable: React.FC = () => {
-  const allCols = useSelector((state: ApplicationState) => state.baseData.availableStandingsColumns);
+  const allCols = useSelector((state: ApplicationState) => state.userSettings.standingsColumns);
   const uiSettings = useSelector((state: ApplicationState) => state.userSettings.classification);
   const selCols = uiSettings.showCols;
   const dispatch = useDispatch();
@@ -28,7 +15,10 @@ const StandingsColumnControlTable: React.FC = () => {
     // console.log(selectedRowKeys);
     // console.log(selectedRows);
     dispatch(
-      classificationSettings({ ...uiSettings, showCols: allCols.filter((c) => selectedRowKeys.includes(c.name)) })
+      classificationSettings({
+        ...uiSettings,
+        showCols: allCols.availableColumns.filter((c) => selectedRowKeys.includes(c.name)),
+      }),
     );
   };
   const rowSelection = {
@@ -37,7 +27,7 @@ const StandingsColumnControlTable: React.FC = () => {
     onChange: onSelectChange,
   };
   const columns: ColumnsType<IColumnInfo> = [{ key: "name", title: "Column", dataIndex: "title" }];
-  return allCols.length > 0 ? (
+  return allCols.availableColumns.length > 0 ? (
     <>
       <Table
         className="iracelog-standings-select-cols"
@@ -45,7 +35,7 @@ const StandingsColumnControlTable: React.FC = () => {
         rowSelection={rowSelection}
         // size="small"
         columns={columns}
-        dataSource={allCols}
+        dataSource={allCols.availableColumns}
         rowKey={(item) => item.name}
       />
     </>

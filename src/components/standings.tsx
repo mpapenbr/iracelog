@@ -6,8 +6,8 @@ import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { sprintf } from "sprintf-js";
 import { ApplicationState } from "../stores";
-import { updateAvailableStandingsColumns as availableStandingsColumns } from "../stores/basedata/actions";
-import { classificationSettings } from "../stores/ui/actions";
+
+import { classificationSettings, updateAvailableStandingsColumns } from "../stores/ui/actions";
 import { lapTimeString } from "../utils/output";
 
 interface MyProps {
@@ -19,7 +19,7 @@ type Props = MyProps;
 export const Standings: React.FC<Props> = (props: Props) => {
   const uiSettings = useSelector((state: ApplicationState) => state.userSettings.classification);
   const stateColumnsAvail = useSelector(
-    (state: ApplicationState) => state.baseData.availableStandingsColumns,
+    (state: ApplicationState) => state.userSettings.standingsColumns,
   );
   const carsRaw = useSelector((state: ApplicationState) => state.raceData.classification.data);
   const carClasses = useSelector((state: ApplicationState) => state.raceData.availableCarClasses);
@@ -184,9 +184,9 @@ export const Standings: React.FC<Props> = (props: Props) => {
     },
     showSizeChanger: true,
   };
-  if (!stateColumnsAvail.length) {
+  if (!stateColumnsAvail.availableColumns.length) {
     const updateData = columns.map((c) => ({ name: c.key! as string, title: c.title as string }));
-    dispatch(availableStandingsColumns(updateData));
+    dispatch(updateAvailableStandingsColumns({ availableColumns: updateData }));
     dispatch(classificationSettings({ ...uiSettings, showCols: updateData }));
   }
   const filteredColumns = columns.filter((c) =>

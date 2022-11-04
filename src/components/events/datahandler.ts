@@ -9,7 +9,6 @@ import {
 } from "@mpapenbr/iracelog-analysis/dist/stints/types";
 import { Dispatch } from "redux";
 import { distributeChanges } from "../../processor/processData";
-import { updateAvailableStandingsColumns } from "../../stores/basedata/actions";
 import { updateCarClasses, updateCarEntries, updateCarInfos } from "../../stores/cars/actions";
 import {
   updateAvailableCarClasses,
@@ -42,6 +41,7 @@ import {
   stintsSettings,
   stintSummarySettings,
   strategySettings,
+  updateAvailableStandingsColumns,
 } from "../../stores/ui/actions";
 import { defaultStateData } from "../../stores/ui/reducer";
 
@@ -105,7 +105,7 @@ export const resetUi = (dispatch: Dispatch) => {
   dispatch(globalSettings(defaultStateData.global));
   dispatch(dashboardSettings(defaultStateData.dashboard));
   dispatch(strategySettings(defaultStateData.strategy));
-  dispatch(updateAvailableStandingsColumns([]));
+  dispatch(updateAvailableStandingsColumns(defaultStateData.standingsColumns));
   dispatch(updateAvailableCars([]));
   dispatch(updateAvailableCarClasses([]));
   dispatch(updateSpeedmapData(initialSpeedmapData));

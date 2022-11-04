@@ -1,5 +1,4 @@
 import { combineReducers } from "redux";
-import { baseDataReducers, IBaseData } from "./basedata/reducer";
 import { carDataReducers } from "./cars/reducers";
 import { ICarInfoContainer } from "./cars/types";
 import { IRaceData, raceDataReducers } from "./racedata/reducer";
@@ -15,7 +14,7 @@ export interface ApplicationState {
   wamp: IWampState;
   userSettings: IUserSettings;
   raceData: IRaceData;
-  baseData: IBaseData;
+
   speedmap: ISpeedmap;
   carData: ICarInfoContainer;
 }
@@ -25,7 +24,6 @@ export interface ApplicationState {
 export const createRootReducer = () =>
   combineReducers({
     wamp: wampReducer, // will be removed
-    baseData: baseDataReducers,
     raceData: raceDataReducers, // this is new place for everything concerning the race data of a single event
     userSettings: userSettingsReducer, // this is the new place for user settings
     speedmap: speedmapReducers,

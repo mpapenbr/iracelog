@@ -165,6 +165,11 @@ export interface IUiData {
   raceStintSharedSettings: IRaceStintSharedSettings;
   driverStintSettings: IDriverStintsSettings;
 }
+// this is computed on first hit of the standings page. It contains all columns which may be displayed.
+// the selection which columns are shown is stored in classification
+export interface IStandingsColumns {
+  availableColumns: IColumnInfo[];
+}
 
 export interface IUserSettings {
   classification: IClassificationSettings;
@@ -182,6 +187,7 @@ export interface IUserSettings {
   circleOfDoom: ICircleOfDoomSettings;
   replay: IReplaySettings;
   global: IGlobalSettings;
+  standingsColumns: IStandingsColumns;
   counter: number;
 }
 

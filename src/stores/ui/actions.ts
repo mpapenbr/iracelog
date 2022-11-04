@@ -12,6 +12,7 @@ import {
   IRaceGraphSettings,
   IRacePositionsSettings,
   IReplaySettings,
+  IStandingsColumns,
   IStintsSettings,
   IStintSummarySettings,
   IStrategySettings,
@@ -41,6 +42,10 @@ export const circleOfDoomSettings = actionCreator<ICircleOfDoomSettings>("CIRCLE
 export const replaySettings = actionCreator<IReplaySettings>("REPLAY_SETTINGS");
 export const globalSettings = actionCreator<IGlobalSettings>("GLOBAL_SETTINGS");
 export const demoSettings = actionCreator<number>("DEMO_SETTINGS");
+
+export const updateAvailableStandingsColumns = actionCreator<IStandingsColumns>(
+  "UPDATE_AVAILABLE_STANDING_COLUMNS",
+);
 
 // TODO: rethink if saga would be better mechanism to distribute selections
 export const sagaPitstopsSettings = actionCreator<IPitstopsSettings>("SAGA_PITSTOPS_SETTINGS");

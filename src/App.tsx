@@ -7,7 +7,7 @@ import "./App.css";
 import { API_LOCAL_DEV_MODE, APP_VERSION_DISPLAY } from "./constants";
 import { EventHeaderContainer } from "./container/EventHeaderContainer";
 import { AnalysisMainPage } from "./pages/analysisPage";
-import { DemoRaces } from "./pages/demoRaces";
+
 import { Events } from "./pages/eventsPage";
 import { FakeLoaderPage } from "./pages/fakeLoader";
 import { ApplicationState } from "./stores";
@@ -34,7 +34,6 @@ const App: React.FC<AppProps> = (props: AppProps) => {
               <Routes>
                 <Route path="/" element={<Events />} />
                 <Route path="/events" element={<Events />} />
-                <Route path="/demo" element={<DemoRaces />} />
 
                 <Route path="/analysis/:eventKey/*" element={<AnalysisMainPage />} />
 
