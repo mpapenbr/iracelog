@@ -7,12 +7,12 @@ import { Comparator } from "semver";
 import { globalWamp } from "../../commons/globals";
 import { processCarData } from "../../processor/processCarData";
 import { ReplayDataHolder } from "../../processor/ReplayDataHolder";
-import { updateAvailableStandingsColumns } from "../../stores/basedata/actions";
 import { updateEventInfo, updateTrackInfo } from "../../stores/racedata/actions";
 import { ITrackInfo } from "../../stores/racedata/types";
 import { updateSpeedmapData } from "../../stores/speedmap/actions";
-import { replaySettings } from "../../stores/ui/actions";
-import { initialReplaySettings } from "../../stores/ui/reducer";
+import { replaySettings, updateAvailableStandingsColumns } from "../../stores/ui/actions";
+// import { initialReplaySettings } from "../../stores/ui/reducer";
+import { defaultStateData as defaultUiStateData } from "../../stores/ui/reducer";
 import { reset, updateManifests } from "../../stores/wamp/actions";
 import { doDistribute, resetUi } from "./datahandler";
 
@@ -44,7 +44,7 @@ export const LoaderPage: React.FC<MyProps> = (props: MyProps) => {
         dispatch(reset());
         resetUi(dispatch);
         const settings = {
-          ...initialReplaySettings,
+          ...defaultUiStateData.replay,
           minTimestamp: eventInfo.data.replayInfo.minTimestamp,
           currentSessionTime: eventInfo.data.replayInfo.minSessionTime,
           minSessionTime: eventInfo.data.replayInfo.minSessionTime,
@@ -73,7 +73,7 @@ export const LoaderPage: React.FC<MyProps> = (props: MyProps) => {
         dispatch(updateManifests(eventInfo.data.manifests));
         // we need to reset here since standings page is defined as index page and will
         // already be called before this method is finished.
-        dispatch(updateAvailableStandingsColumns([]));
+        dispatch(updateAvailableStandingsColumns({ ...defaultUiStateData.standingsColumns }));
 
         const versionCheck = new Comparator(">=0.4.4");
         // console.log(eventInfo);

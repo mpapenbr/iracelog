@@ -11,9 +11,10 @@ import { sprintf } from "sprintf-js";
 import { globalWamp } from "../../commons/globals";
 import { processCarData } from "../../processor/processCarData";
 import { processSpeedmap } from "../../processor/processSpeedmap";
-import { updateAvailableStandingsColumns } from "../../stores/basedata/actions";
 import { updateEventInfo, updateTrackInfo } from "../../stores/racedata/actions";
 import { ISpeedmapMessage, ITrackInfo } from "../../stores/racedata/types";
+import { updateAvailableStandingsColumns } from "../../stores/ui/actions";
+import { defaultStateData as defaultUiStateData } from "../../stores/ui/reducer";
 import { connectedToServer, setManifests } from "../../stores/wamp/actions";
 import { postProcessManifest } from "../../stores/wamp/reducer";
 import { doDistribute } from "./datahandler";
@@ -41,7 +42,7 @@ export const LiveEvents: React.FC = () => {
         // dispatch(updateManifests(data.manifests)); // these are the "small" manifests
         const manifests = postProcessManifest(data.manifests);
         dispatch(setManifests(manifests));
-        dispatch(updateAvailableStandingsColumns([])); // reset here, trigger standings page recompute
+        dispatch(updateAvailableStandingsColumns(defaultUiStateData.standingsColumns)); // reset here, trigger standings page recompute
         globalWamp.processor = new BulkProcessor(manifests, data.processedData);
 
         doDistribute(dispatch, defaultProcessRaceStateData, data.processedData);

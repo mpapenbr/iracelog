@@ -15,6 +15,7 @@ import {
   IRaceGraphSettings,
   IRacePositionsSettings,
   IReplaySettings,
+  IStandingsColumns,
   IStintsSettings,
   IStintSummarySettings,
   IStrategySettings,
@@ -218,6 +219,13 @@ const DemoReducer = reducerWithInitialState(0).case(
   (state, value) => value,
 );
 
+const initialAvailableStandingsColumns: IStandingsColumns = {
+  availableColumns: [],
+};
+const AvailableStandingColumnsReducer = reducerWithInitialState(
+  initialAvailableStandingsColumns,
+).case(UiActions.updateAvailableStandingsColumns, (state, data) => data);
+
 export const defaultStateData: IUserSettings = {
   classification: initialClassificationSettings,
   messages: initialMessagesSettings,
@@ -234,6 +242,7 @@ export const defaultStateData: IUserSettings = {
   circleOfDoom: initialCircleOfDoom,
   replay: initialReplaySettings,
   global: initialGlobalSettings,
+  standingsColumns: initialAvailableStandingsColumns,
   counter: 0,
 };
 const combinedReducers = combineReducers<IUserSettings>({
@@ -252,6 +261,7 @@ const combinedReducers = combineReducers<IUserSettings>({
   circleOfDoom: CircleOfDoomSettingsReducer,
   replay: ReplaySettingsReducer,
   global: GlobalSettingsReducer,
+  standingsColumns: AvailableStandingColumnsReducer,
   counter: DemoReducer,
 });
 
