@@ -1,8 +1,8 @@
 import { IManifests, IMessage } from "@mpapenbr/iracelog-analysis/dist/stints/types";
 import { Session } from "autobahn";
 import _ from "lodash";
+import { MessageType } from "../stores/types/message";
 import { IReplaySettings } from "../stores/ui/types";
-import { MessageType } from "../stores/wamp/types";
 
 export class ReplayDataHolder {
   private s: Session;
@@ -33,7 +33,11 @@ export class ReplayDataHolder {
     this.data = [];
     this.idx = 0;
     this.preFetching = true;
-    const res = await this.s.call("racelog.public.archive.state.delta", [this.settings.eventId, startTs, 15]);
+    const res = await this.s.call("racelog.public.archive.state.delta", [
+      this.settings.eventId,
+      startTs,
+      15,
+    ]);
     this.processDataFromWamp(res);
     this.preFetching = false;
   }
@@ -53,11 +57,13 @@ export class ReplayDataHolder {
 
   private internalLoad(startTs: number, num = 30) {
     console.log("requesting " + num + " entries starting at ts: " + startTs);
-    this.s.call("racelog.public.archive.state.delta", [this.settings.eventId, startTs, num]).then((res: any) => {
-      this.preFetching = false;
-      console.log("got " + res.length + " items");
-      this.processDataFromWamp(res);
-    });
+    this.s
+      .call("racelog.public.archive.state.delta", [this.settings.eventId, startTs, num])
+      .then((res: any) => {
+        this.preFetching = false;
+        console.log("got " + res.length + " items");
+        this.processDataFromWamp(res);
+      });
   }
 
   private processDataFromWamp(res: any) {
@@ -75,7 +81,10 @@ export class ReplayDataHolder {
             const col = item[1];
             const value = item[2];
             if (work.payload.cars.length <= row) {
-              work.payload.cars = [...work.payload.cars, Array(this.manifests.car.length).fill(undefined)];
+              work.payload.cars = [
+                ...work.payload.cars,
+                Array(this.manifests.car.length).fill(undefined),
+              ];
             }
             work.payload.cars[row][col] = value;
           });
@@ -88,7 +97,7 @@ export class ReplayDataHolder {
           ref = work;
           return { type: d.type, timestamp: d.timestamp, data: work.payload };
         }
-      })
+      }),
     );
   }
 }

@@ -34,12 +34,12 @@ export interface IRaceData {
 }
 
 // manifests
-export const ManifestsReducer = reducerWithInitialState(defaultManifests).case(
-  RaceActions.processInboundManifests,
-  (state, manifests) => {
+export const ManifestsReducer = reducerWithInitialState(defaultManifests)
+  .case(RaceActions.processInboundManifests, (state, manifests) => {
     return postProcessManifest(manifests);
-  },
-);
+  })
+  .case(RaceActions.updateManifests, (state, manifests) => ({ ...manifests }));
+
 // available cars
 export const AvailableCarsReducer = reducerWithInitialState([] as ICarBaseData[]).case(
   RaceActions.updateAvailableCars,

@@ -1,11 +1,10 @@
 import { defaultProcessRaceStateData } from "@mpapenbr/iracelog-analysis/dist/stints/types";
 import { ICarClass } from "../../stores/racedata/types";
-import { defaultWampData } from "../../stores/wamp/types";
 import { distributeChanges, IProcessingInfo } from "../processData";
 
 const baseData: IProcessingInfo = {
-  currentData: defaultWampData,
-  newData: defaultWampData,
+  currentData: defaultProcessRaceStateData,
+  newData: defaultProcessRaceStateData,
 };
 describe("available car classes", () => {
   it("should not break on missing handler", () => {
@@ -13,7 +12,15 @@ describe("available car classes", () => {
       ...baseData,
       newData: {
         ...defaultProcessRaceStateData,
-        carInfo: [{ carNum: "1", name: "a", carClass: "x", drivers: [], current: { driverName: "a", seatTime: [] } }],
+        carInfo: [
+          {
+            carNum: "1",
+            name: "a",
+            carClass: "x",
+            drivers: [],
+            current: { driverName: "a", seatTime: [] },
+          },
+        ],
       },
     };
     distributeChanges(work);
@@ -29,7 +36,15 @@ describe("available car classes", () => {
       ...baseData,
       newData: {
         ...defaultProcessRaceStateData,
-        carInfo: [{ carNum: "1", name: "a", carClass: "x", drivers: [], current: { driverName: "a", seatTime: [] } }],
+        carInfo: [
+          {
+            carNum: "1",
+            name: "a",
+            carClass: "x",
+            drivers: [],
+            current: { driverName: "a", seatTime: [] },
+          },
+        ],
       },
       onChangedAvailableCarClasses: onChangedAvailableCarClasses,
     };
