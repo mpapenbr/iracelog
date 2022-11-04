@@ -1,9 +1,10 @@
+import { IRaceGraph } from "@mpapenbr/iracelog-analysis/dist/stints/types";
 import { ResponsiveLine } from "@nivo/line";
 import { Col, Empty, Row, Spin } from "antd";
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { ApplicationState } from "../../stores";
-import { IRaceGraph } from "../../stores/wamp/types";
+
 import { sortCarNumberStr } from "../../utils/output";
 
 interface IGraphData {

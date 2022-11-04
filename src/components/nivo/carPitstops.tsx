@@ -1,8 +1,9 @@
+import { ICarPitInfo, IPitInfo } from "@mpapenbr/iracelog-analysis/dist/stints/types";
 import { ResponsiveBar, ResponsiveBarCanvas } from "@nivo/bar";
 import { Empty, Select } from "antd";
 import _ from "lodash";
 import React from "react";
-import { ICarPitInfo, IPitInfo } from "../../stores/wamp/types";
+
 import { secAsHHMMSS, secAsMMSS } from "../../utils/output";
 
 const { Option } = Select;
@@ -20,7 +21,8 @@ const CarPitstopsNivo: React.FC<MyProps> = (props: MyProps) => {
 
   const carOrder = [...props.showCars].reverse(); //.sort(sortCarNumberStr).reverse();
 
-  const numEntries = (item: ICarPitInfo) => item.history.length + (item.current.isCurrentPitstop ? 1 : 0);
+  const numEntries = (item: ICarPitInfo) =>
+    item.history.length + (item.current.isCurrentPitstop ? 1 : 0);
   const maxPitstops = props.carPits.reduce((a, b) => (numEntries(b) > a ? numEntries(b) : a), 0);
 
   const dataLookup = props.carPits.reduce((prev, cur) => {
@@ -40,7 +42,9 @@ const CarPitstopsNivo: React.FC<MyProps> = (props: MyProps) => {
     if (carData !== undefined) {
       carData
         // TODO: soll nur den letzten STopp betrachten
-        .filter((v, idx) => (props.hideLongPitstops ? (idx === carData.length - 1 ? !isLongPitstop(v) : true) : true))
+        .filter((v, idx) =>
+          props.hideLongPitstops ? (idx === carData.length - 1 ? !isLongPitstop(v) : true) : true,
+        )
         .forEach((v, idx) => (work = { ...work, ["Pitstop " + (idx + 1)]: v.laneTime }));
     }
     return { ...work };

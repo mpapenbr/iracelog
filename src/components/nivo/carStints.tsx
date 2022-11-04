@@ -1,8 +1,9 @@
+import { ICarInfo, ICarStintInfo, IStintInfo } from "@mpapenbr/iracelog-analysis/dist/stints/types";
 import { ResponsiveBar, ResponsiveBarCanvas } from "@nivo/bar";
 import { Empty } from "antd";
 import _ from "lodash";
 import React from "react";
-import { ICarInfo, ICarStintInfo, IStintInfo } from "../../stores/wamp/types";
+
 import { secAsHHMMSS, secAsMMSS } from "../../utils/output";
 
 interface MyProps {
@@ -13,7 +14,8 @@ interface MyProps {
 }
 const CarStintsNivo: React.FC<MyProps> = (props: MyProps) => {
   const carOrder = [...props.showCars].reverse();
-  const numEntries = (item: ICarStintInfo) => item.history.length + (item.current.isCurrentStint ? 1 : 0);
+  const numEntries = (item: ICarStintInfo) =>
+    item.history.length + (item.current.isCurrentStint ? 1 : 0);
   const maxStints = props.carStints.reduce((a, b) => (numEntries(b) > a ? numEntries(b) : a), 0);
 
   const dataLookup = props.carStints.reduce((prev, cur) => {
@@ -54,7 +56,9 @@ const CarStintsNivo: React.FC<MyProps> = (props: MyProps) => {
     const curCarInfo = props.carInfo.find((v) => v.carNum === cur);
     const newCarData = si.reduce((res, siCur) => {
       const driver = curCarInfo?.drivers.find((d) =>
-        d.seatTime.find((s) => s.enterCarTime <= siCur.exitTime && s.leaveCarTime + 5 >= siCur.enterTime)
+        d.seatTime.find(
+          (s) => s.enterCarTime <= siCur.exitTime && s.leaveCarTime + 5 >= siCur.enterTime,
+        ),
       );
 
       // return ["res"];

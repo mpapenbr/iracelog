@@ -1,10 +1,15 @@
-import { defaultProcessRaceStateData, ICarLaps } from "@mpapenbr/iracelog-analysis/dist/stints/types";
-import { defaultWampData } from "../../stores/wamp/types";
+import {
+  defaultProcessRaceStateData,
+  ICarLaps,
+} from "@mpapenbr/iracelog-analysis/dist/stints/types";
 import { distributeChanges, IProcessingInfo } from "../processData";
 
 const baseData: IProcessingInfo = {
-  currentData: { ...defaultWampData, carLaps: [{ carNum: "1", laps: [{ lapNo: 1, lapTime: 10 }] }] },
-  newData: defaultWampData,
+  currentData: {
+    ...defaultProcessRaceStateData,
+    carLaps: [{ carNum: "1", laps: [{ lapNo: 1, lapTime: 10 }] }],
+  },
+  newData: defaultProcessRaceStateData,
 };
 describe("available cars", () => {
   it("should not break on missing handler", () => {

@@ -11,16 +11,12 @@ import { sprintf } from "sprintf-js";
 import { globalWamp } from "../../commons/globals";
 import { processCarData } from "../../processor/processCarData";
 import { processSpeedmap } from "../../processor/processSpeedmap";
-import {
-  processInboundManifests,
-  updateEventInfo,
-  updateTrackInfo,
-} from "../../stores/racedata/actions";
+import { updateEventInfo, updateManifests, updateTrackInfo } from "../../stores/racedata/actions";
 import { ISpeedmapMessage, ITrackInfo } from "../../stores/racedata/types";
+import { postProcessManifest } from "../../stores/racedata/util";
 import { updateAvailableStandingsColumns } from "../../stores/ui/actions";
 import { defaultStateData as defaultUiStateData } from "../../stores/ui/reducer";
-import { connectedToServer } from "../../stores/wamp/actions";
-import { postProcessManifest } from "../../stores/wamp/reducer";
+
 import { doDistribute } from "./datahandler";
 
 export const LiveEvents: React.FC = () => {
@@ -45,14 +41,14 @@ export const LiveEvents: React.FC = () => {
         console.log(data); // we  will always get an array here (due to WAMP)
         // dispatch(updateManifests(data.manifests)); // these are the "small" manifests
         const manifests = postProcessManifest(data.manifests);
-        dispatch(processInboundManifests(data.manifests));
+        dispatch(updateManifests(manifests));
         dispatch(updateAvailableStandingsColumns(defaultUiStateData.standingsColumns)); // reset here, trigger standings page recompute
         globalWamp.processor = new BulkProcessor(manifests, data.processedData);
 
         doDistribute(dispatch, defaultProcessRaceStateData, data.processedData);
         globalWamp.currentData = data.processedData;
       });
-      dispatch(connectedToServer());
+
       // TODO: maybe combine this with above call
       await s.call("racelog.public.get_event_info_by_key", [eventKey]).then(async (data: any) => {
         console.log(data);

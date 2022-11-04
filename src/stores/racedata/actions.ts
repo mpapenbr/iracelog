@@ -3,6 +3,7 @@ import {
   ICarLaps,
   ICarPitInfo,
   ICarStintInfo,
+  IManifests,
   IMessage,
   IRaceGraph,
 } from "@mpapenbr/iracelog-analysis/dist/stints/types";
@@ -11,8 +12,10 @@ import { ICarBaseData, ICarClass, IEventInfo, InboundManifests, ITrackInfo } fro
 
 const actionCreator = actionCreatorFactory("RACE_DATA");
 
-// available manifests
+// use this if we got raw data (manifest is sent as string[] data )
 export const processInboundManifests = actionCreator<InboundManifests>("PROCESS_INBOUND_MANIFESTS");
+// use this if we already have IManifest data
+export const updateManifests = actionCreator<IManifests>("UPDATE_MANIFESTS");
 
 // available cars
 export const updateAvailableCars = actionCreator<ICarBaseData[]>("UPDATE_AVAILABLE_CARS");
