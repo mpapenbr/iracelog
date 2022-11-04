@@ -23,7 +23,7 @@ export const Standings: React.FC<Props> = (props: Props) => {
   );
   const carsRaw = useSelector((state: ApplicationState) => state.raceData.classification.data);
   const carClasses = useSelector((state: ApplicationState) => state.raceData.availableCarClasses);
-  const stateCarManifest = useSelector((state: ApplicationState) => state.wamp.data.manifests.car);
+  const stateCarManifest = useSelector((state: ApplicationState) => state.raceData.manifests.car);
   const dispatch = useDispatch();
   const getValue = (d: [], key: string) => getValueViaSpec(d, stateCarManifest, key);
 

@@ -18,15 +18,19 @@ export const RaceGraphContainer: React.FC = () => {
   const carClasses = useSelector((state: ApplicationState) => state.raceData.availableCarClasses);
   const userSettings = useSelector((state: ApplicationState) => state.userSettings.raceGraph);
   const stateGlobalSettings = useSelector((state: ApplicationState) => state.userSettings.global);
-  const rawShowCars = useSelector((state: ApplicationState) => state.userSettings.raceGraph.showCars);
-  const filterCarClasses = useSelector((state: ApplicationState) => state.userSettings.raceGraph.filterCarClasses);
+  const rawShowCars = useSelector(
+    (state: ApplicationState) => state.userSettings.raceGraph.showCars,
+  );
+  const filterCarClasses = useSelector(
+    (state: ApplicationState) => state.userSettings.raceGraph.filterCarClasses,
+  );
   const dispatch = useDispatch();
 
-  const stateCarManifest = useSelector((state: ApplicationState) => state.wamp.data.manifests.car);
+  const stateCarManifest = useSelector((state: ApplicationState) => state.raceData.manifests.car);
   const raceOrder = useSelector((state: ApplicationState) => state.raceData.classification);
   const createSelectableCars = (cars: ICarBaseData[]): ICarBaseData[] => {
     return sortedSelectableCars(cars, stateGlobalSettings.filterOrderByPosition, () =>
-      orderedCarNumsByPosition(raceOrder, stateCarManifest)
+      orderedCarNumsByPosition(raceOrder, stateCarManifest),
     );
   };
   const orderedShowCars = (carNums: string[]): string[] => {
@@ -37,7 +41,7 @@ export const RaceGraphContainer: React.FC = () => {
   const showCars = orderedShowCars(rawShowCars);
   console.log(showCars);
   const orderedSelectableCars = createSelectableCars(
-    userSettings.selectableCars.length > 0 ? userSettings.selectableCars : cars
+    userSettings.selectableCars.length > 0 ? userSettings.selectableCars : cars,
   );
 
   const onSelectCarClassChange = (values: string[]) => {
@@ -50,7 +54,9 @@ export const RaceGraphContainer: React.FC = () => {
 
     const sortedSelectabled = createSelectableCars(collectCarsByCarClassFilter(cars, values));
 
-    const reorderedShowCars = sortedSelectabled.map((c) => c.carNum).filter((carNum) => newShowcars.includes(carNum));
+    const reorderedShowCars = sortedSelectabled
+      .map((c) => c.carNum)
+      .filter((carNum) => newShowcars.includes(carNum));
 
     const curSettings = {
       ...userSettings,
@@ -79,7 +85,10 @@ export const RaceGraphContainer: React.FC = () => {
   };
 
   const onCheckboxChange = () => {
-    const curSettings = { ...userSettings, gapRelativeToClassLeader: !userSettings.gapRelativeToClassLeader };
+    const curSettings = {
+      ...userSettings,
+      gapRelativeToClassLeader: !userSettings.gapRelativeToClassLeader,
+    };
     dispatch(raceGraphSettings(curSettings));
   };
 

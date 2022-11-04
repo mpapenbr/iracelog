@@ -7,13 +7,17 @@ import { Comparator } from "semver";
 import { globalWamp } from "../../commons/globals";
 import { processCarData } from "../../processor/processCarData";
 import { ReplayDataHolder } from "../../processor/ReplayDataHolder";
-import { updateEventInfo, updateTrackInfo } from "../../stores/racedata/actions";
+import {
+  processInboundManifests,
+  updateEventInfo,
+  updateTrackInfo,
+} from "../../stores/racedata/actions";
 import { ITrackInfo } from "../../stores/racedata/types";
 import { updateSpeedmapData } from "../../stores/speedmap/actions";
 import { replaySettings, updateAvailableStandingsColumns } from "../../stores/ui/actions";
 // import { initialReplaySettings } from "../../stores/ui/reducer";
 import { defaultStateData as defaultUiStateData } from "../../stores/ui/reducer";
-import { reset, updateManifests } from "../../stores/wamp/actions";
+
 import { doDistribute, resetUi } from "./datahandler";
 
 interface MyProps {
@@ -41,7 +45,7 @@ export const LoaderPage: React.FC<MyProps> = (props: MyProps) => {
         ])) as any;
 
         console.log(eventInfo);
-        dispatch(reset());
+        // dispatch(reset());
         resetUi(dispatch);
         const settings = {
           ...defaultUiStateData.replay,
@@ -70,7 +74,7 @@ export const LoaderPage: React.FC<MyProps> = (props: MyProps) => {
         ])) as any;
 
         doDistribute(dispatch, defaultProcessRaceStateData, data);
-        dispatch(updateManifests(eventInfo.data.manifests));
+        dispatch(processInboundManifests(eventInfo.data.manifests));
         // we need to reset here since standings page is defined as index page and will
         // already be called before this method is finished.
         dispatch(updateAvailableStandingsColumns({ ...defaultUiStateData.standingsColumns }));

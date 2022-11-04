@@ -1,8 +1,10 @@
 import {
+  defaultManifests,
   ICarInfo,
   ICarLaps,
   ICarPitInfo,
   ICarStintInfo,
+  IManifests,
   IMessage,
   IRaceGraph,
 } from "@mpapenbr/iracelog-analysis/dist/stints/types";
@@ -10,11 +12,13 @@ import { combineReducers } from "redux";
 import { reducerWithInitialState } from "typescript-fsa-reducers";
 import * as RaceActions from "./actions";
 import { ICarBaseData, ICarClass, IEventInfo, ITrackInfo } from "./types";
+import { postProcessManifest } from "./util";
 
 /**
  * this interface describes the attributes concerning the race data which are stored in the state
  */
 export interface IRaceData {
+  manifests: IManifests;
   availableCars: ICarBaseData[];
   availableCarClasses: ICarClass[];
   sessionInfo: IMessage;
@@ -29,6 +33,13 @@ export interface IRaceData {
   trackInfo: ITrackInfo;
 }
 
+// manifests
+export const ManifestsReducer = reducerWithInitialState(defaultManifests).case(
+  RaceActions.processInboundManifests,
+  (state, manifests) => {
+    return postProcessManifest(manifests);
+  },
+);
 // available cars
 export const AvailableCarsReducer = reducerWithInitialState([] as ICarBaseData[]).case(
   RaceActions.updateAvailableCars,
@@ -134,6 +145,7 @@ export const TrackInfoReducer = reducerWithInitialState(initialTrackInfo).case(
 );
 
 const combinedReducers = combineReducers<IRaceData>({
+  manifests: ManifestsReducer,
   availableCars: AvailableCarsReducer,
   availableCarClasses: AvailableCarClassesReducer,
   sessionInfo: SessionInfoReducer,

@@ -20,18 +20,20 @@ export const RaceGraphByReferenceContainer: React.FC = () => {
   const cars = useSelector((state: ApplicationState) => state.raceData.availableCars);
   const carClasses = useSelector((state: ApplicationState) => state.raceData.availableCarClasses);
 
-  const userSettings = useSelector((state: ApplicationState) => state.userSettings.raceGraphRelative);
+  const userSettings = useSelector(
+    (state: ApplicationState) => state.userSettings.raceGraphRelative,
+  );
 
   // const showCars = useSelector((state: ApplicationState) => state.userSettings.raceGraphRelative.showCars);
   // const filterCarClasses = useSelector(
   //   (state: ApplicationState) => state.userSettings.raceGraphRelative.filterCarClasses
   // );
   const stateGlobalSettings = useSelector((state: ApplicationState) => state.userSettings.global);
-  const stateCarManifest = useSelector((state: ApplicationState) => state.wamp.data.manifests.car);
+  const stateCarManifest = useSelector((state: ApplicationState) => state.raceData.manifests.car);
   const raceOrder = useSelector((state: ApplicationState) => state.raceData.classification);
   const createSelectableCars = (cars: ICarBaseData[]): ICarBaseData[] => {
     return sortedSelectableCars(cars, stateGlobalSettings.filterOrderByPosition, () =>
-      orderedCarNumsByPosition(raceOrder, stateCarManifest)
+      orderedCarNumsByPosition(raceOrder, stateCarManifest),
     );
   };
   const orderedShowCars = (carNums: string[]): string[] => {
@@ -58,7 +60,7 @@ export const RaceGraphByReferenceContainer: React.FC = () => {
   const { showCars, filterCarClasses, referenceCarNum } = selectSettings();
   const dispatch = useDispatch();
   const selectableCars = createSelectableCars(
-    userSettings.selectableCars.length > 0 ? userSettings.selectableCars : cars
+    userSettings.selectableCars.length > 0 ? userSettings.selectableCars : cars,
   );
   const onSelectCarClassChange = (values: string[]) => {
     const newShowcars = processCarClassSelectionNew({
@@ -70,7 +72,9 @@ export const RaceGraphByReferenceContainer: React.FC = () => {
 
     const sortedSelectabled = createSelectableCars(collectCarsByCarClassFilter(cars, values));
 
-    const reorderedShowCars = sortedSelectabled.map((c) => c.carNum).filter((carNum) => newShowcars.includes(carNum));
+    const reorderedShowCars = sortedSelectabled
+      .map((c) => c.carNum)
+      .filter((carNum) => newShowcars.includes(carNum));
 
     const curSettings = {
       ...userSettings,
@@ -81,7 +85,13 @@ export const RaceGraphByReferenceContainer: React.FC = () => {
     // const curSettings = { ...userSettings, filterCarClasses: values };
     dispatch(raceGraphRelativeSettings(curSettings));
     if (stateGlobalSettings.syncSelection) {
-      dispatch(globalSettings({ ...stateGlobalSettings, showCars: reorderedShowCars, filterCarClasses: values }));
+      dispatch(
+        globalSettings({
+          ...stateGlobalSettings,
+          showCars: reorderedShowCars,
+          filterCarClasses: values,
+        }),
+      );
     }
   };
 

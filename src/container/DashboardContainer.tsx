@@ -35,18 +35,22 @@ export const DashboardContainer: React.FC = () => {
   const carStints = useSelector((state: ApplicationState) => state.raceData.carStints);
   const carPits = useSelector((state: ApplicationState) => state.raceData.carPits);
 
-  const rawShowCars = useSelector((state: ApplicationState) => state.userSettings.dashboard.showCars);
-  const filterCarClasses = useSelector((state: ApplicationState) => state.userSettings.dashboard.filterCarClasses);
+  const rawShowCars = useSelector(
+    (state: ApplicationState) => state.userSettings.dashboard.showCars,
+  );
+  const filterCarClasses = useSelector(
+    (state: ApplicationState) => state.userSettings.dashboard.filterCarClasses,
+  );
 
-  const stateCarManifest = useSelector((state: ApplicationState) => state.wamp.data.manifests.car);
+  const stateCarManifest = useSelector((state: ApplicationState) => state.raceData.manifests.car);
   const raceOrder = useSelector((state: ApplicationState) => state.raceData.classification);
   const createSelectableCars = (cars: ICarBaseData[]): ICarBaseData[] => {
     return sortedSelectableCars(cars, stateGlobalSettings.filterOrderByPosition, () =>
-      orderedCarNumsByPosition(raceOrder, stateCarManifest)
+      orderedCarNumsByPosition(raceOrder, stateCarManifest),
     );
   };
   const selectableCars = createSelectableCars(
-    userSettings.selectableCars.length > 0 ? userSettings.selectableCars : cars
+    userSettings.selectableCars.length > 0 ? userSettings.selectableCars : cars,
   );
 
   const orderedShowCars = (carNums: string[]): string[] => {
@@ -68,7 +72,9 @@ export const DashboardContainer: React.FC = () => {
 
     const sortedSelectabled = createSelectableCars(collectCarsByCarClassFilter(cars, values));
 
-    const reorderedShowCars = sortedSelectabled.map((c) => c.carNum).filter((carNum) => showCars.includes(carNum));
+    const reorderedShowCars = sortedSelectabled
+      .map((c) => c.carNum)
+      .filter((carNum) => showCars.includes(carNum));
     const curSettings = {
       ...userSettings,
       filterCarClasses: values,
@@ -89,7 +95,9 @@ export const DashboardContainer: React.FC = () => {
     selectedCars: showCars,
     selectedCarClasses: filterCarClasses,
     onSelectCarFilter: (selection: string[]) => {
-      const newShowcars = selectableCars.filter((v) => selection.includes(v.carNum)).map((v) => v.carNum);
+      const newShowcars = selectableCars
+        .filter((v) => selection.includes(v.carNum))
+        .map((v) => v.carNum);
       const curSettings = { ...userSettings, showCars: newShowcars };
       dispatch(dashboardSettings(curSettings));
       if (stateGlobalSettings.syncSelection) {
@@ -136,7 +144,11 @@ export const DashboardContainer: React.FC = () => {
 
     const driverColor = (si: IStintInfo): string =>
       colorLookup.get(findDriverByStint(currentCarInfo, si)?.driverName ?? "n.a.") ?? "black";
-    return getCombinedStintData(getCarStints(carStints, carNum), getCarPitStops(carPits, carNum), driverColor);
+    return getCombinedStintData(
+      getCarStints(carStints, carNum),
+      getCarPitStops(carPits, carNum),
+      driverColor,
+    );
   });
   const combinedDataMinMax = combinedData
     .flatMap((a) => [...a])
@@ -144,7 +156,7 @@ export const DashboardContainer: React.FC = () => {
       (a, b) => {
         return { minTime: Math.min(a.minTime, b.minTime), maxTime: Math.max(a.maxTime, b.maxTime) };
       },
-      { minTime: Number.MAX_SAFE_INTEGER, maxTime: 0 }
+      { minTime: Number.MAX_SAFE_INTEGER, maxTime: 0 },
     );
 
   return (

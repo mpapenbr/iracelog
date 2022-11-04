@@ -7,9 +7,12 @@ import {
   IRaceGraph,
 } from "@mpapenbr/iracelog-analysis/dist/stints/types";
 import actionCreatorFactory from "typescript-fsa";
-import { ICarBaseData, ICarClass, IEventInfo, ITrackInfo } from "./types";
+import { ICarBaseData, ICarClass, IEventInfo, InboundManifests, ITrackInfo } from "./types";
 
 const actionCreator = actionCreatorFactory("RACE_DATA");
+
+// available manifests
+export const processInboundManifests = actionCreator<InboundManifests>("PROCESS_INBOUND_MANIFESTS");
 
 // available cars
 export const updateAvailableCars = actionCreator<ICarBaseData[]>("UPDATE_AVAILABLE_CARS");

@@ -63,15 +63,18 @@ export const EventHeaderContainer: React.FC = () => {
   const stateGlobalSettings = useSelector((state: ApplicationState) => state.userSettings.global);
 
   const showCars = useSelector((state: ApplicationState) => state.userSettings.dashboard.showCars);
-  const filterCarClasses = useSelector((state: ApplicationState) => state.userSettings.dashboard.filterCarClasses);
+  const filterCarClasses = useSelector(
+    (state: ApplicationState) => state.userSettings.dashboard.filterCarClasses,
+  );
 
-  const selectableCars = userSettings.selectableCars.length > 0 ? userSettings.selectableCars : cars;
+  const selectableCars =
+    userSettings.selectableCars.length > 0 ? userSettings.selectableCars : cars;
   // console.log(selectableCars);
   const dispatch = useDispatch();
 
   const eventInfo = useSelector((state: ApplicationState) => state.raceData.eventInfo);
   const sInfo = useSelector((state: ApplicationState) => state.raceData.sessionInfo);
-  const manifestData = useSelector((state: ApplicationState) => state.wamp.data.manifests.session);
+  const manifestData = useSelector((state: ApplicationState) => state.raceData.manifests.session);
 
   if (!sInfo.data?.length) {
     return <></>;
@@ -80,6 +83,7 @@ export const EventHeaderContainer: React.FC = () => {
     return getValueViaSpec(sInfo.data, manifestData, key);
   };
   const numOut = (key: string) => {
+    console.log("key:" + key + " value: " + getValue(key));
     return sprintf("%.1f", getValue(key));
   };
   let flagBackground = "";
@@ -115,7 +119,9 @@ export const EventHeaderContainer: React.FC = () => {
       </Col> */}
 
       <Col flex={5}>
-        <p style={{ textAlign: "center", marginTop: "1em", marginBottom: "1em", lineHeight: "1em" }}>
+        <p
+          style={{ textAlign: "center", marginTop: "1em", marginBottom: "1em", lineHeight: "1em" }}
+        >
           {eventInfo.name}
           <br />
           {eventInfo.trackDisplayName}
@@ -136,7 +142,9 @@ export const EventHeaderContainer: React.FC = () => {
           </tr>
           <tr>
             <td>Remaining</td>
-            <td align="right">{<RemainingRace time={getValue("timeRemain")} laps={getValue("lapsRemain")} />}</td>
+            <td align="right">
+              {<RemainingRace time={getValue("timeRemain")} laps={getValue("lapsRemain")} />}
+            </td>
           </tr>
         </table>
       </Col>

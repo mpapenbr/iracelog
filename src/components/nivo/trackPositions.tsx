@@ -13,7 +13,7 @@ type TrackPosData = {
 };
 export const TrackPositions: React.FC<{}> = () => {
   const carsRaw = useSelector((state: ApplicationState) => state.raceData.classification.data);
-  const stateCarManifest = useSelector((state: ApplicationState) => state.wamp.data.manifests.car);
+  const stateCarManifest = useSelector((state: ApplicationState) => state.raceData.manifests.car);
   const carInfos = useSelector((state: ApplicationState) => state.raceData.availableCars);
   const allCarNums = carInfos.map((c) => c.carNum);
   const data: TrackPosData[] = carsRaw.map((c: any, idx: number) => ({
@@ -33,7 +33,7 @@ export const TrackPositions: React.FC<{}> = () => {
           const color = strokeColors[allCarNums.indexOf(item.carNum) % strokeColors.length];
           const w = item.pos == 0 ? 4 : 2;
           return (
-            <g x={pos} y={10}>
+            <g x={pos} y={10} key={item.pos}>
               <rect x={pos} y={0} width={w} height={40} style={{ fill: color }} />
               {/* <circle cx={pos} cy={115} r={15} style={{ stroke: color, fillOpacity: 0 }} /> */}
               <text x={pos} y={40 + 15} textAnchor="middle">

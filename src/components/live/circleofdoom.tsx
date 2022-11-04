@@ -25,7 +25,7 @@ export const CircleOfDoom: React.FC<MyProps> = (props: MyProps) => {
   const carLaps = useSelector((state: ApplicationState) => state.raceData.carLaps);
   const carPits = useSelector((state: ApplicationState) => state.raceData.carPits);
   const trackInfo = useSelector((state: ApplicationState) => state.raceData.trackInfo);
-  const stateCarManifest = useSelector((state: ApplicationState) => state.wamp.data.manifests.car);
+  const stateCarManifest = useSelector((state: ApplicationState) => state.raceData.manifests.car);
   const carInfos = useSelector((state: ApplicationState) => state.raceData.availableCars);
   const eventInfo = useSelector((state: ApplicationState) => state.raceData.eventInfo);
   const userSettingsx = useSelector((state: ApplicationState) => state.userSettings.circleOfDoom);
@@ -74,7 +74,10 @@ export const CircleOfDoom: React.FC<MyProps> = (props: MyProps) => {
       console.log("car is in pits for " + pitInfo.current.laneTime);
       inPits = pitInfo.current.laneTime;
     }
-    const newPos = ((1 + data.trackPos - (avgSpeed * (props.pitstopTime - inPits)) / eventInfo.trackLength) % 1) * 360;
+    const newPos =
+      ((1 + data.trackPos - (avgSpeed * (props.pitstopTime - inPits)) / eventInfo.trackLength) %
+        1) *
+      360;
     console.log(newPos);
     const color = getColor(data.carNum);
     return (
@@ -104,7 +107,10 @@ export const CircleOfDoom: React.FC<MyProps> = (props: MyProps) => {
           const h = sectorMarkerLen;
           const y = circleExtendSize - h / 2;
           return (
-            <g key={`sector-${item.SectorNum}`} transform={`rotate(${pos} ${circleSize} ${circleSize})`}>
+            <g
+              key={`sector-${item.SectorNum}`}
+              transform={`rotate(${pos} ${circleSize} ${circleSize})`}
+            >
               <rect x={circleSize} y={y} width={w} height={h} style={{ fill: color }} />
             </g>
           );
@@ -130,9 +136,15 @@ export const CircleOfDoom: React.FC<MyProps> = (props: MyProps) => {
       // console.log(`innerCircle: ${innerCircle} len: ${pitLen} winkel: ${arc} x:${x} y: ${y}`);
       return (
         <g>
-          <g transform={`rotate(${90 + Math.trunc(trackInfo.pit.exit * 360)} ${circleSize} ${circleSize} )`}>
+          <g
+            transform={`rotate(${
+              90 + Math.trunc(trackInfo.pit.exit * 360)
+            } ${circleSize} ${circleSize} )`}
+          >
             <path
-              d={`M ${circleSize - innerCircle + 1} ${circleSize}  a ${innerCircle} ${innerCircle} 0 0 0 ${xp} ${yp}  `}
+              d={`M ${
+                circleSize - innerCircle + 1
+              } ${circleSize}  a ${innerCircle} ${innerCircle} 0 0 0 ${xp} ${yp}  `}
               stroke="grey"
               fill="none"
               strokeWidth="2"
@@ -178,7 +190,10 @@ export const CircleOfDoom: React.FC<MyProps> = (props: MyProps) => {
             }
             const y = circleExtendSize - h;
             return (
-              <g key={`car-${item.carNum}`} transform={`rotate(${pos} ${circleSize} ${circleSize})`}>
+              <g
+                key={`car-${item.carNum}`}
+                transform={`rotate(${pos} ${circleSize} ${circleSize})`}
+              >
                 <rect x={circleSize} y={y} width={w} height={h} style={{ fill: color }} />
                 <text
                   x={circleSize + w / 2}
@@ -205,7 +220,10 @@ export const CircleOfDoom: React.FC<MyProps> = (props: MyProps) => {
             }
             const y = circleExtendSize;
             return (
-              <g key={`car-${item.carNum}`} transform={`rotate(${pos} ${circleSize} ${circleSize})`}>
+              <g
+                key={`car-${item.carNum}`}
+                transform={`rotate(${pos} ${circleSize} ${circleSize})`}
+              >
                 <rect x={circleSize} y={y} width={w} height={h} style={{ fill: color }} />
                 <text
                   x={circleSize}
