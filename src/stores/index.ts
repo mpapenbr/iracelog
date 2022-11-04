@@ -6,13 +6,12 @@ import { IRaceData, raceDataReducers } from "./racedata/reducer";
 
 import { speedmapReducers } from "./speedmap/reducer";
 import { ISpeedmap } from "./speedmap/types";
-import { uiReducer, userSettingsReducer } from "./ui/reducer";
-import { IUiState, IUserSettings } from "./ui/types";
+import { userSettingsReducer } from "./ui/reducer";
+import { IUserSettings } from "./ui/types";
 import { wampReducer } from "./wamp/reducer";
 import { IWampState } from "./wamp/types";
 
 export interface ApplicationState {
-  ui: IUiState;
   wamp: IWampState;
   userSettings: IUserSettings;
   raceData: IRaceData;
@@ -25,7 +24,6 @@ export interface ApplicationState {
 
 export const createRootReducer = () =>
   combineReducers({
-    ui: uiReducer, // will be removed
     wamp: wampReducer, // will be removed
     baseData: baseDataReducers,
     raceData: raceDataReducers, // this is new place for everything concerning the race data of a single event
