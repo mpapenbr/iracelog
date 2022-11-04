@@ -5,14 +5,18 @@ import { applyMiddleware, createStore, Store } from "redux";
 // directive so we can pass our middleware along with it
 import { composeWithDevTools } from "redux-devtools-extension";
 import createSagaMiddleware from "redux-saga";
-import { ApplicationState, createRootReducer, rootSaga } from "./stores";
+import { ApplicationState, createRootReducer } from "./stores";
 
 export default function configureStore(initialState: ApplicationState): Store<ApplicationState> {
   // create the composing function for our middlewares
   const composeEnhancers = composeWithDevTools({});
   // create the redux-saga middleware
   const sagaMiddleware = createSagaMiddleware();
-  const store = createStore(createRootReducer(), initialState, composeEnhancers(applyMiddleware(sagaMiddleware)));
-  sagaMiddleware.run(rootSaga);
+  const store = createStore(
+    createRootReducer(),
+    initialState,
+    composeEnhancers(applyMiddleware(sagaMiddleware)),
+  );
+
   return store;
 }
