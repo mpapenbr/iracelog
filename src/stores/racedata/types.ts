@@ -54,3 +54,10 @@ export interface ISpeedmapMessage {
   timestamp: number;
   payload: any;
 }
+
+// this format is used when manifests are read from the server
+export interface InboundManifests {
+  car: string[];
+  session: string[];
+  message: string[];
+}

@@ -24,7 +24,7 @@ interface MyProps {
 export const ZoomTrackPos: React.FC<MyProps> = (props: MyProps) => {
   const carsRaw = useSelector((state: ApplicationState) => state.raceData.classification.data);
   const trackInfo = useSelector((state: ApplicationState) => state.raceData.trackInfo);
-  const stateCarManifest = useSelector((state: ApplicationState) => state.wamp.data.manifests.car);
+  const stateCarManifest = useSelector((state: ApplicationState) => state.raceData.manifests.car);
   const carInfos = useSelector((state: ApplicationState) => state.raceData.availableCars);
   const eventInfo = useSelector((state: ApplicationState) => state.raceData.eventInfo);
 
@@ -89,10 +89,18 @@ export const ZoomTrackPos: React.FC<MyProps> = (props: MyProps) => {
       {/* complete box for graph-debugging */}
       {/* <rect width={boxWidth + margin} height={boxHeight + margin} style={{ stroke: "black", fillOpacity: 0 }} /> */}
       <g transform={`translate( ${(boxWidth + margin) / 2} 0 )`}>
-        <rect width={boxWidth / 2} height={boxHeight + margin} style={{ fill: "red", fillOpacity: 0.05 }} />
+        <rect
+          width={boxWidth / 2}
+          height={boxHeight + margin}
+          style={{ fill: "red", fillOpacity: 0.05 }}
+        />
       </g>
       <g transform={`translate( ${margin / 2} 0 )`}>
-        <rect width={boxWidth / 2} height={boxHeight + margin} style={{ fill: "green", fillOpacity: 0.05 }} />
+        <rect
+          width={boxWidth / 2}
+          height={boxHeight + margin}
+          style={{ fill: "green", fillOpacity: 0.05 }}
+        />
       </g>
 
       <g transform={`translate( ${margin / 2} ${margin / 2} )`}>
@@ -103,7 +111,11 @@ export const ZoomTrackPos: React.FC<MyProps> = (props: MyProps) => {
           <line x1="0" y1="0" x2={boxWidth} y2={0} style={{ stroke: "grey", fillOpacity: 0 }} />
         </g>
         {/* the reference car */}
-        <g transform={`translate( ${(boxWidth - emphasizeWidth) / 2} ${baseLine - emphasizeHeight} )`}>
+        <g
+          transform={`translate( ${(boxWidth - emphasizeWidth) / 2} ${
+            baseLine - emphasizeHeight
+          } )`}
+        >
           <rect
             width={emphasizeWidth}
             height={emphasizeHeight}
@@ -127,9 +139,15 @@ export const ZoomTrackPos: React.FC<MyProps> = (props: MyProps) => {
             return (
               <g
                 key={`car-${c.carNum}`}
-                transform={`translate( ${(boxWidth - standardWidth) / 2 + offset} ${baseLine - standardHeight} )`}
+                transform={`translate( ${(boxWidth - standardWidth) / 2 + offset} ${
+                  baseLine - standardHeight
+                } )`}
               >
-                <rect width={standardWidth} height={standardHeight} style={{ fill: carColors.get(c.carNum) }} />
+                <rect
+                  width={standardWidth}
+                  height={standardHeight}
+                  style={{ fill: carColors.get(c.carNum) }}
+                />
                 <text y={-3} textAnchor="middle">
                   {c.carNum}
                 </text>
@@ -185,7 +203,8 @@ export const ZoomTrackPos: React.FC<MyProps> = (props: MyProps) => {
             <g
               key={`pit`}
               transform={`translate( ${
-                (boxWidth - standardWidth) / 2 + pixelOffsetToReference(props.trackPos, trackInfo.pit.entry)
+                (boxWidth - standardWidth) / 2 +
+                pixelOffsetToReference(props.trackPos, trackInfo.pit.entry)
               } ${baseLine})`}
             >
               <rect width={calcPit(trackInfo.pit)} height={3} style={{ fill: "grey" }} />

@@ -67,7 +67,12 @@ const SelectPitStopParam: React.FC<SelectPitstopProps> = (props: SelectPitstopPr
         />
 
         <Form.Item label="Pitstop time">
-          <Slider min={0} max={120} defaultValue={props.pitstopTime} onAfterChange={props.onPitStopTimeChanged} />
+          <Slider
+            min={0}
+            max={120}
+            defaultValue={props.pitstopTime}
+            onAfterChange={props.onPitStopTimeChanged}
+          />
         </Form.Item>
       </Form>
     </>
@@ -96,7 +101,10 @@ const newPosAfterPitstop = (procData: IProcData): number => {
     inPits = procData.pitInfo.current.laneTime;
   }
   const newPos =
-    (1 + procData.trackPos - (avgSpeed * (procData.pitstopTime - inPits)) / procData.eventInfo.trackLength) % 1;
+    (1 +
+      procData.trackPos -
+      (avgSpeed * (procData.pitstopTime - inPits)) / procData.eventInfo.trackLength) %
+    1;
   return newPos;
 };
 
@@ -116,21 +124,24 @@ export const ReplayCircleOfDoomContainer: React.FC = () => {
 
   const selectSettings = () => {
     if (stateGlobalSettings.syncSelection) {
-      return { showCars: stateGlobalSettings.showCars, filterCarClasses: stateGlobalSettings.filterCarClasses };
+      return {
+        showCars: stateGlobalSettings.showCars,
+        filterCarClasses: stateGlobalSettings.filterCarClasses,
+      };
     } else {
       return { showCars: userSettings.showCars, filterCarClasses: userSettings.filterCarClasses };
     }
   };
 
-  const stateCarManifest = useSelector((state: ApplicationState) => state.wamp.data.manifests.car);
+  const stateCarManifest = useSelector((state: ApplicationState) => state.raceData.manifests.car);
   const raceOrder = useSelector((state: ApplicationState) => state.raceData.classification);
   const createSelectableCars = (cars: ICarBaseData[]): ICarBaseData[] => {
     return sortedSelectableCars(cars, stateGlobalSettings.filterOrderByPosition, () =>
-      orderedCarNumsByPosition(raceOrder, stateCarManifest)
+      orderedCarNumsByPosition(raceOrder, stateCarManifest),
     );
   };
   const selectableCars = createSelectableCars(
-    userSettings.selectableCars.length > 0 ? userSettings.selectableCars : cars
+    userSettings.selectableCars.length > 0 ? userSettings.selectableCars : cars,
   );
   const { showCars, filterCarClasses } = selectSettings();
 
@@ -146,7 +157,9 @@ export const ReplayCircleOfDoomContainer: React.FC = () => {
 
     const sortedSelectabled = createSelectableCars(collectCarsByCarClassFilter(cars, values));
 
-    const reorderedShowCars = sortedSelectabled.map((c) => c.carNum).filter((carNum) => newShowcars.includes(carNum));
+    const reorderedShowCars = sortedSelectabled
+      .map((c) => c.carNum)
+      .filter((carNum) => newShowcars.includes(carNum));
 
     const curSettings = {
       ...userSettings,
@@ -157,7 +170,13 @@ export const ReplayCircleOfDoomContainer: React.FC = () => {
     // const curSettings = { ...userSettings, filterCarClasses: values };
     dispatch(circleOfDoomSettings(curSettings));
     if (stateGlobalSettings.syncSelection) {
-      dispatch(globalSettings({ ...stateGlobalSettings, showCars: reorderedShowCars, filterCarClasses: values }));
+      dispatch(
+        globalSettings({
+          ...stateGlobalSettings,
+          showCars: reorderedShowCars,
+          filterCarClasses: values,
+        }),
+      );
     }
   };
 
@@ -198,7 +217,8 @@ export const ReplayCircleOfDoomContainer: React.FC = () => {
     // lap: getValueViaSpec(c, stateCarManifest, "lap"),
   }));
   // console.log(`${dataRaw}`);
-  const trackPos = dataRaw.find((c: any) => c.carNum === userSettings.referenceCarNum)?.trackPos ?? -1;
+  const trackPos =
+    dataRaw.find((c: any) => c.carNum === userSettings.referenceCarNum)?.trackPos ?? -1;
   // .filter((c: any) => c.carNum == userSettings.referenceCarNum);
   const posAfterPit = newPosAfterPitstop({
     carLaps: carLaps.find((c) => c.carNum === userSettings.referenceCarNum)!,
@@ -249,7 +269,11 @@ export const ReplayCircleOfDoomContainer: React.FC = () => {
           {userSettings.referenceCarNum ? (
             <Row>
               <Col span="24">
-                <ZoomTrackPos showCars={showCars} referenceCarNum={userSettings.referenceCarNum} trackPos={trackPos} />
+                <ZoomTrackPos
+                  showCars={showCars}
+                  referenceCarNum={userSettings.referenceCarNum}
+                  trackPos={trackPos}
+                />
               </Col>
             </Row>
           ) : (
