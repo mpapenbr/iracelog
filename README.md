@@ -19,6 +19,9 @@ The default configuration would look like
     "crossbar": {
         "url": "wss://crossbar.iracing-tools.de/ws",
         "realm": "racelog"
+    },
+    "graphql": {
+        "url": "https://graphql.iracing-tools.de/query"
     }
 }
 ```
@@ -32,6 +35,9 @@ Create a file `other-backend.json` and adjust the values according to your backe
     "crossbar": {
         "url": "<THE_CROSSBAR_WEBSOCKET_ENDPOINT>",
         "realm": "<THE_RACELOG_CROSSBAR_REALM>"
+    },
+    "graphql": {
+        "url": "<THE_GRAPHQL_QUERY_ENDPOINT>"
     }
 }
 ```
