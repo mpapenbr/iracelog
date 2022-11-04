@@ -1,7 +1,7 @@
 import { Col, Empty, Row, Select } from "antd";
 import _ from "lodash";
-import React, { useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import React from "react";
+import { useSelector } from "react-redux";
 import {
   Brush,
   CartesianGrid,
@@ -15,8 +15,6 @@ import {
 } from "recharts";
 import { globalWamp } from "../../commons/globals";
 import { ApplicationState } from "../../stores";
-import { driverLapsSettings, uiUpdateBrushSettings } from "../../stores/ui/actions";
-import { IBrushInterval, UiComponent } from "../../stores/ui/types";
 import { lapTimeString } from "../../utils/output";
 import { strokeColors } from "../live/colors";
 
@@ -33,22 +31,7 @@ const DriverLapsRecharts: React.FC = () => {
   const cars = useSelector((state: ApplicationState) => state.raceData.availableCars);
   const carLaps = useSelector((state: ApplicationState) => state.raceData.carLaps);
 
-  const uiSettingsAll = useSelector((state: ApplicationState) => state.ui.data.driverLapsSettings);
   const uiSettings = useSelector((state: ApplicationState) => state.userSettings.driverLaps);
-  const dispatch = useDispatch();
-
-  // this little trick handles the fetching of brushInterval from state, let it be changed here and on leaving this Element store the values in the redux state.
-  // let curSettings = uiSettings;
-  // console.log(curSettings.showCars);
-  // console.log(curSettings.brushInterval);
-  let brushKeeper: IBrushInterval = { ...uiSettingsAll.brushRange };
-  useEffect(() => {
-    return () => {
-      // console.log({ ...brushKeeper });
-      // console.log(uiSettings.showCars);
-      dispatch(uiUpdateBrushSettings(UiComponent.DRIVER_LAPS, { ...brushKeeper }));
-    };
-  }, []);
 
   const allCarNums = cars.map((c) => c.carNum);
   const dataForCar = (carNum: string): IGraphData[] => {
@@ -62,7 +45,11 @@ const DriverLapsRecharts: React.FC = () => {
         }
       };
 
-      return found.laps.map((v) => ({ carNum: carNum, lapNo: v.lapNo, lapTime: getValue(v.lapTime) }));
+      return found.laps.map((v) => ({
+        carNum: carNum,
+        lapNo: v.lapNo,
+        lapTime: getValue(v.lapTime),
+      }));
     } else return [];
   };
 
@@ -102,28 +89,13 @@ const DriverLapsRecharts: React.FC = () => {
         (cur, prev) => {
           return { ...prev, ...cur };
         },
-        { lapNo: lapNo }
-      )
+        { lapNo: lapNo },
+      ),
     );
   });
 
   const colorCode = (carNum: string): string => {
     return strokeColors[allCarNums.indexOf(carNum) % strokeColors.length];
-  };
-
-  const onSelectReferenceByTags = (value: any) => {
-    const curSettings = { ...uiSettings, showCars: value as string[] };
-    dispatch(driverLapsSettings(curSettings));
-  };
-
-  const onSelectCarClassChange = (value: any) => {
-    const curSettings = { ...uiSettings, filterCarClasses: value as string[] };
-    dispatch(driverLapsSettings(curSettings));
-  };
-
-  const onFilterSecsChange = (value: any) => {
-    const curSettings = { ...uiSettings, filterSecs: value };
-    dispatch(driverLapsSettings(curSettings));
   };
 
   const cur = graphDataOrig
@@ -145,7 +117,12 @@ const DriverLapsRecharts: React.FC = () => {
         return (
           <div
             className="custom-tooltip"
-            style={{ margin: 0, padding: 10, backgroundColor: "white", border: "1px solid rgb(204,204,204)" }}
+            style={{
+              margin: 0,
+              padding: 10,
+              backgroundColor: "white",
+              border: "1px solid rgb(204,204,204)",
+            }}
           >
             <p className="custom-tooltip">Lap {lapNo}</p>
             <table cellPadding={1}>
@@ -164,13 +141,6 @@ const DriverLapsRecharts: React.FC = () => {
         );
       } else return <p>No data for lap {lapNo}</p>;
     } else return <></>;
-  };
-
-  const brushChanged = (range: any) => {
-    // Note: range is a BrushStartEndIndex but it is not exported. IBrushInterval has the same props
-    brushKeeper = range;
-    // dispatch(uiUpdateBrushSettings(UiComponent.DRIVER_LAPS, { ...brushKeeper }));
-    // curSettings.brushInterval = range;
   };
 
   const InternalRaceGraph = (
@@ -194,19 +164,17 @@ const DriverLapsRecharts: React.FC = () => {
             <CartesianGrid strokeDasharray="3 3" />
             <XAxis dataKey="lapNo" />
 
-            <YAxis type="number" domain={yDomain} tickFormatter={(d) => lapTimeString(d)} allowDataOverflow={true} />
+            <YAxis
+              type="number"
+              domain={yDomain}
+              tickFormatter={(d) => lapTimeString(d)}
+              allowDataOverflow={true}
+            />
 
             {globalWamp.currentLiveId ? (
               <></>
             ) : (
-              <Brush
-                dataKey="lapNo"
-                height={30}
-                stroke="#8884d8"
-                onChange={brushChanged}
-                startIndex={brushKeeper?.startIndex}
-                endIndex={brushKeeper?.endIndex}
-              />
+              <Brush dataKey="lapNo" height={30} stroke="#8884d8" />
             )}
             <Tooltip isAnimationActive={false} content={CustomTooltip} />
             <Legend layout="vertical" align="right" verticalAlign="top" />
@@ -216,7 +184,9 @@ const DriverLapsRecharts: React.FC = () => {
     </Row>
   );
 
-  return <>{uiSettings.showCars.length === 0 ? <Empty description="Select car" /> : InternalRaceGraph}</>;
+  return (
+    <>{uiSettings.showCars.length === 0 ? <Empty description="Select car" /> : InternalRaceGraph}</>
+  );
 };
 
 export default DriverLapsRecharts;

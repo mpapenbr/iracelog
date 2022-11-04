@@ -1,7 +1,6 @@
-import { combineReducers, Reducer } from "redux";
+import { combineReducers } from "redux";
 import { reducerWithInitialState } from "typescript-fsa-reducers";
 import * as UiActions from "./actions";
-import { UiActionTypes } from "./actions";
 import {
   defaultUiData,
   ICircleOfDoomSettings,
@@ -21,41 +20,10 @@ import {
   IStrategySettings,
   IUiState,
   IUserSettings,
-  UiComponent,
 } from "./types";
 
 const initialState: IUiState = {
   data: defaultUiData,
-};
-
-const reducer: Reducer<IUiState> = (state = initialState, action) => {
-  switch (action.type) {
-    case UiActionTypes.UPDATE_BRUSH_SETTINGS: {
-      switch (action.payload.component) {
-        case UiComponent.DRIVER_LAPS: {
-          const newBrushRange = { ...state.data.driverLapsSettings, brushRange: action.payload.data };
-          return { ...state, data: { ...state.data, driverLapsSettings: newBrushRange } };
-        }
-        case UiComponent.RACE_GRAPH_LEADER: {
-          const newBrushRange = { ...state.data.raceGraphSettings, brushRange: action.payload.data };
-          return { ...state, data: { ...state.data, raceGraphSettings: newBrushRange } };
-        }
-        case UiComponent.RACE_GRAPH_CAR: {
-          const newBrushRange = { ...state.data.raceGraphRelativeSettings, brushRange: action.payload.data };
-          return { ...state, data: { ...state.data, raceGraphRelativeSettings: newBrushRange } };
-        }
-      }
-      return state;
-    }
-
-    case UiActionTypes.SET_STINT_NO:
-      return { ...state, data: { ...state.data, stint: { ...state.data.stint, stintNo: action.payload } } };
-    case UiActionTypes.SHOW_ENTRY_DETAILS:
-      return { ...state, data: { ...state.data, entries: { ...state.data.entries, entryDetails: action.payload } } };
-
-    default:
-      return state;
-  }
 };
 
 const initialClassificationSettings: IClassificationSettings = { pageSize: 20, showCols: [] };
@@ -63,14 +31,14 @@ const ClassificationSettingsReducer = reducerWithInitialState(initialClassificat
   UiActions.classificationSettings,
   (state, settings) => ({
     ...settings,
-  })
+  }),
 );
 const initialMessagesSettings: IMessagesSettings = { pageSize: 20 };
 const MessagesSettingsReducer = reducerWithInitialState(initialMessagesSettings).case(
   UiActions.messagesSettings,
   (state, settings) => ({
     ...settings,
-  })
+  }),
 );
 // RaceGraphSettings
 const initialRaceGraphSettings: IRaceGraphSettings = {
@@ -83,7 +51,7 @@ const initialRaceGraphSettings: IRaceGraphSettings = {
 };
 const RaceGraphSettingsReducer = reducerWithInitialState(initialRaceGraphSettings).case(
   UiActions.raceGraphSettings,
-  (state, settings) => settings
+  (state, settings) => settings,
 );
 
 // RaceGraphRelativeSettings
@@ -95,10 +63,9 @@ const initialRaceGraphRelativeSettings: IRaceGraphRelativeSettings = {
   limitLastLaps: 30,
   referenceCarNum: undefined,
 };
-const RaceGraphRelativeSettingsReducer = reducerWithInitialState(initialRaceGraphRelativeSettings).case(
-  UiActions.raceGraphRelativeSettings,
-  (state, settings) => settings
-);
+const RaceGraphRelativeSettingsReducer = reducerWithInitialState(
+  initialRaceGraphRelativeSettings,
+).case(UiActions.raceGraphRelativeSettings, (state, settings) => settings);
 
 // RacePositions
 const initialRacePositions: IRacePositionsSettings = {
@@ -109,7 +76,7 @@ const initialRacePositions: IRacePositionsSettings = {
 };
 const RacePositionsSettingsReducer = reducerWithInitialState(initialRacePositions).case(
   UiActions.racePositionsSettings,
-  (state, settings) => settings
+  (state, settings) => settings,
 );
 
 // DriverLaps
@@ -122,7 +89,7 @@ const initialDriverLaps: IDriverLapsSettings = {
 };
 const DriverLapsSettingsReducer = reducerWithInitialState(initialDriverLaps).case(
   UiActions.driverLapsSettings,
-  (state, settings) => settings
+  (state, settings) => settings,
 );
 
 // Pitstops
@@ -136,7 +103,7 @@ const initialPitstops: IPitstopsSettings = {
 };
 const PitstopsSettingsReducer = reducerWithInitialState(initialPitstops).case(
   UiActions.pitstopsSettings,
-  (state, settings) => settings
+  (state, settings) => settings,
 );
 
 // Stints
@@ -149,7 +116,7 @@ const initialStints: IStintsSettings = {
 };
 const StintsSettingsReducer = reducerWithInitialState(initialStints).case(
   UiActions.stintsSettings,
-  (state, settings) => settings
+  (state, settings) => settings,
 );
 
 // Stint summary (single selection)
@@ -161,7 +128,7 @@ const initialStintSummary: IStintSummarySettings = {
 };
 const StintSummarySettingsReducer = reducerWithInitialState(initialStintSummary).case(
   UiActions.stintSummarySettings,
-  (state, settings) => settings
+  (state, settings) => settings,
 );
 
 // Dashboard
@@ -174,7 +141,7 @@ const initialDashboard: IDashboardSettings = {
 };
 const DashboardSettingsReducer = reducerWithInitialState(initialDashboard).case(
   UiActions.dashboardSettings,
-  (state, settings) => settings
+  (state, settings) => settings,
 );
 
 // Strategy overview
@@ -185,7 +152,7 @@ const initialStrategy: IStrategySettings = {
 };
 const StrategySettingsReducer = reducerWithInitialState(initialStrategy).case(
   UiActions.strategySettings,
-  (state, settings) => settings
+  (state, settings) => settings,
 );
 
 // DriverStints
@@ -199,7 +166,7 @@ const initialDriverStints: IDriverStintsSettings = {
 };
 const DriverStintsSettingsReducer = reducerWithInitialState(initialDriverStints).case(
   UiActions.driverStintsSettings,
-  (state, settings) => settings
+  (state, settings) => settings,
 );
 
 // CircleOfDoomSettings
@@ -213,7 +180,7 @@ const initialCircleOfDoom: ICircleOfDoomSettings = {
 };
 const CircleOfDoomSettingsReducer = reducerWithInitialState(initialCircleOfDoom).case(
   UiActions.circleOfDoomSettings,
-  (state, settings) => settings
+  (state, settings) => settings,
 );
 
 // ReplaySettings
@@ -232,7 +199,7 @@ export const initialReplaySettings: IReplaySettings = {
 };
 const ReplaySettingsReducer = reducerWithInitialState(initialReplaySettings).case(
   UiActions.replaySettings,
-  (state, settings) => settings
+  (state, settings) => settings,
 );
 
 export const initialGlobalSettings: IGlobalSettings = {
@@ -243,10 +210,13 @@ export const initialGlobalSettings: IGlobalSettings = {
 };
 const GlobalSettingsReducer = reducerWithInitialState(initialGlobalSettings).case(
   UiActions.globalSettings,
-  (state, settings) => settings
+  (state, settings) => settings,
 );
 
-const DemoReducer = reducerWithInitialState(0).case(UiActions.demoSettings, (state, value) => value);
+const DemoReducer = reducerWithInitialState(0).case(
+  UiActions.demoSettings,
+  (state, value) => value,
+);
 
 export const defaultStateData: IUserSettings = {
   classification: initialClassificationSettings,
@@ -285,4 +255,4 @@ const combinedReducers = combineReducers<IUserSettings>({
   counter: DemoReducer,
 });
 
-export { reducer as uiReducer, initialState as uiInitialState, combinedReducers as userSettingsReducer };
+export { initialState as uiInitialState, combinedReducers as userSettingsReducer };

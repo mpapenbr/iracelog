@@ -1,7 +1,7 @@
 import { Col, Empty, Row, Select } from "antd";
 import _, { isNumber } from "lodash";
-import React, { useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import React from "react";
+import { useSelector } from "react-redux";
 import {
   Brush,
   CartesianGrid,
@@ -17,8 +17,7 @@ import {
 import { sprintf } from "sprintf-js";
 import { globalWamp } from "../../commons/globals";
 import { ApplicationState } from "../../stores";
-import { uiUpdateBrushSettings } from "../../stores/ui/actions";
-import { IBrushInterval, UiComponent } from "../../stores/ui/types";
+
 import { strokeColors } from "../live/colors";
 
 interface IGraphData {
@@ -37,19 +36,8 @@ const RaceGraphByReferenceRecharts: React.FC<MyProps> = (props) => {
   // const wamp = useSelector((state: ApplicationState) => state.wamp.data);
   const cars = useSelector((state: ApplicationState) => state.raceData.availableCars);
   const raceGraph = useSelector((state: ApplicationState) => state.raceData.raceGraph);
-  const uiSettingsAll = useSelector((state: ApplicationState) => state.ui.data.raceGraphRelativeSettings);
+
   const uiSettings = useSelector((state: ApplicationState) => state.userSettings.raceGraphRelative);
-  const dispatch = useDispatch();
-
-  // this little trick handles the fetching of brushInterval from state, let it be changed here and on leaving this Element store the values in the redux state.
-  let brushKeeper: IBrushInterval = { ...uiSettingsAll.brushRange };
-
-  useEffect(() => {
-    brushKeeper = { ...uiSettingsAll.brushRange };
-    return () => {
-      dispatch(uiUpdateBrushSettings(UiComponent.RACE_GRAPH_CAR, { ...brushKeeper }));
-    };
-  }, []);
 
   const { showCars, referenceCarNum } = props;
 
@@ -68,7 +56,9 @@ const RaceGraphByReferenceRecharts: React.FC<MyProps> = (props) => {
     }, [] as IGraphData[]);
   };
 
-  const graphDataOrig = showCars.filter((v) => v !== referenceCarNum).map((carNum) => dataForCar(carNum));
+  const graphDataOrig = showCars
+    .filter((v) => v !== referenceCarNum)
+    .map((carNum) => dataForCar(carNum));
   interface MyData {
     [x: string]: number;
   }
@@ -102,18 +92,13 @@ const RaceGraphByReferenceRecharts: React.FC<MyProps> = (props) => {
         (cur, prev) => {
           return { ...prev, ...cur };
         },
-        { lapNo: lapNo }
-      )
+        { lapNo: lapNo },
+      ),
     );
   });
 
   const colorCode = (carNum: string): string => {
     return strokeColors[allCarNums.indexOf(carNum) % strokeColors.length];
-  };
-
-  const brushChanged = (range: any) => {
-    // Note: range is a BrushStartEndIndex but it is not exported. IBrushInterval has the same props
-    brushKeeper = range;
   };
 
   // TODO: move to own file
@@ -126,7 +111,12 @@ const RaceGraphByReferenceRecharts: React.FC<MyProps> = (props) => {
         return (
           <div
             className="custom-tooltip"
-            style={{ margin: 0, padding: 10, backgroundColor: "white", border: "1px solid rgb(204,204,204)" }}
+            style={{
+              margin: 0,
+              padding: 10,
+              backgroundColor: "white",
+              border: "1px solid rgb(204,204,204)",
+            }}
           >
             <p className="custom-tooltip">Lap {lapNo}</p>
             <table cellPadding={1}>
@@ -180,14 +170,7 @@ const RaceGraphByReferenceRecharts: React.FC<MyProps> = (props) => {
             {globalWamp.currentLiveId ? (
               <></>
             ) : (
-              <Brush
-                dataKey="lapNo"
-                height={30}
-                stroke="#8884d8"
-                onChange={brushChanged}
-                startIndex={brushKeeper?.startIndex}
-                endIndex={brushKeeper?.endIndex}
-              />
+              <Brush dataKey="lapNo" height={30} stroke="#8884d8" />
             )}
             <Tooltip isAnimationActive={false} content={CustomTooltip} />
             <Legend layout="vertical" align="right" verticalAlign="top" />
@@ -198,7 +181,9 @@ const RaceGraphByReferenceRecharts: React.FC<MyProps> = (props) => {
     </Row>
   );
 
-  return <>{referenceCarNum === "" ? <Empty description="Select reference car" /> : InternalRaceGraph}</>;
+  return (
+    <>{referenceCarNum === "" ? <Empty description="Select reference car" /> : InternalRaceGraph}</>
+  );
 };
 
 export default RaceGraphByReferenceRecharts;

@@ -1,14 +1,23 @@
 import { IRaceGraph } from "@mpapenbr/iracelog-analysis/dist/stints/types";
 import { Col, Empty, Row, Spin } from "antd";
 import _, { isNumber } from "lodash";
-import React, { useEffect } from "react";
+import React from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Brush, CartesianGrid, Legend, Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
+import {
+  Brush,
+  CartesianGrid,
+  Legend,
+  Line,
+  LineChart,
+  ResponsiveContainer,
+  Tooltip,
+  XAxis,
+  YAxis,
+} from "recharts";
 import { sprintf } from "sprintf-js";
 import { globalWamp } from "../../commons/globals";
 import { ApplicationState } from "../../stores";
-import { uiUpdateBrushSettings } from "../../stores/ui/actions";
-import { IBrushInterval, UiComponent } from "../../stores/ui/types";
+
 import { cat10Colors } from "../live/colors";
 import { extractSomeCarData2 } from "../live/util";
 
@@ -20,21 +29,13 @@ interface IGraphData {
 
 const RaceGraphRecharts: React.FC<{}> = () => {
   //const wamp = useSelector((state: ApplicationState) => state.wamp.data);
-  const uiSettingsAll = useSelector((state: ApplicationState) => state.ui.data.raceGraphSettings);
+
   const uiSettings = useSelector((state: ApplicationState) => state.userSettings.raceGraph);
   const raceGraph = useSelector((state: ApplicationState) => state.raceData.raceGraph);
   const carInfos = useSelector((state: ApplicationState) => state.raceData.carInfo);
 
   const dispatch = useDispatch();
   // this little trick handles the fetching of brushInterval from state, let it be changed here and on leaving this Element store the values in the redux state.
-  let brushKeeper: IBrushInterval = { ...uiSettingsAll.brushRange };
-
-  useEffect(() => {
-    return () => {
-      // console.log(curSettings);
-      // dispatch(uiUpdateBrushSettings(UiComponent.RACE_GRAPH_LEADER, { ...brushKeeper }));
-    };
-  }, []);
 
   const carDataContainer = extractSomeCarData2(carInfos);
   const { carInfoLookup, allCarNums, allCarClasses } = carDataContainer;
@@ -106,26 +107,14 @@ const RaceGraphRecharts: React.FC<{}> = () => {
         (cur, prev) => {
           return { ...prev, ...cur };
         },
-        { lapNo: lapNo }
-      )
+        { lapNo: lapNo },
+      ),
     );
   });
 
   const colorCode = (carNum: string): string => {
     const colors = cat10Colors;
     return colors[allCarNums.indexOf(carNum) % colors.length];
-  };
-
-  var timerId: any;
-  const brushChanged = (range: any) => {
-    // Note: range is a BrushStartEndIndex but it is not exported. IBrushInterval has the same props
-    // setBrushKeeper(range);
-    if (timerId) {
-      clearTimeout(timerId);
-    }
-    timerId = setTimeout(() => {
-      dispatch(uiUpdateBrushSettings(UiComponent.RACE_GRAPH_LEADER, { ...range }));
-    }, 500);
   };
 
   const CustomTooltip = (x: any) => {
@@ -136,7 +125,12 @@ const RaceGraphRecharts: React.FC<{}> = () => {
       return (
         <div
           className="custom-tooltip"
-          style={{ margin: 0, padding: 10, backgroundColor: "white", border: "1px solid rgb(204,204,204)" }}
+          style={{
+            margin: 0,
+            padding: 10,
+            backgroundColor: "white",
+            border: "1px solid rgb(204,204,204)",
+          }}
         >
           <p className="custom-tooltip">Lap {x.label}</p>
           <table cellPadding={1}>
@@ -186,14 +180,7 @@ const RaceGraphRecharts: React.FC<{}> = () => {
             {globalWamp.currentLiveId ? (
               <></>
             ) : (
-              <Brush
-                dataKey="lapNo"
-                height={30}
-                stroke="#8884d8"
-                onChange={brushChanged}
-                startIndex={brushKeeper?.startIndex}
-                endIndex={brushKeeper?.endIndex}
-              />
+              <Brush dataKey="lapNo" height={30} stroke="#8884d8" />
             )}
             <Tooltip isAnimationActive={false} content={CustomTooltip} />
             <Legend layout="vertical" align="right" verticalAlign="top" />
