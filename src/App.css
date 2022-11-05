@@ -143,3 +143,15 @@ div.iracelog-background-green {
 div.iracelog-event-description {
   color: rgba(0, 0, 0, 0.45);
 }
+
+tr.standings-out {
+  background-color: silver;
+  font-style: italic;
+}
+
+tr.standings-pit {
+  background-color: beige;
+}
+tr.standings-slow {
+  background-color: coral;
+}

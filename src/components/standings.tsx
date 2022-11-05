@@ -200,6 +200,9 @@ export const Standings: React.FC<Props> = (props: Props) => {
       columns={filteredColumns}
       dataSource={cars}
       rowKey={() => _.uniqueId()}
+      onRow={(data: any, num) => ({
+        className: "standings-" + getValue(data, "state")?.toLowerCase() ?? "unknown",
+      })}
     />
   );
 };
