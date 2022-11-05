@@ -13,7 +13,7 @@
     "@nivo/pie": "^0.80.0",
     "antd": "^4.24.1",
     "assert": "^2.0.0",
-    "autobahn": "^20.9.2",
+    "autobahn": "^22.10.1",
     "deep-object-diff": "^1.1.7",
     "graphql": "^16.6.0",
     "lodash": "^4.17.20",
