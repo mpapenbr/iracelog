@@ -8,15 +8,16 @@ import { LoaderPage } from "../components/events/loader";
 import Classification from "../components/live/classification";
 import RaceMessages from "../components/live/raceMessages";
 import { API_LOCAL_DEV_MODE } from "../constants";
+import { BigCircleOfDoomContainer } from "../container/BigCircleOfDoomContainer";
 import { CarPitstopsContainer } from "../container/CarPitstopsContainer";
 import { CarStintsContainer } from "../container/CarStintsContainer";
+import { CustomStandingsContainer } from "../container/CustomStandingsContainer";
 import { DashboardContainer } from "../container/DashboardContainer";
 import { DriverLapsContainer } from "../container/DriverLapsContainer";
 import { RaceEntriesContainer } from "../container/RaceEntriesContainer";
 import { RaceGraphByReferenceContainer } from "../container/RaceGraphByReferenceContainer";
 import { RaceGraphContainer } from "../container/RaceGraphContainer";
 import { RacePositionsContainer } from "../container/RacePositionsContainer";
-import { ReplayCircleOfDoomContainer } from "../container/ReplayCircleOfDoomContainer";
 import { SettingsContainer } from "../container/SettingsContainer";
 import { SpeedmapContainer } from "../container/SpeedmapContainer";
 import { StintLapsContainer } from "../container/StintLapsContainer";
@@ -49,9 +50,10 @@ export const AnalysisMainPage: React.FC = () => {
       console.log("event " + params.eventId + " already loaded");
     }
   }, [loadTrigger]);
-  console.log(eventInfo);
+  // console.log(eventInfo);
   const speedmapReady = new Comparator(">=0.4.4").test(eventInfo.raceloggerVersion ?? "0.0.0");
   const raceEntriesReady = new Comparator(">=0.4.4").test(eventInfo.raceloggerVersion ?? "0.0.0");
+  const bigCODReady = new Comparator(">=0.4.4").test(eventInfo.raceloggerVersion ?? "0.0.0");
 
   return (
     <Layout>
@@ -67,9 +69,19 @@ export const AnalysisMainPage: React.FC = () => {
             <Link to="classification">Classification</Link>
           </Menu.Item>
 
-          <Menu.Item key="cod" className="race-sidebar">
-            <Link to="replayCOD">Circle of doom</Link>
+          <Menu.Item key="customStandings" className="race-sidebar">
+            <Link to="customStandings">Standings (custom)</Link>
           </Menu.Item>
+
+          {bigCODReady ? (
+            <>
+              <Menu.Item key="cod" className="race-sidebar">
+                <Link to="cod">Circle of doom</Link>
+              </Menu.Item>
+            </>
+          ) : (
+            <></>
+          )}
 
           <Menu.Item key="raceGraphA" className="race-sidebar">
             <Link to="raceGraphA">Race graph (Leader)</Link>
@@ -156,7 +168,8 @@ export const AnalysisMainPage: React.FC = () => {
           <Route path="classification" element={<Classification />} />
           <Route index element={<Classification />} />
 
-          <Route path="replayCOD" element={<ReplayCircleOfDoomContainer />} />
+          <Route path="customStandings" element={<CustomStandingsContainer />} />
+          <Route path="cod" element={<BigCircleOfDoomContainer />} />
 
           <Route path="raceGraphA" element={<RaceGraphContainer />} />
 

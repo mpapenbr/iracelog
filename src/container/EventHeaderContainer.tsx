@@ -83,7 +83,7 @@ export const EventHeaderContainer: React.FC = () => {
     return getValueViaSpec(sInfo.data, manifestData, key);
   };
   const numOut = (key: string) => {
-    console.log("key:" + key + " value: " + getValue(key));
+    // console.log("key:" + key + " value: " + getValue(key));
     return sprintf("%.1f", getValue(key));
   };
   let flagBackground = "";

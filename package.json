@@ -11,10 +11,10 @@
     "@nivo/core": "^0.80.0",
     "@nivo/line": "^0.80.0",
     "@nivo/pie": "^0.80.0",
-    "antd": "^4.24.1",
+    "antd": "^4.24.2",
     "assert": "^2.0.0",
     "autobahn": "^20.9.2",
-    "deep-object-diff": "^1.1.7",
+    "deep-object-diff": "^1.1.9",
     "graphql": "^16.6.0",
     "lodash": "^4.17.20",
     "react": "^18.2.0",
@@ -52,9 +52,9 @@
     "@types/react-redux": "^7.1.24",
     "@types/semver": "^7.3.13",
     "@types/sprintf-js": "^1.1.2",
-    "@typescript-eslint/eslint-plugin": "^5.41.0",
-    "@typescript-eslint/parser": "^5.41.0",
-    "eslint": "^8.26.0",
+    "@typescript-eslint/eslint-plugin": "^5.42.0",
+    "@typescript-eslint/parser": "^5.42.0",
+    "eslint": "^8.27.0",
     "eslint-plugin-react": "^7.31.10",
     "generate-changelog": "^1.8.0",
     "minimist": "^1.2.7",
@@ -67,7 +67,8 @@
   "resolutions": {
     "minimist": "^1.2.7",
     "nth-check": "^2.1.1",
-    "async": "^3.2.4"
+    "async": "^3.2.4",
+    "d3-color": "^3.1.0"
   },
   "scripts": {
     "start": "react-scripts start",

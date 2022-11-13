@@ -20,7 +20,9 @@ export const LatestEvents: React.FC = () => {
       }
     }
   `;
-  const { loading, data, fetchMore } = useQuery(GET_EVENTS, { variables: { offset: 0, limit: 5 } });
+  const { loading, data, fetchMore } = useQuery(GET_EVENTS, {
+    variables: { offset: 0, limit: 10 },
+  });
   const onLoadForReplayButtonClicked = (e: React.MouseEvent<HTMLButtonElement>) => {
     const arg = e.currentTarget.value;
     globalWamp.currentLiveId = undefined;

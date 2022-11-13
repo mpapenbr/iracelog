@@ -27,8 +27,8 @@ const CarsClassesReducer = reducerWithInitialState([] as ICarClass[]).case(
 const CarEntriesReducer = reducerWithInitialState([] as IEntry[]).case(
   CarInfoActions.updateCarEntries,
   (state, data) => {
-    // console.log(data)
-    return data;
+    // console.log(data);
+    return [...data];
   },
 );
 
