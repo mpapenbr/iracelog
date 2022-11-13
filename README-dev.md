@@ -39,6 +39,7 @@ For now:
 
 - avoid using x-values as number. Use strings instead (https://github.com/ant-design/ant-design-charts/issues/797)
 - boxplot-outliers (https://github.com/ant-design/ant-design-charts/issues/800)
+- references vulnerable d3-color version (https://github.com/ant-design/ant-design-charts/issues/1597). Overruled here in package.json
 
 ## eslint >8.0
 
@@ -54,13 +55,16 @@ The following devDependencies were added in order to fix security issues in embe
 
 - minimist:1.2.6
 - nth-check: 2.0.1
+- d3-color: 3.1.0
 
 They override the embedded references via resolutions in package.json.
 
 ```json
  "resolutions": {
    "minimist": "^1.2.6",
-    "nth-check": "^2.0.1"
+   "nth-check": "^2.0.1",
+   "d3-color": "^3.1.0"
+
   },
 ```
 

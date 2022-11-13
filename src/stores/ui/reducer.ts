@@ -205,7 +205,7 @@ const ReplaySettingsReducer = reducerWithInitialState(initialReplaySettings).cas
 
 export const initialGlobalSettings: IGlobalSettings = {
   syncSelection: true,
-  filterOrderByPosition: false,
+  filterOrderByPosition: true,
   showCars: [],
   filterCarClasses: [],
 };

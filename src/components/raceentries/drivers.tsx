@@ -19,6 +19,7 @@ export const Drivers: React.FC = () => {
 
   const allDrivers = _.flatMap(entries, "drivers");
 
+  // console.log("should update driver entries: ", entries);
   interface IDriverData extends IDriverEntry {
     entry: IEntry;
     carClassName: string;

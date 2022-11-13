@@ -9,7 +9,7 @@ import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router";
 import { sprintf } from "sprintf-js";
 import { globalWamp } from "../../commons/globals";
-import { processCarData } from "../../processor/processCarData";
+import { ICarDataMessage, processCarData } from "../../processor/processCarData";
 import { processSpeedmap } from "../../processor/processSpeedmap";
 import { updateEventInfo, updateManifests, updateTrackInfo } from "../../stores/racedata/actions";
 import { ISpeedmapMessage, ITrackInfo } from "../../stores/racedata/types";
@@ -89,9 +89,9 @@ export const LiveEvents: React.FC = () => {
         },
       );
       s.subscribe(sprintf("racelog.public.live.cardata.%s", eventKey), (data: any) => {
-        console.log(data);
+        // console.log(data);
         if (data != undefined) {
-          processCarData(dispatch, data);
+          processCarData(dispatch, data[0] as ICarDataMessage);
         }
       });
     };

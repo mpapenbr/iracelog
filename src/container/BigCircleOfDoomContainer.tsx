@@ -1,11 +1,10 @@
-import { SettingOutlined } from "@ant-design/icons";
 import { ICarLaps, ICarPitInfo } from "@mpapenbr/iracelog-analysis/dist/stints/types";
 import { getValueViaSpec } from "@mpapenbr/iracelog-analysis/dist/stints/util";
-import { Button, Col, Form, InputNumber, Popover, Row, Select, Slider } from "antd";
+import { Col, Form, InputNumber, Row, Select, Slider } from "antd";
 import * as React from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { CircleOfDoom } from "../components/cod/circleofdoom";
 import CarFilter from "../components/live/carFilter";
-import { CircleOfDoom } from "../components/live/circleofdoom";
 import {
   collectCarsByCarClassFilter,
   ICarFilterData,
@@ -15,8 +14,6 @@ import {
 } from "../components/live/util";
 import { ZoomTrackPos } from "../components/live/zoomTrackPos";
 import { ReplayControl } from "../components/replayControl";
-import { Standings } from "../components/standings";
-import StandingsColumnControl from "../components/standingsColumnControl";
 import { ApplicationState } from "../stores";
 import { ICarBaseData, IEventInfo } from "../stores/racedata/types";
 import { circleOfDoomSettings, globalSettings } from "../stores/ui/actions";
@@ -90,9 +87,9 @@ const newPosAfterPitstop = (procData: IProcData): number => {
   let sortedLaps = procData.carLaps?.laps.map((v) => v.lapTime).sort();
   if (sortedLaps === undefined) sortedLaps = [];
   const meanLap = sortedLaps[Math.ceil(sortedLaps.length / 2)];
-  console.log("meanLap: " + meanLap);
+  // console.log("meanLap: " + meanLap);
   const avgSpeed = procData.eventInfo.trackLength / meanLap;
-  console.log("avgSpeed: " + avgSpeed);
+  // console.log("avgSpeed: " + avgSpeed);
   // console.table(procData.pitInfo);
 
   let inPits = 0;
@@ -108,7 +105,7 @@ const newPosAfterPitstop = (procData: IProcData): number => {
   return newPos;
 };
 
-export const ReplayCircleOfDoomContainer: React.FC = () => {
+export const BigCircleOfDoomContainer: React.FC = () => {
   const cars = useSelector((state: ApplicationState) => state.raceData.availableCars);
   const carsRaw = useSelector((state: ApplicationState) => state.raceData.classification.data);
   const carClasses = useSelector((state: ApplicationState) => state.raceData.availableCarClasses);
@@ -227,7 +224,7 @@ export const ReplayCircleOfDoomContainer: React.FC = () => {
     pitstopTime: userSettings.pitstopTime,
     trackPos,
   });
-  console.log(`${posAfterPit}`);
+  // console.log(`${posAfterPit}`);
   const pitstopProps: SelectPitstopProps = {
     pitstopTime: userSettings.pitstopTime,
     selectedCarNum: userSettings.referenceCarNum,
@@ -236,37 +233,31 @@ export const ReplayCircleOfDoomContainer: React.FC = () => {
     onSelectCar: onSelectReferenceCar,
   };
 
+  const codSpan = replaySettings.enabled ? 16 : 20;
+  const codCircle = replaySettings.enabled ? 380 : 380;
   return (
     <>
       <Row gutter={16}>
         <CarFilter {...props} />
-
-        <Col offset={9} span={1}>
-          <Popover content={<StandingsColumnControl />} title="Select columns">
-            <Button icon={<SettingOutlined />} />
-          </Popover>
-        </Col>
       </Row>
       <Row gutter={16}>
-        <Col span="6">
+        <Col span={codSpan}>
           <CircleOfDoom
             showCars={showCars}
             referenceCarNum={userSettings.referenceCarNum}
             pitstopTime={userSettings.pitstopTime}
+            circleSize={codCircle}
           />
         </Col>
-        <Col span={18}>
-          <Row>
-            <Col span="24">
-              <Row gutter={16}>
-                <Col span="12">
-                  <SelectPitStopParam {...pitstopProps} />
-                </Col>
-                <Col span="12">{replaySettings.enabled ? <ReplayControl /> : <></>}</Col>
-              </Row>
-            </Col>
-          </Row>
-          {userSettings.referenceCarNum ? (
+        <Col span="8">{replaySettings.enabled ? <ReplayControl /> : <></>}</Col>
+      </Row>
+      <Row>
+        <Col span="11">
+          <SelectPitStopParam {...pitstopProps} />
+        </Col>
+
+        {userSettings.referenceCarNum ? (
+          <Col span="12">
             <Row>
               <Col span="24">
                 <ZoomTrackPos
@@ -276,27 +267,24 @@ export const ReplayCircleOfDoomContainer: React.FC = () => {
                 />
               </Col>
             </Row>
-          ) : (
-            <></>
-          )}
-
-          {userSettings.referenceCarNum && userSettings.pitstopTime > 0 ? (
-            <Row>
-              <Col span="24">
-                <ZoomTrackPos
-                  showCars={showCars}
-                  referenceCarNum={userSettings.referenceCarNum}
-                  trackPos={posAfterPit}
-                />
-              </Col>
-            </Row>
-          ) : (
-            <></>
-          )}
-        </Col>
+            {userSettings.pitstopTime > 0 ? (
+              <Row>
+                <Col span="24">
+                  <ZoomTrackPos
+                    showCars={showCars}
+                    referenceCarNum={userSettings.referenceCarNum}
+                    trackPos={posAfterPit}
+                  />
+                </Col>
+              </Row>
+            ) : (
+              <></>
+            )}
+          </Col>
+        ) : (
+          <></>
+        )}
       </Row>
-
-      <Standings showCars={showCars} />
     </>
   );
 };
