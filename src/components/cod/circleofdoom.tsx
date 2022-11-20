@@ -239,7 +239,7 @@ export const CircleOfDoom: React.FC<MyProps> = (props: MyProps) => {
         const aChunk = Math.round((a.trackPos * speedmapData.trackLength) / speedmapData.chunkSize);
         const bChunk = Math.round((b.trackPos * speedmapData.trackLength) / speedmapData.chunkSize);
 
-        const x = speedmapData.data[curA.car.carClassId];
+        const x = speedmapData.data[curA.car.carClassId].chunkSpeeds;
         // console.log("speedmapData: ", speedmapData, " class: ", curA.car.carClassId, " data: ", x);
         const computeSlice =
           aChunk > bChunk

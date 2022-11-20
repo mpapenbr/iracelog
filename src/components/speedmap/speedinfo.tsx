@@ -6,7 +6,7 @@ import { sprintf } from "sprintf-js";
 import { ApplicationState } from "../../stores";
 import { ICarClass } from "../../stores/cars/types";
 import { ISpeedmapData } from "../../stores/speedmap/types";
-import { lapTimeString } from "../../utils/output";
+import { lapTimeString, secAsString } from "../../utils/output";
 
 export const SpeedInfo: React.FC = () => {
   const payload: ISpeedmapData = useSelector(
@@ -22,11 +22,11 @@ export const SpeedInfo: React.FC = () => {
   }, new Map());
 
   const data = Object.entries(payload.data).map((cur) => {
-    const avgLaptime = cur[1].reduce((prev, cur) => prev + payload.chunkSize / (cur / 3.6), 0);
     return {
       carClass: carClassLookup.get(cur[0]) ?? "CarClass " + cur[0],
-      avgSpeed: (payload.trackLength / avgLaptime) * 3.6,
-      avgLaptime,
+      avgSpeed: (payload.trackLength / cur[1].laptime) * 3.6,
+      avgLaptime: cur[1].laptime,
+      lastRead: payload.timeOfDay,
     };
   });
   // eslint-disable-next-line @typescript-eslint/ban-types
@@ -43,6 +43,13 @@ export const SpeedInfo: React.FC = () => {
       key: "avgSpeed",
       title: "Speed",
       render: (d) => sprintf("%.0f km/h", d.avgSpeed),
+      width: 20,
+      align: "right",
+    },
+    {
+      key: "lastRead",
+      title: "Last update",
+      render: (d) => secAsString(d.lastRead),
       width: 20,
       align: "right",
     },

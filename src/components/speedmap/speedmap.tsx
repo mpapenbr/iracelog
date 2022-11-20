@@ -26,9 +26,9 @@ export const Speedmap: React.FC = () => {
 
   const { minVal, maxVal, numItems } = Object.entries(payload.data).reduce(
     (prev, cur) => ({
-      minVal: Math.min(prev.minVal, ...cur[1]),
-      maxVal: Math.min(prev.maxVal, ...cur[1]),
-      numItems: cur[1].length,
+      minVal: Math.min(prev.minVal, ...cur[1].chunkSpeeds),
+      maxVal: Math.min(prev.maxVal, ...cur[1].chunkSpeeds),
+      numItems: cur[1].chunkSpeeds.length,
     }),
     { minVal: 1000, maxVal: 0, numItems: 0 },
   );
@@ -56,7 +56,7 @@ export const Speedmap: React.FC = () => {
     <>
       {Object.entries(payload.data).map((v) => (
         <svg key={v[0]} width={boxWidth + margin} height={boxHeight + margin}>
-          {v[1].map((d, idx) => {
+          {v[1].chunkSpeeds.map((d, idx) => {
             const offset = chunkWidth * idx;
             const pct = (d - minVal) / (maxVal - minVal);
             const col = computeColor(pct);
@@ -76,7 +76,7 @@ export const Speedmap: React.FC = () => {
   const SpeedChart = () => {
     const plotdata: { x: string; y: number; carClass: string }[] = [];
     Object.entries(payload.data).forEach((e) => {
-      e[1].forEach((v, idx) => {
+      e[1].chunkSpeeds.forEach((v, idx) => {
         plotdata.push({
           x: Math.round(idx * payload.chunkSize).toString(), // antd-charts need strings for x, otherwise strange graph effects
           y: Math.round(v),
