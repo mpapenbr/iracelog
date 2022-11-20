@@ -4,6 +4,7 @@ import { Connection } from "autobahn";
 import { Config } from "../api/config";
 import { API_CROSSBAR_URL, API_GRAPHQL_URL } from "../constants";
 import { ReplayDataHolder } from "../processor/ReplayDataHolder";
+import { SpeedmapDataHolder } from "../processor/SpeedmapDataHolder";
 
 interface IGlobalWamp {
   currentLiveId?: string;
@@ -12,6 +13,7 @@ interface IGlobalWamp {
   processor?: BulkProcessor;
   currentData?: IProcessRaceStateData;
   replayHolder?: ReplayDataHolder;
+  speedmapHolder?: SpeedmapDataHolder;
   backendConfig: Config;
 }
 

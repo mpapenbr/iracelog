@@ -35,7 +35,7 @@ const CarFilter: React.FC<MyProps> = (props: MyProps) => {
   const handleOnSelectCarClassFilter = (value: any) => {
     props.onSelectCarClassFilter(value as string[]);
   };
-  console.log("Dings");
+  // console.log("Dings");
   return (
     <>
       <Col span={10}>

@@ -7,13 +7,15 @@ import { Comparator } from "semver";
 import { globalWamp } from "../../commons/globals";
 import { processCarData } from "../../processor/processCarData";
 import { ReplayDataHolder } from "../../processor/ReplayDataHolder";
+import { SpeedmapDataHolder } from "../../processor/SpeedmapDataHolder";
 import {
   processInboundManifests,
   updateEventInfo,
   updateTrackInfo,
 } from "../../stores/racedata/actions";
 import { ITrackInfo } from "../../stores/racedata/types";
-import { updateSpeedmapData } from "../../stores/speedmap/actions";
+import { updateSpeedmapData, updateSpeedmapEvolution } from "../../stores/speedmap/actions";
+import { ISpeedmapEvolution } from "../../stores/speedmap/types";
 import { replaySettings, updateAvailableStandingsColumns } from "../../stores/ui/actions";
 // import { initialReplaySettings } from "../../stores/ui/reducer";
 import { defaultStateData as defaultUiStateData } from "../../stores/ui/reducer";
@@ -82,7 +84,11 @@ export const LoaderPage: React.FC<MyProps> = (props: MyProps) => {
         const versionCheck = new Comparator(">=0.4.4");
         // console.log(eventInfo);
         if (versionCheck.test(eventInfo.data.info.raceloggerVersion ?? "0.0.0")) {
-          console.log("Yes, compatible racelogger ", eventInfo.raceloggerVersion, " found");
+          console.log(
+            "Yes, compatible racelogger ",
+            eventInfo.data.info.raceloggerVersion,
+            " found",
+          );
 
           const carData = (await s.call("racelog.public.get_event_cars", [eventInfo.id])) as any;
           // console.log(carData);
@@ -94,10 +100,17 @@ export const LoaderPage: React.FC<MyProps> = (props: MyProps) => {
           ])) as any;
           // console.log(speedmap)
           dispatch(updateSpeedmapData(speedmap.payload));
+
+          s.call("racelog.public.archive.avglap_over_time", [eventInfo.id, 300]).then((d: any) => {
+            const x = d as ISpeedmapEvolution[];
+            dispatch(updateSpeedmapEvolution(d as ISpeedmapEvolution[]));
+          });
         }
 
         const rh = new ReplayDataHolder(s, settings, eventInfo.data.manifests);
+        const smh = new SpeedmapDataHolder(s, settings);
         globalWamp.replayHolder = rh;
+        globalWamp.speedmapHolder = smh;
         globalWamp.currentLiveId = undefined;
 
         props.onFinished(true);

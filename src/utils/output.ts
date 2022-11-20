@@ -14,7 +14,9 @@ export const lapTimeString = (t: number): string => {
   const seconds = Math.trunc(work);
   work -= seconds;
   const hundrets = Math.trunc(work * 100);
-  return minutes > 0 ? sprintf("%d:%02d.%02d", minutes, seconds, hundrets) : sprintf("%02d.%02d", seconds, hundrets);
+  return minutes > 0
+    ? sprintf("%d:%02d.%02d", minutes, seconds, hundrets)
+    : sprintf("%02d.%02d", seconds, hundrets);
 };
 
 export const lapTimeStringTenths = (t: number): string => {
@@ -34,6 +36,18 @@ export const secAsMMSS = (t: number): string => {
   const minutes = Math.floor(t / 60);
   const seconds = Math.trunc(t - minutes * 60);
   return sprintf("%d:%02d", minutes, seconds);
+};
+
+/**
+ * converts sec value in human readable string presentation HH:MM
+ * @param t value in sec
+ */
+export const secAsHHMM = (t: number): string => {
+  let work = t;
+  const hours = Math.floor(t / 3600);
+  work -= hours * 3600;
+  const minutes = Math.trunc(work / 60);
+  return sprintf("%d:%02d", hours, minutes);
 };
 
 /**

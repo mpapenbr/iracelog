@@ -15,6 +15,7 @@ import useInterval from "react-use/lib/useInterval";
 import { globalWamp } from "../commons/globals";
 import { ApplicationState } from "../stores";
 import { updateClassification, updateSessionInfo } from "../stores/racedata/actions";
+import { updateSpeedmapData } from "../stores/speedmap/actions";
 import { replaySettings } from "../stores/ui/actions";
 import { secAsHHMMSS } from "../utils/output";
 
@@ -48,8 +49,12 @@ export const ReplayControl: React.FC = () => {
     // console.log(d);
     // console.log("settings.playing: " + settings.playing + " local.playing: " + playing);
     if (d) {
-      dispatch(updateClassification({ msgType: d.msgType, timestamp: d.timestamp, data: d.data.cars }));
-      dispatch(updateSessionInfo({ msgType: d.msgType, timestamp: d.timestamp, data: d.data.session }));
+      dispatch(
+        updateClassification({ msgType: d.msgType, timestamp: d.timestamp, data: d.data.cars }),
+      );
+      dispatch(
+        updateSessionInfo({ msgType: d.msgType, timestamp: d.timestamp, data: d.data.session }),
+      );
 
       const curSettings = {
         ...settings,
@@ -59,6 +64,14 @@ export const ReplayControl: React.FC = () => {
         playSpeed: speed,
       };
       // console.log(curSettings);
+
+      const speedmap = globalWamp.speedmapHolder?.next(d.timestamp);
+      if (speedmap !== undefined) {
+        console.log("Speedmap ts: ", speedmap.timestamp);
+        console.log("Speedmap: ", speedmap);
+        dispatch(updateSpeedmapData(speedmap.data));
+      }
+
       dispatch(replaySettings(curSettings));
       setCurrentSessionTime(d.data.session[0]);
       setCurrentTs(d.timestamp);
@@ -77,6 +90,7 @@ export const ReplayControl: React.FC = () => {
     // dispatch(loadReplayData(value as number, 100));
     const startTs = settings.minTimestamp + ((value as number) - settings.minSessionTime);
     await globalWamp.replayHolder?.syncLoadData(startTs);
+    await globalWamp.speedmapHolder?.syncLoadData(startTs);
     requestData();
   };
   const onPlayButtonClicked = (e: React.MouseEvent<HTMLButtonElement>) => {
@@ -106,6 +120,7 @@ export const ReplayControl: React.FC = () => {
     const step = parseInt(e.currentTarget.value);
 
     await globalWamp.replayHolder?.syncLoadData(currentTs + step);
+    await globalWamp.speedmapHolder?.syncLoadData(currentTs + step);
     requestData();
   };
 

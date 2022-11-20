@@ -43,7 +43,7 @@ export class ReplayDataHolder {
   }
 
   public next(): IMessage | undefined {
-    console.log("idx:" + this.idx, "data.length:" + this.data.length);
+    console.log("replay: idx:" + this.idx, "data.length:" + this.data.length);
     if (!this.preFetching && this.data.length > 0 && this.data.length - this.idx < 10) {
       console.log("request more data in advance");
       const lastTs = this.data[this.data.length - 1]["timestamp"];
