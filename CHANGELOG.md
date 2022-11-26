@@ -1,3 +1,38 @@
+### 0.18.0 (2022-11-26)
+
+##### Build System / Dependencies
+
+* **deps:**
+  *  bump loader-utils from 2.0.3 to 2.0.4 (fb00e412)
+  *  minor updates (6cbf9b16)
+  *  recharts 2.1.16 (f426c1d3)
+*  Bump to Node 18, adjusted some github actions (d6ab7ef4)
+* **deps-dev:**  minor devDeps changes (b7651de7)
+
+##### Chores
+
+*  removed wamp store (92d7d252)
+*  moved wamp store functions to raceData (93f43a62)
+*  moved baseData store functions to ui, removed demoRaces (7a67962f)
+*  removed old ui store actions (54d2f286)
+*  removed raceevents from redux (#551) (455a0532)
+*  cleanup devcontainer dockerfile (d3f4c3f4)
+
+##### New Features
+
+*  include speedmap data when replaying events (159b16ea)
+*  Bigger Cicle of doom #337 (6f00e319)
+*  use colors for cars with state out,pit,slow (#548) (00dea60b)
+*  reworked events page #536 (bad9b7eb)
+
+##### Bug Fixes
+
+*  changed autobahn.Connection usage (4fb8187e)
+
+##### Other Changes
+
+*  udpated backend configuration (cb12a26c)
+
 #### 0.17.1 (2022-10-22)
 
 ##### Build System / Dependencies
