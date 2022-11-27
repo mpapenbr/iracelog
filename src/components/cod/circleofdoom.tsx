@@ -220,6 +220,14 @@ export const CircleOfDoom: React.FC<MyProps> = (props: MyProps) => {
       .sort((a, b) => a.trackPos - b.trackPos);
     if (trackposData.length < 2) return <></>;
 
+    // we draw interval info only if speedmapData is complete (mostly after lap 1)
+    if (
+      Object.keys(speedmapData.data).length == 0 ||
+      Object.entries(speedmapData.data).filter((item) => item[1].laptime === 0).length > 0
+    ) {
+      return <></>;
+    }
+
     const entryLookup: { [key: string]: IEntry } = stateEntries.reduce(
       (prev, cur) => ({ ...prev, [cur.car.carNumber]: cur }),
       {},
