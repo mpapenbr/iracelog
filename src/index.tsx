@@ -14,6 +14,7 @@ const store = configureStore(initialState);
 (async () => {
   const config = await checkForExternalConfig();
   // console.log(y);
+  globalWamp.backendConfig = config;
   const client = new ApolloClient({
     uri: globalWamp.backendConfig.graphql.url,
     cache: new InMemoryCache({
@@ -31,7 +32,6 @@ const store = configureStore(initialState);
       },
     }),
   });
-  globalWamp.backendConfig = config;
   const container = document.getElementById("root");
   const root = createRoot(container!);
   // console.log("After sync");
