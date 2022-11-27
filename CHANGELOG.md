@@ -1,3 +1,9 @@
+#### 0.18.1 (2022-11-27)
+
+##### Bug Fixes
+
+*  ensure external config is active prior to apollo client init (f7ff23f7)
+
 ### 0.18.0 (2022-11-26)
 
 ##### Build System / Dependencies
