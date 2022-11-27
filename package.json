@@ -1,6 +1,6 @@
 {
   "name": "iracelog",
-  "version": "0.18.1",
+  "version": "0.18.2",
   "private": true,
   "dependencies": {
     "@ant-design/charts": "^1.4.2",
