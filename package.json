@@ -11,7 +11,7 @@
     "@nivo/core": "^0.80.0",
     "@nivo/line": "^0.80.0",
     "@nivo/pie": "^0.80.0",
-    "antd": "^4.24.2",
+    "antd": "^5.0.2",
     "assert": "^2.0.0",
     "autobahn": "^20.9.2",
     "deep-object-diff": "^1.1.9",
