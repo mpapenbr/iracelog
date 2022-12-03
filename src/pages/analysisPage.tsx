@@ -7,7 +7,6 @@ import { globalWamp } from "../commons/globals";
 import { LoaderPage } from "../components/events/loader";
 import Classification from "../components/live/classification";
 import RaceMessages from "../components/live/raceMessages";
-import { API_LOCAL_DEV_MODE } from "../constants";
 import { BigCircleOfDoomContainer } from "../container/BigCircleOfDoomContainer";
 import { CarPitstopsContainer } from "../container/CarPitstopsContainer";
 import { CarStintsContainer } from "../container/CarStintsContainer";
@@ -51,105 +50,37 @@ export const AnalysisMainPage: React.FC = () => {
     }
   }, [loadTrigger]);
   // console.log(eventInfo);
-  const speedmapReady = new Comparator(">=0.4.4").test(eventInfo.raceloggerVersion ?? "0.0.0");
-  const raceEntriesReady = new Comparator(">=0.4.4").test(eventInfo.raceloggerVersion ?? "0.0.0");
-  const bigCODReady = new Comparator(">=0.4.4").test(eventInfo.raceloggerVersion ?? "0.0.0");
 
+  const allItems = [
+    { label: <Link to="/events">Events</Link>, key: "events" },
+    { type: "divider", key: "menuDivider" },
+    { label: <Link to="classification">Classification</Link>, key: "classification" },
+    { label: <Link to="customStandings">Standings (custom)</Link>, key: "customStandings" },
+    { label: <Link to="cod">Circle of doom</Link>, key: "cod", requires: ">=0.4.4" },
+    { label: <Link to="raceGraphA">Race graph (Leader)</Link>, key: "raceGraphA" },
+    { label: <Link to="raceGraphB">Race graph (Car)</Link>, key: "raceGraphB" },
+    { label: <Link to="racePositionsNivo">Race positions</Link>, key: "racePositionsNivo" },
+    { label: <Link to="dashboard">Dashboard</Link>, key: "dashboard" },
+    { label: <Link to="strategy">Strategy</Link>, key: "strategy" },
+    { label: <Link to="driverLaps">Driver laps </Link>, key: "driverLaps" },
+    { label: <Link to="carPitstops">Pitstops</Link>, key: "carPitstops" },
+    { label: <Link to="stintDurations">Stint Durations</Link>, key: "stintDurations" },
+    { label: <Link to="stintSummary">Stint Summary</Link>, key: "stintSummary" },
+    { label: <Link to="speedmap">Speedmap</Link>, key: "speedmap", requires: ">=0.4.4" },
+    { label: <Link to="raceEntries">Race entries</Link>, key: "raceEntries", requires: ">=0.4.4" },
+    { label: <Link to="messages">Messages</Link>, key: "messages" },
+    { label: <Link to="settings">Settings</Link>, key: "settings" },
+  ];
+  const items = allItems.filter((v) =>
+    new Comparator(v.requires ?? ">=0.0.0").test(eventInfo.raceloggerVersion),
+  );
   return (
     <Layout>
       <Sider theme="light" width={170}>
-        <Menu theme="light" mode="inline">
-          <Menu.Item key="events" className="race-sidebar">
-            <Link to="/events">Events</Link>
-          </Menu.Item>
-
-          <Menu.Divider />
-
-          <Menu.Item key="classification" className="race-sidebar">
-            <Link to="classification">Classification</Link>
-          </Menu.Item>
-
-          <Menu.Item key="customStandings" className="race-sidebar">
-            <Link to="customStandings">Standings (custom)</Link>
-          </Menu.Item>
-
-          {bigCODReady ? (
-            <>
-              <Menu.Item key="cod" className="race-sidebar">
-                <Link to="cod">Circle of doom</Link>
-              </Menu.Item>
-            </>
-          ) : (
-            <></>
-          )}
-
-          <Menu.Item key="raceGraphA" className="race-sidebar">
-            <Link to="raceGraphA">Race graph (Leader)</Link>
-          </Menu.Item>
-
-          <Menu.Item key="raceGraphB" className="race-sidebar">
-            <Link to="raceGraphB">Race graph (Car)</Link>
-          </Menu.Item>
-
-          <Menu.Item key="racePositionsNivo" className="race-sidebar">
-            <Link to="racePositionsNivo">Race positions</Link>
-          </Menu.Item>
-
-          <Menu.Item key="dashboard" className="race-sidebar">
-            <Link to="dashboard">Dashboard</Link>
-          </Menu.Item>
-          <Menu.Item key="strategy" className="race-sidebar">
-            <Link to="strategy">Strategy</Link>
-          </Menu.Item>
-
-          <Menu.Item key="driverLaps" className="race-sidebar">
-            <Link to="driverLaps">Driver laps </Link>
-          </Menu.Item>
-
-          <Menu.Item key="carPitstops" className="race-sidebar">
-            <Link to="carPitstops">Pitstops</Link>
-          </Menu.Item>
-          <Menu.Item key="stintDurations" className="race-sidebar">
-            <Link to="stintDurations">Stint Durations</Link>
-          </Menu.Item>
-          <Menu.Item key="stintLaps" className="race-sidebar">
-            <Link to="stintLaps">Stint Laps</Link>
-          </Menu.Item>
-          <Menu.Item key="stintSummary" className="race-sidebar">
-            <Link to="stintSummary">Stint Summary</Link>
-          </Menu.Item>
-          {speedmapReady ? (
-            <Menu.Item key="speedmap" className="race-sidebar">
-              <Link to="speedmap">Speedmap</Link>
-            </Menu.Item>
-          ) : (
-            <></>
-          )}
-          {raceEntriesReady ? (
-            <Menu.Item key="raceEntries" className="race-sidebar">
-              <Link to="raceEntries">Race entries</Link>
-            </Menu.Item>
-          ) : (
-            <></>
-          )}
-          <Menu.Item key="messages" className="race-sidebar">
-            <Link to="messages">Messages</Link>
-          </Menu.Item>
-          <Menu.Item key="settings" className="race-sidebar">
-            <Link to="settings">Settings</Link>
-          </Menu.Item>
-
-          {API_LOCAL_DEV_MODE ? (
-            <Menu.Item key="test" className="race-sidebar">
-              <Link to="test">test</Link>
-            </Menu.Item>
-          ) : (
-            <></>
-          )}
-        </Menu>
+        <Menu theme="light" mode="inline" items={items} />
       </Sider>
       <Content>
-        <Modal title="Loading" visible={loading} closable={false} footer={<></>}>
+        <Modal title="Loading" open={loading} closable={false} footer={<></>}>
           {/* {info} */}
           <LoaderPage
             eventKey={params.eventKey}

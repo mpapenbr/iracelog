@@ -61,6 +61,7 @@ export const CarClasses: React.FC = () => {
         columns={columns}
         dataSource={carClasses}
         pagination={false}
+        rowKey={(d: any) => d.name}
       />
     </Card>
   );

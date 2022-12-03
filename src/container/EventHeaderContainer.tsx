@@ -98,7 +98,7 @@ export const EventHeaderContainer: React.FC = () => {
   return (
     <Row className="raceHeader">
       <Col flex={1}>
-        <table className="custom-entry" width="100%">
+        <table width="100%" style={{ lineHeight: "1rem" }}>
           <tr>
             <td>State</td>
             <td align="right">{getValue("flagState")}</td>
@@ -120,7 +120,12 @@ export const EventHeaderContainer: React.FC = () => {
 
       <Col flex={5}>
         <p
-          style={{ textAlign: "center", marginTop: "1em", marginBottom: "1em", lineHeight: "1em" }}
+          style={{
+            textAlign: "center",
+            marginTop: "1rem",
+            marginBottom: "1rem",
+            lineHeight: "1rem",
+          }}
         >
           {eventInfo.name}
           <br />
@@ -131,7 +136,7 @@ export const EventHeaderContainer: React.FC = () => {
         <div className={flagBackground} style={{ display: "flow", verticalAlign: "center" }}></div>
       </Col> */}
       <Col flex={1}>
-        <table className="custom-entry" width="100%">
+        <table width="100%" style={{ lineHeight: "1rem" }}>
           <tr>
             <td>Sim-Time</td>
             <td align="right">{secAsString(getValue("timeOfDay"))}</td>

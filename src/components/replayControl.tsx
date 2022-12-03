@@ -7,7 +7,7 @@ import {
   PauseCircleOutlined,
   RightOutlined,
 } from "@ant-design/icons";
-import { Button, Dropdown, Menu, Select, Slider } from "antd";
+import { Button, Dropdown, Select, Slider } from "antd";
 import * as React from "react";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
@@ -124,13 +124,7 @@ export const ReplayControl: React.FC = () => {
     requestData();
   };
 
-  const menu = () => (
-    <Menu onClick={onChangeSpeedByDropdown}>
-      {[1, 2, 5, 10, 15, 20].map((i) => (
-        <Menu.Item key={i}>{i}x</Menu.Item>
-      ))}
-    </Menu>
-  );
+  const menuItems = [1, 2, 5, 10, 15, 20].map((i) => ({ label: i + "x", key: "" + i }));
   // const ttFormatter = (v) => return
   return (
     <>
@@ -142,7 +136,7 @@ export const ReplayControl: React.FC = () => {
         defaultValue={settings.currentSessionTime}
         // tooltipVisible={false}
         // onChange={onChange}
-        tipFormatter={(v: number | undefined) => (v ? `${secAsHHMMSS(v)}` : "")}
+        tooltip={{ formatter: (v: number | undefined) => (v ? `${secAsHHMMSS(v)}` : "") }}
         onAfterChange={updateSettings}
       />
 
@@ -154,7 +148,7 @@ export const ReplayControl: React.FC = () => {
       />
       <Button icon={<RightOutlined />} onClick={onStep} value={60} />
       <Button icon={<DoubleRightOutlined />} onClick={onStep} value={600} />
-      <Dropdown overlay={menu}>
+      <Dropdown menu={{ items: menuItems, onClick: onChangeSpeedByDropdown }}>
         <Button>
           {settings.playSpeed}x <DownOutlined />
         </Button>

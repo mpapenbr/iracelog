@@ -38,19 +38,8 @@
   }
 }
 
-@import "~antd/dist/antd.css";
-
-.ant-layout-header {
-  background: rgba(29, 34, 36, 0.835);
-  color: azure;
-  /* height: 5em; */
-  /* min-height: 10vh; */
-  /* color: rgb(224, 56, 56); */
-}
-
-.ant-layout-header .custom-entry {
-  line-height: 1em;
-}
+/* @import "~antd/dist/antd.css"; */
+/* @import "~antd/dist/reset.css"; */
 
 .site-layout-content {
   min-height: 280px;
@@ -70,10 +59,6 @@
   margin: 16px 0 16px 24px;
 }
 
-.race-sidebar:hover {
-  background: #24c6f3;
-}
-
 #components-layout-demo-top .logo {
   float: left;
   width: 120px;
@@ -88,32 +73,32 @@
 
 div.iracelog-standings th,
 div.iracelog-standings td {
-  padding-right: 2px;
-  padding-left: 2px;
-  padding-top: 2px;
-  padding-bottom: 2px;
+  padding-right: 2px !important;
+  padding-left: 2px !important;
+  padding-top: 2px !important;
+  padding-bottom: 2px !important;
 }
 
 div.iracelog-compact th,
 div.iracelog-compact td {
-  padding-right: 4px;
-  padding-left: 4px;
-  padding-top: 4px;
-  padding-bottom: 4px;
+  padding-right: 4px !important;
+  padding-left: 4px !important;
+  padding-top: 4px !important;
+  padding-bottom: 4px !important;
 }
 
 div.iracelog-stint-summary th,
 div.iracelog-stint-summary td {
-  padding-right: 4px;
-  padding-left: 4px;
-  padding-top: 4px;
-  padding-bottom: 4px;
+  padding-right: 4px !important;
+  padding-left: 4px !important;
+  padding-top: 4px !important;
+  padding-bottom: 4px !important;
 }
 
 div.iracelog-standings-select-cols th,
 div.iracelog-standings-select-cols td {
-  padding-top: 1px;
-  padding-bottom: 1px;
+  padding-top: 1px !important;
+  padding-bottom: 1px !important;
 }
 
 div.iracelog-stint-tooltip {

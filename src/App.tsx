@@ -25,7 +25,7 @@ const App: React.FC<AppProps> = (props: AppProps) => {
     <Provider store={props.store}>
       <Router>
         <Layout className="layout">
-          <Header>
+          <Header style={{ background: "rgba(29, 34, 36, 0.835)", color: "azure" }}>
             <EventHeaderContainer />
           </Header>
 

@@ -85,7 +85,13 @@ export const Cars: React.FC = () => {
 
   return (
     <Card title="Cars">
-      <Table className="iracelog-compact" columns={columns} dataSource={cars} pagination={false} />
+      <Table
+        className="iracelog-compact"
+        columns={columns}
+        dataSource={cars}
+        pagination={false}
+        rowKey={(d: any) => d.carId}
+      />
     </Card>
   );
 };

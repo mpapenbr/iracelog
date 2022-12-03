@@ -126,6 +126,7 @@ export const Drivers: React.FC = () => {
         columns={columns}
         dataSource={extDriverData}
         pagination={false}
+        rowKey={(d: any) => d.id}
       />
     </Card>
   );

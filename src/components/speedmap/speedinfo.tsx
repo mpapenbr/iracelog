@@ -55,6 +55,12 @@ export const SpeedInfo: React.FC = () => {
     },
   ];
   return (
-    <Table className="iracelog-compact" dataSource={data} columns={columns} pagination={false} />
+    <Table
+      className="iracelog-compact"
+      dataSource={data}
+      columns={columns}
+      pagination={false}
+      rowKey={(d: any) => d.carClass}
+    />
   );
 };
