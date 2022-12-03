@@ -28,7 +28,6 @@
   // Add the IDs of extensions you want installed when the container is created.
   "extensions": [
     "dbaeumer.vscode-eslint",
-    "ms-vscode.vscode-typescript-tslint-plugin",
     "eamodio.gitlens",
     "esbenp.prettier-vscode",
     "github.vscode-pull-request-github",
