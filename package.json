@@ -4,7 +4,7 @@
   "private": true,
   "dependencies": {
     "@ant-design/charts": "^1.4.2",
-    "@apollo/client": "^3.7.1",
+    "@apollo/client": "^3.7.2",
     "@mpapenbr/iracelog-analysis": "^1.2.0",
     "@nivo/bar": "^0.80.0",
     "@nivo/bullet": "^0.80.0",
