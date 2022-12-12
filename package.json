@@ -23,7 +23,7 @@
     "react-router": "^6.4.4",
     "react-router-dom": "^6.4.4",
     "react-use": "^17.4.0",
-    "recharts": "^2.1.16",
+    "recharts": "^2.2.0",
     "redux": "^4.2.0",
     "redux-devtools-extension": "^2.13.8",
     "redux-saga": "^1.2.1",
