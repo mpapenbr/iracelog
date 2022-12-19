@@ -54,7 +54,7 @@
     "@types/sprintf-js": "^1.1.2",
     "@typescript-eslint/eslint-plugin": "^5.45.0",
     "@typescript-eslint/parser": "^5.45.0",
-    "eslint": "^8.29.0",
+    "eslint": "^8.30.0",
     "eslint-plugin-react": "^7.31.11",
     "generate-changelog": "^1.8.0",
     "minimist": "^1.2.7",
