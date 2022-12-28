@@ -4276,16 +4276,16 @@ at-least-node@^1.0.0:
   resolved "https://registry.yarnpkg.com/at-least-node/-/at-least-node-1.0.0.tgz#602cd4b46e844ad4effc92a8011a3c46e0238dc2"
   integrity sha512-+q/t7Ekv1EDY2l6Gda6LLiX14rU9TV20Wa3ofeQmwPFZbOMo9DXrLbOjFaaclkXKWidIaopwAObQDqwWtGUjqg==
 
-autobahn@^20.9.2:
-  version "20.9.2"
-  resolved "https://registry.yarnpkg.com/autobahn/-/autobahn-20.9.2.tgz#244029f0829b23b465dfdbe83cb597b6d4e212ed"
-  integrity sha512-Xas7mHujzRJe1p9RWPS3QTrwcXF5S9B9oT26cbzQKnE7qsvMOvmNnRZ6SWYpMdgDgJDCQ+kvpvQE8pRA/kWTPw==
+autobahn@^22.11.1:
+  version "22.11.1"
+  resolved "https://registry.yarnpkg.com/autobahn/-/autobahn-22.11.1.tgz#ec5816541ea32e376361bf793ad59b3cf802c6d9"
+  integrity sha512-0jEi6KUIAURxAx9QtXzOmSKPopEVNBjSLJ/9VFWDlPFfK3VimKBpXvkzC3YxzSqOlzGqrpRax1ITAAMc4ztpcw==
   dependencies:
     cbor ">= 3.0.0"
     crypto-js ">=3.1.8"
     msgpack5 ">= 3.6.0"
     tweetnacl ">= 0.14.3"
-    ws ">= 1.1.4"
+    ws "1.1.4 - 7"
   optionalDependencies:
     bufferutil ">= 1.2.1"
     utf-8-validate ">= 1.2.1"
@@ -12810,15 +12810,15 @@ write-file-atomic@^3.0.0:
     signal-exit "^3.0.2"
     typedarray-to-buffer "^3.1.5"
 
-"ws@>= 1.1.4", ws@^8.4.2:
-  version "8.11.0"
-  resolved "https://registry.yarnpkg.com/ws/-/ws-8.11.0.tgz#6a0d36b8edfd9f96d8b25683db2f8d7de6e8e143"
-  integrity sha512-HPG3wQd9sNQoT9xHyNCXoDUa+Xw/VevmY9FoHyQ+g+rrMn4j6FB4np7Z0OhdTgjx6MgQLK7jwSy1YecU1+4Asg==
-
-ws@^7.4.6:
+"ws@1.1.4 - 7", ws@^7.4.6:
   version "7.5.9"
   resolved "https://registry.yarnpkg.com/ws/-/ws-7.5.9.tgz#54fa7db29f4c7cec68b1ddd3a89de099942bb591"
   integrity sha512-F+P9Jil7UiSKSkppIiD94dN07AwvFixvLIj1Og1Rl9GGMuNipJnV9JzjD6XuqmAeiswGvUmNLjr5cFuXwNS77Q==
+
+ws@^8.4.2:
+  version "8.11.0"
+  resolved "https://registry.yarnpkg.com/ws/-/ws-8.11.0.tgz#6a0d36b8edfd9f96d8b25683db2f8d7de6e8e143"
+  integrity sha512-HPG3wQd9sNQoT9xHyNCXoDUa+Xw/VevmY9FoHyQ+g+rrMn4j6FB4np7Z0OhdTgjx6MgQLK7jwSy1YecU1+4Asg==
 
 xml-name-validator@^3.0.0:
   version "3.0.0"
