@@ -93,14 +93,14 @@ export const ReplayControl: React.FC = () => {
     await globalWamp.speedmapHolder?.syncLoadData(startTs);
     requestData();
   };
-  const onPlayButtonClicked = (e: React.MouseEvent<HTMLButtonElement>) => {
+  const onPlayButtonClicked = (e: React.MouseEvent) => {
     const curSpeed = speed > 0 ? speed : 1;
     dispatch(replaySettings({ ...settings, playing: true, playSpeed: curSpeed }));
     setPlaying(true);
     setSpeed(curSpeed);
   };
 
-  const onPauseButtonClicked = (e: React.MouseEvent<HTMLButtonElement>) => {
+  const onPauseButtonClicked = (e: React.MouseEvent) => {
     setPlaying(false);
     // console.log(currentSessionTime);
     dispatch(replaySettings({ ...settings, currentSessionTime: currentSessionTime }));
@@ -115,10 +115,10 @@ export const ReplayControl: React.FC = () => {
     dispatch(replaySettings({ ...settings, playSpeed: speed }));
   };
 
-  const onStep = async (e: React.MouseEvent<HTMLButtonElement>) => {
+  const onStep = async (e: React.MouseEvent) => {
     // console.log("step:" + e.currentTarget.value);
-    const step = parseInt(e.currentTarget.value);
-
+    // const step = parseInt(e.currentTarget.value);
+    const step = parseInt((e.currentTarget as HTMLInputElement).value);
     await globalWamp.replayHolder?.syncLoadData(currentTs + step);
     await globalWamp.speedmapHolder?.syncLoadData(currentTs + step);
     requestData();

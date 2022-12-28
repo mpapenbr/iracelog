@@ -101,8 +101,8 @@ export const LiveEvents: React.FC = () => {
     globalWamp.currentLiveId = eventKey;
   };
 
-  const onLiveButtonClicked = (e: React.MouseEvent<HTMLButtonElement>) => {
-    const id = e.currentTarget.value as string;
+  const onLiveButtonClicked = (e: React.MouseEvent) => {
+    const id = (e.currentTarget as HTMLInputElement).value as string;
     if (globalWamp.currentLiveId === undefined) {
       connectToLiveData(id);
     } else {

@@ -63,7 +63,7 @@ export const ReplayControlDummy: React.FC = () => {
 
   useInterval(() => dummyMethod(), playing ? 1000 : null);
 
-  const onPlayButtonClicked = (e: React.MouseEvent<HTMLButtonElement>) => {
+  const onPlayButtonClicked = (e: React.MouseEvent) => {
     const curSpeed = speed > 0 ? speed : 1;
     dispatch(replaySettings({ ...settings, playing: true, playSpeed: curSpeed }));
     //console.log(handle);
@@ -72,7 +72,7 @@ export const ReplayControlDummy: React.FC = () => {
     setSpeed(curSpeed);
   };
 
-  const onPauseButtonClicked = (e: React.MouseEvent<HTMLButtonElement>) => {
+  const onPauseButtonClicked = (e: React.MouseEvent) => {
     console.log("pausing now " + th);
     setPlaying(false);
     dispatch(replaySettings({ ...settings, playing: false }));
