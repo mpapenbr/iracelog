@@ -2,6 +2,8 @@
 
 Webfrontend for iRacing race log data
 
+A demo installation is available at https://iracelog.iracing-tools.de
+
 ## Docker
 
 See https://github.com/mpapenbr/iracelog/pkgs/container/iracelog-web for a list of available images.
