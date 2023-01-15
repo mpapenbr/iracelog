@@ -1,3 +1,20 @@
+#### 0.18.3 (2023-01-15)
+
+##### Chores
+
+* **doc:**  link to demo installation (0d8f2e57)
+* **build:**  change to react-app-rewired (ac367215)
+
+##### Other Changes
+
+* **deps:**
+  *  minor updates (7c8f2109)
+  *  antd, router, some devdeps (7e93c0d7)
+  *  other deps + devdeps updates (0642814f)
+  *  antd 5.03 including code refactorings (bb2571dc)
+  *  weekly (minor) udpates of deps+devdeps (c6047c0c)
+* **dev:**  antd 5.1.1 (53896239)
+
 #### 0.18.2 (2022-11-27)
 
 ##### Bug Fixes
