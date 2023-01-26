@@ -1,6 +1,6 @@
 # iracelog
 
-Webfrontend for iRacing race log data
+Webfrontend for iRacing race log data. See [iracelog-documentation](https://github.com/mpapenbr/iracelog-documentation) for an overview of further components.
 
 A demo installation is available at https://iracelog.iracing-tools.de
 
