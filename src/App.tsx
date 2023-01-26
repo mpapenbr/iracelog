@@ -54,7 +54,7 @@ const App: React.FC<AppProps> = (props: AppProps) => {
             >
               {APP_VERSION_DISPLAY}
             </a>{" "}
-            ©2022 Markus Papenbrock
+            ©2023 Markus Papenbrock
           </Footer>
         </Layout>
       </Router>
