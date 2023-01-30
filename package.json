@@ -29,7 +29,7 @@
     "react-router-dom": "^6.8.0",
     "react-use": "^17.4.0",
     "recharts": "^2.3.2",
-    "redux": "^4.2.0",
+    "redux": "^4.2.1",
     "redux-devtools-extension": "^2.13.8",
     "redux-saga": "^1.2.2",
     "semver": "^7.3.8",
