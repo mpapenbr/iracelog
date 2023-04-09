@@ -2,7 +2,7 @@ import { ReloadOutlined } from "@ant-design/icons";
 import { BulkProcessor } from "@mpapenbr/iracelog-analysis";
 import { defaultProcessRaceStateData } from "@mpapenbr/iracelog-analysis/dist/stints/types";
 import { Button, Col, Descriptions, List, Row } from "antd";
-import { Connection, Session } from "autobahn";
+import { Connection, Session } from "autobahn-browser";
 import _ from "lodash";
 import React, { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";

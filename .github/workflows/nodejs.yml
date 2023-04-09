@@ -33,7 +33,7 @@ jobs:
       - name: Install dependencies
         run: yarn install
       - name: Test
-        run: yarn test --passWithNoTests
+        run: yarn test:no-watch --passWithNoTests
         env:
           CI: true
           RUN_SLOW_TESTS: true

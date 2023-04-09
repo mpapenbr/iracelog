@@ -1,13 +1,13 @@
 import { defaultProcessRaceStateData } from "@mpapenbr/iracelog-analysis/dist/stints/types";
-import { Connection, Session } from "autobahn";
+import { Connection, Session } from "autobahn-browser";
 import React, { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router";
 import { Comparator } from "semver";
 import { globalWamp } from "../../commons/globals";
-import { processCarData } from "../../processor/processCarData";
 import { ReplayDataHolder } from "../../processor/ReplayDataHolder";
 import { SpeedmapDataHolder } from "../../processor/SpeedmapDataHolder";
+import { processCarData } from "../../processor/processCarData";
 import {
   processInboundManifests,
   updateEventInfo,
