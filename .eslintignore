@@ -2,6 +2,7 @@
 
 node_modules/*
 public/*
+dist/
 src/react-app-env.d.ts
 src/reportWebVitals.ts
-webpack.config.js
+env.d.ts
