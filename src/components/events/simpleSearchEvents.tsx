@@ -1,6 +1,6 @@
 import { gql, useLazyQuery } from "@apollo/client";
 import { Button, Descriptions, Input, List, Space, Spin } from "antd";
-import React from "react";
+import React, { ChangeEvent, useState } from "react";
 import { useNavigate } from "react-router";
 import { globalWamp } from "../../commons/globals";
 
@@ -23,8 +23,9 @@ export const SimpleSearchEvents: React.FC = () => {
     }
   `;
   const [doSearch, { loading, data, fetchMore }] = useLazyQuery(GET_EVENTS, {
-    // variables: { offset: 0, limit: 10, arg: "pap" },
+    variables: { offset: 0, limit: 5, arg: "" },
   });
+  const [searchArg, setSearchArg] = useState("");
 
   const onLoadForReplayButtonClicked = (e: React.MouseEvent) => {
     const arg = (e.currentTarget as HTMLInputElement).value;
@@ -35,7 +36,17 @@ export const SimpleSearchEvents: React.FC = () => {
   if (loading) return <Spin />;
 
   const onLoadMore = () => {
-    fetchMore({ variables: { offset: data.events.length } });
+    fetchMore({
+      variables: { offset: data.events.length },
+      updateQuery: (prev, { fetchMoreResult }) => {
+        if (!fetchMoreResult.events) {
+          return prev;
+        }
+        const ret = { events: [...data.events, ...fetchMoreResult.events] };
+        // console.log(ret);
+        return ret;
+      },
+    });
   };
   const loadMore = !loading ? (
     <div
@@ -52,11 +63,20 @@ export const SimpleSearchEvents: React.FC = () => {
   const onSearch = (val: string) => {
     doSearch({ variables: { arg: val, offset: 0, limit: 10 } });
   };
+  const onChange = (e: ChangeEvent<HTMLInputElement>) => {
+    setSearchArg(e.target.value);
+  };
   const SearchHeader = (
     <>
       <Space direction="horizontal">
-        <h3>Search</h3>
-        <Search placeholder="input search text" onSearch={onSearch} style={{ width: 300 }} />
+        <h3>Quick search</h3>
+        <Search
+          placeholder="search for event, track, team, driver"
+          value={searchArg}
+          onSearch={onSearch}
+          onChange={onChange}
+          style={{ width: 300 }}
+        />
       </Space>
     </>
   );
