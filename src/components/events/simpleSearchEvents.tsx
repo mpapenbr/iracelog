@@ -10,7 +10,7 @@ export const SimpleSearchEvents: React.FC = () => {
   const navigate = useNavigate();
   const GET_EVENTS = gql`
     query SimpleSearchEvents($arg: String!, $offset: Int, $limit: Int) {
-      events: simpleSearchEvent(arg: $arg, offset: $offset, limit: $limit) {
+      events: advancedSearchEvent(arg: $arg, offset: $offset, limit: $limit) {
         id
         key
         name
