@@ -1,3 +1,34 @@
+#### 0.18.4 (2023-04-26)
+
+##### Build System / Dependencies
+
+* **deps-dev:**
+  *  bump @vitest/coverage-c8 from 0.29.8 to 0.30.0 (ccf18565)
+  *  bump vitest from 0.29.8 to 0.30.0 (30cb919d)
+*  replace webpack with Vite (#657) (a7332376)
+*  Refactor release workflow (edbb78c8)
+* **deps:**  bump antd from 5.1.4 to 5.1.5 (04753d91)
+
+##### Chores
+
+*  Dockerfile for devcontainer no longer needed (08e2fa0c)
+*  updated devcontainer config (f77e1263)
+
+##### Other Changes
+
+* **dep+devdep:**  several updates (9e7f597d)
+*  advanced search mode (3d250e88)
+*  link to overall documentation (8dc2d0a3)
+* **deps:**
+  *  antd,semver,apollo (448eb494)
+  *  antd 5.4.0, react-router 6.10.0 (6e7301aa)
+  *  antd, recharts, react-router (656d854c)
+  *  antd,router (c20c97f8)
+* **devdeps:**
+  *  minor updates (e11ac2b6)
+  *  typescript 5.0.2 (ab83fc93)
+  *  several (00243a5a)
+
 #### 0.18.3 (2023-01-15)
 
 ##### Chores
