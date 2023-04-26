@@ -1,6 +1,6 @@
 {
   "name": "iracelog",
-  "version": "0.18.3",
+  "version": "0.18.4",
   "private": true,
   "dependencies": {
     "@ant-design/charts": "^1.4.2",
@@ -81,7 +81,7 @@
     "test:no-watch": "vitest run",
     "test:coverage": "vitest run --coverage",
     "eject": "react-scripts eject",
-    "preversion": "yarn test run",
+    "preversion": "yarn vitest run",
     "postversion": "git push --tags && git push && echo \"Successfully released version $npm_package_version!\"",
     "release:test": "changelog -p && git add CHANGELOG.md && git commit -m 'updated CHANGELOG.md' && yarn version --patch",
     "release:major": "changelog -M && git add CHANGELOG.md && git commit -m 'updated CHANGELOG.md' && yarn version --major && git push origin && git push origin --tags",
