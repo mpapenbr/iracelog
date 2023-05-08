@@ -11,7 +11,7 @@
     "@nivo/core": "^0.82.1",
     "@nivo/line": "^0.82.1",
     "@nivo/pie": "^0.82.1",
-    "antd": "^5.4.6",
+    "antd": "^5.4.7",
     "autobahn-browser": "^22.11.1",
     "deep-object-diff": "^1.1.9",
     "graphql": "^16.6.0",
