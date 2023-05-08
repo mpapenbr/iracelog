@@ -6,7 +6,7 @@
     "@ant-design/charts": "^1.4.2",
     "@apollo/client": "^3.7.14",
     "@mpapenbr/iracelog-analysis": "^1.2.0",
-    "@nivo/bar": "^0.82.1",
+    "@nivo/bar": "^0.83.0",
     "@nivo/bullet": "^0.82.1",
     "@nivo/core": "^0.82.1",
     "@nivo/line": "^0.82.1",
