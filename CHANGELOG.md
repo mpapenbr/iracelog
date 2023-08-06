@@ -1,3 +1,47 @@
+### 0.19.0 (2023-08-06)
+
+##### Build System / Dependencies
+
+* **devdeps:**  bulk upgrades (09cae91b)
+* **deps:**
+  *  antd 5.6 + others (1f66c93c)
+  *  bump web-vitals from 3.3.1 to 3.3.2 (4b3d779f)
+  *  bump recharts from 2.6.0 to 2.6.2 (a7c47a3a)
+  *  bump semver from 7.5.0 to 7.5.1 (fd88f836)
+  *  bump antd from 5.4.6 to 5.4.7 (a13704f1)
+  *  bump @apollo/client from 3.7.12 to 3.7.14 (483625c2)
+  *  bump react-router from 6.11.0 to 6.11.1 (aa68d85c)
+  *  bump react-router-dom from 6.10.0 to 6.11.0 (9f2b8cd6)
+* **deps-dev:**
+  *  bump @typescript-eslint/eslint-plugin (e1143341)
+  *  bump @types/lodash from 4.14.194 to 4.14.195 (1a1fe766)
+  *  bump jsdom from 22.0.0 to 22.1.0 (472bc1cc)
+  *  bump @types/react from 18.2.6 to 18.2.7 (1edc5d8d)
+  *  bump c8 from 7.13.0 to 7.14.0 (fe99d27a)
+  *  bump @typescript-eslint/parser from 5.59.6 to 5.59.7 (d2087f3e)
+  *  bump vite from 4.3.8 to 4.3.9 (6c114caf)
+  *  bump eslint from 8.39.0 to 8.40.0 (cc8dcb56)
+  *  bump @types/react from 18.2.5 to 18.2.6 (993e316b)
+  *  bump @typescript-eslint/eslint-plugin (616e996d)
+  *  bump @types/react from 18.2.0 to 18.2.2 (6ad042c7)
+  *  bump vitest from 0.30.1 to 0.31.0 (1788c7da)
+  *  bump vite from 4.3.3 to 4.3.4 (a4c91c67)
+  *  bump @vitest/coverage-c8 from 0.30.1 to 0.31.0 (75134277)
+  *  bump @types/node from 18.16.1 to 18.16.3 (bcdb3ea3)
+* **deps+dev-deps:**  nivo 0.81.2, minor dev-deps (9e3d77bd)
+
+##### Other Changes
+
+* **deps:**
+  *  bulk updates deps+devdeps (7ae15f65)
+  *  bulk update (9faa7616)
+  *  antd 5.1.1 (7b03833a)
+  *  nivo 0.83, recharts 2.6.0 (64582129)
+* **dev-deps:**
+  *  eslint 6.0.0 (952cfc2b)
+  *  minor (4b9363be)
+* **devdeps:**  bulk update (cbfdb140)
+
 #### 0.18.4 (2023-04-26)
 
 ##### Build System / Dependencies
