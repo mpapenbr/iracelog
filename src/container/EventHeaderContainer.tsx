@@ -4,7 +4,7 @@ import * as React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { sprintf } from "sprintf-js";
 import { ApplicationState } from "../stores";
-import { secAsString } from "../utils/output";
+import { secAsHHMMSS, secAsString } from "../utils/output";
 
 interface ElapsedProps {
   v: string;
@@ -139,7 +139,7 @@ export const EventHeaderContainer: React.FC = () => {
         <table width="100%" style={{ lineHeight: "1rem" }}>
           <tr>
             <td>Sim-Time</td>
-            <td align="right">{secAsString(getValue("timeOfDay"))}</td>
+            <td align="right">{secAsHHMMSS(getValue("timeOfDay"))}</td>
           </tr>
           <tr>
             <td>Elapsed</td>

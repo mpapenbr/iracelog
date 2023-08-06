@@ -51,7 +51,7 @@ export const CircleOfDoom: React.FC<MyProps> = (props: MyProps) => {
 
   const OptionalDisplays = () => {
     if (!props.referenceCarNum?.length || dataRaw.length === 0) {
-      console.log("early leave");
+      // console.log("early leave");
       return <></>;
     }
     const carData = carLookup.get(props.referenceCarNum)!;

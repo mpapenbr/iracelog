@@ -7,8 +7,8 @@ import { useDispatch, useSelector } from "react-redux";
 import CarFilter from "../components/live/carFilter";
 import { CircleOfDoom } from "../components/live/circleofdoom";
 import {
-  collectCarsByCarClassFilter,
   ICarFilterData,
+  collectCarsByCarClassFilter,
   orderedCarNumsByPosition,
   processCarClassSelectionNew,
   sortedSelectableCars,
@@ -90,9 +90,9 @@ const newPosAfterPitstop = (procData: IProcData): number => {
   let sortedLaps = procData.carLaps?.laps.map((v) => v.lapTime).sort();
   if (sortedLaps === undefined) sortedLaps = [];
   const meanLap = sortedLaps[Math.ceil(sortedLaps.length / 2)];
-  console.log("meanLap: " + meanLap);
+  // console.log("meanLap: " + meanLap);
   const avgSpeed = procData.eventInfo.trackLength / meanLap;
-  console.log("avgSpeed: " + avgSpeed);
+  // console.log("avgSpeed: " + avgSpeed);
   // console.table(procData.pitInfo);
 
   let inPits = 0;
@@ -227,7 +227,7 @@ export const CustomStandingsContainer: React.FC = () => {
     pitstopTime: userSettings.pitstopTime,
     trackPos,
   });
-  console.log(`${posAfterPit}`);
+  // console.log(`${posAfterPit}`);
   const pitstopProps: SelectPitstopProps = {
     pitstopTime: userSettings.pitstopTime,
     selectedCarNum: userSettings.referenceCarNum,
