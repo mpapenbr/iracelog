@@ -38,8 +38,9 @@ import {
   raceGraphSettings,
   racePositionsSettings,
   replaySettings,
-  stintsSettings,
+  stintRankingSettings,
   stintSummarySettings,
+  stintsSettings,
   strategySettings,
   updateAvailableStandingsColumns,
 } from "../../stores/ui/actions";
@@ -99,12 +100,14 @@ export const resetUi = (dispatch: Dispatch) => {
   dispatch(pitstopsSettings(defaultStateData.pitstops));
   dispatch(stintsSettings(defaultStateData.stints));
   dispatch(stintSummarySettings(defaultStateData.stintSummary));
+  dispatch(stintRankingSettings(defaultStateData.stintRanking));
   dispatch(driverStintsSettings(defaultStateData.driverStints));
   dispatch(circleOfDoomSettings(defaultStateData.circleOfDoom));
   dispatch(replaySettings(defaultStateData.replay));
   dispatch(globalSettings(defaultStateData.global));
   dispatch(dashboardSettings(defaultStateData.dashboard));
   dispatch(strategySettings(defaultStateData.strategy));
+
   dispatch(updateAvailableStandingsColumns(defaultStateData.standingsColumns));
   dispatch(updateAvailableCars([]));
   dispatch(updateAvailableCarClasses([]));

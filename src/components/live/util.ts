@@ -47,10 +47,11 @@ export const extractSomeCarData = (wampData: IProcessRaceStateData): IExtractedC
     return m.set(cur.carNum, cur);
   }, new Map<string, ICarInfo>());
   const carClasses = _.uniq(
-    wampData.carInfo.filter((v) => "".localeCompare(v.carClass || "") !== 0).map((v) => v.carClass)
+    wampData.carInfo.filter((v) => "".localeCompare(v.carClass || "") !== 0).map((v) => v.carClass),
   ).sort();
 
-  const allCarNums = wampData.carLaps.length > 0 ? wampData.carLaps.map((v) => v.carNum).sort(sortCarNumberStr) : [];
+  const allCarNums =
+    wampData.carLaps.length > 0 ? wampData.carLaps.map((v) => v.carNum).sort(sortCarNumberStr) : [];
   return { carInfoLookup: carInfoLookup, allCarNums: allCarNums, allCarClasses: carClasses };
 };
 
@@ -65,7 +66,7 @@ export const extractSomeCarData2 = (carInfo: ICarInfo[]): IExtractedCarData => {
     return m.set(cur.carNum, cur);
   }, new Map<string, ICarInfo>());
   const carClasses = _.uniq(
-    carInfo.filter((v) => "".localeCompare(v.carClass || "") !== 0).map((v) => v.carClass)
+    carInfo.filter((v) => "".localeCompare(v.carClass || "") !== 0).map((v) => v.carClass),
   ).sort();
 
   const allCarNums = carInfo.length > 0 ? carInfo.map((v) => v.carNum).sort(sortCarNumberStr) : [];
@@ -78,7 +79,10 @@ export const extractSomeCarData2 = (carInfo: ICarInfo[]): IExtractedCarData => {
  * @param filterCarClasses
  * @returns
  */
-export const computeAvailableCars = (baseData: IExtractedCarData, filterCarClasses: string[]): ICarFilterData[] => {
+export const computeAvailableCars = (
+  baseData: IExtractedCarData,
+  filterCarClasses: string[],
+): ICarFilterData[] => {
   return baseData.allCarNums
     .filter((v) => {
       if (filterCarClasses.length === 0) {
@@ -86,7 +90,11 @@ export const computeAvailableCars = (baseData: IExtractedCarData, filterCarClass
       } else {
         if (filterCarClasses.find((v) => "All".localeCompare(v) === 0) !== undefined) {
           return true;
-        } else return filterCarClasses.findIndex((fcc) => fcc === baseData.carInfoLookup.get(v)?.carClass) !== -1;
+        } else
+          return (
+            filterCarClasses.findIndex((fcc) => fcc === baseData.carInfoLookup.get(v)?.carClass) !==
+            -1
+          );
       }
     })
     .sort(sortCarNumberStr)
@@ -117,15 +125,15 @@ export const processCarClassSelection = (args: ICarClassProcessorArgs): string[]
   } else {
     const removedClasses = new Set(_.difference(args.currentFilter, args.newSelection));
     _.remove(args.currentShowCars, (carNum) =>
-      removedClasses.has(args.carDataContainer.carInfoLookup.get(carNum)!.carClass)
+      removedClasses.has(args.carDataContainer.carInfoLookup.get(carNum)!.carClass),
     );
     // get added car classes
     const addedClasses = new Set(_.difference(args.newSelection, args.currentFilter));
     let newShowcars = _.concat(
       args.currentShowCars,
       args.carDataContainer.allCarNums.filter((carNum) =>
-        addedClasses.has(args.carDataContainer.carInfoLookup.get(carNum)!.carClass)
-      )
+        addedClasses.has(args.carDataContainer.carInfoLookup.get(carNum)!.carClass),
+      ),
     );
     newShowcars = _.uniq(newShowcars).sort(sortCarNumberStr);
     return newShowcars;
@@ -154,7 +162,7 @@ export const processCarClassSelectionNew = (args: ICarClassProcessorArgs2): stri
     const addedClasses = new Set(_.difference(args.newSelection, args.currentFilter));
     let newShowcars = _.concat(
       args.currentShowCars,
-      args.cars.filter((c) => addedClasses.has(c.carClass)).map((c) => c.carNum)
+      args.cars.filter((c) => addedClasses.has(c.carClass)).map((c) => c.carNum),
     );
 
     newShowcars = _.uniq(newShowcars).sort(sortCarNumberStr);
@@ -162,7 +170,10 @@ export const processCarClassSelectionNew = (args: ICarClassProcessorArgs2): stri
   }
 };
 
-export const collectCarsByCarClassFilter = (cars: ICarBaseData[], filterCarClasses: string[]): ICarBaseData[] => {
+export const collectCarsByCarClassFilter = (
+  cars: ICarBaseData[],
+  filterCarClasses: string[],
+): ICarBaseData[] => {
   if (filterCarClasses === undefined) return cars;
   // console.log(filterCarClasses, filterCarClasses.includes("All"));
   if (filterCarClasses.length === 0 || filterCarClasses.includes("All")) {
@@ -232,7 +243,9 @@ export const extractCarClasses = (carInfo: ICarInfo[]): ICarClass[] => {
 export const findDriverByStint = (carInfo: ICarInfo, stint: IStintInfo) =>
   carInfo.drivers.find((v) =>
     // allow 5s on leave time to cope with possible resets due to disconnects
-    v.seatTime.find((st) => st.enterCarTime <= stint.exitTime && st.leaveCarTime + 5 >= stint.enterTime)
+    v.seatTime.find(
+      (st) => st.enterCarTime <= stint.exitTime && st.leaveCarTime + 5 >= stint.enterTime,
+    ),
   );
 
 /**
@@ -241,7 +254,10 @@ export const findDriverByStint = (carInfo: ICarInfo, stint: IStintInfo) =>
  * @param carManifest the manifest for the data in carRawData.data
  * @returns carNums order by current race positions
  */
-export const orderedCarNumsByPosition = (carMsg: IMessage, carManifest: IDataEntrySpec[]): string[] => {
+export const orderedCarNumsByPosition = (
+  carMsg: IMessage,
+  carManifest: IDataEntrySpec[],
+): string[] => {
   const createCarNumsByPos = (carDataRaw: any): string[] => {
     return carDataRaw.map((d: any) => getValueViaSpec(d, carManifest, "carNum"));
   };
@@ -258,7 +274,7 @@ export const orderedCarNumsByPosition = (carMsg: IMessage, carManifest: IDataEnt
 export const sortedSelectableCars = (
   cars: ICarBaseData[],
   orderByPosition: boolean,
-  provideOrderedCarNums: () => string[]
+  provideOrderedCarNums: () => string[],
 ): ICarBaseData[] => {
   if (orderByPosition) {
     const carNumsByPos = provideOrderedCarNums();
@@ -268,4 +284,18 @@ export const sortedSelectableCars = (
     return cars.slice().sort(sortBySetting);
   }
   return cars.slice().sort((a, b) => sortCarNumberStr(a.carNum, b.carNum));
+};
+
+/**
+ *
+ * @param si IStintInfo to investigate
+ * @param range upper and lower bound
+ * @returns true if either start and/or end of stint is within range
+ */
+export const isInSelectedRange = (si: IStintInfo, range: [number, number]): boolean => {
+  return (
+    _.inRange(si.enterTime, range[0], range[1]) ||
+    _.inRange(si.exitTime, range[0], range[1]) ||
+    (si.exitTime <= range[0] && si.enterTime >= range[1])
+  );
 };

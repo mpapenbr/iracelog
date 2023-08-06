@@ -97,6 +97,15 @@ export interface IStrategySettings {
   selectableCars: ICarBaseData[]; // the cars to show in the dropdown as selectable
   filterCarClasses: string[]; // empty = all classes, otherwise only selected
 }
+export interface IStintRankingSettings {
+  showCars: string[];
+  selectableCars: ICarBaseData[]; // the cars to show in the dropdown as selectable
+  filterCarClasses: string[]; // empty = all classes, otherwise only selected
+  minSessionTime: number; // minimum session time of event
+  maxSessionTime: number; // maximum session time of event
+  lowerRangeTime: number; // left side of selected time range
+  upperRangeTime: number; // right side of selected time range
+}
 
 export interface IRaceStintSharedSettings {
   showCars: string[];
@@ -181,6 +190,8 @@ export interface IUserSettings {
   pitstops: IPitstopsSettings;
   stints: IStintsSettings;
   stintSummary: IStintSummarySettings;
+  stintRanking: IStintRankingSettings;
+
   dashboard: IDashboardSettings;
   strategy: IStrategySettings;
   driverStints: IDriverStintsSettings;

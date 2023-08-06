@@ -16,6 +16,7 @@ import {
   IRacePositionsSettings,
   IReplaySettings,
   IStandingsColumns,
+  IStintRankingSettings,
   IStintsSettings,
   IStintSummarySettings,
   IStrategySettings,
@@ -170,6 +171,21 @@ const DriverStintsSettingsReducer = reducerWithInitialState(initialDriverStints)
   (state, settings) => settings,
 );
 
+// Stint rankings
+const initialStintRanking: IStintRankingSettings = {
+  filterCarClasses: [],
+  showCars: [],
+  selectableCars: [],
+  minSessionTime: 0,
+  maxSessionTime: 0,
+  lowerRangeTime: 0,
+  upperRangeTime: 0,
+};
+const StintRankingSettingsReducer = reducerWithInitialState(initialStintRanking).case(
+  UiActions.stintRankingSettings,
+  (state, settings) => settings,
+);
+
 // CircleOfDoomSettings
 const initialCircleOfDoom: ICircleOfDoomSettings = {
   referenceCarNum: "",
@@ -243,6 +259,7 @@ export const defaultStateData: IUserSettings = {
   replay: initialReplaySettings,
   global: initialGlobalSettings,
   standingsColumns: initialAvailableStandingsColumns,
+  stintRanking: initialStintRanking,
   counter: 0,
 };
 const combinedReducers = combineReducers<IUserSettings>({
@@ -262,6 +279,7 @@ const combinedReducers = combineReducers<IUserSettings>({
   replay: ReplaySettingsReducer,
   global: GlobalSettingsReducer,
   standingsColumns: AvailableStandingColumnsReducer,
+  stintRanking: StintRankingSettingsReducer,
   counter: DemoReducer,
 });
 

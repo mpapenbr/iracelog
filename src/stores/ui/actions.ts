@@ -13,6 +13,7 @@ import {
   IRacePositionsSettings,
   IReplaySettings,
   IStandingsColumns,
+  IStintRankingSettings,
   IStintsSettings,
   IStintSummarySettings,
   IStrategySettings,
@@ -37,6 +38,7 @@ export const stintSummarySettings = actionCreator<IStintSummarySettings>("STINT_
 export const dashboardSettings = actionCreator<IDashboardSettings>("DASHBOARD_SETTINGS");
 export const strategySettings = actionCreator<IStrategySettings>("STRATEGY_SETTINGS");
 export const driverStintsSettings = actionCreator<IDriverStintsSettings>("DRIVER_STINTS_SETTINGS");
+export const stintRankingSettings = actionCreator<IStintRankingSettings>("STINT_RANKING_SETTINGS");
 export const circleOfDoomSettings = actionCreator<ICircleOfDoomSettings>("CIRCLE_OF_DOOM_SETTINGS");
 
 export const replaySettings = actionCreator<IReplaySettings>("REPLAY_SETTINGS");

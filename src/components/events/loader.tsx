@@ -16,7 +16,11 @@ import {
 import { ITrackInfo } from "../../stores/racedata/types";
 import { updateSpeedmapData, updateSpeedmapEvolution } from "../../stores/speedmap/actions";
 import { ISpeedmapEvolution } from "../../stores/speedmap/types";
-import { replaySettings, updateAvailableStandingsColumns } from "../../stores/ui/actions";
+import {
+  replaySettings,
+  stintRankingSettings,
+  updateAvailableStandingsColumns,
+} from "../../stores/ui/actions";
 // import { initialReplaySettings } from "../../stores/ui/reducer";
 import { defaultStateData as defaultUiStateData } from "../../stores/ui/reducer";
 
@@ -47,6 +51,7 @@ export const LoaderPage: React.FC<MyProps> = (props: MyProps) => {
         ])) as any;
 
         console.log(eventInfo);
+
         // dispatch(reset());
         resetUi(dispatch);
         const settings = {
@@ -61,6 +66,17 @@ export const LoaderPage: React.FC<MyProps> = (props: MyProps) => {
         };
         dispatch(replaySettings(settings));
         dispatch(updateEventInfo(eventInfo.data.info));
+
+        dispatch(
+          stintRankingSettings({
+            ...defaultUiStateData.stintRanking,
+            minSessionTime: eventInfo.data.replayInfo.minSessionTime,
+            maxSessionTime: eventInfo.data.replayInfo.maxSessionTime,
+            lowerRangeTime: eventInfo.data.replayInfo.minSessionTime,
+            upperRangeTime: eventInfo.data.replayInfo.maxSessionTime,
+          }),
+        );
+
         setTasks("Loading track info");
 
         const trackInfo = (await s.call("racelog.public.get_track_info", [
