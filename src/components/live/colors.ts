@@ -67,7 +67,8 @@ export const catPaired = [
   "#ff7f00",
   "#cab2d6",
   "#6a3d9a",
-  "#ffff99",
+  // "#ffff99", // very light yellow
+  "#ffed6f", // a little darker yellow
   "#b15928",
 ];
 

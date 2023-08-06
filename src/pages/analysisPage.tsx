@@ -20,6 +20,7 @@ import { RacePositionsContainer } from "../container/RacePositionsContainer";
 import { SettingsContainer } from "../container/SettingsContainer";
 import { SpeedmapContainer } from "../container/SpeedmapContainer";
 import { StintLapsContainer } from "../container/StintLapsContainer";
+import { StintRankingContainer } from "../container/StintRankingContainer";
 import { StintSummaryContainer } from "../container/StintSummaryContainer";
 import { StrategyContainer } from "../container/StrategyContainer";
 import { TestContainer } from "../container/Test";
@@ -66,6 +67,7 @@ export const AnalysisMainPage: React.FC = () => {
     { label: <Link to="carPitstops">Pitstops</Link>, key: "carPitstops" },
     { label: <Link to="stintDurations">Stint Durations</Link>, key: "stintDurations" },
     { label: <Link to="stintSummary">Stint Summary</Link>, key: "stintSummary" },
+    { label: <Link to="stintRanking">Stint Ranking</Link>, key: "stintRanking" },
     { label: <Link to="speedmap">Speedmap</Link>, key: "speedmap", requires: ">=0.4.4" },
     { label: <Link to="raceEntries">Race entries</Link>, key: "raceEntries", requires: ">=0.4.4" },
     { label: <Link to="messages">Messages</Link>, key: "messages" },
@@ -116,6 +118,7 @@ export const AnalysisMainPage: React.FC = () => {
           <Route path="stintDurations" element={<CarStintsContainer />} />
           <Route path="stintLaps" element={<StintLapsContainer />} />
           <Route path="stintSummary" element={<StintSummaryContainer />} />
+          <Route path="stintRanking" element={<StintRankingContainer />} />
           <Route path="messages" element={<RaceMessages />} />
           <Route path="settings" element={<SettingsContainer />} />
           <Route path="test" element={<TestContainer />} />

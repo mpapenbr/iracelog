@@ -25,7 +25,7 @@ export const lapTimeStringTenths = (t: number): string => {
   work -= minutes * 60;
   const seconds = Math.trunc(work);
   work -= seconds;
-  const tenths = Math.trunc(work * 10);
+  const tenths = Math.round(work * 10);
   return sprintf("%d:%02d.%1d", minutes, seconds, tenths);
 };
 /**

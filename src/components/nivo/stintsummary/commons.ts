@@ -27,7 +27,7 @@ export const colorsBySeatTime = (data: IDriverInfo[]) => {
     colorLookup: new Map(
       seatData.map((v) => {
         return [v.id, v.color] as [string, string];
-      })
+      }),
     ),
   };
 };
@@ -39,12 +39,14 @@ export interface CombinedStintData {
   idx: number;
   minTime: number;
   maxTime: number;
+  avgTime: number;
   color?: string;
 }
 export const getCombinedStintData = (
   stints: IStintInfo[],
   pits: IPitInfo[],
-  colorLookup: (si: IStintInfo) => string
+  colorLookup: (si: IStintInfo) => string,
+  computeAvg?: (si: IStintInfo) => number,
 ): CombinedStintData[] => {
   const work: CombinedStintData[] = stints.map((d, idx) => {
     // const driver = findDriverByStint(currentCarInfo, d);
@@ -56,6 +58,7 @@ export const getCombinedStintData = (
       idx: idx + 1,
       minTime: d.exitTime,
       maxTime: d.enterTime,
+      avgTime: computeAvg ? computeAvg(d) : NaN,
       // color: colorLookup.get(driver?.driverName ?? "n.a"),
       color: colorLookup(d),
     };
@@ -67,6 +70,7 @@ export const getCombinedStintData = (
     idx: idx + 1,
     minTime: d.enterTime,
     maxTime: d.exitTime,
+    avgTime: NaN,
   }));
   const combined = work.concat(x).sort((a, b) => a.ref - b.ref);
   return combined;
