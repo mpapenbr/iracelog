@@ -43,6 +43,13 @@ export const Standings: React.FC<Props> = (props: Props) => {
       if (info === "pb") {
         return <span style={{ color: "green", fontWeight: 500 }}>{lapTimeString(v)}</span>;
       }
+      if (info === "cb") {
+        return <span style={{ color: "blue", fontWeight: 500 }}>{lapTimeString(v)}</span>;
+      }
+      if (info === "clb") {
+        // evtl auch deepskyblue
+        return <span style={{ color: "red", fontWeight: 500 }}>{lapTimeString(v)}</span>;
+      }
       return v > 0 ? lapTimeString(v) : "";
     }
   };
@@ -89,8 +96,9 @@ export const Standings: React.FC<Props> = (props: Props) => {
       key: "best",
       title: "Best",
       render: (d) => {
-        const v = getValue(d, "best");
-        return v > 0 ? lapTimeString(v) : "";
+        // const v = getValue(d, "best");
+        // return v > 0 ? lapTimeString(v) : "";
+        return coloredTimeData(d, "best");
       },
       width: 60,
       align: "right",
