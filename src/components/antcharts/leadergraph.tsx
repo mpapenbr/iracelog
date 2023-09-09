@@ -9,7 +9,7 @@ import { sprintf } from "sprintf-js";
 import { globalWamp } from "../../commons/globals";
 import { ApplicationState } from "../../stores";
 import { assignCarColors } from "../live/colorAssignment";
-import { extractSomeCarData2 } from "../live/util";
+import { extractSomeCarData } from "../live/util";
 
 interface MyProps {
   showCars: string[];
@@ -44,7 +44,7 @@ const LeaderGraph: React.FC<MyProps> = (props: MyProps) => {
   console.log(showCars);
   if (!showCars.length) return <Empty description="Please select cars to show" />;
 
-  const carDataContainer = extractSomeCarData2(carInfos);
+  const carDataContainer = extractSomeCarData(carInfos);
   const { carInfoLookup, allCarNums, allCarClasses } = carDataContainer;
 
   interface IGraphData {
@@ -119,7 +119,9 @@ const LeaderGraph: React.FC<MyProps> = (props: MyProps) => {
       nice: true,
 
       minLimit: 0,
-      maxLimit: Math.ceil(Math.min(_.maxBy(graphDataOrig, (d) => d.gap)!.gap, userSettings.deltaRange)),
+      maxLimit: Math.ceil(
+        Math.min(_.maxBy(graphDataOrig, (d) => d.gap)!.gap, userSettings.deltaRange),
+      ),
 
       // label: {formatter: (d: number) => lapTimeString(d)},
     },

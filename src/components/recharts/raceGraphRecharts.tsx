@@ -19,7 +19,7 @@ import { globalWamp } from "../../commons/globals";
 import { ApplicationState } from "../../stores";
 
 import { cat10Colors } from "../live/colors";
-import { extractSomeCarData2 } from "../live/util";
+import { extractSomeCarData } from "../live/util";
 
 interface IGraphData {
   carNum: string;
@@ -37,7 +37,7 @@ const RaceGraphRecharts: React.FC<{}> = () => {
   const dispatch = useDispatch();
   // this little trick handles the fetching of brushInterval from state, let it be changed here and on leaving this Element store the values in the redux state.
 
-  const carDataContainer = extractSomeCarData2(carInfos);
+  const carDataContainer = extractSomeCarData(carInfos);
   const { carInfoLookup, allCarNums, allCarClasses } = carDataContainer;
   // const availableCars = computeAvailableCars(carDataContainer, uiSettings.filterCarClasses);
 

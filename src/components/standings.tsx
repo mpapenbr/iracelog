@@ -7,8 +7,12 @@ import { useDispatch, useSelector } from "react-redux";
 import { sprintf } from "sprintf-js";
 import { ApplicationState } from "../stores";
 
+import { ICarInfo, IDriverInfo } from "@mpapenbr/iracelog-analysis/dist/stints/types";
+import { Comparator } from "semver";
+import { ICarEntry } from "../stores/cars/types";
 import { classificationSettings, updateAvailableStandingsColumns } from "../stores/ui/actions";
 import { lapTimeString } from "../utils/output";
+import { findDriverBySessionTime } from "./live/util";
 
 interface MyProps {
   showCars: string[];
@@ -21,9 +25,16 @@ export const Standings: React.FC<Props> = (props: Props) => {
   const stateColumnsAvail = useSelector(
     (state: ApplicationState) => state.userSettings.standingsColumns,
   );
+  const eventInfo = useSelector((state: ApplicationState) => state.raceData.eventInfo);
+  const sessionInfo = useSelector((state: ApplicationState) => state.raceData.sessionInfo);
+  const carData = useSelector((state: ApplicationState) => state.carData);
+  const carInfo = useSelector((state: ApplicationState) => state.raceData.carInfo);
   const carsRaw = useSelector((state: ApplicationState) => state.raceData.classification.data);
   const carClasses = useSelector((state: ApplicationState) => state.raceData.availableCarClasses);
   const stateCarManifest = useSelector((state: ApplicationState) => state.raceData.manifests.car);
+  const stateSessionManifest = useSelector(
+    (state: ApplicationState) => state.raceData.manifests.session,
+  );
   const dispatch = useDispatch();
   const getValue = (d: [], key: string) => getValueViaSpec(d, stateCarManifest, key);
 
@@ -53,6 +64,30 @@ export const Standings: React.FC<Props> = (props: Props) => {
       return v > 0 ? lapTimeString(v) : "";
     }
   };
+  const hasCarData = new Comparator(">=0.4.4").test(eventInfo.raceloggerVersion);
+
+  const sessionTime = getValueViaSpec(sessionInfo.data, stateSessionManifest, "sessionTime");
+
+  // key: carNum
+  const carInfoLookup = new Map<string, ICarInfo>(carInfo.map((o) => [o.carNum, o]));
+  const carDataLookup = new Map<string, ICarEntry>(
+    carData.entries.map((o) => [o.car.carNumber, o.car]),
+  );
+
+  const resolveCarInfo = (carNum: string): IDriverInfo => {
+    return findDriverBySessionTime(carInfoLookup.get(carNum)!, sessionTime);
+  };
+
+  const getDriverName = (carNum: string): string => {
+    return resolveCarInfo(carNum).driverName;
+  };
+  const getCarClassName = (carNum: string): string => {
+    return carInfoLookup.get(carNum)?.carClass ?? "n.a.";
+  };
+
+  const getCarName = (carNum: string): string => {
+    return carDataLookup.get(carNum)?.name ?? "n.a.";
+  };
 
   const nullAwareOutput = (value: any, format: string): string => {
     if (typeof value === "number") {
@@ -80,10 +115,27 @@ export const Standings: React.FC<Props> = (props: Props) => {
     { key: "pos", title: "Pos", render: (d) => getValue(d, "pos"), width: 20, align: "right" },
     { key: "pic", title: "PIC", render: (d) => getValue(d, "pic"), width: 20, align: "right" },
     { key: "carNum", title: "#", render: (d) => getValue(d, "carNum"), width: 20, align: "right" },
-    { key: "car", title: "Car", render: (d) => getValue(d, "car") },
-    { key: "carClass", title: "Class", render: (d) => getValue(d, "carClass"), ellipsis: false },
+    {
+      key: "car",
+      title: "Car",
+      render: (d) => {
+        return hasCarData ? getCarName(getValue(d, "carNum")) : getValue(d, "car");
+      },
+    },
+    {
+      key: "carClass",
+      title: "Class",
+      render: (d) => getCarClassName(getValue(d, "carNum")),
+      ellipsis: false,
+    },
     { key: "state", title: "State", render: (d) => getValue(d, "state") },
-    { key: "userName", title: "Driver", render: (d) => getValue(d, "userName"), ellipsis: false },
+    // { key: "userName", title: "Driver", render: (d) => getValue(d, "userName"), ellipsis: false },
+    {
+      key: "userName",
+      title: "Driver",
+      render: (d) => getDriverName(getValue(d, "carNum")),
+      ellipsis: false,
+    },
     { key: "laps", title: "Lap", render: (d) => lapsOutput(d), width: 20, align: "right" },
     {
       key: "last",

@@ -5,7 +5,6 @@ import {
   IDataEntrySpec,
   IMessage,
   IPitInfo,
-  IProcessRaceStateData,
   IStintInfo,
 } from "@mpapenbr/iracelog-analysis/dist/stints/types";
 import { getValueViaSpec } from "@mpapenbr/iracelog-analysis/dist/stints/util";
@@ -36,24 +35,6 @@ export interface IExtractedCarData {
    */
   allCarClasses: string[];
 }
-/**
- * extracts some data around cars
- * @param wampData
- * @returns
- * @deprecated since it is based on "old" data structure. To be removed
- */
-export const extractSomeCarData = (wampData: IProcessRaceStateData): IExtractedCarData => {
-  const carInfoLookup = wampData.carInfo.reduce((m, cur) => {
-    return m.set(cur.carNum, cur);
-  }, new Map<string, ICarInfo>());
-  const carClasses = _.uniq(
-    wampData.carInfo.filter((v) => "".localeCompare(v.carClass || "") !== 0).map((v) => v.carClass),
-  ).sort();
-
-  const allCarNums =
-    wampData.carLaps.length > 0 ? wampData.carLaps.map((v) => v.carNum).sort(sortCarNumberStr) : [];
-  return { carInfoLookup: carInfoLookup, allCarNums: allCarNums, allCarClasses: carClasses };
-};
 
 /**
  * extracts some data around cars
@@ -61,7 +42,7 @@ export const extractSomeCarData = (wampData: IProcessRaceStateData): IExtractedC
  * @returns processed
 
  */
-export const extractSomeCarData2 = (carInfo: ICarInfo[]): IExtractedCarData => {
+export const extractSomeCarData = (carInfo: ICarInfo[]): IExtractedCarData => {
   const carInfoLookup = carInfo.reduce((m, cur) => {
     return m.set(cur.carNum, cur);
   }, new Map<string, ICarInfo>());
@@ -247,6 +228,39 @@ export const findDriverByStint = (carInfo: ICarInfo, stint: IStintInfo) =>
       (st) => st.enterCarTime <= stint.exitTime && st.leaveCarTime + 5 >= stint.enterTime,
     ),
   );
+
+/**
+ *
+ * @param carInfo
+ * @param sessionTime
+ * @returns the IDriverInfo of the driving the stint
+ */
+export const findDriverBySessionTime = (carInfo: ICarInfo, sessionTime: number) => {
+  const ret = carInfo.drivers.find((v) =>
+    v.seatTime.find((st) => st.enterCarTime <= sessionTime && st.leaveCarTime >= sessionTime),
+  );
+  if (ret !== undefined) {
+    return ret;
+  }
+  // if session time is not in any range, select the driver with the closest gap to session time
+  var foundIdx = -1;
+  var gap = Number.MAX_VALUE;
+  carInfo.drivers.forEach((v, i) => {
+    v.seatTime.forEach((st) => {
+      var localGap = Math.abs(st.enterCarTime - sessionTime);
+      if (localGap < gap) {
+        gap = localGap;
+        foundIdx = i;
+      }
+      localGap = Math.abs(st.leaveCarTime - sessionTime);
+      if (localGap < gap) {
+        gap = localGap;
+        foundIdx = i;
+      }
+    });
+  });
+  return carInfo.drivers[foundIdx];
+};
 
 /**
  *
