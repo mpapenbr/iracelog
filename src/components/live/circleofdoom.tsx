@@ -127,11 +127,11 @@ export const CircleOfDoom: React.FC<MyProps> = (props: MyProps) => {
 
       const arc = pitLen * 360;
 
-      const innerCircle = circleSize - circleExtendSize - 1; // we want the pit box just one pixel below the COD
+      const innerCircle = circleSize - circleExtendSize - 1 / 2 - 1; // we want the pit box just one pixel below the COD
 
       const x = Math.trunc(Math.cos((arc * Math.PI) / 180.0) * innerCircle);
       const y = Math.trunc(Math.sin((arc * Math.PI) / 180.0) * innerCircle);
-      const xp = innerCircle - x - 1;
+      const xp = innerCircle - x;
       const yp = y;
       // console.log(`innerCircle: ${innerCircle} len: ${pitLen} winkel: ${arc} x:${x} y: ${y}`);
       return (
@@ -143,7 +143,7 @@ export const CircleOfDoom: React.FC<MyProps> = (props: MyProps) => {
           >
             <path
               d={`M ${
-                circleSize - innerCircle + 1
+                circleSize - innerCircle
               } ${circleSize}  a ${innerCircle} ${innerCircle} 0 0 0 ${xp} ${yp}  `}
               stroke="grey"
               fill="none"
@@ -172,7 +172,7 @@ export const CircleOfDoom: React.FC<MyProps> = (props: MyProps) => {
           cx={circleSize}
           cy={circleSize}
           r={circleSize - circleExtendSize}
-          style={{ stroke: "grey", fillOpacity: 0 }}
+          style={{ stroke: "grey", fillOpacity: 0, strokeWidth: 1 }}
         />
         <Sectors />
         {data
