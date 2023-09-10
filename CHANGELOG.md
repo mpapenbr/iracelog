@@ -1,3 +1,22 @@
+### 0.20.0 (2023-09-10)
+
+##### Build System / Dependencies
+
+* **deps-dev:**  Bump dev-dependencies (6372c500)
+* **deps:**
+  *  Bump dependencies (6ba547bd)
+  *  bump antd from 5.8.5 to 5.8.6 (1433f31d)
+  *  bump tough-cookie from 4.1.2 to 4.1.3 (f936de9b)
+  *  updated some deps + devdeps (5351a2d5)
+
+##### Bug Fixes
+
+*  pitlane marker (small COD) (a613d2dc)
+
+##### Other Changes
+
+*  Retrieve car/driver info data from analysis data (a8c4f2d8)
+
 ### 0.19.0 (2023-08-06)
 
 ##### Build System / Dependencies
