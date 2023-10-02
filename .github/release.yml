@@ -1,0 +1,28 @@
+changelog:
+  categories:
+    - title: ":lock: Security Issues"
+      labels: [security]
+
+    - title: ":rocket: Updates"
+      labels: [enhancement, feature, update]
+
+    - title: ":bug: Bug Fixes"
+      labels: [bug, bugfix, fix]
+
+    - title: ":memo: Documentation"
+      labels: [documentation, docs]
+
+    - title: ":construction: Work in Progress"
+      labels: [wip, in-progress, incomplete, partial, hotfix]
+
+    - title: ":package: Dependencies"
+      labels: [dependencies, dependency]
+
+    - title: ":test_tube: Tests and Refactor"
+      labels: [refactoring, refactor, tests, testing]
+
+    - title: ":robot: CI/CD and Pipelines"
+      labels: [build, ci, pipeline]
+
+    - title: "Other"
+      labels: ["*"]
