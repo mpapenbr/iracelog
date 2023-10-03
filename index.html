@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
   <head>
     <meta charset="utf-8" />
@@ -28,7 +28,14 @@
     <div id="root"></div>
     <!-- Add entry point 👇 -->
     <script type="module" src="/src/index.tsx"></script>
-
+    <script src="/wasm_exec.js"></script>
+    <script>
+      const go = new Go();
+      window.Go = go;
+      // seems to be created via wasm_exec, but this disturbs ant-charts (for example) in vite environment
+      // so we just ensure the situation prior to adding wasm_exec ;)
+      process = undefined;
+    </script>
     <!--
       This HTML file is a template.
       If you open it directly in the browser, you will see an empty page.

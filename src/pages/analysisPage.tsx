@@ -25,7 +25,7 @@ import { StintSummaryContainer } from "../container/StintSummaryContainer";
 import { StrategyContainer } from "../container/StrategyContainer";
 import { TestContainer } from "../container/Test";
 import { ApplicationState } from "../stores";
-
+import wasmMethods from "../wasm/wasmloader";
 const { Header, Sider, Content } = Layout;
 
 const OtherContent: React.FC = () => <div>Here goes other content</div>;
@@ -51,7 +51,7 @@ export const AnalysisMainPage: React.FC = () => {
     }
   }, [loadTrigger]);
   // console.log(eventInfo);
-
+  console.log(wasmMethods.demoAdd(1, 2));
   const allItems = [
     { label: <Link to="/events">Events</Link>, key: "events" },
     { type: "divider", key: "menuDivider" },
