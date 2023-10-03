@@ -8,7 +8,16 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
+
+      - name: Install TinyGo
+        run: |
+          sudo ./installTinyGo.sh
+
+      - name: Build go wasm
+        working-directory: ./go
+        run: make tinygo
+
       - name: Cache node modules
         uses: actions/cache@v3
         env:

@@ -12,6 +12,7 @@
 /build
 /docker/build
 /dist
+*.wasm
 
 # misc
 .DS_Store
