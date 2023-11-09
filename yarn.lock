@@ -2168,10 +2168,10 @@
   resolved "https://registry.yarnpkg.com/@types/aria-query/-/aria-query-5.0.1.tgz#3286741fb8f1e1580ac28784add4c7a1d49bdfbc"
   integrity sha512-XTIieEY+gvJ39ChLcB4If5zHtPxt3Syj5rgZR+e1ctpmK8NjPf0zFqsz4JpLJT0xla9GFDKjy8Cpu331nrmE1Q==
 
-"@types/autobahn@^20.9.3":
-  version "20.9.3"
-  resolved "https://registry.yarnpkg.com/@types/autobahn/-/autobahn-20.9.3.tgz#dca23aba60cc18fde1e3a0a68332ddd3aeb817a9"
-  integrity sha512-r6iWTVtczRc3jQAEQncZdwCzltSvqFnA/pvqMGn0wwN2n79UprLRLzt/wVIem/Eq3L/q0PFL5ElJtEHvwvuO/Q==
+"@types/autobahn@^20.9.4":
+  version "20.9.4"
+  resolved "https://registry.yarnpkg.com/@types/autobahn/-/autobahn-20.9.4.tgz#65eeb94ba92366c49901b1bf562ef6fb91b6ce9e"
+  integrity sha512-0XWKblxEz8bKoqUpiSWmpuHo4miKTWpu81bTczdtOwGF3x4KY9MVBJ1btmgY3ARBP28vxZ4Q/1blS8UsLMxf3g==
   dependencies:
     "@types/when" "*"
 
