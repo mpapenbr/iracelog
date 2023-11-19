@@ -2,9 +2,11 @@ import { getValueViaSpec } from "@mpapenbr/iracelog-analysis/dist/stints/util";
 import * as React from "react";
 import { useSelector } from "react-redux";
 import { ApplicationState } from "../../stores";
+import { ICarInfoContainer } from "../../stores/cars/types";
 import { ICarBaseData } from "../../stores/racedata/types";
 import { assignCarColors } from "./colorAssignment";
 import { cat10Colors } from "./colors";
+import { carNumberByCarIdx, supportsCarData } from "./util";
 
 type TrackPosData = {
   carNum: string;
@@ -29,13 +31,22 @@ export const CircleOfDoom: React.FC<MyProps> = (props: MyProps) => {
   const carInfos = useSelector((state: ApplicationState) => state.raceData.availableCars);
   const eventInfo = useSelector((state: ApplicationState) => state.raceData.eventInfo);
   const userSettingsx = useSelector((state: ApplicationState) => state.userSettings.circleOfDoom);
+  const stateCarData: ICarInfoContainer = useSelector((state: ApplicationState) => state.carData);
 
   const allCarNums = carInfos.map((c) => c.carNum);
   const carLookup = carInfos.reduce((prev, cur) => {
     return prev.set(cur.carNum, cur);
   }, new Map<string, ICarBaseData>());
+
+  const getCarNumLegacy = (c: any): string => {
+    return getValueViaSpec(c, stateCarManifest, "carNum");
+  };
+  const carIdxLookup = carNumberByCarIdx(stateCarData);
+  const getCarNum = (c: any): string => {
+    return carIdxLookup[getValueViaSpec(c, stateCarManifest, "carIdx")];
+  };
   const dataRaw: TrackPosData[] = carsRaw.map((c: any, idx: number) => ({
-    carNum: getValueViaSpec(c, stateCarManifest, "carNum"),
+    carNum: supportsCarData(eventInfo.raceloggerVersion) ? getCarNum(c) : getCarNumLegacy(c),
     trackPos: getValueViaSpec(c, stateCarManifest, "trackPos"),
     state: getValueViaSpec(c, stateCarManifest, "state"),
     pos: idx,
@@ -71,14 +82,14 @@ export const CircleOfDoom: React.FC<MyProps> = (props: MyProps) => {
     const pitInfo = carPits.find((item) => item.carNum === carData.carNum)!;
     let inPits = 0;
     if (pitInfo && pitInfo.current.isCurrentPitstop) {
-      console.log("car is in pits for " + pitInfo.current.laneTime);
+      // console.log("car is in pits for " + pitInfo.current.laneTime);
       inPits = pitInfo.current.laneTime;
     }
     const newPos =
       ((1 + data.trackPos - (avgSpeed * (props.pitstopTime - inPits)) / eventInfo.trackLength) %
         1) *
       360;
-    console.log(newPos);
+    // console.log(newPos);
     const color = getColor(data.carNum);
     return (
       <>

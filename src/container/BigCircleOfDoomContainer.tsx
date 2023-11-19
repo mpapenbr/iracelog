@@ -6,11 +6,13 @@ import { useDispatch, useSelector } from "react-redux";
 import { CircleOfDoom } from "../components/cod/circleofdoom";
 import CarFilter from "../components/live/carFilter";
 import {
-  collectCarsByCarClassFilter,
   ICarFilterData,
+  carNumberByCarIdx,
+  collectCarsByCarClassFilter,
   orderedCarNumsByPosition,
   processCarClassSelectionNew,
   sortedSelectableCars,
+  supportsCarData,
 } from "../components/live/util";
 import { ZoomTrackPos } from "../components/live/zoomTrackPos";
 import { ReplayControl } from "../components/replayControl";
@@ -116,6 +118,7 @@ export const BigCircleOfDoomContainer: React.FC = () => {
   const carInfos = useSelector((state: ApplicationState) => state.raceData.availableCars);
   const eventInfo = useSelector((state: ApplicationState) => state.raceData.eventInfo);
 
+  const carData = useSelector((state: ApplicationState) => state.carData);
   const replaySettings = useSelector((state: ApplicationState) => state.userSettings.replay);
   const stateGlobalSettings = useSelector((state: ApplicationState) => state.userSettings.global);
 
@@ -129,12 +132,16 @@ export const BigCircleOfDoomContainer: React.FC = () => {
       return { showCars: userSettings.showCars, filterCarClasses: userSettings.filterCarClasses };
     }
   };
-
+  const carIdxLookup = carNumberByCarIdx(carData);
   const stateCarManifest = useSelector((state: ApplicationState) => state.raceData.manifests.car);
   const raceOrder = useSelector((state: ApplicationState) => state.raceData.classification);
   const createSelectableCars = (cars: ICarBaseData[]): ICarBaseData[] => {
     return sortedSelectableCars(cars, stateGlobalSettings.filterOrderByPosition, () =>
-      orderedCarNumsByPosition(raceOrder, stateCarManifest),
+      orderedCarNumsByPosition(
+        raceOrder,
+        stateCarManifest,
+        supportsCarData(eventInfo.raceloggerVersion) ? carIdxLookup : undefined,
+      ),
     );
   };
   const selectableCars = createSelectableCars(
@@ -152,17 +159,11 @@ export const BigCircleOfDoomContainer: React.FC = () => {
       newSelection: values,
     });
 
-    const sortedSelectabled = createSelectableCars(collectCarsByCarClassFilter(cars, values));
-
-    const reorderedShowCars = sortedSelectabled
-      .map((c) => c.carNum)
-      .filter((carNum) => newShowcars.includes(carNum));
-
     const curSettings = {
       ...userSettings,
       filterCarClasses: values,
-      showCars: reorderedShowCars,
-      selectableCars: sortedSelectabled,
+      showCars: newShowcars,
+      selectableCars: collectCarsByCarClassFilter(cars, values),
     };
     // const curSettings = { ...userSettings, filterCarClasses: values };
     dispatch(circleOfDoomSettings(curSettings));
@@ -170,7 +171,7 @@ export const BigCircleOfDoomContainer: React.FC = () => {
       dispatch(
         globalSettings({
           ...stateGlobalSettings,
-          showCars: reorderedShowCars,
+          showCars: newShowcars,
           filterCarClasses: values,
         }),
       );
@@ -205,8 +206,15 @@ export const BigCircleOfDoomContainer: React.FC = () => {
     onSelectCarClassFilter: onSelectCarClassChange,
   };
 
+  const getCarNumLegacy = (c: any): string => {
+    return getValueViaSpec(c, stateCarManifest, "carNum");
+  };
+
+  const getCarNum = (c: any): string => {
+    return carIdxLookup[getValueViaSpec(c, stateCarManifest, "carIdx")];
+  };
   const dataRaw = carsRaw.map((c: any, idx: number) => ({
-    carNum: getValueViaSpec(c, stateCarManifest, "carNum"),
+    carNum: supportsCarData(eventInfo.raceloggerVersion) ? getCarNum(c) : getCarNumLegacy(c),
     trackPos: getValueViaSpec(c, stateCarManifest, "trackPos"),
     // state: getValueViaSpec(c, stateCarManifest, "state"),
     // pos: idx,

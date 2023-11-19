@@ -4,8 +4,16 @@ import { useDispatch, useSelector } from "react-redux";
 import { globalWamp } from "../commons/globals";
 import Lapchart from "../components/antcharts/lapchart";
 import CarFilter from "../components/live/carFilter";
-import { collectCarsByCarClassFilter, processCarClassSelectionNew } from "../components/live/util";
+import {
+  carNumberByCarIdx,
+  collectCarsByCarClassFilter,
+  orderedCarNumsByPosition,
+  processCarClassSelectionNew,
+  sortedSelectableCars,
+  supportsCarData,
+} from "../components/live/util";
 import { ApplicationState } from "../stores";
+import { ICarBaseData } from "../stores/racedata/types";
 import { driverLapsSettings } from "../stores/ui/actions";
 
 export const DriverLapsContainer: React.FC = () => {
@@ -14,9 +22,30 @@ export const DriverLapsContainer: React.FC = () => {
   const userSettings = useSelector((state: ApplicationState) => state.userSettings.driverLaps);
 
   const showCars = useSelector((state: ApplicationState) => state.userSettings.driverLaps.showCars);
-  const filterCarClasses = useSelector((state: ApplicationState) => state.userSettings.driverLaps.filterCarClasses);
+  const filterCarClasses = useSelector(
+    (state: ApplicationState) => state.userSettings.driverLaps.filterCarClasses,
+  );
   const dispatch = useDispatch();
-  const selectableCars = userSettings.selectableCars.length > 0 ? userSettings.selectableCars : cars;
+
+  const stateGlobalSettings = useSelector((state: ApplicationState) => state.userSettings.global);
+  const eventInfo = useSelector((state: ApplicationState) => state.raceData.eventInfo);
+  const carData = useSelector((state: ApplicationState) => state.carData);
+
+  const stateCarManifest = useSelector((state: ApplicationState) => state.raceData.manifests.car);
+  const raceOrder = useSelector((state: ApplicationState) => state.raceData.classification);
+  const createSelectableCars = (cars: ICarBaseData[]): ICarBaseData[] => {
+    return sortedSelectableCars(cars, stateGlobalSettings.filterOrderByPosition, () =>
+      orderedCarNumsByPosition(
+        raceOrder,
+        stateCarManifest,
+        supportsCarData(eventInfo.raceloggerVersion) ? carNumberByCarIdx(carData) : undefined,
+      ),
+    );
+  };
+
+  const selectableCars = createSelectableCars(
+    userSettings.selectableCars.length > 0 ? userSettings.selectableCars : cars,
+  );
   const onSelectCarClassChange = (values: string[]) => {
     const newShowcars = processCarClassSelectionNew({
       cars: cars,

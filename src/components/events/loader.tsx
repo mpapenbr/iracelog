@@ -3,10 +3,8 @@ import { Connection, Session } from "autobahn-browser";
 import React, { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router";
-import { Comparator } from "semver";
 import { globalWamp } from "../../commons/globals";
 import { ReplayDataHolder } from "../../processor/ReplayDataHolder";
-import { SpeedmapDataHolder } from "../../processor/SpeedmapDataHolder";
 import { processCarData } from "../../processor/processCarData";
 import {
   processInboundManifests,
@@ -24,6 +22,8 @@ import {
 // import { initialReplaySettings } from "../../stores/ui/reducer";
 import { defaultStateData as defaultUiStateData } from "../../stores/ui/reducer";
 
+import { SpeedmapDataHolder } from "../../processor/SpeedmapDataHolder";
+import { supportsCarData } from "../live/util";
 import { doDistribute, resetUi } from "./datahandler";
 
 interface MyProps {
@@ -45,12 +45,16 @@ export const LoaderPage: React.FC<MyProps> = (props: MyProps) => {
     conn.onopen = async (s: Session) => {
       try {
         setTasks("Loading event info");
-
         const eventInfo = (await s.call("racelog.public.get_event_info_by_key", [
           props.eventKey,
         ])) as any;
 
         console.log(eventInfo);
+        // TODO: WASM: I don't think we need this anymore
+        // console.log(eventInfo.data.manifests);
+        // const manifestDataStr = JSON.stringify(eventInfo.data.manifests);
+        // console.log("calling initProc", wasmMethods.initProc(eventInfo.data.manifests));
+        // console.log("calling initProcJsonStr", wasmMethods.initProcJsonStr(manifestDataStr));
 
         // dispatch(reset());
         resetUi(dispatch);
@@ -91,15 +95,17 @@ export const LoaderPage: React.FC<MyProps> = (props: MyProps) => {
           eventInfo.id,
         ])) as any;
 
-        doDistribute(dispatch, defaultProcessRaceStateData, data);
+        // true if we have old data that doesn't support carData, speedmap etc
+        const legacy = !supportsCarData(eventInfo.data.info.raceloggerVersion ?? "0.0.0");
+
+        doDistribute(dispatch, defaultProcessRaceStateData, data, legacy);
         dispatch(processInboundManifests(eventInfo.data.manifests));
         // we need to reset here since standings page is defined as index page and will
         // already be called before this method is finished.
         dispatch(updateAvailableStandingsColumns({ ...defaultUiStateData.standingsColumns }));
 
-        const versionCheck = new Comparator(">=0.4.4");
         // console.log(eventInfo);
-        if (versionCheck.test(eventInfo.data.info.raceloggerVersion ?? "0.0.0")) {
+        if (!legacy) {
           console.log(
             "Yes, compatible racelogger ",
             eventInfo.data.info.raceloggerVersion,
@@ -107,9 +113,13 @@ export const LoaderPage: React.FC<MyProps> = (props: MyProps) => {
           );
 
           const carData = (await s.call("racelog.public.get_event_cars", [eventInfo.id])) as any;
-          // console.log(carData);
+          console.log(carData);
 
           processCarData(dispatch, carData);
+
+          // TODO: WASM: I don't think we need this anymore
+          // const tmp = wasmMethods.processCarMessage(carData);
+          // console.log(tmp);
 
           const speedmap = (await s.call("racelog.public.get_event_speedmap", [
             eventInfo.id,
@@ -124,6 +134,7 @@ export const LoaderPage: React.FC<MyProps> = (props: MyProps) => {
         }
 
         const rh = new ReplayDataHolder(s, settings, eventInfo.data.manifests);
+        // TODO: reactivate speedmap holder
         const smh = new SpeedmapDataHolder(s, settings);
         globalWamp.replayHolder = rh;
         globalWamp.speedmapHolder = smh;

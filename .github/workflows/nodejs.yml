@@ -10,13 +10,14 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Install TinyGo
-        run: |
-          sudo ./installTinyGo.sh
+      # see https://github.com/mpapenbr/iracelog/issues/957
+      # - name: Install TinyGo
+      #   run: |
+      #     sudo ./installTinyGo.sh
 
       - name: Build go wasm
         working-directory: ./go
-        run: make tinygo
+        run: make build
 
       - name: Cache node modules
         uses: actions/cache@v3

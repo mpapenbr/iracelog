@@ -11,6 +11,7 @@ export class ReplayDataHolder {
   private preFetching: boolean;
   private idx: number; // current index to dispatch
   private manifests: IManifests;
+  private endOfData: boolean;
 
   constructor(s: Session, settings: IReplaySettings, manifests: IManifests) {
     this.s = s;
@@ -20,6 +21,7 @@ export class ReplayDataHolder {
     this.preFetching = true;
     this.internalLoad(this.settings.minTimestamp, 20);
     this.manifests = manifests;
+    this.endOfData = false;
   }
 
   public loadData(startTs: number) {
@@ -56,11 +58,19 @@ export class ReplayDataHolder {
   }
 
   private internalLoad(startTs: number, num = 30) {
+    if (this.endOfData) {
+      return;
+    }
     console.log("requesting " + num + " entries starting at ts: " + startTs);
     this.s
       .call("racelog.public.archive.state.delta", [this.settings.eventId, startTs, num])
       .then((res: any) => {
         this.preFetching = false;
+        this.endOfData = res.length < num;
+        if (!res) {
+          console.log("no data received");
+          return;
+        }
         console.log("got " + res.length + " items");
         this.processDataFromWamp(res);
       });

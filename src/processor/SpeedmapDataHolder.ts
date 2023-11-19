@@ -8,6 +8,7 @@ export class SpeedmapDataHolder {
   private data: IMessage[];
   private preFetching: boolean;
   private idx: number; // current index to dispatch
+  private endOfData: boolean;
 
   constructor(s: Session, settings: IReplaySettings) {
     this.s = s;
@@ -15,6 +16,7 @@ export class SpeedmapDataHolder {
     this.data = [];
     this.idx = 0;
     this.preFetching = true;
+    this.endOfData = false;
     this.internalLoad(this.settings.minTimestamp, 20);
   }
 
@@ -58,12 +60,17 @@ export class SpeedmapDataHolder {
   }
 
   private internalLoad(startTs: number, num = 30) {
+    if (this.endOfData) {
+      return;
+    }
     console.log("requesting " + num + " speedmap entries starting at ts: " + startTs);
     this.s
       .call("racelog.public.archive.speedmap", [this.settings.eventId, startTs, num])
       .then((res: any) => {
         this.preFetching = false;
+        this.endOfData = res.length < num;
         console.log("got " + res.length + " speedmap items");
+
         this.processDataFromWamp(res);
       });
   }

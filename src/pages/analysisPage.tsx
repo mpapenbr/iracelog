@@ -25,7 +25,6 @@ import { StintSummaryContainer } from "../container/StintSummaryContainer";
 import { StrategyContainer } from "../container/StrategyContainer";
 import { TestContainer } from "../container/Test";
 import { ApplicationState } from "../stores";
-import wasmMethods from "../wasm/wasmloader";
 const { Header, Sider, Content } = Layout;
 
 const OtherContent: React.FC = () => <div>Here goes other content</div>;
@@ -51,7 +50,7 @@ export const AnalysisMainPage: React.FC = () => {
     }
   }, [loadTrigger]);
   // console.log(eventInfo);
-  console.log(wasmMethods.demoAdd(1, 2));
+
   const allItems = [
     { label: <Link to="/events">Events</Link>, key: "events" },
     { type: "divider", key: "menuDivider" },
@@ -73,8 +72,14 @@ export const AnalysisMainPage: React.FC = () => {
     { label: <Link to="messages">Messages</Link>, key: "messages" },
     { label: <Link to="settings">Settings</Link>, key: "settings" },
   ];
+  const compareRaceloggerVersion = (arg: string): string => {
+    const val = eventInfo.raceloggerVersion ?? "0.0.0";
+    return val.length > 0 ? val : "0.0.0";
+  };
   const items = allItems.filter((v) =>
-    new Comparator(v.requires ?? ">=0.0.0").test(eventInfo.raceloggerVersion),
+    new Comparator(v.requires ?? ">=0.0.0").test(
+      compareRaceloggerVersion(eventInfo.raceloggerVersion),
+    ),
   );
   return (
     <Layout>

@@ -8,12 +8,14 @@ import CarFilter from "../components/live/carFilter";
 import { assignCarColors } from "../components/live/colorAssignment";
 import { stintLaps } from "../components/live/statsutil";
 import {
+  carNumberByCarIdx,
   collectCarsByCarClassFilter,
   getCarStints,
   isInSelectedRange,
   orderedCarNumsByPosition,
   processCarClassSelectionNew,
   sortedSelectableCars,
+  supportsCarData,
 } from "../components/live/util";
 import { getCombinedStintData } from "../components/nivo/stintsummary/commons";
 import StintRankingSvg from "../components/stintRanking/rankingSvg";
@@ -48,9 +50,15 @@ export const StintRankingContainer: React.FC = () => {
 
   const stateCarManifest = useSelector((state: ApplicationState) => state.raceData.manifests.car);
   const raceOrder = useSelector((state: ApplicationState) => state.raceData.classification);
+  const carData = useSelector((state: ApplicationState) => state.carData);
+  const eventInfo = useSelector((state: ApplicationState) => state.raceData.eventInfo);
   const createSelectableCars = (cars: ICarBaseData[]): ICarBaseData[] => {
     return sortedSelectableCars(cars, stateGlobalSettings.filterOrderByPosition, () =>
-      orderedCarNumsByPosition(raceOrder, stateCarManifest),
+      orderedCarNumsByPosition(
+        raceOrder,
+        stateCarManifest,
+        supportsCarData(eventInfo.raceloggerVersion) ? carNumberByCarIdx(carData) : undefined,
+      ),
     );
   };
   const selectableCars = createSelectableCars(
@@ -115,13 +123,6 @@ export const StintRankingContainer: React.FC = () => {
     onSelectCarClassFilter: onSelectCarClassChange,
   };
 
-  const computeAvgLap = (d: IStintInfo): number => {
-    const currentCarLaps = carLaps.find((v) => v.carNum === d.carNum)!;
-    const laps = stintLaps(d, currentCarLaps);
-    const avg = laps.reduce((prev, cur) => prev + cur.lapTime, 0) / laps.length;
-    return avg;
-  };
-
   const getValue = (key: string) => {
     return getValueViaSpec(sInfo.data, manifestData, key);
   };
@@ -133,18 +134,28 @@ export const StintRankingContainer: React.FC = () => {
 
   // console.log(`current ${currentSettings.lowerRangeTime} ${currentSettings.upperRangeTime}`);
   const combinedData = showCars.map((carNum) => {
+    const computeAvgLap = (d: IStintInfo): number => {
+      const currentCarLaps = carLaps.find((v) => v.carNum === carNum)!;
+      const laps = stintLaps(d, currentCarLaps);
+      const avg = laps.reduce((prev, cur) => prev + cur.lapTime, 0) / laps.length;
+      return avg;
+    };
+
     const carColor = (si: IStintInfo): string => getColor(carNum) ?? "black";
-    return getCombinedStintData(
-      getCarStints(carStints, carNum).filter((v) =>
-        isInSelectedRange(v, [currentSettings.lowerRangeTime, currentSettings.upperRangeTime]),
+    return {
+      carNum: carNum,
+      data: getCombinedStintData(
+        getCarStints(carStints, carNum).filter((v) =>
+          isInSelectedRange(v, [currentSettings.lowerRangeTime, currentSettings.upperRangeTime]),
+        ),
+        [], // don't need pitstops here, was: getCarPitStops(carPits, carNum),
+        carColor,
+        computeAvgLap,
       ),
-      [], // don't need pitstops here, was: getCarPitStops(carPits, carNum),
-      carColor,
-      computeAvgLap,
-    );
+    };
   });
   const combinedDataMinMax = combinedData
-    .flatMap((a) => [...a])
+    .flatMap((a) => [...a.data])
     .reduce(
       (a, b) => {
         return { minTime: Math.min(a.minTime, b.minTime), maxTime: Math.max(a.maxTime, b.maxTime) };

@@ -9,6 +9,7 @@ import Lapchart from "../components/dashboard/lapchart";
 import CarFilter from "../components/live/carFilter";
 import { CircleOfDoom } from "../components/live/circleofdoom";
 import {
+  carNumberByCarIdx,
   collectCarsByCarClassFilter,
   findDriverByStint,
   getCarPitStops,
@@ -16,8 +17,13 @@ import {
   orderedCarNumsByPosition,
   processCarClassSelectionNew,
   sortedSelectableCars,
+  supportsCarData,
 } from "../components/live/util";
-import { colorsBySeatTime, getCombinedStintData } from "../components/nivo/stintsummary/commons";
+import {
+  CombinedStintData,
+  colorsBySeatTime,
+  getCombinedStintData,
+} from "../components/nivo/stintsummary/commons";
 import StintStretch from "../components/nivo/stintsummary/stintstretch";
 import { ApplicationState } from "../stores";
 import { ICarBaseData } from "../stores/racedata/types";
@@ -34,6 +40,8 @@ export const DashboardContainer: React.FC = () => {
   const carInfo = useSelector((state: ApplicationState) => state.raceData.carInfo);
   const carStints = useSelector((state: ApplicationState) => state.raceData.carStints);
   const carPits = useSelector((state: ApplicationState) => state.raceData.carPits);
+  const eventInfo = useSelector((state: ApplicationState) => state.raceData.eventInfo);
+  const carData = useSelector((state: ApplicationState) => state.carData);
 
   const rawShowCars = useSelector(
     (state: ApplicationState) => state.userSettings.dashboard.showCars,
@@ -46,7 +54,11 @@ export const DashboardContainer: React.FC = () => {
   const raceOrder = useSelector((state: ApplicationState) => state.raceData.classification);
   const createSelectableCars = (cars: ICarBaseData[]): ICarBaseData[] => {
     return sortedSelectableCars(cars, stateGlobalSettings.filterOrderByPosition, () =>
-      orderedCarNumsByPosition(raceOrder, stateCarManifest),
+      orderedCarNumsByPosition(
+        raceOrder,
+        stateCarManifest,
+        supportsCarData(eventInfo.raceloggerVersion) ? carNumberByCarIdx(carData) : undefined,
+      ),
     );
   };
   const selectableCars = createSelectableCars(
@@ -138,20 +150,27 @@ export const DashboardContainer: React.FC = () => {
       </Option>
     ));
 
+  interface ICarCombinedStintData {
+    carNum: string;
+    data: CombinedStintData[];
+  }
   const combinedData = showCars.map((carNum) => {
     const currentCarInfo = carInfo.find((v) => v.carNum === carNum)!;
     const { colorLookup } = colorsBySeatTime(currentCarInfo.drivers);
 
     const driverColor = (si: IStintInfo): string =>
       colorLookup.get(findDriverByStint(currentCarInfo, si)?.driverName ?? "n.a.") ?? "black";
-    return getCombinedStintData(
-      getCarStints(carStints, carNum),
-      getCarPitStops(carPits, carNum),
-      driverColor,
-    );
+    return {
+      carNum: carNum,
+      combined: getCombinedStintData(
+        getCarStints(carStints, carNum),
+        getCarPitStops(carPits, carNum),
+        driverColor,
+      ),
+    };
   });
   const combinedDataMinMax = combinedData
-    .flatMap((a) => [...a])
+    .flatMap((a) => [...a.combined])
     .reduce(
       (a, b) => {
         return { minTime: Math.min(a.minTime, b.minTime), maxTime: Math.max(a.maxTime, b.maxTime) };
@@ -212,12 +231,12 @@ export const DashboardContainer: React.FC = () => {
           {combinedData.map((c, idx) => (
             <Row gutter={16} key={idx}>
               <StintStretch
-                carNum={c[0]?.data.carNum ?? "n.a."}
+                carNum={c.carNum}
                 height={30}
                 showCarNum
                 width={800}
                 {...combinedDataMinMax}
-                combinedStintData={c}
+                combinedStintData={c.combined}
               />
             </Row>
           ))}

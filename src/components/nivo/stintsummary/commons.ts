@@ -42,6 +42,12 @@ export interface CombinedStintData {
   avgTime: number;
   color?: string;
 }
+
+export interface ICarCombinedStintData {
+  carNum: string;
+  data: CombinedStintData[];
+}
+
 export const getCombinedStintData = (
   stints: IStintInfo[],
   pits: IPitInfo[],

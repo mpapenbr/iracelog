@@ -17,10 +17,12 @@ const Lapchart: React.FC = () => {
 
   const showCars = userSettings.showCars;
   const currentCarLaps = (carNum: string) => carLaps.find((v) => v.carNum === carNum);
-  const mergeComputeCarLaps = (stints: IStintInfo[]): ICarLaps[] => {
-    const myStintLaps = (v: IStintInfo) => stintLaps(v, currentCarLaps(v.carNum)!);
-    const x = stints.flatMap((v) => ({ carNum: v.carNum, laps: myStintLaps(v) }));
-    return globalWamp.currentLiveId && userSettings.limitLastLaps > 0 ? x.slice(-userSettings.limitLastLaps) : x;
+  const mergeComputeCarLaps = (stints: IStintInfo[], carNum: string): ICarLaps[] => {
+    const myStintLaps = (v: IStintInfo) => stintLaps(v, currentCarLaps(carNum)!);
+    const x = stints.flatMap((v) => ({ carNum: carNum, laps: myStintLaps(v) }));
+    return globalWamp.currentLiveId && userSettings.limitLastLaps > 0
+      ? x.slice(-userSettings.limitLastLaps)
+      : x;
   };
 
   const assignedCarColors = assignCarColors(availableCars);
@@ -36,18 +38,22 @@ const Lapchart: React.FC = () => {
 
   const computeCarLaps: ICarLaps[] = carStints
     .filter((v) => showCars.includes(v.carNum))
-    .map((v) => mergeComputeCarLaps(getCarStints(carStints, v.carNum)))
+    .map((v) => mergeComputeCarLaps(getCarStints(carStints, v.carNum), v.carNum))
     .flatMap((li) => [...li]);
 
   const work = statsDataFor(computeCarLaps.flatMap((v) => v.laps.map((l) => l.lapTime)));
   // console.log(work);
   const toShowLaps = (laps: ILapInfo[]): ILapInfo[] =>
-    globalWamp.currentLiveId && userSettings.limitLastLaps > 0 ? laps.slice(-userSettings.limitLastLaps) : laps;
+    globalWamp.currentLiveId && userSettings.limitLastLaps > 0
+      ? laps.slice(-userSettings.limitLastLaps)
+      : laps;
   // some strange ant-design/charts bug: https://github.com/ant-design/ant-design-charts/issues/797
   // workaround is to use strings for xaxis...
   const lapData = allCarLaps
     .sort((a, b) => showCars.indexOf(a.carNum) - showCars.indexOf(b.carNum))
-    .map((v) => toShowLaps(v.laps).map((l) => ({ carNum: `#${v.carNum}`, ...l, lapNoStr: "" + l.lapNo })))
+    .map((v) =>
+      toShowLaps(v.laps).map((l) => ({ carNum: `#${v.carNum}`, ...l, lapNoStr: "" + l.lapNo })),
+    )
     .flatMap((a) => [...a]);
   // console.log(lapData);
   const sliderData = globalWamp.currentLiveId ? undefined : { start: 0, end: 1 };
@@ -69,7 +75,10 @@ const Lapchart: React.FC = () => {
     yAxis: {
       nice: true,
       minLimit: Math.floor(work.minTime),
-      maxLimit: userSettings.filterSecs > 0 ? Math.ceil(work.median + userSettings.filterSecs) : Math.ceil(work.q95),
+      maxLimit:
+        userSettings.filterSecs > 0
+          ? Math.ceil(work.median + userSettings.filterSecs)
+          : Math.ceil(work.q95),
       // label: {formatter: (d: number) => lapTimeString(d)},
     },
     interactions: globalWamp.currentLiveId ? [] : [{ type: "brush" }],

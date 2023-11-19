@@ -4,10 +4,12 @@ import { useDispatch, useSelector } from "react-redux";
 import LeaderGraph from "../components/antcharts/leadergraph";
 import CarFilter from "../components/live/carFilter";
 import {
+  carNumberByCarIdx,
   collectCarsByCarClassFilter,
   orderedCarNumsByPosition,
   processCarClassSelectionNew,
   sortedSelectableCars,
+  supportsCarData,
 } from "../components/live/util";
 import { ApplicationState } from "../stores";
 import { ICarBaseData } from "../stores/racedata/types";
@@ -28,9 +30,15 @@ export const RaceGraphContainer: React.FC = () => {
 
   const stateCarManifest = useSelector((state: ApplicationState) => state.raceData.manifests.car);
   const raceOrder = useSelector((state: ApplicationState) => state.raceData.classification);
+  const carData = useSelector((state: ApplicationState) => state.carData);
+  const eventInfo = useSelector((state: ApplicationState) => state.raceData.eventInfo);
   const createSelectableCars = (cars: ICarBaseData[]): ICarBaseData[] => {
     return sortedSelectableCars(cars, stateGlobalSettings.filterOrderByPosition, () =>
-      orderedCarNumsByPosition(raceOrder, stateCarManifest),
+      orderedCarNumsByPosition(
+        raceOrder,
+        stateCarManifest,
+        supportsCarData(eventInfo.raceloggerVersion) ? carNumberByCarIdx(carData) : undefined,
+      ),
     );
   };
   const orderedShowCars = (carNums: string[]): string[] => {

@@ -2,9 +2,17 @@ import { Checkbox, Col, Row } from "antd";
 import * as React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import CarFilter from "../components/live/carFilter";
-import { collectCarsByCarClassFilter, processCarClassSelectionNew } from "../components/live/util";
+import {
+  carNumberByCarIdx,
+  collectCarsByCarClassFilter,
+  orderedCarNumsByPosition,
+  processCarClassSelectionNew,
+  sortedSelectableCars,
+  supportsCarData,
+} from "../components/live/util";
 import RacePositionGraphNivo from "../components/nivo/racePositionGraph";
 import { ApplicationState } from "../stores";
+import { ICarBaseData } from "../stores/racedata/types";
 import { racePositionsSettings } from "../stores/ui/actions";
 
 export const RacePositionsContainer: React.FC = () => {
@@ -12,11 +20,32 @@ export const RacePositionsContainer: React.FC = () => {
   const carClasses = useSelector((state: ApplicationState) => state.raceData.availableCarClasses);
   const userSettings = useSelector((state: ApplicationState) => state.userSettings.racePositions);
 
-  const showCars = useSelector((state: ApplicationState) => state.userSettings.racePositions.showCars);
-  const filterCarClasses = useSelector((state: ApplicationState) => state.userSettings.racePositions.filterCarClasses);
+  const showCars = useSelector(
+    (state: ApplicationState) => state.userSettings.racePositions.showCars,
+  );
+  const filterCarClasses = useSelector(
+    (state: ApplicationState) => state.userSettings.racePositions.filterCarClasses,
+  );
   const dispatch = useDispatch();
 
-  const selectableCars = userSettings.selectableCars.length > 0 ? userSettings.selectableCars : cars;
+  const stateGlobalSettings = useSelector((state: ApplicationState) => state.userSettings.global);
+  const stateCarManifest = useSelector((state: ApplicationState) => state.raceData.manifests.car);
+  const raceOrder = useSelector((state: ApplicationState) => state.raceData.classification);
+  const eventInfo = useSelector((state: ApplicationState) => state.raceData.eventInfo);
+  const carData = useSelector((state: ApplicationState) => state.carData);
+  const createSelectableCars = (cars: ICarBaseData[]): ICarBaseData[] => {
+    return sortedSelectableCars(cars, stateGlobalSettings.filterOrderByPosition, () =>
+      orderedCarNumsByPosition(
+        raceOrder,
+        stateCarManifest,
+        supportsCarData(eventInfo.raceloggerVersion) ? carNumberByCarIdx(carData) : undefined,
+      ),
+    );
+  };
+
+  const selectableCars = createSelectableCars(
+    userSettings.selectableCars.length > 0 ? userSettings.selectableCars : cars,
+  );
 
   const onSelectCarClassChange = (values: string[]) => {
     const newShowcars = processCarClassSelectionNew({
@@ -34,7 +63,9 @@ export const RacePositionsContainer: React.FC = () => {
     dispatch(racePositionsSettings(curSettings));
   };
   const onCheckboxChange = () => {
-    dispatch(racePositionsSettings({ ...userSettings, showPosInClass: !userSettings.showPosInClass }));
+    dispatch(
+      racePositionsSettings({ ...userSettings, showPosInClass: !userSettings.showPosInClass }),
+    );
   };
   const props = {
     availableCars: selectableCars,

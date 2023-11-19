@@ -7,7 +7,7 @@ import { lapTimeString, secAsHHMM } from "../../utils/output";
 import { boxPlotDataFor } from "../live/statsutil";
 import { findDriverByStint } from "../live/util";
 import StintTooltip from "../nivo/stintTooltip";
-import { CombinedStintData } from "../nivo/stintsummary/commons";
+import { ICarCombinedStintData } from "../nivo/stintsummary/commons";
 
 interface MyProps {
   width?: number;
@@ -17,7 +17,7 @@ interface MyProps {
   // maxLapTime: number; // already external computed values to be used
   minTime: number; // already external computed values to be used
   maxTime: number; // already external computed values to be used
-  combinedStintData: CombinedStintData[][];
+  combinedStintData: ICarCombinedStintData[];
   showCars: string[];
 }
 
@@ -43,7 +43,7 @@ const StintRankingSvg: React.FC<MyProps> = (props: MyProps) => {
 
   const combinedAvgLaptimes = props.combinedStintData
     .map((carStints) => {
-      return carStints
+      return carStints.data
         .filter((v) => v.type == "stint")
         .map((v) => v.avgTime)
         .filter((v) => !Number.isNaN(v));
@@ -61,8 +61,8 @@ const StintRankingSvg: React.FC<MyProps> = (props: MyProps) => {
   }
   const stepY = graphHeight / (yInfo.lmax - yInfo.lmin);
 
-  const carRow = (carData: CombinedStintData[]) => {
-    return carData
+  const carRow = (carData: ICarCombinedStintData) => {
+    return carData.data
       .filter((d) => d.type == "stint")
       .map((d, idx) => {
         // const currentCarLaps = carLaps.find((v) => v.carNum === d.data.carNum)!;
@@ -71,15 +71,16 @@ const StintRankingSvg: React.FC<MyProps> = (props: MyProps) => {
 
         // todo: reuse avg from above computation. create own interface?
         // const avg = computeAvg(d.data as IStintInfo);
-        const currentCarInfo = carInfo.find((v) => v.carNum === d.data.carNum)!;
+        const currentCarInfo = carInfo.find((v) => v.carNum === carData.carNum)!;
 
         return (
           <Tooltip
-            key={"tt-" + d.data.carNum + "-" + d.idx}
+            key={"tt-" + carData.carNum + "-" + d.idx}
             color={d.color}
             overlay={
               <StintTooltip
                 stintInfo={d.data as IStintInfo}
+                carNum={carData.carNum}
                 no={d.idx}
                 driver={
                   findDriverByStint(currentCarInfo, d.data as IStintInfo)?.driverName ?? "n.a."
@@ -89,7 +90,7 @@ const StintRankingSvg: React.FC<MyProps> = (props: MyProps) => {
             }
           >
             <rect
-              key={d.data.carNum + "_" + d.idx}
+              key={carData.carNum + "_" + d.idx}
               height={5}
               width={d.data.stintTime * stepX}
               x={(d.data.exitTime - xInfo.lmin) * stepX}
@@ -185,8 +186,8 @@ const StintRankingSvg: React.FC<MyProps> = (props: MyProps) => {
     return (
       <g transform={`translate(${width - 30} ${marginTop})`}>
         {props.combinedStintData
-          .filter((carData) => carData.length > 0)
-          .map((carData) => carData[0])
+          .filter((carData) => carData.data.length > 0)
+          // .map((carData) => carData.data)
           .map((d, idx) => (
             <g key={`legend-item-${idx}`}>
               <text
@@ -197,7 +198,7 @@ const StintRankingSvg: React.FC<MyProps> = (props: MyProps) => {
                 textAnchor="end"
                 alignmentBaseline="middle"
               >
-                #{d.data.carNum}
+                #{d.carNum}
               </text>
               <rect
                 key={`legend-line-${idx}`}
@@ -207,7 +208,7 @@ const StintRankingSvg: React.FC<MyProps> = (props: MyProps) => {
                 y={idx * 15 - 4}
                 // x={d.eventTime[0] * stepX}
                 // y={d.laptime * stepY - minLaptime * stepY}
-                style={{ fill: d.color }}
+                style={{ fill: d.data[0].color }}
               />
             </g>
           ))}

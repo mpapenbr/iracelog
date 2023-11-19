@@ -9,6 +9,8 @@ import {
 } from "@mpapenbr/iracelog-analysis/dist/stints/types";
 import { getValueViaSpec } from "@mpapenbr/iracelog-analysis/dist/stints/util";
 import _ from "lodash";
+import { Comparator } from "semver";
+import { ICarInfoContainer } from "../../stores/cars/types";
 import { ICarBaseData, ICarClass } from "../../stores/racedata/types";
 import { sortCarNumberStr } from "../../utils/output";
 
@@ -17,6 +19,10 @@ export interface ICarFilterData {
   name: string;
 }
 
+// used when mapping a number to a string, for example: carIdx to carNum
+export interface StringByNumberMap {
+  [key: number]: string;
+}
 /**
  * this file holds utilities for WAMP data structures
  */
@@ -271,8 +277,12 @@ export const findDriverBySessionTime = (carInfo: ICarInfo, sessionTime: number) 
 export const orderedCarNumsByPosition = (
   carMsg: IMessage,
   carManifest: IDataEntrySpec[],
+  carIdxToCarNum?: StringByNumberMap,
 ): string[] => {
   const createCarNumsByPos = (carDataRaw: any): string[] => {
+    if (carIdxToCarNum !== undefined) {
+      return carDataRaw.map((d: any) => carIdxToCarNum[getValueViaSpec(d, carManifest, "carIdx")]);
+    }
     return carDataRaw.map((d: any) => getValueViaSpec(d, carManifest, "carNum"));
   };
   return createCarNumsByPos(carMsg.data);
@@ -313,3 +323,10 @@ export const isInSelectedRange = (si: IStintInfo, range: [number, number]): bool
     (si.exitTime <= range[0] && si.enterTime >= range[1])
   );
 };
+
+export const supportsCarData = (raceloggerVersion: string): boolean => {
+  return new Comparator(">=0.4.4").test(raceloggerVersion);
+};
+
+export const carNumberByCarIdx = (carData: ICarInfoContainer): StringByNumberMap =>
+  Object.assign({}, ...carData.entries.map((e) => ({ [e.car.carIdx]: e.car.carNumber })));
