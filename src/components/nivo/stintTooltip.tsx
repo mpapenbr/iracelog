@@ -4,6 +4,7 @@ import { lapTimeString, secAsHHMMSS } from "../../utils/output";
 
 interface MyProps {
   no: number;
+  carNum: string;
   stintInfo: IStintInfo;
   driver: string;
   avgLap?: number;
@@ -12,7 +13,7 @@ const StintTooltip: React.FC<MyProps> = (props: MyProps) => {
   return (
     <div className="iracelog-stint-tooltip">
       <strong>
-        #{props.stintInfo.carNum} Stint {props.no}
+        #{props.carNum} Stint {props.no}
       </strong>
       <br /> {props.driver}
       <br />

@@ -1,5 +1,4 @@
 import { ReloadOutlined } from "@ant-design/icons";
-import { BulkProcessor } from "@mpapenbr/iracelog-analysis";
 import { defaultProcessRaceStateData } from "@mpapenbr/iracelog-analysis/dist/stints/types";
 import { Button, Col, Descriptions, List, Row } from "antd";
 import { Connection, Session } from "autobahn-browser";
@@ -11,13 +10,17 @@ import { sprintf } from "sprintf-js";
 import { globalWamp } from "../../commons/globals";
 import { ICarDataMessage, processCarData } from "../../processor/processCarData";
 import { processSpeedmap } from "../../processor/processSpeedmap";
-import { updateEventInfo, updateManifests, updateTrackInfo } from "../../stores/racedata/actions";
+import {
+  processInboundManifests,
+  updateEventInfo,
+  updateTrackInfo,
+} from "../../stores/racedata/actions";
 import { ISpeedmapMessage, ITrackInfo } from "../../stores/racedata/types";
-import { postProcessManifest } from "../../stores/racedata/util";
 import { updateAvailableStandingsColumns } from "../../stores/ui/actions";
 import { defaultStateData as defaultUiStateData } from "../../stores/ui/reducer";
 
-import { doDistribute } from "./datahandler";
+import wasmMethods from "../../wasm/wasmloader";
+import { doDistribute, resetUi } from "./datahandler";
 
 export const LiveEvents: React.FC = () => {
   const navigate = useNavigate();
@@ -37,48 +40,47 @@ export const LiveEvents: React.FC = () => {
     });
 
     conn.onopen = async (s: Session) => {
-      s.call("racelog.public.live.get_event_analysis", [eventKey]).then((data: any) => {
-        console.log(data); // we  will always get an array here (due to WAMP)
-        // dispatch(updateManifests(data.manifests)); // these are the "small" manifests
-        const manifests = postProcessManifest(data.manifests);
-        dispatch(updateManifests(manifests));
-        dispatch(updateAvailableStandingsColumns(defaultUiStateData.standingsColumns)); // reset here, trigger standings page recompute
-        globalWamp.processor = new BulkProcessor(manifests, data.processedData);
+      const eventInfo = (await s.call("racelog.public.get_event_info_by_key", [eventKey])) as any;
+      const trackInfo = (await s.call("racelog.public.get_track_info", [
+        eventInfo.data.info.trackId,
+      ])) as ITrackInfo;
+      const carData = (await s.call("racelog.public.get_event_cars", [eventInfo.id])) as any;
+      const speedmap = (await s.call("racelog.public.get_event_speedmap", [eventInfo.id])) as any;
+      const analysisData = (await s.call("racelog.public.live.get_event_analysis_by_key", [
+        eventKey,
+      ])) as any;
 
-        doDistribute(dispatch, defaultProcessRaceStateData, data.processedData);
-        globalWamp.currentData = data.processedData;
-      });
+      console.log(eventInfo);
+      wasmMethods.initProc(eventInfo.data.manifests);
+      wasmMethods.processCarMessage(carData);
+      wasmMethods.reinitWithAnalysisData(analysisData.kwargs.processedData);
 
-      // TODO: maybe combine this with above call
-      await s.call("racelog.public.get_event_info_by_key", [eventKey]).then(async (data: any) => {
-        console.log(data);
-        dispatch(updateEventInfo(data.data.info));
-        const trackInfo = (await s.call("racelog.public.get_track_info", [
-          data.data.info.trackId,
-        ])) as ITrackInfo;
-        dispatch(updateTrackInfo(trackInfo));
-      });
+      resetUi(dispatch);
+      dispatch(updateEventInfo(eventInfo.data.info));
+      dispatch(updateTrackInfo(trackInfo));
+      doDistribute(dispatch, defaultProcessRaceStateData, analysisData.kwargs.processedData);
+      dispatch(processInboundManifests(eventInfo.data.manifests));
+      processCarData(dispatch, carData);
+      processSpeedmap(dispatch, speedmap);
+      globalWamp.currentData = analysisData.kwargs.processedData;
 
-      s.call("racelog.public.get_event_cars_by_key", [eventKey]).then(async (data: any) => {
-        console.log(data);
-        processCarData(dispatch, data);
-      });
-      s.call("racelog.public.get_event_speedmap_by_key", [eventKey]).then(async (data: any) => {
-        // console.log(data);
-        processSpeedmap(dispatch, data);
-      });
-
+      // we need to reset here since standings page is defined as index page and will
+      // already be called before this method is finished.
+      dispatch(updateAvailableStandingsColumns({ ...defaultUiStateData.standingsColumns }));
       s.subscribe(sprintf("racelog.public.live.state.%s", eventKey), (data) => {
-        const theProc = globalWamp.processor;
         // important, otherwise we don't detect changes on carLaps,carStints,.... (all those Array.from(...) attrs of BulkProcessor)
         // raceGraph would be ok though. Needs further investigation
         const curData = _.cloneDeep(globalWamp.currentData!);
-        if (data != undefined) {
-          const newData = theProc!.process([data[0]]);
+        // if (data != undefined) {
+        //   const newData = theProc!.process([data[0]]);
 
-          doDistribute(dispatch, curData, newData);
-          globalWamp.currentData = { ...newData };
-        }
+        //   doDistribute(dispatch, curData, newData);
+        //   globalWamp.currentData = { ...newData };
+        // }
+        const ret = wasmMethods.processStateMessage(data[0]);
+        // console.log(ret);
+        doDistribute(dispatch, curData, ret);
+        globalWamp.currentData = { ...ret };
       });
       s.subscribe(
         sprintf("racelog.public.live.speedmap.%s", eventKey),
@@ -91,6 +93,7 @@ export const LiveEvents: React.FC = () => {
       s.subscribe(sprintf("racelog.public.live.cardata.%s", eventKey), (data: any) => {
         // console.log(data);
         if (data != undefined) {
+          wasmMethods.processCarMessage(data);
           processCarData(dispatch, data[0] as ICarDataMessage);
         }
       });

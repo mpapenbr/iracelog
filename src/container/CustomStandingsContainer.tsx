@@ -8,10 +8,12 @@ import CarFilter from "../components/live/carFilter";
 import { CircleOfDoom } from "../components/live/circleofdoom";
 import {
   ICarFilterData,
+  carNumberByCarIdx,
   collectCarsByCarClassFilter,
   orderedCarNumsByPosition,
   processCarClassSelectionNew,
   sortedSelectableCars,
+  supportsCarData,
 } from "../components/live/util";
 import { ZoomTrackPos } from "../components/live/zoomTrackPos";
 import { ReplayControl } from "../components/replayControl";
@@ -118,6 +120,7 @@ export const CustomStandingsContainer: React.FC = () => {
   const trackInfo = useSelector((state: ApplicationState) => state.raceData.trackInfo);
   const carInfos = useSelector((state: ApplicationState) => state.raceData.availableCars);
   const eventInfo = useSelector((state: ApplicationState) => state.raceData.eventInfo);
+  const carData = useSelector((state: ApplicationState) => state.carData);
 
   const replaySettings = useSelector((state: ApplicationState) => state.userSettings.replay);
   const stateGlobalSettings = useSelector((state: ApplicationState) => state.userSettings.global);
@@ -137,7 +140,11 @@ export const CustomStandingsContainer: React.FC = () => {
   const raceOrder = useSelector((state: ApplicationState) => state.raceData.classification);
   const createSelectableCars = (cars: ICarBaseData[]): ICarBaseData[] => {
     return sortedSelectableCars(cars, stateGlobalSettings.filterOrderByPosition, () =>
-      orderedCarNumsByPosition(raceOrder, stateCarManifest),
+      orderedCarNumsByPosition(
+        raceOrder,
+        stateCarManifest,
+        supportsCarData(eventInfo.raceloggerVersion) ? carNumberByCarIdx(carData) : undefined,
+      ),
     );
   };
   const selectableCars = createSelectableCars(

@@ -3,8 +3,10 @@ import _ from "lodash";
 import * as React from "react";
 import { useSelector } from "react-redux";
 import { ApplicationState } from "../../stores";
+import { ICarInfoContainer } from "../../stores/cars/types";
 import { IPitInfo } from "../../stores/racedata/types";
 import { assignCarColors } from "./colorAssignment";
+import { carNumberByCarIdx, supportsCarData } from "./util";
 
 type TrackPosData = {
   carNum: string;
@@ -27,9 +29,18 @@ export const ZoomTrackPos: React.FC<MyProps> = (props: MyProps) => {
   const stateCarManifest = useSelector((state: ApplicationState) => state.raceData.manifests.car);
   const carInfos = useSelector((state: ApplicationState) => state.raceData.availableCars);
   const eventInfo = useSelector((state: ApplicationState) => state.raceData.eventInfo);
+  const stateCarData: ICarInfoContainer = useSelector((state: ApplicationState) => state.carData);
+
+  const getCarNumLegacy = (c: any): string => {
+    return getValueViaSpec(c, stateCarManifest, "carNum");
+  };
+  const carIdxLookup = carNumberByCarIdx(stateCarData);
+  const getCarNum = (c: any): string => {
+    return carIdxLookup[getValueViaSpec(c, stateCarManifest, "carIdx")];
+  };
 
   const dataRaw: TrackPosData[] = carsRaw.map((c: any, idx: number) => ({
-    carNum: getValueViaSpec(c, stateCarManifest, "carNum"),
+    carNum: supportsCarData(eventInfo.raceloggerVersion) ? getCarNum(c) : getCarNumLegacy(c),
     trackPos: getValueViaSpec(c, stateCarManifest, "trackPos"),
     state: getValueViaSpec(c, stateCarManifest, "state"),
     pos: idx,
@@ -73,16 +84,18 @@ export const ZoomTrackPos: React.FC<MyProps> = (props: MyProps) => {
     return pitLen * trackInfo.trackLength * pixelPerM;
   };
   const pixelOffsetToReference = (refPos: number, otherPos: number): number => {
-    // console.log(`refPos: ${refPos} otherPos: ${otherPos}`);
     const localDelta = otherPos - refPos > 0.5 ? 1 - otherPos + refPos : refPos - otherPos;
     const localDeltaMeter = -localDelta * trackInfo.trackLength;
     const offset = localDeltaMeter * pixelPerM;
+    // console.log(
+    //   `refPos: ${refPos} otherPos: ${otherPos} localDelta: ${localDelta} offset: ${offset}`,
+    // );
     return offset;
   };
 
   const deltaDist = (a: TrackPosData, b: TrackPosData) => a.lap + a.trackPos - (b.lap + b.trackPos);
   const steps = 4;
-  console.log("referenceCar is at ", referenceCar);
+  // console.log("referenceCar is at ", referenceCar);
 
   const InternalGraph = (
     <svg width={boxWidth + margin} height={boxHeight + margin}>

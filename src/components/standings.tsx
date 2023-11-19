@@ -8,11 +8,10 @@ import { sprintf } from "sprintf-js";
 import { ApplicationState } from "../stores";
 
 import { ICarInfo, IDriverInfo } from "@mpapenbr/iracelog-analysis/dist/stints/types";
-import { Comparator } from "semver";
-import { ICarEntry } from "../stores/cars/types";
+import { ICarClass, ICarEntry } from "../stores/cars/types";
 import { classificationSettings, updateAvailableStandingsColumns } from "../stores/ui/actions";
 import { lapTimeString } from "../utils/output";
-import { findDriverBySessionTime } from "./live/util";
+import { carNumberByCarIdx, findDriverBySessionTime, supportsCarData } from "./live/util";
 
 interface MyProps {
   showCars: string[];
@@ -37,6 +36,18 @@ export const Standings: React.FC<Props> = (props: Props) => {
   );
   const dispatch = useDispatch();
   const getValue = (d: [], key: string) => getValueViaSpec(d, stateCarManifest, key);
+
+  const entryByIdx = Object.assign(
+    {},
+    ...carData.entries.map((x) => ({ [x.car.carIdx]: x.car.carNumber })),
+  );
+  // console.log(entryByIdx);
+
+  carsRaw.forEach((c: any) => {
+    // console.log(c);
+    const carNum = entryByIdx[getValue(c, "carIdx")];
+    // console.log("carIdx: " + getValue(c, "carIdx") + "carNum: " + carNum);
+  });
 
   const coloredTimeData = (d: [], key: string) => {
     const value = getValueViaSpec(d, stateCarManifest, key);
@@ -64,7 +75,15 @@ export const Standings: React.FC<Props> = (props: Props) => {
       return v > 0 ? lapTimeString(v) : "";
     }
   };
-  const hasCarData = new Comparator(">=0.4.4").test(eventInfo.raceloggerVersion);
+
+  const getCarNumLegacy = (c: any): string => {
+    return getValueViaSpec(c, stateCarManifest, "carNum");
+  };
+  const carIdxLookup = carNumberByCarIdx(carData);
+  const getCarNumByIdx = (c: any): string => {
+    return carIdxLookup[getValueViaSpec(c, stateCarManifest, "carIdx")];
+  };
+  const getCarNum = supportsCarData(eventInfo.raceloggerVersion) ? getCarNumByIdx : getCarNumLegacy;
 
   const sessionTime = getValueViaSpec(sessionInfo.data, stateSessionManifest, "sessionTime");
 
@@ -73,8 +92,12 @@ export const Standings: React.FC<Props> = (props: Props) => {
   const carDataLookup = new Map<string, ICarEntry>(
     carData.entries.map((o) => [o.car.carNumber, o.car]),
   );
+  const carClassLookup = new Map<number, ICarClass>(carData.carClasses.map((o) => [o.id, o]));
 
   const resolveCarInfo = (carNum: string): IDriverInfo => {
+    if (carInfoLookup.get(carNum) === undefined) {
+      console.log("carInfoLookup: ", carInfoLookup);
+    }
     return findDriverBySessionTime(carInfoLookup.get(carNum)!, sessionTime);
   };
 
@@ -82,13 +105,15 @@ export const Standings: React.FC<Props> = (props: Props) => {
     return resolveCarInfo(carNum).driverName;
   };
   const getCarClassName = (carNum: string): string => {
-    return carInfoLookup.get(carNum)?.carClass ?? "n.a.";
+    const classId = carDataLookup.get(carNum)?.carClassId;
+    return classId ? carClassLookup.get(classId)?.name ?? "n.a." : "n.a.";
   };
 
   const getCarName = (carNum: string): string => {
     return carDataLookup.get(carNum)?.name ?? "n.a.";
   };
 
+  const carIdxToCarNum = (idx: number) => entryByIdx[idx];
   const nullAwareOutput = (value: any, format: string): string => {
     if (typeof value === "number") {
       return sprintf(format, value);
@@ -114,18 +139,27 @@ export const Standings: React.FC<Props> = (props: Props) => {
   const columns: ColumnsType<{}> = [
     { key: "pos", title: "Pos", render: (d) => getValue(d, "pos"), width: 20, align: "right" },
     { key: "pic", title: "PIC", render: (d) => getValue(d, "pic"), width: 20, align: "right" },
-    { key: "carNum", title: "#", render: (d) => getValue(d, "carNum"), width: 20, align: "right" },
+
+    {
+      key: "carNum",
+      title: "#",
+      render: (d) => getCarNum(d),
+      width: 20,
+      align: "right",
+    },
     {
       key: "car",
       title: "Car",
       render: (d) => {
-        return hasCarData ? getCarName(getValue(d, "carNum")) : getValue(d, "car");
+        return supportsCarData(eventInfo.raceloggerVersion)
+          ? getCarName(carIdxToCarNum(getValue(d, "carIdx")))
+          : getValue(d, "car");
       },
     },
     {
       key: "carClass",
       title: "Class",
-      render: (d) => getCarClassName(getValue(d, "carNum")),
+      render: (d) => getCarClassName(getCarNum(d)),
       ellipsis: false,
     },
     { key: "state", title: "State", render: (d) => getValue(d, "state") },
@@ -133,7 +167,7 @@ export const Standings: React.FC<Props> = (props: Props) => {
     {
       key: "userName",
       title: "Driver",
-      render: (d) => getDriverName(getValue(d, "carNum")),
+      render: (d) => getDriverName(getCarNum(d)),
       ellipsis: false,
     },
     { key: "laps", title: "Lap", render: (d) => lapsOutput(d), width: 20, align: "right" },
@@ -226,14 +260,18 @@ export const Standings: React.FC<Props> = (props: Props) => {
   // className="istint-compact"
 
   // remove carClass column if there are no car classes
-  if (carClasses.length === 0) {
-    const idx = columns.findIndex((c) => c.key === "carClass");
+  if (carClasses.length <= 1) {
+    var idx = columns.findIndex((c) => c.key === "carClass");
+    if (idx != -1) {
+      columns.splice(idx, 1);
+    }
+    idx = columns.findIndex((c) => c.key === "pic");
     if (idx != -1) {
       columns.splice(idx, 1);
     }
   }
 
-  const cars = carsRaw.filter((c: any) => props.showCars.includes(getValue(c, "carNum")));
+  const cars = carsRaw.filter((c: any) => props.showCars.includes(getCarNum(c)));
   const pagination: TablePaginationConfig = {
     defaultPageSize: 20,
     pageSize: uiSettings.pageSize,
@@ -244,7 +282,7 @@ export const Standings: React.FC<Props> = (props: Props) => {
     },
     showSizeChanger: true,
   };
-  if (!stateColumnsAvail.availableColumns.length) {
+  if (stateColumnsAvail.availableColumns.length != columns.length) {
     const updateData = columns.map((c) => ({ name: c.key! as string, title: c.title as string }));
     dispatch(updateAvailableStandingsColumns({ availableColumns: updateData }));
     dispatch(classificationSettings({ ...uiSettings, showCols: updateData }));

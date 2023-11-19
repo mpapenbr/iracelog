@@ -3,11 +3,12 @@ import * as React from "react";
 import { useSelector } from "react-redux";
 import { sprintf } from "sprintf-js";
 import { ApplicationState } from "../../stores";
-import { ICarClass, ICarInfo, IEntry } from "../../stores/cars/types";
+import { ICarClass, ICarInfoContainer, IEntry } from "../../stores/cars/types";
 import { ICarBaseData } from "../../stores/racedata/types";
 import { ISpeedmapData } from "../../stores/speedmap/types";
 import { assignCarColors } from "../live//colorAssignment";
 import { cat10Colors } from "../live/colors";
+import { carNumberByCarIdx, supportsCarData } from "../live/util";
 
 type TrackPosData = {
   carNum: string;
@@ -40,14 +41,23 @@ export const CircleOfDoom: React.FC<MyProps> = (props: MyProps) => {
   const carClasses: ICarClass[] = useSelector(
     (state: ApplicationState) => state.carData.carClasses,
   );
-  const stateCarData: ICarInfo[] = useSelector((state: ApplicationState) => state.carData.cars);
+  const stateCarData: ICarInfoContainer = useSelector((state: ApplicationState) => state.carData);
   const stateEntries: IEntry[] = useSelector((state: ApplicationState) => state.carData.entries);
 
   const carLookup = carInfos.reduce((prev, cur) => {
     return prev.set(cur.carNum, cur);
   }, new Map<string, ICarBaseData>());
+
+  const getCarNumLegacy = (c: any): string => {
+    return getValueViaSpec(c, stateCarManifest, "carNum");
+  };
+  const carIdxLookup = carNumberByCarIdx(stateCarData);
+  const getCarNum = (c: any): string => {
+    return carIdxLookup[getValueViaSpec(c, stateCarManifest, "carIdx")];
+  };
+
   const dataRaw: TrackPosData[] = carsRaw.map((c: any, idx: number) => ({
-    carNum: getValueViaSpec(c, stateCarManifest, "carNum"),
+    carNum: supportsCarData(eventInfo.raceloggerVersion) ? getCarNum(c) : getCarNumLegacy(c),
     trackPos: getValueViaSpec(c, stateCarManifest, "trackPos"),
     state: getValueViaSpec(c, stateCarManifest, "state"),
     pos: idx,
@@ -65,8 +75,8 @@ export const CircleOfDoom: React.FC<MyProps> = (props: MyProps) => {
   const colorCat = cat10Colors;
   const circleSize = props.circleSize;
   const margin = 30;
-  const emphasizeLen = 45;
-  const standardLen = 40;
+  const emphasizeLen = 40;
+  const standardLen = 25;
   const circleExtendSize = 60; // how many pixels do we need on outer circle area
   const circleWidth = 25;
 
@@ -147,7 +157,7 @@ export const CircleOfDoom: React.FC<MyProps> = (props: MyProps) => {
     if (!eventInfo.sectors.length) {
       return <></>;
     }
-    const sectorMarkerLen = circleWidth;
+    const sectorMarkerLen = circleWidth + 15;
     return (
       <>
         {eventInfo.sectors.map((item) => {
@@ -305,7 +315,12 @@ export const CircleOfDoom: React.FC<MyProps> = (props: MyProps) => {
           cx={circleSize}
           cy={circleSize}
           r={circleSize - circleExtendSize}
-          style={{ stroke: "lightgrey", fillOpacity: 0, strokeWidth: circleWidth }}
+          style={{
+            stroke: "lightgrey",
+            strokeOpacity: 0.2,
+            fillOpacity: 0,
+            strokeWidth: circleWidth,
+          }}
         />
         <Sectors />
         {data

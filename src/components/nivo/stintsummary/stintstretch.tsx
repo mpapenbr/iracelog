@@ -86,13 +86,17 @@ const StintStretch: React.FC<MyProps> = (props: MyProps) => {
             .map((c) => {
               return (
                 <Tooltip
-                  key={"tt-" + c.data.carNum + "-" + c.idx}
+                  key={"tt-" + props.carNum + "-" + c.idx}
                   color={c.color}
                   overlay={
                     <StintTooltip
+                      carNum={props.carNum ?? "n.a."}
                       stintInfo={c.data as IStintInfo}
                       no={c.idx}
-                      driver={findDriverByStint(currentCarInfo, c.data as IStintInfo)?.driverName ?? "n.a."}
+                      driver={
+                        findDriverByStint(currentCarInfo, c.data as IStintInfo)?.driverName ??
+                        "n.a."
+                      }
                     />
                   }
                 >

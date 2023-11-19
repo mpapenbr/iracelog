@@ -4,10 +4,12 @@ import * as React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import CarFilter from "../components/live/carFilter";
 import {
+  carNumberByCarIdx,
   collectCarsByCarClassFilter,
   orderedCarNumsByPosition,
   processCarClassSelectionNew,
   sortedSelectableCars,
+  supportsCarData,
 } from "../components/live/util";
 import CarPitstopsNivo from "../components/nivo/carPitstops";
 import PitstopControl from "../components/pitstopControl";
@@ -21,12 +23,18 @@ export const CarPitstopsContainer: React.FC = () => {
   const carClasses = useSelector((state: ApplicationState) => state.raceData.availableCarClasses);
   const userSettings = useSelector((state: ApplicationState) => state.userSettings.pitstops);
   const stateGlobalSettings = useSelector((state: ApplicationState) => state.userSettings.global);
+  const eventInfo = useSelector((state: ApplicationState) => state.raceData.eventInfo);
+  const carData = useSelector((state: ApplicationState) => state.carData);
 
   const stateCarManifest = useSelector((state: ApplicationState) => state.raceData.manifests.car);
   const raceOrder = useSelector((state: ApplicationState) => state.raceData.classification);
   const createSelectableCars = (cars: ICarBaseData[]): ICarBaseData[] => {
     return sortedSelectableCars(cars, stateGlobalSettings.filterOrderByPosition, () =>
-      orderedCarNumsByPosition(raceOrder, stateCarManifest),
+      orderedCarNumsByPosition(
+        raceOrder,
+        stateCarManifest,
+        supportsCarData(eventInfo.raceloggerVersion) ? carNumberByCarIdx(carData) : undefined,
+      ),
     );
   };
   const orderedShowCars = (carNums: string[]): string[] => {
@@ -49,8 +57,9 @@ export const CarPitstopsContainer: React.FC = () => {
   };
   const { showCars, filterCarClasses } = selectSettings();
   const dispatch = useDispatch();
-  const selectableCars =
-    userSettings.selectableCars.length > 0 ? userSettings.selectableCars : cars;
+  const selectableCars = createSelectableCars(
+    userSettings.selectableCars.length > 0 ? userSettings.selectableCars : cars,
+  );
   const onSelectCarClassChange = (values: string[]) => {
     const newShowcars = processCarClassSelectionNew({
       cars: cars,
@@ -59,17 +68,11 @@ export const CarPitstopsContainer: React.FC = () => {
       newSelection: values,
     });
 
-    const sortedSelectabled = createSelectableCars(collectCarsByCarClassFilter(cars, values));
-
-    const reorderedShowCars = sortedSelectabled
-      .map((c) => c.carNum)
-      .filter((carNum) => newShowcars.includes(carNum));
-
     const curSettings = {
       ...userSettings,
       filterCarClasses: values,
-      showCars: reorderedShowCars,
-      selectableCars: sortedSelectabled,
+      showCars: newShowcars,
+      selectableCars: collectCarsByCarClassFilter(cars, values),
     };
     // const curSettings = { ...userSettings, filterCarClasses: values };
     dispatch(pitstopsSettings(curSettings));
@@ -77,7 +80,7 @@ export const CarPitstopsContainer: React.FC = () => {
       dispatch(
         globalSettings({
           ...stateGlobalSettings,
-          showCars: reorderedShowCars,
+          showCars: showCars,
           filterCarClasses: values,
         }),
       );

@@ -5,10 +5,12 @@ import { globalWamp } from "../commons/globals";
 import Delta from "../components/antcharts/deltagraph";
 import CarFilter from "../components/live/carFilter";
 import {
+  carNumberByCarIdx,
   collectCarsByCarClassFilter,
   orderedCarNumsByPosition,
   processCarClassSelectionNew,
   sortedSelectableCars,
+  supportsCarData,
 } from "../components/live/util";
 import { ApplicationState } from "../stores";
 import { ICarBaseData } from "../stores/racedata/types";
@@ -31,9 +33,15 @@ export const RaceGraphByReferenceContainer: React.FC = () => {
   const stateGlobalSettings = useSelector((state: ApplicationState) => state.userSettings.global);
   const stateCarManifest = useSelector((state: ApplicationState) => state.raceData.manifests.car);
   const raceOrder = useSelector((state: ApplicationState) => state.raceData.classification);
+  const carData = useSelector((state: ApplicationState) => state.carData);
+  const eventInfo = useSelector((state: ApplicationState) => state.raceData.eventInfo);
   const createSelectableCars = (cars: ICarBaseData[]): ICarBaseData[] => {
     return sortedSelectableCars(cars, stateGlobalSettings.filterOrderByPosition, () =>
-      orderedCarNumsByPosition(raceOrder, stateCarManifest),
+      orderedCarNumsByPosition(
+        raceOrder,
+        stateCarManifest,
+        supportsCarData(eventInfo.raceloggerVersion) ? carNumberByCarIdx(carData) : undefined,
+      ),
     );
   };
   const orderedShowCars = (carNums: string[]): string[] => {

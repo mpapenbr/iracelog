@@ -116,19 +116,23 @@ export const resetUi = (dispatch: Dispatch) => {
   dispatch(updateCarClasses([]));
   dispatch(updateCarEntries([]));
 };
-
+// if legacy is true, we use the data from carInfo to update the available cars/classes.
+// nowadays this is done by processCarData
 export const doDistribute = (
   dispatch: Dispatch,
   currentData: IProcessRaceStateData,
   newData: IProcessRaceStateData,
+  legacy?: boolean, //
 ) => {
   distributeChanges({
     currentData: currentData,
     newData: newData,
     onChangedSession: (arg) => onChangeSession(dispatch, arg),
     onChangedClassification: (arg) => onChangeClassification(dispatch, arg),
-    onChangedAvailableCars: (arg) => onChangedAvailableCars(dispatch, arg),
-    onChangedAvailableCarClasses: (arg) => onChangedAvailableCarClasses(dispatch, arg),
+    onChangedAvailableCars:
+      legacy ?? false ? (arg) => onChangedAvailableCars(dispatch, arg) : undefined,
+    onChangedAvailableCarClasses:
+      legacy ?? false ? (arg) => onChangedAvailableCarClasses(dispatch, arg) : undefined,
     onChangedRaceGraph: (arg) => onChangeRaceGraph(dispatch, arg),
     onChangedCarInfos: (arg) => onChangeCarInfos(dispatch, arg),
     onChangedCarLaps: (arg) => onChangeCarLaps(dispatch, arg),

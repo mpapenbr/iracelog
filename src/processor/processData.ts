@@ -15,6 +15,7 @@ import { ICarBaseData, ICarClass } from "../stores/racedata/types";
 export interface IProcessingInfo {
   currentData: IProcessRaceStateData;
   newData: IProcessRaceStateData;
+
   onChangedSession?: (s: IMessage) => void;
   onChangedClassification?: (s: IMessage) => void;
   onChangedAvailableCars?: (newData: ICarBaseData[]) => void;
@@ -48,6 +49,7 @@ export const distributeChanges = (args: IProcessingInfo) => {
     }
   }
 
+  //TODO:  this should only be called for racelogger < 0.4.4
   // available cars / car classes
   if (!_.isEmpty(diff(args.currentData.carInfo, args.newData.carInfo))) {
     args.onChangedCarInfos?.(args.newData.carInfo);

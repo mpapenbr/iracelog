@@ -24,11 +24,16 @@ export const Drivers: React.FC = () => {
     entry: IEntry;
     carClassName: string;
   }
-  const extDriverData: IDriverData[] = allDrivers.map((d) => ({
-    ...d,
-    entry: entryByIdx[d.carIdx],
-    carClassName: carClassLookup[entryByIdx[d.carIdx].car.carClassId].name,
-  }));
+  const extDriverData: IDriverData[] = allDrivers.map((d) => {
+    // console.log("d.carIdx: ", d.carIdx);
+    // console.log("entry: ", entryByIdx[d.carIdx]);
+
+    return {
+      ...d,
+      entry: entryByIdx[d.carIdx],
+      carClassName: carClassLookup[entryByIdx[d.carIdx].car.carClassId]?.name ?? "unknown",
+    };
+  });
 
   const columns: ColumnsType<IDriverData> = [
     {
