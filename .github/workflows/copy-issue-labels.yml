@@ -10,6 +10,7 @@ jobs:
     name: Copy labels from linked issues
     permissions:
       contents: write
+      issues: write
       pull-requests: read
 
     steps:
