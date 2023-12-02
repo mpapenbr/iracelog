@@ -1,0 +1,27 @@
+name: Release Drafter
+
+on:
+  workflow_dispatch:
+  pull_request:
+    branches:
+      - main
+    types: [closed]
+
+jobs:
+  release-drafter:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: read
+
+    steps:
+      # Drafts release notes as Pull Requests are merged into "main"
+      - uses: release-drafter/release-drafter@v5
+        id: rd
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: output changelog
+        run: |
+          echo "Resolved version ${{ steps.rd.outputs.tag_name }}"
+          echo "${{ steps.rd.outputs.body }}"
