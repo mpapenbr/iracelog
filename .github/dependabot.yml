@@ -15,11 +15,13 @@ updates:
         dependency-type: "production"
       development-dependencies:
         dependency-type: "development"
+    ignore:
+      - dependency-name: "@ant-design/charts"
+        update-types: ["version-update:semver-major"]
 
   - package-ecosystem: github-actions
     directory: /
     labels:
-      - developer
       - build
     schedule:
       interval: "weekly"
