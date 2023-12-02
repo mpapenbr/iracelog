@@ -1,0 +1,19 @@
+name: Copy issue labels to PR
+on:
+  workflow_dispatch:
+  pull_request:
+    types: [opened]
+# Note: this may be obsolete when it is included here: https://github.com/microsoft/vscode-pull-request-github/issues/1186
+jobs:
+  copy-labels:
+    runs-on: ubuntu-latest
+    name: Copy labels from linked issues
+    permissions:
+      contents: write
+      pull-requests: read
+
+    steps:
+      - name: copy-labels
+        uses: michalvankodev/copy-issue-labels@v1.3.0
+        with:
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
