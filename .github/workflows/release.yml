@@ -96,6 +96,17 @@ jobs:
             org.opencontainers.image.source=${{ github.event.repository.html_url }}
             org.opencontainers.image.created=${{ steps.prep.outputs.created }}
             org.opencontainers.image.revision=${{ github.sha }}
+            org.opencontainers.image.version=${{ steps.prep.outputs.version }}
+            org.opencontainers.image.description=iRacelog frontend
+
+      - uses: release-drafter/release-drafter@v5
+        id: rd
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: prepare changlog
+        run: |
+          echo "${{ steps.rd.outputs.body }}" > "${{ runner.temp }}/CHANGELOG.md"
 
       - name: Build release (on tags)
         run: |
@@ -104,7 +115,7 @@ jobs:
               PRE_RELEASE=--prerelease
           fi
 
-          gh release create ${{ steps.prep.outputs.version }} $PRE_RELEASE --generate-notes
+          gh release create ${{ steps.prep.outputs.version }} $PRE_RELEASE -F "${{ runner.temp }}/CHANGELOG.md"
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         if: github.ref_type == 'tag'
