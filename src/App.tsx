@@ -1,7 +1,7 @@
 import { Layout } from "antd";
 import React from "react";
 import { Provider } from "react-redux";
-import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import { Route, BrowserRouter as Router, Routes } from "react-router-dom";
 import { Store } from "redux";
 import "./App.css";
 import { API_LOCAL_DEV_MODE, APP_VERSION_DISPLAY } from "./constants";
@@ -21,6 +21,7 @@ interface AppProps {
 const OtherContent: React.FC = () => <div>Here goes other content</div>;
 
 const App: React.FC<AppProps> = (props: AppProps) => {
+  const link = `https://github.com/mpapenbr/iracelog/releases/tag/v${APP_VERSION_DISPLAY}`;
   return (
     <Provider store={props.store}>
       <Router>
@@ -47,11 +48,7 @@ const App: React.FC<AppProps> = (props: AppProps) => {
           </Content>
           <Footer style={{ textAlign: "center" }}>
             iRacelog{" "}
-            <a
-              target={"_blank"}
-              rel="noreferrer"
-              href="https://github.com/mpapenbr/iracelog/blob/main/CHANGELOG.md"
-            >
+            <a target={"_blank"} rel="noreferrer" href={link}>
               {APP_VERSION_DISPLAY}
             </a>{" "}
             ©2023 Markus Papenbrock
