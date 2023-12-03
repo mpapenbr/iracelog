@@ -1,3 +1,32 @@
+### 0.21.0 (2023-12-03)
+
+##### Build System / Dependencies
+
+* **deps:**
+  *  bump the production-dependencies group with 4 updates (58971d37)
+  *  bump @adobe/css-tools from 4.3.1 to 4.3.2 (459f8284)
+  *  bump the production-dependencies group with 9 updates (06c0c11b)
+  *  bump the production-dependencies group with 8 updates (0b032f90)
+  *  bump the production-dependencies group with 1 update (3ebbce52)
+  *  bump the production-dependencies group with 5 updates (127653d7)
+  *  bump @babel/traverse from 7.21.5 to 7.23.2 (35fe3385)
+  *  bump postcss from 8.4.29 to 8.4.31 (d95f2421)
+  *  bump get-func-name from 2.0.0 to 2.0.2 (279cd39e)
+* **deps-dev:**
+  *  bump the development-dependencies group with 13 updates (0ff987e9)
+  *  bump the development-dependencies group with 8 updates (27066b8f)
+  *  bump the development-dependencies group with 1 update (ffe56cb6)
+  *  bump the development-dependencies group with 14 updates (bbfe845d)
+* **gha:**  fixed dependabot gha section (6badf46a)
+
+##### Bug Fixes
+
+*  changed permissions on copy-issue-labels (8b345789)
+
+##### Other Changes
+
+*  fix permissions on copy-issue-labels (2dd099bc)
+
 ### 0.20.0 (2023-09-10)
 
 ##### Build System / Dependencies
