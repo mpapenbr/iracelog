@@ -53,7 +53,7 @@ const RemainingRace: React.FC<RemainingProps> = (props: RemainingProps) => {
         <span>{props.laps} laps</span>
       );
   } else {
-    return <span>{secAsString(props.time)}</span>;
+    return props.time > -1 ? <span>{secAsString(props.time)}</span> : <span></span>;
   }
 };
 
