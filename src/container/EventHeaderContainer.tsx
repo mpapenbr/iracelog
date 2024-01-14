@@ -45,10 +45,12 @@ const RemainingRace: React.FC<RemainingProps> = (props: RemainingProps) => {
     if (props.time === NO_TIME_LIMIT) {
       return <span>{props.laps} laps</span>;
     } else
-      return (
+      return props.time > -1 ? (
         <span>
           {props.laps} laps/{secAsString(props.time)}
         </span>
+      ) : (
+        <span>{props.laps} laps</span>
       );
   } else {
     return <span>{secAsString(props.time)}</span>;
