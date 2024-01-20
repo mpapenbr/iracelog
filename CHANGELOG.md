@@ -1,3 +1,21 @@
+### 0.22.0 (2024-01-20)
+
+##### Build System / Dependencies
+
+* **deps-dev:**
+  *  bump vite from 5.0.11 to 5.0.12 (7837b531)
+  *  bump the development-dependencies group with 6 updates (6fd4ae2b)
+  *  bump the development-dependencies group with 9 updates (af35dd5a)
+  *  bump the development-dependencies group with 3 updates (72a9816b)
+  *  bump the development-dependencies group with 15 updates (b4eb8793)
+  *  bump vite from 5.0.4 to 5.0.5 (081108cc)
+  *  bump the development-dependencies group with 3 updates (a624775e)
+* **deps:**
+  *  bump the production-dependencies group with 6 updates (3ca3ec3f)
+  *  bump the production-dependencies group with 2 updates (5991bd1b)
+  *  bump the production-dependencies group with 6 updates (a62cad68)
+  *  bump the production-dependencies group with 2 updates (8b512856)
+
 ### 0.21.0 (2023-12-03)
 
 ##### Build System / Dependencies
