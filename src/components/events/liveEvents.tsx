@@ -93,7 +93,7 @@ export const LiveEvents: React.FC = () => {
       s.subscribe(sprintf("racelog.public.live.cardata.%s", eventKey), (data: any) => {
         // console.log(data);
         if (data != undefined) {
-          wasmMethods.processCarMessage(data);
+          wasmMethods.processCarMessage(data[0]);
           processCarData(dispatch, data[0] as ICarDataMessage);
         }
       });

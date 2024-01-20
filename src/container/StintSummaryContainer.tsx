@@ -110,7 +110,7 @@ export const StintSummaryContainer: React.FC = () => {
     { minTime: Number.MAX_SAFE_INTEGER, maxTime: 0 },
   );
   const props = { carNum: referenceCarNum, combinedStintData: combinedData, ...combinedDataMinMax };
-  console.log(props);
+  // console.log(props);
   return (
     <>
       <Row gutter={16}>
