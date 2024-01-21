@@ -77,7 +77,12 @@ export const LiveEvents: React.FC = () => {
         //   doDistribute(dispatch, curData, newData);
         //   globalWamp.currentData = { ...newData };
         // }
-        const ret = wasmMethods.processStateMessage(data[0]);
+        // const ret = curData;
+        const retS = wasmMethods.processStateMessage(data[0]);
+        // console.log("state message processed:", retS.length);
+        // print length of retS
+        // console.log("length of str:", retS.length);
+        const ret = JSON.parse(retS);
         // console.log(ret);
         doDistribute(dispatch, curData, ret);
         globalWamp.currentData = { ...ret };
@@ -86,6 +91,7 @@ export const LiveEvents: React.FC = () => {
         sprintf("racelog.public.live.speedmap.%s", eventKey),
         (data: any[] | undefined) => {
           if (data != undefined) {
+            console.log("speedmap message received: ");
             processSpeedmap(dispatch, data[0] as ISpeedmapMessage);
           }
         },
@@ -93,6 +99,7 @@ export const LiveEvents: React.FC = () => {
       s.subscribe(sprintf("racelog.public.live.cardata.%s", eventKey), (data: any) => {
         // console.log(data);
         if (data != undefined) {
+          console.log("carData message received: ");
           wasmMethods.processCarMessage(data[0]);
           processCarData(dispatch, data[0] as ICarDataMessage);
         }
