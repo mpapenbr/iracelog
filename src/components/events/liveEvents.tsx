@@ -99,8 +99,13 @@ export const LiveEvents: React.FC = () => {
       s.subscribe(sprintf("racelog.public.live.cardata.%s", eventKey), (data: any) => {
         // console.log(data);
         if (data != undefined) {
+          const curData = _.cloneDeep(globalWamp.currentData!);
           console.log("carData message received: ");
-          wasmMethods.processCarMessage(data[0]);
+          const retS = wasmMethods.processCarMessage(data[0]);
+          const ret = JSON.parse(retS);
+          // console.log(ret);
+          doDistribute(dispatch, curData, ret);
+          globalWamp.currentData = { ...ret };
           processCarData(dispatch, data[0] as ICarDataMessage);
         }
       });

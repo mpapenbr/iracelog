@@ -32,6 +32,12 @@ There are 3 options:
 - pass the JS object as string and Unmarshall it here
 - pass the JS object and use js.Global().Get("JSON").Call("stringify", arg).String() and Unmarshall it here
 
+When returing the data to JS you have 2 options:
+- convert the Go struct to an interface{} with convert.Convert() and return it
+  Note: the convert.Convert() is quite slow on bigger objects.
+	When recording races >6h it takes too long
+- return the Go struct as json string and parse it on the JS side with JSON.parse()
+
 On top of that:
 when using tinygo you will get an error like this on the JS console (see https://github.com/tinygo-org/tinygo/issues/1140)
 "syscall/js.finalizeRef not implemented"
@@ -92,13 +98,28 @@ func reinitWithAnalysisData(this js.Value, inputs []js.Value) interface{} {
 	// fmt.Printf("Current analysis: %+v\n", data)
 
 	if data != nil {
-		return convert.Convert(data)
+		start := time.Now()
+		jsonStrRet, jsonErr := json.Marshal(data)
+		if jsonErr != nil {
+			fmt.Printf("error: %v\n", jsonErr)
+			return ""
+		}
+		// ret := convert.Convert(data)
+
+		// var ret interface{} = data
+		if time.Since(start) > time.Millisecond*500 {
+			fmt.Printf("converting to interface : %s\n", time.Since(start))
+		}
+		return string(jsonStrRet)
 	} else {
 		fmt.Printf("Current analysis not yet present\n")
 		return nil
 	}
 }
 
+// don't use this, it is too slow. Problem is converting the data to an interface{} with convert.Convert
+// use #ProcessCarMessageString instead
+// keeping it here for reference
 func ProcessCarMessage(this js.Value, inputs []js.Value) interface{} {
 
 	jsonStr := js.Global().Get("JSON").Call("stringify", inputs[0]).String()
@@ -124,6 +145,48 @@ func ProcessCarMessage(this js.Value, inputs []js.Value) interface{} {
 	}
 
 }
+
+// the data is returned as json string.
+// On the JS side we parse it with JSON.parse(). This is much faster than convert.Convert
+func ProcessCarMessageString(this js.Value, inputs []js.Value) interface{} {
+
+	jsonStr := js.Global().Get("JSON").Call("stringify", inputs[0]).String()
+	bytes := []byte(jsonStr)
+	// fmt.Printf("Received carData (raw): %s\n", jsonStr)
+	var carData model.CarData
+	err := json.Unmarshal(bytes, &carData)
+	if err != nil {
+		fmt.Printf("error: %v\n", err)
+		return nil
+	}
+	// fmt.Printf("Received carData: %+v\n", carData)
+	// fmt.Printf("current proc instance: %+v\n", proc)
+	proc.ProcessCarData(&carData)
+	data := proc.GetData()
+	// fmt.Printf("Current analysis: %+v\n", data)
+
+	if data != nil {
+		start := time.Now()
+		jsonStrRet, jsonErr := json.Marshal(data)
+		if jsonErr != nil {
+			fmt.Printf("error: %v\n", jsonErr)
+			return ""
+		}
+
+		if time.Since(start) > time.Millisecond*500 {
+			fmt.Printf("converting to interface : %s\n", time.Since(start))
+		}
+		return string(jsonStrRet)
+	} else {
+		fmt.Printf("Current analysis not yet present\n")
+		return nil
+	}
+
+}
+
+// don't use this, it is too slow. Problem is converting the data to an interface{} with convert.Convert
+// use #ProcessStateMessageString instead
+// keeping it here for reference
 func ProcessStateMessage(this js.Value, inputs []js.Value) interface{} {
 	start := time.Now()
 	jsonStr := js.Global().Get("JSON").Call("stringify", inputs[0]).String()
@@ -159,6 +222,8 @@ func ProcessStateMessage(this js.Value, inputs []js.Value) interface{} {
 	}
 }
 
+// the data is returned as json string.
+// On the JS side we parse it with JSON.parse(). This is much faster than convert.Convert
 func ProcessStateMessageString(this js.Value, inputs []js.Value) interface{} {
 	start := time.Now()
 	jsonStr := js.Global().Get("JSON").Call("stringify", inputs[0]).String()
@@ -183,16 +248,13 @@ func ProcessStateMessageString(this js.Value, inputs []js.Value) interface{} {
 
 	if data != nil {
 		start = time.Now()
-		// data.CarLaps = make([]model.AnalysisCarLaps, 0)
-		// jsonStr = js.Global().Get("JSON").Call("stringify", data).String()
+
 		jsonStrRet, jsonErr := json.Marshal(data)
 		if jsonErr != nil {
 			fmt.Printf("error: %v\n", jsonErr)
 			return ""
 		}
-		// ret := convert.Convert(data)
 
-		// var ret interface{} = data
 		if time.Since(start) > time.Millisecond*500 {
 			fmt.Printf("converting to interface : %s\n", time.Since(start))
 		}
@@ -210,8 +272,7 @@ func main() {
 	js.Global().Set("initProc", js.FuncOf(initProc))
 	js.Global().Set("initProcJsonStr", js.FuncOf(initProcJsonStr))
 	js.Global().Set("reinitWithAnalysisData", js.FuncOf(reinitWithAnalysisData))
-	js.Global().Set("processCarMessage", js.FuncOf(ProcessCarMessage))
-	// js.Global().Set("processStateMessage", js.FuncOf(ProcessStateMessage))
+	js.Global().Set("processCarMessage", js.FuncOf(ProcessCarMessageString))
 	js.Global().Set("processStateMessage", js.FuncOf(ProcessStateMessageString))
 
 	<-c
