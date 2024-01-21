@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"syscall/js"
+	"time"
 	"wasmwrapper/convert"
 
 	"github.com/mpapenbr/iracelog-service-manager-go/pkg/model"
@@ -124,6 +125,7 @@ func ProcessCarMessage(this js.Value, inputs []js.Value) interface{} {
 
 }
 func ProcessStateMessage(this js.Value, inputs []js.Value) interface{} {
+	start := time.Now()
 	jsonStr := js.Global().Get("JSON").Call("stringify", inputs[0]).String()
 	bytes := []byte(jsonStr)
 	// fmt.Printf("Received stateData (raw): %s\n", jsonStr)
@@ -133,18 +135,71 @@ func ProcessStateMessage(this js.Value, inputs []js.Value) interface{} {
 		fmt.Printf("error: %v\n", err)
 		return nil
 	}
+	fmt.Printf("converted input data (raw): %d bytes: %s\n", len(jsonStr), time.Since(start))
+
 	// fmt.Printf("Received carData: %+v\n", carData)
 	// fmt.Printf("current proc instance: %+v\n", proc)
 
+	start = time.Now()
 	proc.ProcessState(&stateData)
 	data := proc.GetData()
 	// fmt.Printf("Current analysis: %+v\n", data)
+	fmt.Printf("processing: %s\n", time.Since(start))
 
 	if data != nil {
-		return convert.Convert(data)
+		start = time.Now()
+		// data.CarLaps = make([]model.AnalysisCarLaps, 0)
+		ret := convert.Convert(data)
+		// var ret interface{} = data
+		fmt.Printf("converting to interface : %s\n", time.Since(start))
+		return ret
 	} else {
 		fmt.Printf("Current analysis not yet present\n")
 		return nil
+	}
+}
+
+func ProcessStateMessageString(this js.Value, inputs []js.Value) interface{} {
+	start := time.Now()
+	jsonStr := js.Global().Get("JSON").Call("stringify", inputs[0]).String()
+	bytes := []byte(jsonStr)
+	// fmt.Printf("Received stateData (raw): %s\n", jsonStr)
+	var stateData model.StateData
+	err := json.Unmarshal(bytes, &stateData)
+	if err != nil {
+		fmt.Printf("error: %v\n", err)
+		return ""
+	}
+	// fmt.Printf("converted input data (raw): %d bytes: %s\n", len(jsonStr), time.Since(start))
+
+	// fmt.Printf("Received carData: %+v\n", carData)
+	// fmt.Printf("current proc instance: %+v\n", proc)
+
+	start = time.Now()
+	proc.ProcessState(&stateData)
+	data := proc.GetData()
+	// fmt.Printf("Current analysis: %+v\n", data)
+	// fmt.Printf("processing: %s\n", time.Since(start))
+
+	if data != nil {
+		start = time.Now()
+		// data.CarLaps = make([]model.AnalysisCarLaps, 0)
+		// jsonStr = js.Global().Get("JSON").Call("stringify", data).String()
+		jsonStrRet, jsonErr := json.Marshal(data)
+		if jsonErr != nil {
+			fmt.Printf("error: %v\n", jsonErr)
+			return ""
+		}
+		// ret := convert.Convert(data)
+
+		// var ret interface{} = data
+		if time.Since(start) > time.Millisecond*500 {
+			fmt.Printf("converting to interface : %s\n", time.Since(start))
+		}
+		return string(jsonStrRet)
+	} else {
+		fmt.Printf("Current analysis not yet present\n")
+		return ""
 	}
 }
 
@@ -156,7 +211,8 @@ func main() {
 	js.Global().Set("initProcJsonStr", js.FuncOf(initProcJsonStr))
 	js.Global().Set("reinitWithAnalysisData", js.FuncOf(reinitWithAnalysisData))
 	js.Global().Set("processCarMessage", js.FuncOf(ProcessCarMessage))
-	js.Global().Set("processStateMessage", js.FuncOf(ProcessStateMessage))
+	// js.Global().Set("processStateMessage", js.FuncOf(ProcessStateMessage))
+	js.Global().Set("processStateMessage", js.FuncOf(ProcessStateMessageString))
 
 	<-c
 }
