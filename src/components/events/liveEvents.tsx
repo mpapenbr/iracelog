@@ -1,5 +1,8 @@
 import { ReloadOutlined } from "@ant-design/icons";
-import { defaultProcessRaceStateData } from "@mpapenbr/iracelog-analysis/dist/stints/types";
+import {
+  IRaceGraph,
+  defaultProcessRaceStateData,
+} from "@mpapenbr/iracelog-analysis/dist/stints/types";
 import { Button, Col, Descriptions, List, Row } from "antd";
 import { Connection, Session } from "autobahn-browser";
 import _ from "lodash";
@@ -19,6 +22,8 @@ import { ISpeedmapMessage, ITrackInfo } from "../../stores/racedata/types";
 import { updateAvailableStandingsColumns } from "../../stores/ui/actions";
 import { defaultStateData as defaultUiStateData } from "../../stores/ui/reducer";
 
+import { applyPatch } from "fast-json-patch";
+import { MessageType } from "../../stores/types/message";
 import wasmMethods from "../../wasm/wasmloader";
 import { doDistribute, resetUi } from "./datahandler";
 
@@ -63,14 +68,40 @@ export const LiveEvents: React.FC = () => {
       processCarData(dispatch, carData);
       processSpeedmap(dispatch, speedmap);
       globalWamp.currentData = analysisData.kwargs.processedData;
+      console.log("currente working data: ", globalWamp.currentData);
 
       // we need to reset here since standings page is defined as index page and will
       // already be called before this method is finished.
       dispatch(updateAvailableStandingsColumns({ ...defaultUiStateData.standingsColumns }));
-      s.subscribe(sprintf("racelog.public.live.state.%s", eventKey), (data) => {
+      // deactivated by design - will be removed by issue #1036
+      if (false) {
+        s.subscribe(sprintf("racelog.public.live.state.%s", eventKey), (data) => {
+          // important, otherwise we don't detect changes on carLaps,carStints,.... (all those Array.from(...) attrs of BulkProcessor)
+          // raceGraph would be ok though. Needs further investigation
+          const curData = _.cloneDeep(globalWamp.currentData!);
+          // if (data != undefined) {
+          //   const newData = theProc!.process([data[0]]);
+
+          //   doDistribute(dispatch, curData, newData);
+          //   globalWamp.currentData = { ...newData };
+          // }
+          // const ret = curData;
+          const retS = wasmMethods.processStateMessage(data[0]);
+          // console.log("state message processed:", retS.length);
+          // print length of retS
+          // console.log("length of str:", retS.length);
+          const ret = JSON.parse(retS);
+          // console.log(ret);
+          doDistribute(dispatch, curData, ret);
+          globalWamp.currentData = { ...ret };
+        });
+      }
+
+      s.subscribe(sprintf("racelog.public.live.analysis.%s", eventKey), (data) => {
         // important, otherwise we don't detect changes on carLaps,carStints,.... (all those Array.from(...) attrs of BulkProcessor)
         // raceGraph would be ok though. Needs further investigation
         const curData = _.cloneDeep(globalWamp.currentData!);
+
         // if (data != undefined) {
         //   const newData = theProc!.process([data[0]]);
 
@@ -78,15 +109,50 @@ export const LiveEvents: React.FC = () => {
         //   globalWamp.currentData = { ...newData };
         // }
         // const ret = curData;
-        const retS = wasmMethods.processStateMessage(data[0]);
-        // console.log("state message processed:", retS.length);
-        // print length of retS
-        // console.log("length of str:", retS.length);
-        const ret = JSON.parse(retS);
-        // console.log(ret);
-        doDistribute(dispatch, curData, ret);
-        globalWamp.currentData = { ...ret };
+        switch (data[0].type) {
+          case MessageType.ANALYSIS_COMBINED_PATCH: {
+            const workData = _.cloneDeep(globalWamp.currentData!);
+            applyPatch(workData, data[0].payload.patches ?? []);
+            workData.cars = data[0].payload.cars;
+            workData.session = data[0].payload.session;
+            workData.raceOrder = data[0].payload.raceOrder;
+
+            // create map by carClass with value IRaceGraph[] from workData.raceGraph[]
+            if ((data[0].payload.raceGraphPatches ?? []).length > 0) {
+              const raceGraphByClass = new Map<string, IRaceGraph[]>();
+              workData.raceGraph.forEach((v) => {
+                if (raceGraphByClass.has(v.carClass)) {
+                  // append to existing array
+                  raceGraphByClass.set(v.carClass, [...raceGraphByClass.get(v.carClass)!, v]);
+                } else {
+                  raceGraphByClass.set(v.carClass, [v]);
+                }
+              });
+              data[0].payload.raceGraphPatches.forEach((v: any) => {
+                const carClass = v.carClass;
+                const patches = v.patches;
+
+                if (raceGraphByClass.has(carClass)) {
+                  applyPatch(raceGraphByClass.get(carClass), patches);
+                }
+              });
+              // create an array from the map values and assign to workData.raceGraph
+              workData.raceGraph = Array.from(raceGraphByClass.values()).flat();
+              // console.log("raceGraph updated", workData.raceGraph);
+            }
+
+            // console.log("patch result: ", patchResult);
+            doDistribute(dispatch, curData, workData);
+            globalWamp.currentData = { ...workData };
+            break;
+          }
+          default: {
+            console.log("unknown analysis message type: ", data[0].type);
+          }
+        }
+        // console.log("analysis message received: ", data);
       });
+
       s.subscribe(
         sprintf("racelog.public.live.speedmap.%s", eventKey),
         (data: any[] | undefined) => {
@@ -96,19 +162,22 @@ export const LiveEvents: React.FC = () => {
           }
         },
       );
-      s.subscribe(sprintf("racelog.public.live.cardata.%s", eventKey), (data: any) => {
-        // console.log(data);
-        if (data != undefined) {
-          const curData = _.cloneDeep(globalWamp.currentData!);
-          console.log("carData message received: ");
-          const retS = wasmMethods.processCarMessage(data[0]);
-          const ret = JSON.parse(retS);
-          // console.log(ret);
-          doDistribute(dispatch, curData, ret);
-          globalWamp.currentData = { ...ret };
-          processCarData(dispatch, data[0] as ICarDataMessage);
-        }
-      });
+      if (false) {
+        s.subscribe(sprintf("racelog.public.live.cardata.%s", eventKey), (data: any) => {
+          // console.log(data);
+          // deactivated by design - will be removed by issue #1036
+          if (data != undefined) {
+            const curData = _.cloneDeep(globalWamp.currentData!);
+            console.log("carData message received: ");
+            const retS = wasmMethods.processCarMessage(data[0]);
+            const ret = JSON.parse(retS);
+            // console.log(ret);
+            doDistribute(dispatch, curData, ret);
+            globalWamp.currentData = { ...ret };
+            processCarData(dispatch, data[0] as ICarDataMessage);
+          }
+        });
+      }
     };
     conn.open();
 
