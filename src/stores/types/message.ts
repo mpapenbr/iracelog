@@ -5,6 +5,8 @@ export enum MessageType {
   STATE_DELTA = 2,
   SPEEDMAP = 3,
   CAR = 4,
+  ANALYSIS = 5,
+  ANALYSIS_COMBINED_PATCH = 6,
 }
 
 export interface IMessage {

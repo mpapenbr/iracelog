@@ -299,7 +299,7 @@ export const Standings: React.FC<Props> = (props: Props) => {
       dataSource={cars}
       rowKey={() => _.uniqueId()}
       onRow={(data: any, num) => ({
-        className: "standings-" + getValue(data, "state")?.toLowerCase() ?? "unknown",
+        className: "standings-" + getValue(data, "state")?.toLowerCase(),
       })}
     />
   );
