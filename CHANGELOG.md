@@ -1,3 +1,34 @@
+### 0.23.0 (2024-03-23)
+
+##### Build System / Dependencies
+
+* **deps-dev:**
+  *  bump the development-dependencies group with 10 updates (e1aa958e)
+  *  bump the development-dependencies group with 8 updates (5c31be42)
+  *  bump the development-dependencies group with 4 updates (18953474)
+  *  bump the development-dependencies group with 8 updates (9552e412)
+  *  bump the development-dependencies group with 6 updates (cbf7ac16)
+  *  bump the development-dependencies group with 7 updates (90ebbd70)
+  *  bump the development-dependencies group with 7 updates (1967c902)
+  *  bump the development-dependencies group with 5 updates (80703cff)
+  *  bump the development-dependencies group with 8 updates (72573cb6)
+* **deps:**
+  *  bump the production-dependencies group with 3 updates (c35e91fd)
+  *  bump the production-dependencies group with 9 updates (3b1f5ca4)
+  *  bump the production-dependencies group with 4 updates (5fa104f9)
+  *  bump the production-dependencies group with 2 updates (7b352700)
+  *  bump the production-dependencies group with 4 updates (90db6330)
+  *  bump the production-dependencies group with 4 updates (01bb87a3)
+  *  bump the production-dependencies group with 4 updates (670e2e3b)
+  *  bump the production-dependencies group with 4 updates (497b7c60)
+  *  bump the production-dependencies group with 5 updates (1be96583)
+
+##### Other Changes
+
+* **deps:**
+  *  bump the github-actions group with 1 update (c3b085ea)
+  *  bump the github-actions group with 1 update (19bcaa29)
+
 #### 0.22.1 (2024-01-21)
 
 ### 0.22.0 (2024-01-20)
