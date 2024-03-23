@@ -88,6 +88,32 @@ export const EventHeaderContainer: React.FC = () => {
     // console.log("key:" + key + " value: " + getValue(key));
     return sprintf("%.1f", getValue(key));
   };
+
+  const trackLabel = () => {
+    const trackCondidtion = (v: number): string => {
+      switch (getValue("trackWetness")) {
+        case 0:
+          return "";
+        case 1:
+          return "(dry)";
+        case 2:
+          return "(mostly dry)";
+        case 3:
+          return "(very lightly wet)";
+        case 4:
+          return "(lightly wet)";
+        case 5:
+          return "(moderately wet)";
+        case 6:
+          return "(very wet)";
+        case 7:
+          return "(extremly wet)";
+      }
+      return "";
+    };
+    return "Track " + trackCondidtion(getValue("trackWetness"));
+  };
+
   let flagBackground = "";
   switch (getValue("flagState")) {
     case "CHECKERED":
@@ -110,7 +136,7 @@ export const EventHeaderContainer: React.FC = () => {
             <td align="right">{numOut("airTemp")}</td>
           </tr>
           <tr>
-            <td>Track</td>
+            <td>{trackLabel()}</td>
             <td align="right">{numOut("trackTemp")}</td>
           </tr>
         </table>

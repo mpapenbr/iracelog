@@ -119,6 +119,11 @@ export const Standings: React.FC<Props> = (props: Props) => {
       return sprintf(format, value);
     } else return "";
   };
+  const tireCompound = (value: any): string => {
+    if (typeof value === "number") {
+      return value == 0 ? "D" : "W";
+    } else return "";
+  };
   const lapsOutput = (d: any) => {
     if (getValue(d, "state") === "OUT") {
       // console.log(getValue(d, "lc"));
@@ -245,6 +250,16 @@ export const Standings: React.FC<Props> = (props: Props) => {
       align: "right",
     });
   }
+  if (stateCarManifest.findIndex((v) => v.name === "tireCompound") > -1) {
+    columns.push({
+      key: "tireCompound",
+      title: "T",
+      render: (d) => tireCompound(getValue(d, "tireCompound")),
+      width: 20,
+      align: "right",
+    });
+  }
+
   stateCarManifest
     .filter((v) => /^s\d+$/.test(v.name))
     .forEach((v) =>
