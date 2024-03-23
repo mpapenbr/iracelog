@@ -112,38 +112,48 @@ export const LiveEvents: React.FC = () => {
         switch (data[0].type) {
           case MessageType.ANALYSIS_COMBINED_PATCH: {
             const workData = _.cloneDeep(globalWamp.currentData!);
-            applyPatch(workData, data[0].payload.patches ?? []);
-            workData.cars = data[0].payload.cars;
-            workData.session = data[0].payload.session;
-            workData.raceOrder = data[0].payload.raceOrder;
+            try {
+              applyPatch(workData, data[0].payload.patches ?? []);
+              workData.cars = data[0].payload.cars;
+              workData.session = data[0].payload.session;
+              workData.raceOrder = data[0].payload.raceOrder;
 
-            // create map by carClass with value IRaceGraph[] from workData.raceGraph[]
-            if ((data[0].payload.raceGraphPatches ?? []).length > 0) {
-              const raceGraphByClass = new Map<string, IRaceGraph[]>();
-              workData.raceGraph.forEach((v) => {
-                if (raceGraphByClass.has(v.carClass)) {
-                  // append to existing array
-                  raceGraphByClass.set(v.carClass, [...raceGraphByClass.get(v.carClass)!, v]);
-                } else {
-                  raceGraphByClass.set(v.carClass, [v]);
-                }
-              });
-              data[0].payload.raceGraphPatches.forEach((v: any) => {
-                const carClass = v.carClass;
-                const patches = v.patches;
+              // create map by carClass with value IRaceGraph[] from workData.raceGraph[]
+              if ((data[0].payload.raceGraphPatches ?? []).length > 0) {
+                const raceGraphByClass = new Map<string, IRaceGraph[]>();
+                workData.raceGraph.forEach((v) => {
+                  if (raceGraphByClass.has(v.carClass)) {
+                    // append to existing array
+                    raceGraphByClass.set(v.carClass, [...raceGraphByClass.get(v.carClass)!, v]);
+                  } else {
+                    raceGraphByClass.set(v.carClass, [v]);
+                  }
+                });
+                data[0].payload.raceGraphPatches.forEach((v: any) => {
+                  const carClass = v.carClass;
+                  const patches = v.patches;
 
-                if (raceGraphByClass.has(carClass)) {
-                  applyPatch(raceGraphByClass.get(carClass), patches);
-                }
-              });
-              // create an array from the map values and assign to workData.raceGraph
-              workData.raceGraph = Array.from(raceGraphByClass.values()).flat();
-              // console.log("raceGraph updated", workData.raceGraph);
+                  if (raceGraphByClass.has(carClass)) {
+                    applyPatch(raceGraphByClass.get(carClass), patches);
+                  }
+                });
+                // create an array from the map values and assign to workData.raceGraph
+                workData.raceGraph = Array.from(raceGraphByClass.values()).flat();
+                // console.log("raceGraph updated", workData.raceGraph);
+                // console.log("patch result: ", patchResult);
+              }
+              doDistribute(dispatch, curData, workData);
+              globalWamp.currentData = { ...workData };
+            } catch (someError) {
+              console.log("Trying to fetch complete new analysis data");
+              s.call("racelog.public.live.get_event_analysis_by_key", [eventKey]).then(
+                (analysisData) => {
+                  doDistribute(dispatch, curData, analysisData.kwargs.processedData);
+                  globalWamp.currentData = { ...analysisData.kwargs.processedData };
+                },
+              );
             }
 
-            // console.log("patch result: ", patchResult);
-            doDistribute(dispatch, curData, workData);
-            globalWamp.currentData = { ...workData };
             break;
           }
           default: {
