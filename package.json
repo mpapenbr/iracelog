@@ -5,7 +5,7 @@
   "type": "module",
   "dependencies": {
     "@ant-design/charts": "^1.4.3",
-    "@apollo/client": "^3.9.7",
+    "@apollo/client": "^3.9.9",
     "@mpapenbr/iracelog-analysis": "^1.2.0",
     "@nivo/bar": "^0.85.1",
     "@nivo/bullet": "^0.85.1",
