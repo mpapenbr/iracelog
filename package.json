@@ -12,7 +12,7 @@
     "@nivo/core": "^0.85.1",
     "@nivo/line": "^0.85.1",
     "@nivo/pie": "^0.85.1",
-    "antd": "^5.15.3",
+    "antd": "^5.16.0",
     "autobahn-browser": "^22.11.1",
     "deep-object-diff": "^1.1.9",
     "fast-json-patch": "^3.1.1",
