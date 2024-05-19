@@ -10,20 +10,19 @@ import { AnalysisMainPage } from "./pages/analysisPage";
 
 import { Events } from "./pages/eventsPage";
 import { FakeLoaderPage } from "./pages/fakeLoader";
-import { ApplicationState } from "./stores";
+import { ApplicationState, store } from "./stores";
 
 const { Header, Content, Footer, Sider } = Layout;
 
 interface AppProps {
   store: Store<ApplicationState>;
 }
-
 const OtherContent: React.FC = () => <div>Here goes other content</div>;
 
-const App: React.FC<AppProps> = (props: AppProps) => {
+const App: React.FC<{}> = () => {
   const link = `https://github.com/mpapenbr/iracelog/releases/tag/v${APP_VERSION_DISPLAY}`;
   return (
-    <Provider store={props.store}>
+    <Provider store={store}>
       <Router>
         <Layout className="layout">
           <Header style={{ background: "rgba(29, 34, 36, 0.835)", color: "azure" }}>
@@ -51,7 +50,7 @@ const App: React.FC<AppProps> = (props: AppProps) => {
             <a target={"_blank"} rel="noreferrer" href={link}>
               {APP_VERSION_DISPLAY}
             </a>{" "}
-            ©2023 Markus Papenbrock
+            ©2024 Markus Papenbrock
           </Footer>
         </Layout>
       </Router>

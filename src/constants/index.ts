@@ -3,6 +3,8 @@ export const API_AUTH_URL = import.meta.env.VITE_AUTH_URL;
 export const API_CROSSBAR_URL = import.meta.env.VITE_CROSSBAR_URL;
 export const API_CROSSBAR_REALM = import.meta.env.VITE_CROSSBAR_REALM;
 export const API_GRAPHQL_URL = import.meta.env.VITE_GRAPHQL_URL;
+export const API_GRPC_URL = import.meta.env.VITE_GRPC_URL;
+export const API_GRPC_BINARY_FORMAT = import.meta.env.VITE_GRPC_BINARY_FORMAT;
 
 export const API_LOCAL_DEV_MODE = import.meta.env.VITE_LOCAL_DEV_MODE || false;
 export const APP_VERSION_RAW = import.meta.env.VITE_VERSION_RAW || "no version set";

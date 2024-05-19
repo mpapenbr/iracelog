@@ -1,17 +1,17 @@
-import { getValueViaSpec } from "@mpapenbr/iracelog-analysis/dist/stints/util";
+import {
+  Car,
+  CarState,
+} from "@buf/mpapenbr_testrepo.community_timostamm-protobuf-ts/testrepo/racestate/v1/racestate_pb";
+import { PitInfo } from "@buf/mpapenbr_testrepo.community_timostamm-protobuf-ts/testrepo/track/v1/track_pb";
 import _ from "lodash";
 import * as React from "react";
-import { useSelector } from "react-redux";
-import { ApplicationState } from "../../stores";
-import { ICarInfoContainer } from "../../stores/cars/types";
-import { IPitInfo } from "../../stores/racedata/types";
+import { useAppSelector } from "../../stores";
 import { assignCarColors } from "./colorAssignment";
-import { carNumberByCarIdx, supportsCarData } from "./util";
 
 type TrackPosData = {
   carNum: string;
   trackPos: number;
-  state: string;
+  state: CarState;
   pos: number;
   pic: number;
   lap: number;
@@ -24,28 +24,19 @@ interface MyProps {
 }
 
 export const ZoomTrackPos: React.FC<MyProps> = (props: MyProps) => {
-  const carsRaw = useSelector((state: ApplicationState) => state.raceData.classification.data);
-  const trackInfo = useSelector((state: ApplicationState) => state.raceData.trackInfo);
-  const stateCarManifest = useSelector((state: ApplicationState) => state.raceData.manifests.car);
-  const carInfos = useSelector((state: ApplicationState) => state.raceData.availableCars);
-  const eventInfo = useSelector((state: ApplicationState) => state.raceData.eventInfo);
-  const stateCarData: ICarInfoContainer = useSelector((state: ApplicationState) => state.carData);
+  const carsRaw = useAppSelector((state) => state.classification);
 
-  const getCarNumLegacy = (c: any): string => {
-    return getValueViaSpec(c, stateCarManifest, "carNum");
-  };
-  const carIdxLookup = carNumberByCarIdx(stateCarData);
-  const getCarNum = (c: any): string => {
-    return carIdxLookup[getValueViaSpec(c, stateCarManifest, "carIdx")];
-  };
+  const trackInfo = useAppSelector((state) => state.eventInfo.track);
+  const carInfos = useAppSelector((state) => state.availableCars);
+  const carIdxLookup = useAppSelector((state) => state.byIdxLookup);
 
-  const dataRaw: TrackPosData[] = carsRaw.map((c: any, idx: number) => ({
-    carNum: supportsCarData(eventInfo.raceloggerVersion) ? getCarNum(c) : getCarNumLegacy(c),
-    trackPos: getValueViaSpec(c, stateCarManifest, "trackPos"),
-    state: getValueViaSpec(c, stateCarManifest, "state"),
+  const dataRaw: TrackPosData[] = carsRaw.map((c: Car, idx: number) => ({
+    carNum: carIdxLookup.carNum[c.carIdx],
+    trackPos: c.trackPos,
+    state: c.state,
     pos: idx,
-    pic: getValueViaSpec(c, stateCarManifest, "pic"),
-    lap: getValueViaSpec(c, stateCarManifest, "lap"),
+    pic: c.pic,
+    lap: c.lap,
   }));
   const data = dataRaw.filter((c) => props.showCars.includes(c.carNum));
   // console.log(data);
@@ -63,7 +54,7 @@ export const ZoomTrackPos: React.FC<MyProps> = (props: MyProps) => {
   const standardWidth = 2;
   const deltaRange = 100; // show other cars within +/- meters relative to reference car
   const pixelPerM = boxWidth / (deltaRange * 2);
-  const deltaTrackPos = deltaRange / trackInfo.trackLength;
+  const deltaTrackPos = deltaRange / trackInfo.length;
   const referenceCar = dataRaw.find((c) => c.carNum === props.referenceCarNum) ?? {
     carNum: props.referenceCarNum,
     trackPos: -1,
@@ -75,17 +66,17 @@ export const ZoomTrackPos: React.FC<MyProps> = (props: MyProps) => {
 
   const posInViewArea = (refPos: number, otherPos: number): boolean => {
     const localDelta = otherPos - refPos > 0.5 ? 1 - otherPos + refPos : refPos - otherPos;
-    const localDeltaMeter = localDelta * trackInfo.trackLength;
+    const localDeltaMeter = localDelta * trackInfo.length;
     return Math.abs(localDeltaMeter) < deltaRange;
   };
 
-  const calcPit = (pit: IPitInfo): number => {
+  const calcPit = (pit: PitInfo): number => {
     const pitLen = pit.exit > pit.entry ? pit.exit - pit.entry : 1 - pit.entry + pit.exit;
-    return pitLen * trackInfo.trackLength * pixelPerM;
+    return pitLen * trackInfo.length * pixelPerM;
   };
   const pixelOffsetToReference = (refPos: number, otherPos: number): number => {
     const localDelta = otherPos - refPos > 0.5 ? 1 - otherPos + refPos : refPos - otherPos;
-    const localDeltaMeter = -localDelta * trackInfo.trackLength;
+    const localDeltaMeter = -localDelta * trackInfo.length;
     const offset = localDeltaMeter * pixelPerM;
     // console.log(
     //   `refPos: ${refPos} otherPos: ${otherPos} localDelta: ${localDelta} offset: ${offset}`,
@@ -185,8 +176,8 @@ export const ZoomTrackPos: React.FC<MyProps> = (props: MyProps) => {
         })}
         {/* the sectors  */}
 
-        {eventInfo.sectors
-          .filter((s) => posInViewArea(props.trackPos, s.SectorStartPct))
+        {trackInfo.sectors
+          .filter((s) => posInViewArea(props.trackPos, s.startPct))
           .map((item) => {
             const sectorMarkerLen = 7;
 
@@ -197,30 +188,30 @@ export const ZoomTrackPos: React.FC<MyProps> = (props: MyProps) => {
 
             return (
               <g
-                key={`sector-${item.SectorNum}`}
+                key={`sector-${item.num}`}
                 transform={`translate( ${
-                  (boxWidth - w) / 2 + pixelOffsetToReference(props.trackPos, item.SectorStartPct)
+                  (boxWidth - w) / 2 + pixelOffsetToReference(props.trackPos, item.startPct)
                 } ${baseLine - sectorMarkerLen / 2})`}
               >
                 <rect width={w} height={h} style={{ fill: color }} />
                 <text y={15} textAnchor="middle" style={{ fontSize: 10 }}>
-                  {item.SectorNum === 0 ? "S/F" : `S${item.SectorNum}`}
+                  {item.num === 0 ? "S/F" : `S${item.num}`}
                 </text>
               </g>
             );
           })}
 
         {/* the pit area */}
-        {trackInfo.pit && trackInfo.pit.entry !== undefined ? (
+        {trackInfo.pitInfo && trackInfo.pitInfo.entry !== undefined ? (
           <>
             <g
               key={`pit`}
               transform={`translate( ${
                 (boxWidth - standardWidth) / 2 +
-                pixelOffsetToReference(props.trackPos, trackInfo.pit.entry)
+                pixelOffsetToReference(props.trackPos, trackInfo.pitInfo.entry)
               } ${baseLine})`}
             >
-              <rect width={calcPit(trackInfo.pit)} height={3} style={{ fill: "grey" }} />
+              <rect width={calcPit(trackInfo.pitInfo)} height={3} style={{ fill: "grey" }} />
             </g>
           </>
         ) : (

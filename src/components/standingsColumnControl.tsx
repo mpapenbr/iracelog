@@ -1,21 +1,21 @@
 import { Empty, Table } from "antd";
 import { ColumnsType } from "antd/lib/table";
 import React, { Key } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { ApplicationState } from "../stores";
-import { classificationSettings } from "../stores/ui/actions";
+import { useAppDispatch, useAppSelector } from "../stores";
+
+import { updateClassification } from "../stores/grpc/slices/userSettingsSlice";
 import { IColumnInfo } from "../stores/ui/types";
 
 const StandingsColumnControlTable: React.FC = () => {
-  const allCols = useSelector((state: ApplicationState) => state.userSettings.standingsColumns);
-  const uiSettings = useSelector((state: ApplicationState) => state.userSettings.classification);
+  const allCols = useAppSelector((state) => state.userSettings.standingsColumns);
+  const uiSettings = useAppSelector((state) => state.userSettings.classification);
   const selCols = uiSettings.showCols;
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const onSelectChange = (selectedRowKeys: Key[]) => {
     // console.log(selectedRowKeys);
     // console.log(selectedRows);
     dispatch(
-      classificationSettings({
+      updateClassification({
         ...uiSettings,
         showCols: allCols.availableColumns.filter((c) => selectedRowKeys.includes(c.name)),
       }),

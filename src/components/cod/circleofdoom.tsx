@@ -1,19 +1,22 @@
-import { getValueViaSpec } from "@mpapenbr/iracelog-analysis/dist/stints/util";
+import {
+  Car,
+  CarState,
+} from "@buf/mpapenbr_testrepo.community_timostamm-protobuf-ts/testrepo/racestate/v1/racestate_pb";
+
 import * as React from "react";
-import { useSelector } from "react-redux";
+
 import { sprintf } from "sprintf-js";
-import { ApplicationState } from "../../stores";
-import { ICarClass, ICarInfoContainer, IEntry } from "../../stores/cars/types";
-import { ICarBaseData } from "../../stores/racedata/types";
-import { ISpeedmapData } from "../../stores/speedmap/types";
+
+import { CarEntry } from "@buf/mpapenbr_testrepo.community_timostamm-protobuf-ts/testrepo/car/v1/car_pb";
+import { useAppSelector } from "../../stores";
+import { ICarBaseData } from "../../stores/grpc/slices/availableCarsSlice";
 import { assignCarColors } from "../live//colorAssignment";
 import { cat10Colors } from "../live/colors";
-import { carNumberByCarIdx, supportsCarData } from "../live/util";
 
 type TrackPosData = {
   carNum: string;
   trackPos: number;
-  state: string;
+  state: CarState;
   pos: number;
   pic: number;
 };
@@ -28,40 +31,24 @@ interface MyProps {
 // this component should be the new pluggable cod
 // NOTE: works only with raceLogger >= 0.5.0
 export const CircleOfDoom: React.FC<MyProps> = (props: MyProps) => {
-  const carsRaw = useSelector((state: ApplicationState) => state.raceData.classification.data);
-  const carLaps = useSelector((state: ApplicationState) => state.raceData.carLaps);
-  const carPits = useSelector((state: ApplicationState) => state.raceData.carPits);
-  const trackInfo = useSelector((state: ApplicationState) => state.raceData.trackInfo);
-  const stateCarManifest = useSelector((state: ApplicationState) => state.raceData.manifests.car);
-  const carInfos = useSelector((state: ApplicationState) => state.raceData.availableCars);
-  const eventInfo = useSelector((state: ApplicationState) => state.raceData.eventInfo);
-  const speedmapData: ISpeedmapData = useSelector(
-    (state: ApplicationState) => state.speedmap.speedmapData,
-  );
-  const carClasses: ICarClass[] = useSelector(
-    (state: ApplicationState) => state.carData.carClasses,
-  );
-  const stateCarData: ICarInfoContainer = useSelector((state: ApplicationState) => state.carData);
-  const stateEntries: IEntry[] = useSelector((state: ApplicationState) => state.carData.entries);
-
+  const carsRaw = useAppSelector((state) => state.classification);
+  const carLaps = useAppSelector((state) => state.carLaps);
+  const carPits = useAppSelector((state) => state.carPits);
+  const carEntries = useAppSelector((state) => state.carEntries);
+  const trackInfo = useAppSelector((state) => state.eventInfo.track);
+  const carInfos = useAppSelector((state) => state.availableCars);
+  const speedmapData = useAppSelector((state) => state.speedmap);
+  const carIdxLookup = useAppSelector((state) => state.byIdxLookup);
   const carLookup = carInfos.reduce((prev, cur) => {
     return prev.set(cur.carNum, cur);
   }, new Map<string, ICarBaseData>());
 
-  const getCarNumLegacy = (c: any): string => {
-    return getValueViaSpec(c, stateCarManifest, "carNum");
-  };
-  const carIdxLookup = carNumberByCarIdx(stateCarData);
-  const getCarNum = (c: any): string => {
-    return carIdxLookup[getValueViaSpec(c, stateCarManifest, "carIdx")];
-  };
-
-  const dataRaw: TrackPosData[] = carsRaw.map((c: any, idx: number) => ({
-    carNum: supportsCarData(eventInfo.raceloggerVersion) ? getCarNum(c) : getCarNumLegacy(c),
-    trackPos: getValueViaSpec(c, stateCarManifest, "trackPos"),
-    state: getValueViaSpec(c, stateCarManifest, "state"),
+  const dataRaw: TrackPosData[] = carsRaw.map((c: Car, idx: number) => ({
+    carNum: carIdxLookup.carNum[c.carIdx],
+    trackPos: c.trackPos,
+    state: c.state,
     pos: idx,
-    pic: getValueViaSpec(c, stateCarManifest, "pic"),
+    pic: c.pic,
   }));
   const data = dataRaw.filter((c) => props.showCars.includes(c.carNum));
   // console.log(data);
@@ -96,27 +83,25 @@ export const CircleOfDoom: React.FC<MyProps> = (props: MyProps) => {
     if (sortedLaps === undefined) sortedLaps = [];
     const meanLap = sortedLaps![Math.ceil(sortedLaps!.length / 2)];
     // console.log("meanLap: " + meanLap);
-    const avgSpeed = eventInfo.trackLength / meanLap;
+    const avgSpeed = trackInfo.length / meanLap;
     // console.log("avgSpeed: " + avgSpeed);
     const data = dataRaw.find((c) => c.carNum === carData.carNum)!;
     const pitInfo = carPits.find((item) => item.carNum === carData.carNum)!;
     let inPits = 0;
-    if (pitInfo && pitInfo.current.isCurrentPitstop) {
+    if (pitInfo && pitInfo.current?.isCurrentPitstop) {
       console.log("car is in pits for " + pitInfo.current.laneTime);
       inPits = pitInfo.current.laneTime;
     }
     // start of pitWindowFrame
     const newPosStart =
-      ((1 + data.trackPos - (avgSpeed * (props.pitstopTime - inPits)) / eventInfo.trackLength) %
-        1) *
+      ((1 + data.trackPos - (avgSpeed * (props.pitstopTime - inPits)) / trackInfo.length) % 1) *
       360;
     // start of pitWindowFrame
     const newPosEnd =
-      ((1 + data.trackPos - (avgSpeed * (props.pitstopTime + 1 - inPits)) / eventInfo.trackLength) %
-        1) *
+      ((1 + data.trackPos - (avgSpeed * (props.pitstopTime + 1 - inPits)) / trackInfo.length) % 1) *
       360;
     const pitwindowMeters = avgSpeed; // we want 1s pit window. lets computer how much that is in meters
-    const arc = (pitwindowMeters / eventInfo.trackLength) * 360; // the segment for this pit window in degrees
+    const arc = (pitwindowMeters / trackInfo.length) * 360; // the segment for this pit window in degrees
     // console.log("arc: ", arc);
     // console.log(newPosStart);
     const color = getColor(data.carNum);
@@ -154,24 +139,21 @@ export const CircleOfDoom: React.FC<MyProps> = (props: MyProps) => {
   };
 
   const Sectors = () => {
-    if (!eventInfo.sectors.length) {
+    if (!trackInfo.sectors.length) {
       return <></>;
     }
     const sectorMarkerLen = circleWidth + 15;
     return (
       <>
-        {eventInfo.sectors.map((item) => {
-          const pos = item.SectorStartPct * 360;
+        {trackInfo.sectors.map((item) => {
+          const pos = item.startPct * 360;
           const color = "grey";
 
           const w = 1;
           const h = sectorMarkerLen;
           const y = circleExtendSize - h / 2;
           return (
-            <g
-              key={`sector-${item.SectorNum}`}
-              transform={`rotate(${pos} ${circleSize} ${circleSize})`}
-            >
+            <g key={`sector-${item.num}`} transform={`rotate(${pos} ${circleSize} ${circleSize})`}>
               <rect x={circleSize} y={y} width={w} height={h} style={{ fill: color }} />
             </g>
           );
@@ -180,11 +162,11 @@ export const CircleOfDoom: React.FC<MyProps> = (props: MyProps) => {
     );
   };
   const PitBox = () => {
-    if (trackInfo.pit === undefined || trackInfo.pit.entry === -1) {
+    if (trackInfo.pitInfo === undefined || trackInfo.pitInfo.entry === -1) {
       return <></>;
     } else {
       // console.log(`entry: ${trackInfo.pit.entry} exit: ${trackInfo.pit.exit}`);
-      const pitLen = trackInfo.pit.exit + 1 - trackInfo.pit.entry;
+      const pitLen = trackInfo.pitInfo.exit + 1 - trackInfo.pitInfo.entry;
 
       const arc = pitLen * 360;
 
@@ -199,7 +181,7 @@ export const CircleOfDoom: React.FC<MyProps> = (props: MyProps) => {
         <g>
           <g
             transform={`rotate(${
-              90 + Math.trunc(trackInfo.pit.exit * 360)
+              90 + Math.trunc(trackInfo.pitInfo.exit * 360)
             } ${circleSize} ${circleSize} )`}
           >
             <path
@@ -226,7 +208,7 @@ export const CircleOfDoom: React.FC<MyProps> = (props: MyProps) => {
   }
   const Intervals = () => {
     const trackposData = data
-      .filter((item) => ["RUN", "SLOW"].includes(item.state))
+      .filter((item) => [CarState.RUN, CarState.SLOW].includes(item.state))
       .sort((a, b) => a.trackPos - b.trackPos);
     if (trackposData.length < 2) return <></>;
 
@@ -238,8 +220,8 @@ export const CircleOfDoom: React.FC<MyProps> = (props: MyProps) => {
       return <></>;
     }
 
-    const entryLookup: { [key: string]: IEntry } = stateEntries.reduce(
-      (prev, cur) => ({ ...prev, [cur.car.carNumber]: cur }),
+    const entryLookup: { [key: string]: CarEntry } = carEntries.reduce(
+      (prev, cur) => ({ ...prev, [cur.car?.carNumber!]: cur }),
       {},
     );
 
@@ -251,13 +233,13 @@ export const CircleOfDoom: React.FC<MyProps> = (props: MyProps) => {
 
         const pos = (b.trackPos + delta / 2) % 1; // the middle position between two entries
 
-        const meter = delta * eventInfo.trackLength;
-        const degree = (meter / eventInfo.trackLength) * 360; // the segment degrees
+        const meter = delta * trackInfo.length;
+        const degree = (meter / trackInfo.length) * 360; // the segment degrees
         const curA = entryLookup[a.carNum];
-        const aChunk = Math.round((a.trackPos * speedmapData.trackLength) / speedmapData.chunkSize);
-        const bChunk = Math.round((b.trackPos * speedmapData.trackLength) / speedmapData.chunkSize);
+        const aChunk = Math.round((a.trackPos * trackInfo.length) / speedmapData.chunkSize);
+        const bChunk = Math.round((b.trackPos * trackInfo.length) / speedmapData.chunkSize);
 
-        const x = speedmapData.data[curA.car.carClassId].chunkSpeeds;
+        const x = speedmapData.data[curA.car!.carClassId.toString()].chunkSpeeds;
         // console.log("speedmapData: ", speedmapData, " class: ", curA.car.carClassId, " data: ", x);
         const computeSlice =
           aChunk > bChunk
@@ -324,7 +306,7 @@ export const CircleOfDoom: React.FC<MyProps> = (props: MyProps) => {
         />
         <Sectors />
         {data
-          .filter((item) => ["RUN", "SLOW"].includes(item.state))
+          .filter((item) => [CarState.RUN, CarState.SLOW].includes(item.state))
           .map((item) => {
             const pos = item.trackPos * 360;
             const color = getColor(item.carNum);
@@ -365,7 +347,7 @@ export const CircleOfDoom: React.FC<MyProps> = (props: MyProps) => {
         <PitBox />
 
         {data
-          .filter((item) => ["PIT"].includes(item.state))
+          .filter((item) => [CarState.PIT].includes(item.state))
           .map((item) => {
             const pos = item.trackPos * 360;
             const color = getColor(item.carNum);

@@ -2,23 +2,20 @@ import { Card, Table } from "antd";
 import { ColumnsType } from "antd/lib/table";
 import _ from "lodash";
 import * as React from "react";
-import { useSelector } from "react-redux";
+
 import { sprintf } from "sprintf-js";
-import { ApplicationState } from "../../stores";
-import { ICarClass, IEntry } from "../../stores/cars/types";
+import { useAppSelector } from "../../stores";
 
 export const CarClasses: React.FC = () => {
-  const carClasses: ICarClass[] = useSelector(
-    (state: ApplicationState) => state.carData.carClasses,
-  );
+  const carClasses = useAppSelector((state) => state.carClasses);
 
-  const entries: IEntry[] = useSelector((state: ApplicationState) => state.carData.entries);
+  const entries = useAppSelector((state) => state.carEntries);
 
   const numEntriesLookup = _.countBy(entries, "car.carClassId");
 
   const idxToId = _.map(entries, (item) => ({
-    idx: item.car.carIdx,
-    carClassId: item.car.carClassId,
+    idx: item.car?.carIdx!,
+    carClassId: item.car?.carClassId!,
   }));
   const m = Object.assign({}, ...idxToId.map((x) => ({ [x.idx]: x.carClassId })));
   // console.log(m);

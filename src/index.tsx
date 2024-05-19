@@ -4,12 +4,8 @@ import { createRoot } from "react-dom/client";
 import App from "./App";
 import { checkForExternalConfig } from "./commons/backend";
 import { globalWamp } from "./commons/globals";
-import configureStore from "./configureStore";
 import "./index.css";
 import reportWebVitals from "./reportWebVitals";
-
-const initialState = window.INITIAL_REDUX_STATE;
-const store = configureStore(initialState);
 
 (async () => {
   const config = await checkForExternalConfig();
@@ -38,7 +34,7 @@ const store = configureStore(initialState);
   root.render(
     <React.StrictMode>
       <ApolloProvider client={client}>
-        <App store={store} />
+        <App />
       </ApolloProvider>
     </React.StrictMode>,
   );

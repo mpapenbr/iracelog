@@ -1,8 +1,7 @@
 import { Pie } from "@nivo/pie";
 import { Empty } from "antd";
 import React from "react";
-import { useSelector } from "react-redux";
-import { ApplicationState } from "../../../stores";
+import { useAppSelector } from "../../../stores";
 import { secAsHHMMSS } from "../../../utils/output";
 import { findDriverByStint, getCarStints } from "../../live/util";
 import { colorsBySeatTime, commonProps } from "./commons";
@@ -17,24 +16,23 @@ interface GraphData {
   color?: string;
 }
 const StintCircle: React.FC<MyProps> = (props: MyProps) => {
-  const carInfo = useSelector((state: ApplicationState) => state.raceData.carInfo);
-  const carLaps = useSelector((state: ApplicationState) => state.raceData.carLaps);
-  const carStints = useSelector((state: ApplicationState) => state.raceData.carStints);
+  const carOccs = useAppSelector((state) => state.carOccupancies);
+  const carStints = useAppSelector((state) => state.carStints);
 
   const carStint = carStints.find((v) => v.carNum === props.carNum);
   if (!props.carNum || !carStint) {
     return <Empty />;
   }
-  const currentCarInfo = carInfo.find((v) => v.carNum === props.carNum)!;
+  const currentCarInfo = carOccs.find((v) => v.carNum === props.carNum)!;
 
   const { colorLookup } = colorsBySeatTime(currentCarInfo.drivers);
   const pieStintData: GraphData[] = getCarStints(carStints, props.carNum).map((d, idx) => {
     const driver = findDriverByStint(currentCarInfo, d);
     return {
       id: "Stint " + (idx + 1),
-      label: driver?.driverName ?? "n.a.",
+      label: driver?.name ?? "n.a.",
       value: d.stintTime,
-      color: colorLookup.get(driver?.driverName ?? "n.a"),
+      color: colorLookup.get(driver?.name ?? "n.a"),
     };
   });
 

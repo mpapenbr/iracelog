@@ -1,28 +1,33 @@
-import { ICarInfo, ICarStintInfo, IStintInfo } from "@mpapenbr/iracelog-analysis/dist/stints/types";
+import { IStintInfo } from "@mpapenbr/iracelog-analysis/dist/stints/types";
 import { ResponsiveBar, ResponsiveBarCanvas } from "@nivo/bar";
 import { Empty } from "antd";
 import _ from "lodash";
 import React from "react";
 
+import { CarOccupancy } from "@buf/mpapenbr_testrepo.community_timostamm-protobuf-ts/testrepo/analysis/v1/car_occupancy_pb";
+import {
+  CarStint,
+  StintInfo,
+} from "@buf/mpapenbr_testrepo.community_timostamm-protobuf-ts/testrepo/analysis/v1/car_stint_pb";
 import { secAsHHMMSS, secAsMMSS } from "../../utils/output";
 
 interface MyProps {
-  carStints: ICarStintInfo[];
-  carInfo: ICarInfo[];
+  carStints: CarStint[];
+  carOccs: CarOccupancy[];
   showCars: string[];
   showAsLabel: string;
 }
 const CarStintsNivo: React.FC<MyProps> = (props: MyProps) => {
   const carOrder = [...props.showCars].reverse();
-  const numEntries = (item: ICarStintInfo) =>
-    item.history.length + (item.current.isCurrentStint ? 1 : 0);
+  const numEntries = (item: CarStint) =>
+    item.history.length + (item.current?.isCurrentStint ? 1 : 0);
   const maxStints = props.carStints.reduce((a, b) => (numEntries(b) > a ? numEntries(b) : a), 0);
 
   const dataLookup = props.carStints.reduce((prev, cur) => {
-    const stints = [...cur.history].concat(cur.current.isCurrentStint ? cur.current : []);
+    const stints = [...cur.history].concat(cur.current?.isCurrentStint ? cur.current : []);
     prev.set(cur.carNum, stints);
     return prev;
-  }, new Map<string, IStintInfo[]>());
+  }, new Map<string, StintInfo[]>());
 
   const guessNumToDraw = props.carStints
     .filter((v) => props.showCars.includes(v.carNum))
@@ -53,16 +58,16 @@ const CarStintsNivo: React.FC<MyProps> = (props: MyProps) => {
       // may happen if some driver did not move the car at all (for example)
       return prev;
     }
-    const curCarInfo = props.carInfo.find((v) => v.carNum === cur);
+    const curCarInfo = props.carOccs.find((v) => v.carNum === cur);
     const newCarData = si.reduce((res, siCur) => {
       const driver = curCarInfo?.drivers.find((d) =>
-        d.seatTime.find(
+        d.seatTimes.find(
           (s) => s.enterCarTime <= siCur.exitTime && s.leaveCarTime + 5 >= siCur.enterTime,
         ),
       );
 
       // return ["res"];
-      return [...res, driver ? driver.driverName : "n.a."];
+      return [...res, driver ? driver.name : "n.a."];
     }, [] as string[]);
     prev.set(cur, newCarData);
     return prev;

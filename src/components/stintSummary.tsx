@@ -1,9 +1,9 @@
-import { IStintInfo } from "@mpapenbr/iracelog-analysis/dist/stints/types";
+import { Lap } from "@buf/mpapenbr_testrepo.community_timostamm-protobuf-ts/testrepo/analysis/v1/car_laps_pb";
+import { StintInfo } from "@buf/mpapenbr_testrepo.community_timostamm-protobuf-ts/testrepo/analysis/v1/car_stint_pb";
 import { Empty, Table } from "antd";
 import { ColumnsType } from "antd/lib/table";
 import React from "react";
-import { useSelector } from "react-redux";
-import { ApplicationState } from "../stores";
+import { useAppSelector } from "../stores";
 import { lapTimeString, secAsHHMMSS } from "../utils/output";
 import { findDriverByStint, getCarStints } from "./live/util";
 
@@ -24,10 +24,9 @@ interface IStintSummary {
   avgLapTime: string;
 }
 const StintSummary: React.FC<MyProps> = (props: MyProps) => {
-  const userSettings = useSelector((state: ApplicationState) => state.userSettings.stintSummary);
-  const carInfo = useSelector((state: ApplicationState) => state.raceData.carInfo);
-  const carLaps = useSelector((state: ApplicationState) => state.raceData.carLaps);
-  const carStints = useSelector((state: ApplicationState) => state.raceData.carStints);
+  const carInfo = useAppSelector((state) => state.carOccupancies);
+  const carStints = useAppSelector((state) => state.carStints);
+  const carLaps = useAppSelector((state) => state.carLaps);
 
   const carStint = carStints.find((v) => v.carNum === props.carNum);
   if (!props.carNum || !carStint) {
@@ -36,9 +35,12 @@ const StintSummary: React.FC<MyProps> = (props: MyProps) => {
   const currentCarInfo = carInfo.find((v) => v.carNum === props.carNum)!;
   const currentCarLaps = carLaps.find((v) => v.carNum === props.carNum)!;
 
-  const stintAvg = (si: IStintInfo): string => {
+  const stintAvg = (si: StintInfo): string => {
     // exclude in and outlap from calculation
-    const laps = currentCarLaps.laps.filter((v) => v.lapNo >= si.lapExit && v.lapNo <= si.lapEnter).slice(1, -1);
+    const laps = (currentCarLaps?.laps ?? ([] as Lap[]))
+      .filter((v) => v.lapNo >= si.lapExit && v.lapNo <= si.lapEnter)
+      .slice(1, -1);
+
     if (laps.length > 0) {
       const avg = laps.reduce((prev, cur) => prev + cur.lapTime, 0) / laps.length;
       return lapTimeString(avg);
@@ -92,7 +94,7 @@ const StintSummary: React.FC<MyProps> = (props: MyProps) => {
   ];
   const data: IStintSummary[] = getCarStints(carStints, props.carNum).map((v, idx) => ({
     no: idx + 1,
-    driver: findDriverByStint(currentCarInfo, v)?.driverName ?? "n.a.",
+    driver: findDriverByStint(currentCarInfo, v)?.name ?? "n.a.",
     startStint: secAsHHMMSS(v.exitTime),
     endStint: secAsHHMMSS(v.enterTime),
     laps: v.numLaps,

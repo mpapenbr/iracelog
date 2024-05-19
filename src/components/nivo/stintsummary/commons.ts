@@ -1,4 +1,6 @@
-import { IDriverInfo, IPitInfo, IStintInfo } from "@mpapenbr/iracelog-analysis/dist/stints/types";
+import { Driver } from "@buf/mpapenbr_testrepo.community_timostamm-protobuf-ts/testrepo/analysis/v1/car_occupancy_pb";
+import { PitInfo } from "@buf/mpapenbr_testrepo.community_timostamm-protobuf-ts/testrepo/analysis/v1/car_pit_pb";
+import { StintInfo } from "@buf/mpapenbr_testrepo.community_timostamm-protobuf-ts/testrepo/analysis/v1/car_stint_pb";
 import { catPastel1 } from "../../live/colors";
 
 export const commonProps = {
@@ -13,12 +15,12 @@ export const commonProps = {
   },
 };
 const colorSet = catPastel1;
-export const colorsBySeatTime = (data: IDriverInfo[]) => {
+export const colorsBySeatTime = (data: Driver[]) => {
   const seatData = data
     .map((d, idx) => ({
-      id: d.driverName,
-      label: d.driverName,
-      value: d.seatTime.reduce((a, b) => a + b.leaveCarTime - b.enterCarTime, 0),
+      id: d.name,
+      label: d.name,
+      value: d.seatTimes.reduce((a, b) => a + b.leaveCarTime - b.enterCarTime, 0),
     }))
     .sort((a, b) => b.value - a.value)
     .map((d, idx) => ({ ...d, color: colorSet[idx % colorSet.length] }));
@@ -34,7 +36,7 @@ export const colorsBySeatTime = (data: IDriverInfo[]) => {
 
 export interface CombinedStintData {
   type: "stint" | "pit";
-  data: IStintInfo | IPitInfo;
+  data: StintInfo | PitInfo;
   ref: number;
   idx: number;
   minTime: number;
@@ -49,10 +51,10 @@ export interface ICarCombinedStintData {
 }
 
 export const getCombinedStintData = (
-  stints: IStintInfo[],
-  pits: IPitInfo[],
-  colorLookup: (si: IStintInfo) => string,
-  computeAvg?: (si: IStintInfo) => number,
+  stints: StintInfo[],
+  pits: PitInfo[],
+  colorLookup: (si: StintInfo) => string,
+  computeAvg?: (si: StintInfo) => number,
 ): CombinedStintData[] => {
   const work: CombinedStintData[] = stints.map((d, idx) => {
     // const driver = findDriverByStint(currentCarInfo, d);

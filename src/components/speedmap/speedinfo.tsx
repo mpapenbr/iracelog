@@ -1,20 +1,16 @@
 import { Table } from "antd";
 import { ColumnsType } from "antd/lib/table";
 import * as React from "react";
-import { useSelector } from "react-redux";
+
 import { sprintf } from "sprintf-js";
-import { ApplicationState } from "../../stores";
-import { ICarClass } from "../../stores/cars/types";
-import { ISpeedmapData } from "../../stores/speedmap/types";
+
+import { useAppSelector } from "../../stores";
 import { lapTimeString, secAsString } from "../../utils/output";
 
 export const SpeedInfo: React.FC = () => {
-  const payload: ISpeedmapData = useSelector(
-    (state: ApplicationState) => state.speedmap.speedmapData,
-  );
-  const carClasses: ICarClass[] = useSelector(
-    (state: ApplicationState) => state.carData.carClasses,
-  );
+  const payload = useAppSelector((state) => state.speedmap);
+  const carClasses = useAppSelector((state) => state.carClasses);
+  const trackInfo = useAppSelector((state) => state.eventInfo.track);
 
   const carClassLookup = carClasses.reduce((prev, cur) => {
     prev.set(cur.id.toString(), cur.name);
@@ -24,7 +20,7 @@ export const SpeedInfo: React.FC = () => {
   const data = Object.entries(payload.data).map((cur) => {
     return {
       carClass: carClassLookup.get(cur[0]) ?? "CarClass " + cur[0],
-      avgSpeed: (payload.trackLength / cur[1].laptime) * 3.6,
+      avgSpeed: (trackInfo.length / cur[1].laptime) * 3.6,
       avgLaptime: cur[1].laptime,
       lastRead: payload.timeOfDay,
     };

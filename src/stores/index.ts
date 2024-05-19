@@ -1,12 +1,38 @@
+import { configureStore } from "@reduxjs/toolkit";
 import { combineReducers } from "redux";
-import { carDataReducers } from "./cars/reducers";
 import { ICarInfoContainer } from "./cars/types";
-import { IRaceData, raceDataReducers } from "./racedata/reducer";
+import { IRaceData } from "./racedata/reducer";
 
-import { speedmapReducers } from "./speedmap/reducer";
 import { ISpeedmap } from "./speedmap/types";
-import { userSettingsReducer } from "./ui/reducer";
 import { IUserSettings } from "./ui/types";
+
+// new grpc stuff starts here
+import {
+  Car,
+  Session,
+} from "@buf/mpapenbr_testrepo.community_timostamm-protobuf-ts/testrepo/racestate/v1/racestate_pb";
+import { useDispatch, useSelector } from "react-redux";
+import { CurrentCarOcc } from "./grpc/car/types";
+import { availableCarsSlice } from "./grpc/slices/availableCarsSlice";
+import { carClassesSlice } from "./grpc/slices/carClassesSlice";
+import { carEntrySlice } from "./grpc/slices/carEntrySlice";
+import { carInfoSlice } from "./grpc/slices/carInfoSlice";
+import { carLapsSlice } from "./grpc/slices/carLapsSlice";
+import { byIdxLookupSlice } from "./grpc/slices/carNumByIdxSlice";
+import { carOccupancySlice } from "./grpc/slices/carOccupancySlice";
+import { carPitsSlice } from "./grpc/slices/carPitsSlice";
+import { carStintsSlice } from "./grpc/slices/carStintsSlice";
+import { classificationSlice } from "./grpc/slices/classificationSlice";
+import { eventDataSlice } from "./grpc/slices/eventDataSlice";
+import { eventInfoSlice } from "./grpc/slices/eventInfoSlice";
+import { liveDataSlice } from "./grpc/slices/liveDataSlice";
+import { infoMessagesSlice } from "./grpc/slices/messagesSlice";
+import { raceGraphSlice } from "./grpc/slices/raceGraphSlice";
+import { raceOrderSlice } from "./grpc/slices/raceOrderSlice";
+import { sessionSlice } from "./grpc/slices/sessionSlice";
+import { speedmapEvolutionSlice } from "./grpc/slices/speedmapEvolutionSlice";
+import { speedmapSlice } from "./grpc/slices/speedmapSlice";
+import { combined } from "./grpc/slices/userSettingsSlice";
 
 export interface ApplicationState {
   userSettings: IUserSettings;
@@ -14,14 +40,61 @@ export interface ApplicationState {
 
   speedmap: ISpeedmap;
   carData: ICarInfoContainer;
+  // new grpc stuff starts here
+  session: Session;
+  classification: Car[];
+  dummy: { a: number; b: string };
+  carStuff: CurrentCarOcc[];
 }
 
 // export interface IMetaActions extends PayloadMetaAction<TypeConstant,IMeta> {}
 
 export const createRootReducer = () =>
   combineReducers({
-    raceData: raceDataReducers, // this is new place for everything concerning the race data of a single event
-    userSettings: userSettingsReducer, // this is the new place for user settings
-    speedmap: speedmapReducers,
-    carData: carDataReducers,
+    // raceData: raceDataReducers, // this is new place for everything concerning the race data of a single event
+    // userSettings: userSettingsReducer, // this is the new place for user settings
+    // speedmap: speedmapReducers,
+    // carData: carDataReducers,
+    // session: SessionReducer,
+    // classification: ClassificationReducer,
+    // carStuff: CurrentCarOccReducer,
+    // dummy: DummyReducer,
   });
+
+export const store = configureStore({
+  reducer: {
+    // raceData: raceDataReducers,
+    // userSettings: userSettingsReducer,
+    // speedmap: speedmapReducers,
+    // carData: carDataReducers,
+    eventInfo: eventInfoSlice.reducer,
+    session: sessionSlice.reducer,
+    availableCars: availableCarsSlice.reducer,
+    classification: classificationSlice.reducer,
+    carOccupancies: carOccupancySlice.reducer,
+    carInfos: carInfoSlice.reducer,
+    carEntries: carEntrySlice.reducer,
+    carLaps: carLapsSlice.reducer,
+    carPits: carPitsSlice.reducer,
+    carStints: carStintsSlice.reducer,
+    raceOrder: raceOrderSlice.reducer,
+    raceGraph: raceGraphSlice.reducer,
+    speedmap: speedmapSlice.reducer,
+    speedmapEvolution: speedmapEvolutionSlice.reducer,
+    infoMessages: infoMessagesSlice.reducer,
+
+    carClasses: carClassesSlice.reducer,
+    userSettings: combined,
+    liveData: liveDataSlice.reducer,
+    eventData: eventDataSlice.reducer,
+    byIdxLookup: byIdxLookupSlice.reducer,
+    // classification: ClassificationReducer,
+    // carStuff: CurrentCarOccReducer,
+    // dummy: DummyReducer,
+  },
+  middleware: (getDefaultMiddleware) => getDefaultMiddleware({ serializableCheck: false }),
+});
+export type RootState = ReturnType<typeof store.getState>;
+export type AppDispatch = typeof store.dispatch;
+export const useAppDispatch = useDispatch.withTypes<AppDispatch>();
+export const useAppSelector = useSelector.withTypes<RootState>();

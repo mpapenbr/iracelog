@@ -3,26 +3,22 @@ import { Types } from "@antv/g2/lib";
 import { Empty } from "antd";
 import _, { isNumber } from "lodash";
 import React from "react";
-import { useSelector } from "react-redux";
 import { sprintf } from "sprintf-js";
 import { firstBy } from "thenby";
 import { globalWamp } from "../../commons/globals";
-import { ApplicationState } from "../../stores";
+import { useAppSelector } from "../../stores";
 import { assignCarColors } from "../live/colorAssignment";
 
 const Delta: React.FC = () => {
-  const carLaps = useSelector((state: ApplicationState) => state.raceData.carLaps);
-  const availableCars = useSelector((state: ApplicationState) => state.raceData.availableCars);
-  const carStints = useSelector((state: ApplicationState) => state.raceData.carStints);
-  const raceGraph = useSelector((state: ApplicationState) => state.raceData.raceGraph);
-  const userSettings = useSelector((state: ApplicationState) => state.userSettings.dashboard);
+  const availableCars = useAppSelector((state) => state.availableCars);
 
-  const showCars = userSettings.showCars;
-  const currentCarLaps = (carNum: string) => carLaps.find((v) => v.carNum === carNum);
+  const userSettings = useAppSelector((state) => state.userSettings.dashboard);
+  const raceGraph = useAppSelector((state) => state.raceGraph);
+
   const refCar = userSettings.referenceCarNum;
 
   if (!refCar) return <Empty description="Select reference car" />;
-  if (showCars.length < 2) return <Empty description="not enough data" />;
+  if (userSettings.showCars.length < 2) return <Empty description="not enough data" />;
 
   interface IGraphData {
     carNum: string;
@@ -38,12 +34,20 @@ const Delta: React.FC = () => {
         const carEntry = current.gaps.find((gi) => gi.carNum === carNum);
         if (carEntry !== undefined && refCarEntry !== undefined) {
           if (isNumber(carEntry.gap) && !isNaN(carEntry.gap) && carEntry.lapNo > 0) {
-            prev.push({ lapNo: "" + current.lapNo, carNum: carNum, gap: refCarEntry.gap - carEntry.gap });
+            prev.push({
+              lapNo: "" + current.lapNo,
+              carNum: carNum,
+              gap: refCarEntry.gap - carEntry.gap,
+            });
           }
         }
         return prev;
       }, [] as IGraphData[])
-      .slice(globalWamp.currentLiveId && userSettings.limitLastLaps > 0 ? -userSettings.limitLastLaps : 0);
+      .slice(
+        globalWamp.currentLiveId && userSettings.limitLastLaps > 0
+          ? -userSettings.limitLastLaps
+          : 0,
+      );
   };
 
   const assignedCarColors = assignCarColors(availableCars);
@@ -85,16 +89,20 @@ const Delta: React.FC = () => {
     yAxis: {
       nice: true,
 
-      minLimit: Math.floor(Math.max(_.minBy(graphDataOrig, (d) => d.gap)?.gap ?? 0, -userSettings.deltaRange)),
-      maxLimit: Math.ceil(Math.min(_.maxBy(graphDataOrig, (d) => d.gap)?.gap ?? 0, userSettings.deltaRange)),
+      minLimit: Math.floor(
+        Math.max(_.minBy(graphDataOrig, (d) => d.gap)?.gap ?? 0, -userSettings.deltaRange),
+      ),
+      maxLimit: Math.ceil(
+        Math.min(_.maxBy(graphDataOrig, (d) => d.gap)?.gap ?? 0, userSettings.deltaRange),
+      ),
       // label: {formatter: (d: number) => lapTimeString(d)},
     },
     tooltip: {
       customItems: (orig: Types.TooltipItem[]) => {
         return orig.sort(
-          firstBy<Types.TooltipItem>((a, b) => Math.sign(b.data.gap) - Math.sign(a.data.gap)).thenBy(
-            (a, b) => b.data.gap - a.data.gap
-          )
+          firstBy<Types.TooltipItem>(
+            (a, b) => Math.sign(b.data.gap) - Math.sign(a.data.gap),
+          ).thenBy((a, b) => b.data.gap - a.data.gap),
         );
 
         // return orig.sort((a, b) => a.data.gap - b.data.gap);

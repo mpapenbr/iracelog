@@ -1,15 +1,12 @@
 import { SettingOutlined } from "@ant-design/icons";
 import { Button, Col, Popover, Row } from "antd";
 import React from "react";
-import { useSelector } from "react-redux";
-import { ApplicationState } from "../../stores";
+import { useAppSelector } from "../../stores";
 import { Standings } from "../standings";
 import StandingsColumnControl from "../standingsColumnControl";
 
 const Classification: React.FC = () => {
-  const cars = useSelector((state: ApplicationState) => state.raceData.availableCars).map(
-    (v) => v.carNum,
-  );
+  const cars = useAppSelector((state) => state.availableCars).map((v) => v.carNum);
   return (
     <>
       <Row align="bottom">

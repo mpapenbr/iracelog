@@ -1,8 +1,7 @@
 import { Pie } from "@nivo/pie";
 import { Empty } from "antd";
 import React from "react";
-import { useSelector } from "react-redux";
-import { ApplicationState } from "../../../stores";
+import { useAppSelector } from "../../../stores";
 import { findDriverByStint, getCarStints } from "../../live/util";
 import { colorsBySeatTime, commonProps } from "./commons";
 
@@ -16,15 +15,15 @@ interface GraphData {
   color?: string;
 }
 const StintLaps: React.FC<MyProps> = (props: MyProps) => {
-  const carInfo = useSelector((state: ApplicationState) => state.raceData.carInfo);
-  const carLaps = useSelector((state: ApplicationState) => state.raceData.carLaps);
-  const carStints = useSelector((state: ApplicationState) => state.raceData.carStints);
+  const carOccs = useAppSelector((state) => state.carOccupancies);
+  const carStints = useAppSelector((state) => state.carStints);
+  const carLaps = useAppSelector((state) => state.carLaps);
 
   const carStint = carStints.find((v) => v.carNum === props.carNum);
   if (!props.carNum || !carStint) {
     return <Empty />;
   }
-  const currentCarInfo = carInfo.find((v) => v.carNum === props.carNum)!;
+  const currentCarInfo = carOccs.find((v) => v.carNum === props.carNum)!;
   const currentCarLaps = carLaps.find((v) => v.carNum === props.carNum)!;
   const { colorLookup } = colorsBySeatTime(currentCarInfo.drivers);
 
@@ -32,16 +31,16 @@ const StintLaps: React.FC<MyProps> = (props: MyProps) => {
     getCarStints(carStints, props.carNum)
       .reduce((prev, cur) => {
         const driver = findDriverByStint(currentCarInfo, cur)!;
-        let found = prev.get(driver?.driverName);
+        let found = prev.get(driver?.name);
         if (!found) {
-          found = { id: driver?.driverName, label: driver?.driverName, value: cur.numLaps };
-          prev.set(driver?.driverName, found);
+          found = { id: driver?.name, label: driver?.name, value: cur.numLaps };
+          prev.set(driver?.name, found);
         } else {
           found.value += cur.numLaps;
         }
         return prev;
       }, new Map())
-      .values()
+      .values(),
   )
     .sort((a, b) => b.value - a.value)
     .map((d) => ({ ...d, color: colorLookup.get(d.id)! }));

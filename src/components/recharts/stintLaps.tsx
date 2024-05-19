@@ -1,8 +1,7 @@
-import { IStintInfo } from "@mpapenbr/iracelog-analysis/dist/stints/types";
+import { StintInfo } from "@buf/mpapenbr_testrepo.community_timostamm-protobuf-ts/testrepo/analysis/v1/car_stint_pb";
 import { Col, Empty, Radio, RadioChangeEvent, Row, Select } from "antd";
 import _ from "lodash";
 import React, { useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
 import {
   Brush,
   CartesianGrid,
@@ -16,8 +15,8 @@ import {
   YAxis,
 } from "recharts";
 import { globalWamp } from "../../commons/globals";
-import { ApplicationState } from "../../stores";
-import { driverStintsSettings } from "../../stores/ui/actions";
+import { useAppDispatch, useAppSelector } from "../../stores";
+import { updateDriverStints } from "../../stores/grpc/slices/userSettingsSlice";
 import { IBrushInterval } from "../../stores/ui/types";
 import { lapTimeString } from "../../utils/output";
 import { getCarStints } from "../live/util";
@@ -33,12 +32,11 @@ interface MyProps {
   carNum?: string;
 }
 const StintLapsRecharts: React.FC<MyProps> = (props: MyProps) => {
-  const carLaps = useSelector((state: ApplicationState) => state.raceData.carLaps);
+  const carStints = useAppSelector((state) => state.carStints);
+  const carLaps = useAppSelector((state) => state.carLaps);
 
-  const carStints = useSelector((state: ApplicationState) => state.raceData.carStints);
-
-  const uiSettings = useSelector((state: ApplicationState) => state.userSettings.driverStints);
-  const dispatch = useDispatch();
+  const uiSettings = useAppSelector((state) => state.userSettings.driverStints);
+  const dispatch = useAppDispatch();
   const [brushKeeper, setBrushKeeper] = useState({} as IBrushInterval);
 
   const dataForCar = (carNum: string): IGraphData[] => {
@@ -52,7 +50,11 @@ const StintLapsRecharts: React.FC<MyProps> = (props: MyProps) => {
         }
       };
 
-      return found.laps.map((v) => ({ carNum: carNum, lapNo: v.lapNo, lapTime: getValue(v.lapTime) }));
+      return found.laps.map((v) => ({
+        carNum: carNum,
+        lapNo: v.lapNo,
+        lapTime: getValue(v.lapTime),
+      }));
     } else return [];
   };
   const carNum = props.carNum;
@@ -69,7 +71,7 @@ const StintLapsRecharts: React.FC<MyProps> = (props: MyProps) => {
           prev.push({ sum: cum, avg: cum / prev.length, lapNo: cur.lapNo });
           return prev;
         },
-        [{ lapNo: 0, sum: 0, avg: 0 }]
+        [{ lapNo: 0, sum: 0, avg: 0 }],
       )
       .slice(1) // remove the 0 entry
       .reduce((prev, cur) => {
@@ -77,7 +79,7 @@ const StintLapsRecharts: React.FC<MyProps> = (props: MyProps) => {
         return prev;
       }, new Map<number, { avg: number }>());
   // outsource
-  const extractLapRange = (a: IGraphData[], s: IStintInfo): IGraphData[] => {
+  const extractLapRange = (a: IGraphData[], s: StintInfo): IGraphData[] => {
     const start = a.findIndex((v) => v.lapNo === s.lapExit); // yes this is the start of the stint (meaning: leaving the pits)
     const end = a.findIndex((v) => v.lapNo === s.lapEnter);
     // console.log("Stint:", { s }, " start:", start, " end:", end);
@@ -130,8 +132,8 @@ const StintLapsRecharts: React.FC<MyProps> = (props: MyProps) => {
         (prev, cur) => {
           return { ...prev, ...cur };
         },
-        { lapNo: lapNo }
-      )
+        { lapNo: lapNo },
+      ),
     );
   });
   // console.log(laps);
@@ -160,7 +162,7 @@ const StintLapsRecharts: React.FC<MyProps> = (props: MyProps) => {
     // console.log("Stint: " + stintIdx + "-", range);
     setBrushKeeper(range);
     const curSettings = { ...uiSettings, showStint: stintIdx };
-    dispatch(driverStintsSettings(curSettings));
+    dispatch(updateDriverStints(curSettings));
   };
   const StintRadios = (
     <Radio.Group onChange={onStintNoChange} defaultValue={0} value={uiSettings.showStint}>
@@ -202,7 +204,12 @@ const StintLapsRecharts: React.FC<MyProps> = (props: MyProps) => {
         return (
           <div
             className="custom-tooltip"
-            style={{ margin: 0, padding: 10, backgroundColor: "white", border: "1px solid rgb(204,204,204)" }}
+            style={{
+              margin: 0,
+              padding: 10,
+              backgroundColor: "white",
+              border: "1px solid rgb(204,204,204)",
+            }}
           >
             <p className="custom-tooltip">Lap {lapNo}</p>
             <table cellPadding={1}>

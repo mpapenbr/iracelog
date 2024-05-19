@@ -1,19 +1,13 @@
 import { DualAxes } from "@ant-design/charts";
 import * as React from "react";
-import { useSelector } from "react-redux";
-import { ApplicationState } from "../../stores";
-import { ICarClass } from "../../stores/cars/types";
-import { ISpeedmapEvolution } from "../../stores/speedmap/types";
+
+import { useAppSelector } from "../../stores";
 import { lapTimeString, secAsHHMM } from "../../utils/output";
 import { statsDataFor } from "../live/statsutil";
 
 export const LaptimeEvolution: React.FC = () => {
-  const payload: ISpeedmapEvolution[] = useSelector(
-    (state: ApplicationState) => state.speedmap.speedmapEvolution,
-  );
-  const carClasses: ICarClass[] = useSelector(
-    (state: ApplicationState) => state.carData.carClasses,
-  );
+  const payload = useAppSelector((state) => state.speedmapEvolution);
+  const carClasses = useAppSelector((state) => state.carClasses);
 
   const carClassLookup = carClasses.reduce((prev, cur) => {
     prev.set(cur.id.toString(), cur.name);

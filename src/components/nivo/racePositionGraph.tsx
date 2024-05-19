@@ -2,8 +2,7 @@ import { IRaceGraph } from "@mpapenbr/iracelog-analysis/dist/stints/types";
 import { ResponsiveLine } from "@nivo/line";
 import { Col, Empty, Row, Spin } from "antd";
 import React from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { ApplicationState } from "../../stores";
+import { useAppSelector } from "../../stores";
 
 import { sortCarNumberStr } from "../../utils/output";
 
@@ -11,17 +10,20 @@ interface IGraphData {
   x: number;
   y: number;
 }
+interface MyProps {
+  showCars: string[];
+  showPosInClass: boolean;
+}
 
-const RacePositionGraphNivo: React.FC = () => {
+const RacePositionGraphNivo: React.FC<MyProps> = (props) => {
   // const wamp = useSelector((state: ApplicationState) => state.wamp.data);
-  const uiSettings = useSelector((state: ApplicationState) => state.userSettings.racePositions);
-  const raceGraph = useSelector((state: ApplicationState) => state.raceData.raceGraph);
-  const dispatch = useDispatch();
+
+  const raceGraph = useAppSelector((state) => state.raceGraph);
 
   if (raceGraph.length === 0) {
     return <Spin />;
   }
-  const carOrder = [...uiSettings.showCars].sort(sortCarNumberStr).reverse();
+  const carOrder = [...props.showCars].sort(sortCarNumberStr).reverse();
 
   const dataLookup = raceGraph.reduce((prev, cur) => {
     const entry = prev.get(cur.carClass);
@@ -40,7 +42,7 @@ const RacePositionGraphNivo: React.FC = () => {
 
       // const refCarEntry = current.gaps.find((gi) => gi.carNum === uiSettings.referenceCarNum);
       if (carEntry !== undefined && carEntry.pos > 0 && carEntry.lapNo > 0) {
-        prev.push({ x: current.lapNo, y: uiSettings.showPosInClass ? carEntry.pic : carEntry.pos });
+        prev.push({ x: current.lapNo, y: props.showPosInClass ? carEntry.pic : carEntry.pos });
       }
       return prev;
     }, [] as IGraphData[]);
@@ -108,7 +110,7 @@ const RacePositionGraphNivo: React.FC = () => {
 
   return (
     <>
-      {uiSettings.showCars.length === 0 ? (
+      {props.showCars.length === 0 ? (
         <Empty description="Select single cars or car classes from the above selectors" />
       ) : (
         InternalRaceGraph

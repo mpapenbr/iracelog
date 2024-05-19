@@ -1,21 +1,22 @@
 import { Line } from "@ant-design/charts";
 import { ICarLaps, ILapInfo, IStintInfo } from "@mpapenbr/iracelog-analysis/dist/stints/types";
 import React from "react";
-import { useSelector } from "react-redux";
 import { globalWamp } from "../../commons/globals";
-import { ApplicationState } from "../../stores";
+import { useAppSelector } from "../../stores";
 import { lapTimeString } from "../../utils/output";
 import { assignCarColors } from "../live/colorAssignment";
 import { statsDataFor, stintLaps } from "../live/statsutil";
 import { getCarStints } from "../live/util";
 
 const Lapchart: React.FC = () => {
-  const availableCars = useSelector((state: ApplicationState) => state.raceData.availableCars);
-  const carLaps = useSelector((state: ApplicationState) => state.raceData.carLaps);
-  const carStints = useSelector((state: ApplicationState) => state.raceData.carStints);
-  const userSettings = useSelector((state: ApplicationState) => state.userSettings.dashboard);
+  const availableCars = useAppSelector((state) => state.availableCars);
 
-  const showCars = userSettings.showCars;
+  const userSettings = useAppSelector((state) => state.userSettings.dashboard);
+  const carStints = useAppSelector((state) => state.carStints);
+
+  const carLaps = useAppSelector((state) => state.carLaps);
+  const showCars = [...userSettings.showCars];
+
   const currentCarLaps = (carNum: string) => carLaps.find((v) => v.carNum === carNum);
   const mergeComputeCarLaps = (carNum: string, stints: IStintInfo[]): ICarLaps[] => {
     const myStintLaps = (v: IStintInfo) => stintLaps(v, currentCarLaps(carNum)!);
@@ -40,8 +41,8 @@ const Lapchart: React.FC = () => {
     .filter((v) => showCars.includes(v.carNum))
     .map((v) => mergeComputeCarLaps(v.carNum, getCarStints(carStints, v.carNum)))
     .flatMap((li) => [...li]);
-
   const work = statsDataFor(computeCarLaps.flatMap((v) => v.laps.map((l) => l.lapTime)));
+
   // console.log(work);
   const toShowLaps = (laps: ILapInfo[]): ILapInfo[] =>
     globalWamp.currentLiveId && userSettings.limitLastLaps > 0
@@ -55,6 +56,7 @@ const Lapchart: React.FC = () => {
       toShowLaps(v.laps).map((l) => ({ carNum: `#${v.carNum}`, ...l, lapNoStr: "" + l.lapNo })),
     )
     .flatMap((a) => [...a]);
+
   // console.log(lapData);
   const sliderData = globalWamp.currentLiveId ? undefined : { start: 0, end: 1 };
   const animate = globalWamp.currentLiveId ? false : true;
@@ -68,7 +70,7 @@ const Lapchart: React.FC = () => {
       size: 3,
       shape: "diamond",
     },
-    line: { size: 0 },
+    line: { size: 1 },
 
     color: localColors,
     slider: sliderData,

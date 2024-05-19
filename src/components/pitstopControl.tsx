@@ -1,31 +1,33 @@
 import { Checkbox, InputNumber, Row } from "antd";
 import React from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { ApplicationState } from "../stores";
-import { pitstopsSettings } from "../stores/ui/actions";
+import { useAppDispatch, useAppSelector } from "../stores";
+import { updatePits } from "../stores/grpc/slices/userSettingsSlice";
 
 const PitstopControl: React.FC = () => {
-  const userSettings = useSelector((state: ApplicationState) => state.userSettings.pitstops);
+  const userSettings = useAppSelector((state) => state.userSettings.pits);
 
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
 
   const onThresholdChange = (value: any) => {
     const curSettings = { ...userSettings, hideThreshold: value };
-    dispatch(pitstopsSettings(curSettings));
+    dispatch(updatePits(curSettings));
   };
   const onCheckboxHideLongPitstop = (value: any) => {
     const curSettings = { ...userSettings, hideLongPitstops: !userSettings.hideLongPitstops };
-    dispatch(pitstopsSettings(curSettings));
+    dispatch(updatePits(curSettings));
   };
   const onCheckboxShowRunningOnly = (value: any) => {
     const curSettings = { ...userSettings, showRunningOnly: !userSettings.showRunningOnly };
-    dispatch(pitstopsSettings(curSettings));
+    dispatch(updatePits(curSettings));
   };
 
   return (
     <>
       <Row>
-        <Checkbox defaultChecked={userSettings.hideLongPitstops} onChange={onCheckboxHideLongPitstop}>
+        <Checkbox
+          defaultChecked={userSettings.hideLongPitstops}
+          onChange={onCheckboxHideLongPitstop}
+        >
           Auto hide at
         </Checkbox>
 

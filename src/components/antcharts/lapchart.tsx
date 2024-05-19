@@ -1,56 +1,73 @@
 import { Line } from "@ant-design/charts";
-import { ICarLaps, ILapInfo, IStintInfo } from "@mpapenbr/iracelog-analysis/dist/stints/types";
+
+import {
+  CarLaps,
+  Lap,
+} from "@buf/mpapenbr_testrepo.community_timostamm-protobuf-ts/testrepo/analysis/v1/car_laps_pb";
+import { StintInfo } from "@buf/mpapenbr_testrepo.community_timostamm-protobuf-ts/testrepo/analysis/v1/car_stint_pb";
+import _ from "lodash";
 import React from "react";
-import { useSelector } from "react-redux";
 import { globalWamp } from "../../commons/globals";
-import { ApplicationState } from "../../stores";
+import { useAppSelector } from "../../stores";
 import { lapTimeString, sortCarNumberStr } from "../../utils/output";
 import { assignCarColors } from "../live/colorAssignment";
 import { statsDataFor, stintLaps } from "../live/statsutil";
 import { getCarStints } from "../live/util";
 
-const Lapchart: React.FC = () => {
-  const availableCars = useSelector((state: ApplicationState) => state.raceData.availableCars);
-  const carLaps = useSelector((state: ApplicationState) => state.raceData.carLaps);
-  const carStints = useSelector((state: ApplicationState) => state.raceData.carStints);
-  const userSettings = useSelector((state: ApplicationState) => state.userSettings.driverLaps);
+interface MyProps {
+  showCars: string[];
+  limitLastLaps: number;
+  filterSecs: number;
+}
+const Lapchart: React.FC<MyProps> = (props) => {
+  const availableCars = useAppSelector((state) => state.availableCars);
 
-  const showCars = userSettings.showCars;
+  const userSettxings = useAppSelector((state) => state.userSettings.driverLaps);
+  const carStints = useAppSelector((state) => state.carStints);
+
+  const carLaps = useAppSelector((state) => state.carLaps);
+
+  // const availableCars = useSelector((state: ApplicationState) => state.raceData.availableCars);
+  // const carLaps = useSelector((state: ApplicationState) => state.raceData.carLaps);
+  // const carStints = useSelector((state: ApplicationState) => state.raceData.carStints);
+  // const userSettings = useSelector((state: ApplicationState) => state.userSettings.driverLaps);
+
+  const { showCars } = props;
   const currentCarLaps = (carNum: string) => carLaps.find((v) => v.carNum === carNum);
-  const mergeComputeCarLaps = (stints: IStintInfo[], carNum: string): ICarLaps[] => {
-    const myStintLaps = (v: IStintInfo) => stintLaps(v, currentCarLaps(carNum)!);
+  const mergeComputeCarLaps = (stints: StintInfo[], carNum: string): CarLaps[] => {
+    const myStintLaps = (v: StintInfo) => stintLaps(v, currentCarLaps(carNum)!);
     const x = stints.flatMap((v) => ({ carNum: carNum, laps: myStintLaps(v) }));
-    return globalWamp.currentLiveId && userSettings.limitLastLaps > 0
-      ? x.slice(-userSettings.limitLastLaps)
-      : x;
+    return globalWamp.currentLiveId && props.limitLastLaps > 0 ? x.slice(-props.limitLastLaps) : x;
   };
 
   const assignedCarColors = assignCarColors(availableCars);
-  const localColors = userSettings.showCars
+  const localColors = showCars
     .sort(sortCarNumberStr)
 
     .map((carNum) => assignedCarColors.get(carNum) ?? "black");
 
-  const allCarLaps: ICarLaps[] = carStints
+  const allCarLaps: CarLaps[] = carStints
     .filter((v) => showCars.includes(v.carNum))
     .map((v) => currentCarLaps(v.carNum)!)
     .filter((v) => v !== undefined);
 
-  const computeCarLaps: ICarLaps[] = carStints
+  const computeCarLaps: CarLaps[] = carStints
     .filter((v) => showCars.includes(v.carNum))
     .map((v) => mergeComputeCarLaps(getCarStints(carStints, v.carNum), v.carNum))
     .flatMap((li) => [...li]);
 
   const work = statsDataFor(computeCarLaps.flatMap((v) => v.laps.map((l) => l.lapTime)));
+  const workLapNo = _.max(computeCarLaps.flatMap((v) => v.laps.map((l) => l.lapNo)));
   // console.log(work);
-  const toShowLaps = (laps: ILapInfo[]): ILapInfo[] =>
-    globalWamp.currentLiveId && userSettings.limitLastLaps > 0
-      ? laps.slice(-userSettings.limitLastLaps)
+  const toShowLaps = (laps: Lap[]): Lap[] =>
+    globalWamp.currentLiveId && props.limitLastLaps > 0
+      ? laps.slice(-props.limitLastLaps).filter((v) => v.lapNo >= workLapNo! - props.limitLastLaps)
       : laps;
   // some strange ant-design/charts bug: https://github.com/ant-design/ant-design-charts/issues/797
   // workaround is to use strings for xaxis...
   const lapData = allCarLaps
     .sort((a, b) => showCars.indexOf(a.carNum) - showCars.indexOf(b.carNum))
+    // .sort((a, b) => showCars.indexOf(a.carNum) - showCars.indexOf(b.carNum))
     .map((v) =>
       toShowLaps(v.laps).map((l) => ({ carNum: `#${v.carNum}`, ...l, lapNoStr: "" + l.lapNo })),
     )
@@ -68,7 +85,7 @@ const Lapchart: React.FC = () => {
       size: 3,
       shape: "diamond",
     },
-    line: { size: 0 },
+    line: { size: 1 },
 
     color: localColors,
     slider: sliderData,
@@ -76,9 +93,7 @@ const Lapchart: React.FC = () => {
       nice: true,
       minLimit: Math.floor(work.minTime),
       maxLimit:
-        userSettings.filterSecs > 0
-          ? Math.ceil(work.median + userSettings.filterSecs)
-          : Math.ceil(work.q95),
+        props.filterSecs > 0 ? Math.ceil(work.median + props.filterSecs) : Math.ceil(work.q95),
       // label: {formatter: (d: number) => lapTimeString(d)},
     },
     interactions: globalWamp.currentLiveId ? [] : [{ type: "brush" }],

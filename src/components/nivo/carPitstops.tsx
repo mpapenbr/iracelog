@@ -1,15 +1,18 @@
-import { ICarPitInfo, IPitInfo } from "@mpapenbr/iracelog-analysis/dist/stints/types";
 import { ResponsiveBar, ResponsiveBarCanvas } from "@nivo/bar";
 import { Empty, Select } from "antd";
 import _ from "lodash";
 import React from "react";
 
+import {
+  CarPit,
+  PitInfo,
+} from "@buf/mpapenbr_testrepo.community_timostamm-protobuf-ts/testrepo/analysis/v1/car_pit_pb";
 import { secAsHHMMSS, secAsMMSS } from "../../utils/output";
 
 const { Option } = Select;
 
 interface MyProps {
-  carPits: ICarPitInfo[];
+  carPits: CarPit[];
   showCars: string[];
   hideLongPitstops: boolean;
   hideThreshold: number;
@@ -21,18 +24,18 @@ const CarPitstopsNivo: React.FC<MyProps> = (props: MyProps) => {
 
   const carOrder = [...props.showCars].reverse(); //.sort(sortCarNumberStr).reverse();
 
-  const numEntries = (item: ICarPitInfo) =>
-    item.history.length + (item.current.isCurrentPitstop ? 1 : 0);
+  const numEntries = (item: CarPit) =>
+    item.history.length + (item.current?.isCurrentPitstop ? 1 : 0);
   const maxPitstops = props.carPits.reduce((a, b) => (numEntries(b) > a ? numEntries(b) : a), 0);
 
   const dataLookup = props.carPits.reduce((prev, cur) => {
-    const pitstops = [...cur.history].concat(cur.current.isCurrentPitstop ? cur.current : []);
+    const pitstops = [...cur.history].concat(cur.current?.isCurrentPitstop ? cur.current : []);
     prev.set(cur.carNum, pitstops);
     return prev;
-  }, new Map<string, IPitInfo[]>());
+  }, new Map<string, PitInfo[]>());
 
   // console.log(x);
-  const isLongPitstop = (pit: IPitInfo): boolean => {
+  const isLongPitstop = (pit: PitInfo): boolean => {
     return pit.laneTime > props.hideThreshold;
   };
 
