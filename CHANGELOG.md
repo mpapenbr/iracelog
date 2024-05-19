@@ -1,3 +1,14 @@
+### 0.24.0 (2024-05-19)
+
+##### Build System / Dependencies
+
+* **deps-dev:**
+  *  bump the development-dependencies group with 6 updates (b4b20cb2)
+  *  bump the development-dependencies group with 7 updates (d42f11bb)
+* **deps:**
+  *  bump the production-dependencies group with 1 update (36c667f4)
+  *  bump the production-dependencies group with 1 update (03db82c3)
+
 #### 0.23.1 (2024-03-23)
 
 ### 0.23.0 (2024-03-23)
