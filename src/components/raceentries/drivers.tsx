@@ -2,26 +2,25 @@ import { Card, Table } from "antd";
 import { ColumnsType } from "antd/lib/table";
 import _ from "lodash";
 import * as React from "react";
-import { useSelector } from "react-redux";
-import { ApplicationState } from "../../stores";
-import { ICarClass, ICarInfo, IDriverEntry, IEntry } from "../../stores/cars/types";
+
+import { CarEntry } from "@buf/mpapenbr_testrepo.community_timostamm-protobuf-ts/testrepo/car/v1/car_pb";
+import { Driver } from "@buf/mpapenbr_testrepo.community_timostamm-protobuf-ts/testrepo/driver/v1/driver_pb";
+import { useAppSelector } from "../../stores";
 import { sortCarNumberStr } from "../../utils/output";
 
 export const Drivers: React.FC = () => {
-  const carClasses: ICarClass[] = useSelector(
-    (state: ApplicationState) => state.carData.carClasses,
-  );
-  const cars: ICarInfo[] = useSelector((state: ApplicationState) => state.carData.cars);
-  const entries: IEntry[] = useSelector((state: ApplicationState) => state.carData.entries);
+  const entries = useAppSelector((state) => state.carEntries);
+  const cars = useAppSelector((state) => state.carInfos);
+  const carClasses = useAppSelector((state) => state.carClasses);
 
   const carClassLookup = Object.assign({}, ...carClasses.map((x) => ({ [x.id]: x })));
-  const entryByIdx = Object.assign({}, ...entries.map((x) => ({ [x.car.carIdx]: x })));
+  const entryByIdx = Object.assign({}, ...entries.map((x) => ({ [x.car!.carIdx]: x })));
 
   const allDrivers = _.flatMap(entries, "drivers");
 
   // console.log("should update driver entries: ", entries);
-  interface IDriverData extends IDriverEntry {
-    entry: IEntry;
+  interface IDriverData extends Driver {
+    entry: CarEntry;
     carClassName: string;
   }
   const extDriverData: IDriverData[] = allDrivers.map((d) => {
@@ -43,7 +42,7 @@ export const Drivers: React.FC = () => {
       width: 50,
       align: "right",
       // sorter: (a, b) => a.entry.car.carNumberRaw - b.entry.car.carNumberRaw,
-      sorter: (a, b) => sortCarNumberStr(a.entry.car.carNumber, b.entry.car.carNumber),
+      sorter: (a, b) => sortCarNumberStr(a.entry.car!.carNumber, b.entry.car!.carNumber),
       sortDirections: ["ascend", "descend", "ascend"],
       defaultSortOrder: "ascend",
     },
@@ -63,15 +62,15 @@ export const Drivers: React.FC = () => {
       render: (d) => d.entry.team.name,
       // width: "20%",
       align: "left",
-      sorter: (a, b) => a.entry.team.name.localeCompare(b.entry.team.name),
+      sorter: (a, b) => a.entry.team!.name.localeCompare(b.entry.team!.name),
       sortDirections: ["ascend", "descend", "ascend"],
       defaultSortOrder: "ascend",
       filterSearch: true,
       filters: entries
-        .map((c) => ({ text: c.team.name, value: c.team.name }))
+        .map((c) => ({ text: c.team!.name, value: c.team!.name }))
         .sort((a, b) => a.text.localeCompare(b.text)),
 
-      onFilter: (value, record) => record.entry.team.name.startsWith(value as string),
+      onFilter: (value, record) => record.entry.team!.name.startsWith(value as string),
     },
     {
       key: "driver_carClass",
@@ -93,13 +92,13 @@ export const Drivers: React.FC = () => {
       render: (d) => d.entry.car.name,
       // width: "15%",
       align: "left",
-      sorter: (a, b) => a.entry.car.name.localeCompare(b.entry.car.name),
+      sorter: (a, b) => a.entry.car!.name.localeCompare(b.entry.car!.name),
       sortDirections: ["ascend", "descend", "ascend"],
       defaultSortOrder: "ascend",
       filters: cars
         .map((c) => ({ text: c.nameShort, value: c.nameShort }))
         .sort((a, b) => a.text.localeCompare(b.text)),
-      onFilter: (value, record) => record.entry.car.name === value,
+      onFilter: (value, record) => record.entry.car!.name === value,
     },
 
     {

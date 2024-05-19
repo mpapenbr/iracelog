@@ -1,106 +1,84 @@
 import { IStintInfo } from "@mpapenbr/iracelog-analysis/dist/stints/types";
 import { Col, Divider, Empty, Row, Select } from "antd";
 import * as React from "react";
-import { useDispatch, useSelector } from "react-redux";
-import CarClassFilter from "../components/live/carClassFilter";
-import {
-  carNumberByCarIdx,
-  findDriverByStint,
-  getCarPitStops,
-  getCarStints,
-  orderedCarNumsByPosition,
-  sortedSelectableCars,
-  supportsCarData,
-} from "../components/live/util";
+import SingleSelectCarFilter from "../components/live/singleCarSelectFilter";
+import { findDriverByStint, getCarPitStops, getCarStints } from "../components/live/util";
 import { colorsBySeatTime, getCombinedStintData } from "../components/nivo/stintsummary/commons";
 import StintSeatTime from "../components/nivo/stintsummary/seattime";
 import StintBoxplot from "../components/nivo/stintsummary/stintboxplot";
 import StintCircle from "../components/nivo/stintsummary/stintcircle";
-import StintLaps from "../components/nivo/stintsummary/stintlaps";
 import StintStretch from "../components/nivo/stintsummary/stintstretch";
 import StintSummary from "../components/stintSummary";
-import { ApplicationState } from "../stores";
-import { ICarBaseData } from "../stores/racedata/types";
-import { globalSettings, stintSummarySettings } from "../stores/ui/actions";
+import { useAppDispatch, useAppSelector } from "../stores";
+import { ISingleCarSelectFilterSettings } from "../stores/grpc/slices/types";
+import { updateGlobalSettings, updateStintSummary } from "../stores/grpc/slices/userSettingsSlice";
+import { InputData, prepareFilterData } from "./singleCarSelectFilterHelper";
 
 const { Option } = Select;
 
 export const StintSummaryContainer: React.FC = () => {
-  const cars = useSelector((state: ApplicationState) => state.raceData.availableCars);
-  const carClasses = useSelector((state: ApplicationState) => state.raceData.availableCarClasses);
-  const userSettings = useSelector((state: ApplicationState) => state.userSettings.stintSummary);
-  const stateGlobalSettings = useSelector((state: ApplicationState) => state.userSettings.global);
-  const carInfo = useSelector((state: ApplicationState) => state.raceData.carInfo);
-  const carStints = useSelector((state: ApplicationState) => state.raceData.carStints);
-  const carPits = useSelector((state: ApplicationState) => state.raceData.carPits);
-  const eventInfo = useSelector((state: ApplicationState) => state.raceData.eventInfo);
-  const carData = useSelector((state: ApplicationState) => state.carData);
-  const stateCarManifest = useSelector((state: ApplicationState) => state.raceData.manifests.car);
-  const raceOrder = useSelector((state: ApplicationState) => state.raceData.classification);
+  const availableCars = useAppSelector((state) => state.availableCars);
+  const carClasses = useAppSelector((state) => state.carClasses);
+  const userSettings = useAppSelector((state) => state.userSettings.stintSummary);
+  const carStints = useAppSelector((state) => state.carStints);
+  const carPits = useAppSelector((state) => state.carPits);
+  const carOccs = useAppSelector((state) => state.carOccupancies);
+  const stateGlobalSettings = useAppSelector((state) => state.userSettings.global);
+  const raceOrder = useAppSelector((state) => state.raceOrder);
+  const dispatch = useAppDispatch();
 
-  const dispatch = useDispatch();
+  const inputData: InputData = {
+    stateGlobalSettings: stateGlobalSettings,
+    pageFilterSettings: userSettings,
 
-  const createSelectableCars = (cars: ICarBaseData[]): ICarBaseData[] => {
-    return sortedSelectableCars(cars, stateGlobalSettings.filterOrderByPosition, () =>
-      orderedCarNumsByPosition(
-        raceOrder,
-        stateCarManifest,
-        supportsCarData(eventInfo.raceloggerVersion) ? carNumberByCarIdx(carData) : undefined,
-      ),
-    );
-  };
-
-  const selectSettings = () => {
-    if (stateGlobalSettings.syncSelection) {
-      return {
-        referenceCarNum: stateGlobalSettings.referenceCarNum,
-        filterCarClasses: stateGlobalSettings.filterCarClasses,
+    raceOrder: raceOrder,
+    availableCars: availableCars,
+    availableClasses: carClasses.map((v) => v.name),
+    selectedCallback: (arg: ISingleCarSelectFilterSettings) => {
+      const curSettings = {
+        ...userSettings,
+        ...arg,
       };
-    } else {
-      return {
-        referenceCarNum: userSettings.carNum,
-        filterCarClasses: userSettings.filterCarClasses,
-      };
-    }
+      // const curSettings = { ...userSettings, filterCarClasses: values };
+      dispatch(updateStintSummary(curSettings));
+      if (stateGlobalSettings.syncSelection) {
+        dispatch(
+          updateGlobalSettings({
+            ...stateGlobalSettings,
+            referenceCarNum: arg.referenceCarNum,
+            filterCarClasses: arg.filterCarClasses,
+          }),
+        );
+      }
+    },
   };
-  const { referenceCarNum, filterCarClasses } = selectSettings();
-
-  const onSelectCarClassChange = (values: string[]) => {
-    const curSettings = { ...userSettings, filterCarClasses: values };
-    dispatch(stintSummarySettings(curSettings));
-    if (stateGlobalSettings.syncSelection) {
-      dispatch(globalSettings({ ...stateGlobalSettings, filterCarClasses: values }));
-    }
+  const filterProps = prepareFilterData(inputData);
+  const xprops = {
+    ...filterProps,
+    selectedCar: userSettings.referenceCarNum,
+    onSelectCarFilter: (selection: string) => {
+      const curSettings = { ...userSettings, referenceCarNum: selection };
+      dispatch(updateStintSummary(curSettings));
+      if (stateGlobalSettings.syncSelection) {
+        dispatch(updateGlobalSettings({ ...stateGlobalSettings, referenceCarNum: selection }));
+      }
+    },
   };
 
-  const onFilterSecsChange = (value: any) => {
-    const curSettings = { ...userSettings, filterSecs: value };
-    dispatch(stintSummarySettings(curSettings));
-  };
-
-  const referenceOptions = createSelectableCars(cars)
-    .filter((c) => {
-      return filterCarClasses.length ? filterCarClasses.find((item) => item === c.carClass) : true;
-    })
-    .map((d) => (
-      <Option key={d.carNum} value={d.carNum}>
-        #{d.carNum} {d.name}
-      </Option>
-    ));
   const onSelectReferenceCar = (value: any) => {
     const curSettings = { ...userSettings, carNum: value as string, showStint: 0 };
-    dispatch(stintSummarySettings(curSettings));
-    dispatch(globalSettings({ ...stateGlobalSettings, referenceCarNum: curSettings.carNum }));
+    dispatch(updateStintSummary(curSettings));
+    dispatch(updateGlobalSettings({ ...stateGlobalSettings, referenceCarNum: curSettings.carNum }));
   };
 
-  const currentCarInfo = carInfo.find((v) => v.carNum === referenceCarNum)!;
+  const currentCarInfo = carOccs.find((v) => v.carNum === userSettings.referenceCarNum);
   const { colorLookup } = colorsBySeatTime(currentCarInfo?.drivers ?? []);
 
   const driverColor = (si: IStintInfo): string =>
-    colorLookup.get(findDriverByStint(currentCarInfo, si)!.driverName) ?? "black";
+    colorLookup.get(findDriverByStint(currentCarInfo!, si)!.name) ?? "black";
   const combinedData = getCombinedStintData(
-    getCarStints(carStints, referenceCarNum!),
-    getCarPitStops(carPits, referenceCarNum!),
+    getCarStints(carStints, userSettings.referenceCarNum!),
+    getCarPitStops(carPits, userSettings.referenceCarNum!),
     driverColor,
   );
   const combinedDataMinMax = combinedData.reduce(
@@ -109,35 +87,24 @@ export const StintSummaryContainer: React.FC = () => {
     },
     { minTime: Number.MAX_SAFE_INTEGER, maxTime: 0 },
   );
-  const props = { carNum: referenceCarNum, combinedStintData: combinedData, ...combinedDataMinMax };
+  const props = {
+    carNum: userSettings.referenceCarNum,
+    combinedStintData: combinedData,
+    ...combinedDataMinMax,
+  };
   // console.log(props);
   return (
     <>
       <Row gutter={16}>
-        <Col span={6}>
-          <Select
-            style={{ width: "100%" }}
-            allowClear
-            value={referenceCarNum}
-            placeholder="Select car"
-            onChange={onSelectReferenceCar}
-            maxTagCount="responsive"
-          >
-            {referenceOptions}
-          </Select>
-        </Col>
-        <CarClassFilter
-          availableClasses={carClasses.map((v) => v.name)}
-          onSelectCarClassFilter={onSelectCarClassChange}
-          selectedCarClasses={filterCarClasses}
-        />
+        <SingleSelectCarFilter {...xprops} />
       </Row>
-      {referenceCarNum ? (
+      {userSettings.referenceCarNum ? (
         <>
           <Divider />
           <Row gutter={16}>
             <StintStretch {...props} width={800} />
           </Row>
+
           <Row gutter={16}>
             <Col span={12}>
               <StintSummary {...props} />
@@ -150,12 +117,8 @@ export const StintSummaryContainer: React.FC = () => {
                 <Col>
                   <StintCircle {...props} />
                 </Col>
-                <Col>
+                {/* <Col>
                   <StintLaps {...props} />
-                </Col>
-                {/* out of order - no real benefit, pit stops are way too small
-                 <Col>
-                  <StintCircleWithPits {...props} />
                 </Col> */}
               </Row>
 

@@ -1,92 +1,83 @@
 import { Col, InputNumber, Row } from "antd";
 import * as React from "react";
-import { useDispatch, useSelector } from "react-redux";
 import { globalWamp } from "../commons/globals";
 import Lapchart from "../components/antcharts/lapchart";
-import CarFilter from "../components/live/carFilter";
-import {
-  carNumberByCarIdx,
-  collectCarsByCarClassFilter,
-  orderedCarNumsByPosition,
-  processCarClassSelectionNew,
-  sortedSelectableCars,
-  supportsCarData,
-} from "../components/live/util";
-import { ApplicationState } from "../stores";
-import { ICarBaseData } from "../stores/racedata/types";
-import { driverLapsSettings } from "../stores/ui/actions";
+import MultiSelectCarFilter from "../components/live/multiCarSelectFilter";
+import { useAppDispatch, useAppSelector } from "../stores";
+import { IMultiCarSelectFilterSettings } from "../stores/grpc/slices/types";
+import { updateDriverLaps, updateGlobalSettings } from "../stores/grpc/slices/userSettingsSlice";
+import { InputData, prepareFilterData } from "./multiCarSelectFilterHelper";
 
 export const DriverLapsContainer: React.FC = () => {
-  const cars = useSelector((state: ApplicationState) => state.raceData.availableCars);
-  const carClasses = useSelector((state: ApplicationState) => state.raceData.availableCarClasses);
-  const userSettings = useSelector((state: ApplicationState) => state.userSettings.driverLaps);
+  const availableCars = useAppSelector((state) => state.availableCars);
+  const carClasses = useAppSelector((state) => state.carClasses);
+  const userSettings = useAppSelector((state) => state.userSettings.driverLaps);
+  const stateGlobalSettings = useAppSelector((state) => state.userSettings.global);
+  const raceOrder = useAppSelector((state) => state.raceOrder);
+  const dispatch = useAppDispatch();
 
-  const showCars = useSelector((state: ApplicationState) => state.userSettings.driverLaps.showCars);
-  const filterCarClasses = useSelector(
-    (state: ApplicationState) => state.userSettings.driverLaps.filterCarClasses,
-  );
-  const dispatch = useDispatch();
+  const inputData: InputData = {
+    stateGlobalSettings: stateGlobalSettings,
+    pageFilterSettings: userSettings,
 
-  const stateGlobalSettings = useSelector((state: ApplicationState) => state.userSettings.global);
-  const eventInfo = useSelector((state: ApplicationState) => state.raceData.eventInfo);
-  const carData = useSelector((state: ApplicationState) => state.carData);
-
-  const stateCarManifest = useSelector((state: ApplicationState) => state.raceData.manifests.car);
-  const raceOrder = useSelector((state: ApplicationState) => state.raceData.classification);
-  const createSelectableCars = (cars: ICarBaseData[]): ICarBaseData[] => {
-    return sortedSelectableCars(cars, stateGlobalSettings.filterOrderByPosition, () =>
-      orderedCarNumsByPosition(
-        raceOrder,
-        stateCarManifest,
-        supportsCarData(eventInfo.raceloggerVersion) ? carNumberByCarIdx(carData) : undefined,
-      ),
-    );
+    raceOrder: raceOrder,
+    availableCars: availableCars,
+    availableClasses: carClasses.map((v) => v.name),
+    selectedCallback: (arg: IMultiCarSelectFilterSettings) => {
+      const curSettings = {
+        ...userSettings,
+        ...arg,
+      };
+      // const curSettings = { ...userSettings, filterCarClasses: values };
+      dispatch(updateDriverLaps(curSettings));
+      if (stateGlobalSettings.syncSelection) {
+        dispatch(
+          updateGlobalSettings({
+            ...stateGlobalSettings,
+            showCars: arg.showCars,
+            filterCarClasses: arg.filterCarClasses,
+          }),
+        );
+      }
+    },
   };
-
-  const selectableCars = createSelectableCars(
-    userSettings.selectableCars.length > 0 ? userSettings.selectableCars : cars,
-  );
-  const onSelectCarClassChange = (values: string[]) => {
-    const newShowcars = processCarClassSelectionNew({
-      cars: cars,
-      currentFilter: userSettings.filterCarClasses,
-      currentShowCars: userSettings.showCars,
-      newSelection: values,
-    });
-    const curSettings = {
-      ...userSettings,
-      filterCarClasses: values,
-      selectableCars: collectCarsByCarClassFilter(cars, values),
-    };
-    dispatch(driverLapsSettings(curSettings));
-  };
-
-  const onFilterRangeChange = (value: any) => {
-    const curSettings = { ...userSettings, filterSecs: value };
-    dispatch(driverLapsSettings(curSettings));
+  const filterProps = prepareFilterData(inputData);
+  const props = {
+    ...filterProps,
+    onSelectCarFilter: (selection: string[]) => {
+      const curSettings = { ...userSettings, showCars: selection };
+      dispatch(updateDriverLaps(curSettings));
+      if (stateGlobalSettings.syncSelection) {
+        dispatch(updateGlobalSettings({ ...stateGlobalSettings, showCars: selection }));
+      }
+    },
   };
 
   const onLimitLastLapsChange = (value: any) => {
     const curSettings = { ...userSettings, limitLastLaps: value };
-    dispatch(driverLapsSettings(curSettings));
+    dispatch(updateDriverLaps(curSettings));
   };
 
-  const props = {
-    availableCars: selectableCars,
-    availableClasses: carClasses.map((v) => v.name),
-    selectedCars: showCars,
-    selectedCarClasses: filterCarClasses,
-    onSelectCarFilter: (selection: string[]) => {
-      const curSettings = { ...userSettings, showCars: selection };
-      dispatch(driverLapsSettings(curSettings));
-    },
-    onSelectCarClassFilter: onSelectCarClassChange,
+  const onFilterRangeChange = (value: any) => {
+    const curSettings = { ...userSettings, filterSecs: value };
+    dispatch(updateDriverLaps(curSettings));
   };
+  // const oldProps = {
+  //   availableCars: selectableCars,
+  //   availableClasses: carClasses.map((v) => v.name),
+  //   selectedCars: showCars,
+  //   selectedCarClasses: filterCarClasses,
+  //   onSelectCarFilter: (selection: string[]) => {
+  //     const curSettings = { ...userSettings, showCars: selection };
+  //     dispatch(driverLapsSettings(curSettings));
+  //   },
+  //   onSelectCarClassFilter: onSelectCarClassChange,
+  // };
 
   return (
     <>
       <Row gutter={16}>
-        <CarFilter {...props} />
+        <MultiSelectCarFilter {...props} />
         <Col span={6}>
           <InputNumber
             // defaultValue={userSettings.filterSecs}
@@ -120,7 +111,11 @@ export const DriverLapsContainer: React.FC = () => {
       </Row>
 
       <div style={{ height: 600 }}>
-        <Lapchart />
+        <Lapchart
+          showCars={[...props.selectedCars]}
+          limitLastLaps={userSettings.limitLastLaps}
+          filterSecs={userSettings.filterSecs}
+        />
       </div>
     </>
   );

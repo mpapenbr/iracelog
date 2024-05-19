@@ -1,22 +1,23 @@
 import { Box } from "@ant-design/charts";
 import { Empty } from "antd";
 import React from "react";
-import { useSelector } from "react-redux";
 import { globalWamp } from "../../commons/globals";
-import { ApplicationState } from "../../stores";
+import { useAppSelector } from "../../stores";
 import { lapTimeString } from "../../utils/output";
-import { boxPlotDataFor, IBoxPlotDataExtended, stintLaps } from "../live/statsutil";
+import { IBoxPlotDataExtended, boxPlotDataFor, stintLaps } from "../live/statsutil";
 import { getCarStints } from "../live/util";
 
-const BoxPlot: React.FC = () => {
-  const carLaps = useSelector((state: ApplicationState) => state.raceData.carLaps);
-  const carStints = useSelector((state: ApplicationState) => state.raceData.carStints);
-  const userSettings = useSelector((state: ApplicationState) => state.userSettings.dashboard);
+interface MyProps {
+  showCars: string[];
+}
+const BoxPlot: React.FC<MyProps> = (props) => {
+  const carStints = useAppSelector((state) => state.carStints);
 
-  const showCars = userSettings.showCars;
+  const carLaps = useAppSelector((state) => state.carLaps);
+  const { showCars } = props;
   const currentCarLaps = (carNum: string) => carLaps.find((v) => v.carNum === carNum);
 
-  const boxData = carStints
+  const boxData = [...carStints]
     .sort((a, b) => showCars.indexOf(a.carNum) - showCars.indexOf(b.carNum))
     .filter((v) => showCars.includes(v.carNum))
 
@@ -31,7 +32,9 @@ const BoxPlot: React.FC = () => {
         }
         curIdx = 1; // the current stint is on idx pos 1
       }
-      const curStint = stintLaps(stints[curIdx], currentCarLaps(v.carNum)!).flatMap((v) => v.lapTime);
+      const curStint = stintLaps(stints[curIdx], currentCarLaps(v.carNum)!).flatMap(
+        (v) => v.lapTime,
+      );
       if (curStint.length > 3) {
         ret.push({ ...boxPlotDataFor(curStint), type: "current" });
       }
@@ -43,7 +46,7 @@ const BoxPlot: React.FC = () => {
           minTime: item.realLowerFence,
           maxTime: item.realUpperFence,
           avg: item.median + 0.5,
-        }))
+        })),
       );
     }, [] as IBoxPlotDataExtended[]);
 
@@ -54,7 +57,7 @@ const BoxPlot: React.FC = () => {
       minLimit: Math.floor(Math.min(prev.minLimit, cur.minTime)),
       maxLimit: Math.ceil(Math.max(prev.maxLimit, cur.maxTime)),
     }),
-    { minLimit: Number.MAX_SAFE_INTEGER, maxLimit: 0 }
+    { minLimit: Number.MAX_SAFE_INTEGER, maxLimit: 0 },
   );
   // console.log(bounds);
   const animation = globalWamp.currentLiveId ? false : true;
@@ -85,7 +88,9 @@ const BoxPlot: React.FC = () => {
     return <Empty description="not enough data for box plot" />;
   }
   if (globalWamp.currentLiveId) {
-    return <Box {...config} yField={["minTime", "q25", "median", "q75", "maxTime"]} animation={false} />;
+    return (
+      <Box {...config} yField={["minTime", "q25", "median", "q75", "maxTime"]} animation={false} />
+    );
   } else {
     return <Box {...config} yField={["minTime", "q25", "median", "q75", "maxTime"]} />;
   }

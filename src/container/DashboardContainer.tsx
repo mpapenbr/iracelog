@@ -1,165 +1,105 @@
-import { IStintInfo } from "@mpapenbr/iracelog-analysis/dist/stints/types";
+import { StintInfo } from "@buf/mpapenbr_testrepo.community_timostamm-protobuf-ts/testrepo/analysis/v1/car_stint_pb";
 import { Col, Divider, Empty, InputNumber, Row, Select } from "antd";
 import * as React from "react";
-import { useDispatch, useSelector } from "react-redux";
 import { globalWamp } from "../commons/globals";
+//import BoxPlot from "../components/dashboard/boxplot";
+import Delta from "../components/antcharts/deltagraph";
+import Lapchart from "../components/antcharts/lapchart";
 import BoxPlot from "../components/dashboard/boxplot";
-import Delta from "../components/dashboard/delta";
-import Lapchart from "../components/dashboard/lapchart";
-import CarFilter from "../components/live/carFilter";
 import { CircleOfDoom } from "../components/live/circleofdoom";
-import {
-  carNumberByCarIdx,
-  collectCarsByCarClassFilter,
-  findDriverByStint,
-  getCarPitStops,
-  getCarStints,
-  orderedCarNumsByPosition,
-  processCarClassSelectionNew,
-  sortedSelectableCars,
-  supportsCarData,
-} from "../components/live/util";
+import ReferenceCarFilter from "../components/live/referenceCarSelectFilter";
+import { findDriverByStint, getCarPitStops, getCarStints } from "../components/live/util";
 import {
   CombinedStintData,
   colorsBySeatTime,
   getCombinedStintData,
 } from "../components/nivo/stintsummary/commons";
 import StintStretch from "../components/nivo/stintsummary/stintstretch";
-import { ApplicationState } from "../stores";
-import { ICarBaseData } from "../stores/racedata/types";
-import { dashboardSettings, globalSettings } from "../stores/ui/actions";
+import { useAppDispatch, useAppSelector } from "../stores";
+import { IReferenceCarSelectFilterSettings } from "../stores/grpc/slices/types";
+import { updateDashboard, updateGlobalSettings } from "../stores/grpc/slices/userSettingsSlice";
+import { InputData, prepareFilterData } from "./referenceCarSelectFilterHelper";
 
 const { Option } = Select;
 
 export const DashboardContainer: React.FC = () => {
-  const cars = useSelector((state: ApplicationState) => state.raceData.availableCars);
-  const carClasses = useSelector((state: ApplicationState) => state.raceData.availableCarClasses);
-  const userSettings = useSelector((state: ApplicationState) => state.userSettings.dashboard);
-  const stateGlobalSettings = useSelector((state: ApplicationState) => state.userSettings.global);
+  const availableCars = useAppSelector((state) => state.availableCars);
+  const carClasses = useAppSelector((state) => state.carClasses);
+  const carPits = useAppSelector((state) => state.carPits);
+  const carStints = useAppSelector((state) => state.carStints);
+  const carOccs = useAppSelector((state) => state.carOccupancies);
+  const userSettings = useAppSelector((state) => state.userSettings.dashboard);
+  const stateGlobalSettings = useAppSelector((state) => state.userSettings.global);
+  const raceOrder = useAppSelector((state) => state.raceOrder);
+  const dispatch = useAppDispatch();
 
-  const carInfo = useSelector((state: ApplicationState) => state.raceData.carInfo);
-  const carStints = useSelector((state: ApplicationState) => state.raceData.carStints);
-  const carPits = useSelector((state: ApplicationState) => state.raceData.carPits);
-  const eventInfo = useSelector((state: ApplicationState) => state.raceData.eventInfo);
-  const carData = useSelector((state: ApplicationState) => state.carData);
+  const inputData: InputData = {
+    stateGlobalSettings: stateGlobalSettings,
+    pageFilterSettings: userSettings,
 
-  const rawShowCars = useSelector(
-    (state: ApplicationState) => state.userSettings.dashboard.showCars,
-  );
-  const filterCarClasses = useSelector(
-    (state: ApplicationState) => state.userSettings.dashboard.filterCarClasses,
-  );
-
-  const stateCarManifest = useSelector((state: ApplicationState) => state.raceData.manifests.car);
-  const raceOrder = useSelector((state: ApplicationState) => state.raceData.classification);
-  const createSelectableCars = (cars: ICarBaseData[]): ICarBaseData[] => {
-    return sortedSelectableCars(cars, stateGlobalSettings.filterOrderByPosition, () =>
-      orderedCarNumsByPosition(
-        raceOrder,
-        stateCarManifest,
-        supportsCarData(eventInfo.raceloggerVersion) ? carNumberByCarIdx(carData) : undefined,
-      ),
-    );
-  };
-  const selectableCars = createSelectableCars(
-    userSettings.selectableCars.length > 0 ? userSettings.selectableCars : cars,
-  );
-
-  const orderedShowCars = (carNums: string[]): string[] => {
-    return createSelectableCars(cars)
-      .filter((c) => carNums.includes(c.carNum))
-      .map((c) => c.carNum);
-  };
-  const showCars = orderedShowCars(rawShowCars);
-  // console.log(selectableCars);
-  const dispatch = useDispatch();
-
-  const onSelectCarClassChange = (values: string[]) => {
-    const newShowcars = processCarClassSelectionNew({
-      cars: cars,
-      currentFilter: filterCarClasses,
-      currentShowCars: showCars,
-      newSelection: values,
-    });
-
-    const sortedSelectabled = createSelectableCars(collectCarsByCarClassFilter(cars, values));
-
-    const reorderedShowCars = sortedSelectabled
-      .map((c) => c.carNum)
-      .filter((carNum) => showCars.includes(carNum));
-    const curSettings = {
-      ...userSettings,
-      filterCarClasses: values,
-      showCars: reorderedShowCars,
-      selectableCars: sortedSelectabled,
-    };
-    // const curSettings = { ...userSettings, filterCarClasses: values };
-    dispatch(dashboardSettings(curSettings));
-    if (stateGlobalSettings.syncSelection) {
-      dispatch(globalSettings({ ...stateGlobalSettings, filterCarClasses: values }));
-    }
-  };
-  // console.log(showCars);
-
-  const props = {
-    availableCars: selectableCars,
+    raceOrder: raceOrder,
+    availableCars: availableCars,
     availableClasses: carClasses.map((v) => v.name),
-    selectedCars: showCars,
-    selectedCarClasses: filterCarClasses,
-    onSelectCarFilter: (selection: string[]) => {
-      const newShowcars = selectableCars
-        .filter((v) => selection.includes(v.carNum))
-        .map((v) => v.carNum);
-      const curSettings = { ...userSettings, showCars: newShowcars };
-      dispatch(dashboardSettings(curSettings));
+    autoFillCars: false,
+
+    selectedCallback: (arg: IReferenceCarSelectFilterSettings) => {
+      const curSettings = {
+        ...userSettings,
+        ...arg,
+      };
+      // const curSettings = { ...userSettings, filterCarClasses: values };
+      dispatch(updateDashboard(curSettings));
       if (stateGlobalSettings.syncSelection) {
-        const newGlobalShowCars = [...stateGlobalSettings.showCars];
-        selection.forEach((item) => {
-          if (!newGlobalShowCars.includes(item)) {
-            newGlobalShowCars.push(item);
-          }
-        });
-        if (newGlobalShowCars.length !== stateGlobalSettings.showCars.length) {
-          dispatch(globalSettings({ ...stateGlobalSettings, showCars: newGlobalShowCars }));
-        }
+        dispatch(
+          updateGlobalSettings({
+            ...stateGlobalSettings,
+            showCars: arg.showCars,
+            filterCarClasses: arg.filterCarClasses,
+          }),
+        );
       }
     },
-    onSelectCarClassFilter: onSelectCarClassChange,
   };
-  const onSelectReferenceCar = (value: any) => {
-    const curSettings = { ...userSettings, referenceCarNum: value as string };
-    dispatch(dashboardSettings(curSettings));
-    dispatch(globalSettings({ ...stateGlobalSettings, referenceCarNum: value as string }));
+  const filterProps = prepareFilterData(inputData);
+  const props = {
+    ...filterProps,
+    onSelectCarFilter: (selection: string[]) => {
+      const curSettings = { ...userSettings, showCars: selection };
+      dispatch(updateDashboard(curSettings));
+      if (stateGlobalSettings.syncSelection) {
+        dispatch(updateGlobalSettings({ ...stateGlobalSettings, showCars: selection }));
+      }
+    },
+    onSelectReferenceCar: (selection: string) => {
+      const curSettings = { ...userSettings, referenceCarNum: selection };
+      dispatch(updateDashboard(curSettings));
+      if (stateGlobalSettings.syncSelection) {
+        dispatch(updateGlobalSettings({ ...stateGlobalSettings, referenceCarNum: selection }));
+      }
+    },
   };
 
   const onDeltaRangeChange = (value: any) => {
     const curSettings = { ...userSettings, deltaRange: value };
-    dispatch(dashboardSettings(curSettings));
+    dispatch(updateDashboard(curSettings));
   };
 
   const onLimitLastLapsChange = (value: any) => {
     const curSettings = { ...userSettings, limitLastLaps: value };
-    dispatch(dashboardSettings(curSettings));
+    dispatch(updateDashboard(curSettings));
   };
 
-  const referenceOptions = selectableCars
-    .filter((v) => showCars.includes(v.carNum))
-    .map((d) => (
-      <Option key={d.carNum} value={d.carNum}>
-        #{d.carNum} {d.name}
-      </Option>
-    ));
+  // TODO: refactor to helper method (used in StrategyContainer as well)
 
   interface ICarCombinedStintData {
     carNum: string;
     data: CombinedStintData[];
   }
-  const combinedData = showCars.map((carNum) => {
-    const currentCarInfo = carInfo.find((v) => v.carNum === carNum)!;
+  const combinedData = filterProps.selectedCars.map((carNum) => {
+    const currentCarInfo = carOccs.find((v) => v.carNum === carNum)!;
     const { colorLookup } = colorsBySeatTime(currentCarInfo.drivers);
-
-    const driverColor = (si: IStintInfo): string =>
-      colorLookup.get(findDriverByStint(currentCarInfo, si)?.driverName ?? "n.a.") ?? "black";
+    const driverColor = (si: StintInfo): string =>
+      colorLookup.get(findDriverByStint(currentCarInfo, si)?.name ?? "n.a.") ?? "black";
     return {
       carNum: carNum,
       combined: getCombinedStintData(
@@ -181,19 +121,7 @@ export const DashboardContainer: React.FC = () => {
   return (
     <>
       <Row gutter={16}>
-        <Col span={4}>
-          <Select
-            style={{ width: "100%" }}
-            allowClear
-            value={userSettings.referenceCarNum}
-            placeholder="Select reference car"
-            onChange={onSelectReferenceCar}
-            maxTagCount="responsive"
-          >
-            {referenceOptions}
-          </Select>
-        </Col>
-        <CarFilter {...props} />
+        <ReferenceCarFilter {...props} />
         <Col span={6}>
           <InputNumber
             // defaultValue={userSettings.deltaRange}
@@ -225,7 +153,7 @@ export const DashboardContainer: React.FC = () => {
           )}
         </Col>
       </Row>
-      {userSettings.showCars.length > 0 ? (
+      {filterProps.selectedCars.length > 0 ? (
         <>
           <Divider />
           {combinedData.map((c, idx) => (
@@ -242,25 +170,43 @@ export const DashboardContainer: React.FC = () => {
           ))}
           <Row gutter={16}>
             <Col span={12}>
-              <Lapchart />
+              <Lapchart
+                showCars={[...props.selectedCars]}
+                limitLastLaps={userSettings.limitLastLaps}
+                filterSecs={0}
+              />
             </Col>
             <Col span={12}>
-              <BoxPlot />
+              <BoxPlot showCars={[...props.selectedCars]} />
             </Col>
           </Row>
           {globalWamp.currentLiveId ? (
             <Row gutter={16}>
               <Col span={12}>
-                <Delta />
+                <Delta
+                  referenceCarNum={props.selectedReferenceCar}
+                  showCars={[...props.selectedCars]}
+                  limitLastLaps={userSettings.limitLastLaps}
+                  deltaRange={userSettings.deltaRange}
+                />
               </Col>
               <Col span={12}>
-                <CircleOfDoom referenceCarNum={""} pitstopTime={0} showCars={showCars} />
+                <CircleOfDoom
+                  referenceCarNum={""}
+                  pitstopTime={0}
+                  showCars={filterProps.selectedCars}
+                />
               </Col>
             </Row>
           ) : (
             <Row gutter={16}>
               <Col span={24}>
-                <Delta />
+                <Delta
+                  referenceCarNum={props.selectedReferenceCar}
+                  showCars={[...props.selectedCars]}
+                  limitLastLaps={0}
+                  deltaRange={userSettings.deltaRange}
+                />
               </Col>
             </Row>
           )}

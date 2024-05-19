@@ -1,8 +1,9 @@
-import { IPitInfo, IStintInfo } from "@mpapenbr/iracelog-analysis/dist/stints/types";
+import { PitInfo } from "@buf/mpapenbr_testrepo.community_timostamm-protobuf-ts/testrepo/analysis/v1/car_pit_pb";
+import { StintInfo } from "@buf/mpapenbr_testrepo.community_timostamm-protobuf-ts/testrepo/analysis/v1/car_stint_pb";
+import { IStintInfo } from "@mpapenbr/iracelog-analysis/dist/stints/types";
 import { Tooltip } from "antd";
 import React from "react";
-import { useSelector } from "react-redux";
-import { ApplicationState } from "../../../stores";
+import { useAppSelector } from "../../../stores";
 import { secAsMMSS } from "../../../utils/output";
 import { findDriverByStint } from "../../live/util";
 import StintTooltip from "../stintTooltip";
@@ -24,16 +25,15 @@ interface MyProps {
  * @returns
  */
 const StintStretch: React.FC<MyProps> = (props: MyProps) => {
-  const carInfo = useSelector((state: ApplicationState) => state.raceData.carInfo);
-  const carStints = useSelector((state: ApplicationState) => state.raceData.carStints);
-  const carPits = useSelector((state: ApplicationState) => state.raceData.carPits);
+  const carOccs = useAppSelector((state) => state.carOccupancies);
+  const carStints = useAppSelector((state) => state.carStints);
 
   const carStint = carStints.find((v) => v.carNum === props.carNum);
   if (!props.carNum || !carStint) {
     return <></>;
     // return <Empty />;
   }
-  const currentCarInfo = carInfo.find((v) => v.carNum === props.carNum)!;
+  const currentCarInfo = carOccs.find((v) => v.carNum === props.carNum)!;
   const combined = props.combinedStintData;
 
   const minTime = props.minTime;
@@ -74,7 +74,7 @@ const StintStretch: React.FC<MyProps> = (props: MyProps) => {
                   key={c.ref + c.idx}
                   x={(c.minTime - minTime) * step}
                   y="0"
-                  width={(c.data as IPitInfo).laneTime * step}
+                  width={(c.data as PitInfo).laneTime * step}
                   height={barHeight}
                   style={{ fill: "green" }}
                 />
@@ -94,8 +94,7 @@ const StintStretch: React.FC<MyProps> = (props: MyProps) => {
                       stintInfo={c.data as IStintInfo}
                       no={c.idx}
                       driver={
-                        findDriverByStint(currentCarInfo, c.data as IStintInfo)?.driverName ??
-                        "n.a."
+                        findDriverByStint(currentCarInfo, c.data as StintInfo)?.name ?? "n.a."
                       }
                     />
                   }
@@ -104,7 +103,7 @@ const StintStretch: React.FC<MyProps> = (props: MyProps) => {
                     key={c.ref + c.idx}
                     x={(c.minTime - minTime) * step}
                     y="0"
-                    width={(c.data as IStintInfo).stintTime * step}
+                    width={(c.data as StintInfo).stintTime * step}
                     height={barHeight}
                     style={{ fill: c.color }}
                   />
@@ -117,7 +116,7 @@ const StintStretch: React.FC<MyProps> = (props: MyProps) => {
           {combined
             .filter((c) => c.type === "pit")
             .map((c) => {
-              const pit = c.data as IPitInfo;
+              const pit = c.data as PitInfo;
               return (
                 <text
                   key={"t" + c.ref + c.idx}

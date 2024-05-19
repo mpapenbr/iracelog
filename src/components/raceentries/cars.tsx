@@ -2,25 +2,24 @@ import { Card, Table } from "antd";
 import { ColumnsType } from "antd/lib/table";
 import _ from "lodash";
 import * as React from "react";
-import { useSelector } from "react-redux";
+
 import { sprintf } from "sprintf-js";
-import { ApplicationState } from "../../stores";
-import { ICarClass, ICarInfo, IEntry } from "../../stores/cars/types";
+import { useAppSelector } from "../../stores";
 
 export const Cars: React.FC = () => {
-  const carClasses: ICarClass[] = useSelector(
-    (state: ApplicationState) => state.carData.carClasses,
-  );
-  const cars: ICarInfo[] = useSelector((state: ApplicationState) => state.carData.cars);
-  const entries: IEntry[] = useSelector((state: ApplicationState) => state.carData.entries);
+  const entries = useAppSelector((state) => state.carEntries);
+  const carInfos = useAppSelector((state) => state.carInfos)
+    .slice()
+    .sort((a, b) => {
+      const byClass = a.carClassName.localeCompare(b.carClassName);
+      if (byClass === 0) {
+        return a.name.localeCompare(b.name);
+      } else return byClass;
+    });
 
-  const carClassLookup = carClasses.reduce((prev, cur) => {
-    prev.set(cur.id.toString(), cur.name);
-    return prev;
-  }, new Map());
   const numEntriesLookup = _.countBy(entries, "car.carId");
 
-  const idxToId = _.map(entries, (item) => ({ idx: item.car.carIdx, carId: item.car.carId }));
+  const idxToId = _.map(entries, (item) => ({ idx: item.car!.carIdx, carId: item.car!.carId }));
   const m = Object.assign({}, ...idxToId.map((x) => ({ [x.idx]: x.carId })));
   // console.log(m);
 
@@ -88,7 +87,7 @@ export const Cars: React.FC = () => {
       <Table
         className="iracelog-compact"
         columns={columns}
-        dataSource={cars}
+        dataSource={carInfos}
         pagination={false}
         rowKey={(d: any) => d.carId}
       />

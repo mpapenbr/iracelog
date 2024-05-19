@@ -1,27 +1,20 @@
 import { SettingOutlined } from "@ant-design/icons";
-import { ICarLaps, ICarPitInfo } from "@mpapenbr/iracelog-analysis/dist/stints/types";
-import { getValueViaSpec } from "@mpapenbr/iracelog-analysis/dist/stints/util";
+import { CarPit } from "@buf/mpapenbr_testrepo.community_timostamm-protobuf-ts/testrepo/analysis/v1/car_pit_pb";
+import { Car } from "@buf/mpapenbr_testrepo.community_timostamm-protobuf-ts/testrepo/racestate/v1/racestate_pb";
+import { ICarLaps } from "@mpapenbr/iracelog-analysis/dist/stints/types";
 import { Button, Col, Form, InputNumber, Popover, Row, Select, Slider } from "antd";
 import * as React from "react";
-import { useDispatch, useSelector } from "react-redux";
-import CarFilter from "../components/live/carFilter";
 import { CircleOfDoom } from "../components/live/circleofdoom";
-import {
-  ICarFilterData,
-  carNumberByCarIdx,
-  collectCarsByCarClassFilter,
-  orderedCarNumsByPosition,
-  processCarClassSelectionNew,
-  sortedSelectableCars,
-  supportsCarData,
-} from "../components/live/util";
+import MultiSelectCarFilter from "../components/live/multiCarSelectFilter";
+import { ICarFilterData } from "../components/live/util";
 import { ZoomTrackPos } from "../components/live/zoomTrackPos";
 import { ReplayControl } from "../components/replayControl";
 import { Standings } from "../components/standings";
 import StandingsColumnControl from "../components/standingsColumnControl";
-import { ApplicationState } from "../stores";
-import { ICarBaseData, IEventInfo } from "../stores/racedata/types";
-import { circleOfDoomSettings, globalSettings } from "../stores/ui/actions";
+import { useAppDispatch, useAppSelector } from "../stores";
+import { IMultiCarSelectFilterSettings } from "../stores/grpc/slices/types";
+import { updateCircleOfDoom, updateGlobalSettings } from "../stores/grpc/slices/userSettingsSlice";
+import { InputData, prepareFilterData } from "./multiCarSelectFilterHelper";
 
 const { Option } = Select;
 
@@ -83,8 +76,8 @@ const SelectPitStopParam: React.FC<SelectPitstopProps> = (props: SelectPitstopPr
 
 interface IProcData {
   carLaps: ICarLaps;
-  pitInfo: ICarPitInfo;
-  eventInfo: IEventInfo;
+  pitInfo: CarPit;
+  trackLength: number;
   pitstopTime: number;
   trackPos: number;
 }
@@ -93,131 +86,88 @@ const newPosAfterPitstop = (procData: IProcData): number => {
   if (sortedLaps === undefined) sortedLaps = [];
   const meanLap = sortedLaps[Math.ceil(sortedLaps.length / 2)];
   // console.log("meanLap: " + meanLap);
-  const avgSpeed = procData.eventInfo.trackLength / meanLap;
+  const avgSpeed = procData.trackLength / meanLap;
   // console.log("avgSpeed: " + avgSpeed);
   // console.table(procData.pitInfo);
 
   let inPits = 0;
-  if (procData.pitInfo && procData.pitInfo.current.isCurrentPitstop) {
+  if (procData.pitInfo && procData.pitInfo.current?.isCurrentPitstop) {
     console.log("car is in pits for " + procData.pitInfo.current.laneTime);
     inPits = procData.pitInfo.current.laneTime;
   }
   const newPos =
-    (1 +
-      procData.trackPos -
-      (avgSpeed * (procData.pitstopTime - inPits)) / procData.eventInfo.trackLength) %
+    (1 + procData.trackPos - (avgSpeed * (procData.pitstopTime - inPits)) / procData.trackLength) %
     1;
   return newPos;
 };
 
 export const CustomStandingsContainer: React.FC = () => {
-  const cars = useSelector((state: ApplicationState) => state.raceData.availableCars);
-  const carsRaw = useSelector((state: ApplicationState) => state.raceData.classification.data);
-  const carClasses = useSelector((state: ApplicationState) => state.raceData.availableCarClasses);
-  const userSettings = useSelector((state: ApplicationState) => state.userSettings.circleOfDoom);
-  const carLaps = useSelector((state: ApplicationState) => state.raceData.carLaps);
-  const carPits = useSelector((state: ApplicationState) => state.raceData.carPits);
-  const trackInfo = useSelector((state: ApplicationState) => state.raceData.trackInfo);
-  const carInfos = useSelector((state: ApplicationState) => state.raceData.availableCars);
-  const eventInfo = useSelector((state: ApplicationState) => state.raceData.eventInfo);
-  const carData = useSelector((state: ApplicationState) => state.carData);
-
-  const replaySettings = useSelector((state: ApplicationState) => state.userSettings.replay);
-  const stateGlobalSettings = useSelector((state: ApplicationState) => state.userSettings.global);
-
-  const selectSettings = () => {
-    if (stateGlobalSettings.syncSelection) {
-      return {
-        showCars: stateGlobalSettings.showCars,
-        filterCarClasses: stateGlobalSettings.filterCarClasses,
-      };
-    } else {
-      return { showCars: userSettings.showCars, filterCarClasses: userSettings.filterCarClasses };
-    }
-  };
-
-  const stateCarManifest = useSelector((state: ApplicationState) => state.raceData.manifests.car);
-  const raceOrder = useSelector((state: ApplicationState) => state.raceData.classification);
-  const createSelectableCars = (cars: ICarBaseData[]): ICarBaseData[] => {
-    return sortedSelectableCars(cars, stateGlobalSettings.filterOrderByPosition, () =>
-      orderedCarNumsByPosition(
-        raceOrder,
-        stateCarManifest,
-        supportsCarData(eventInfo.raceloggerVersion) ? carNumberByCarIdx(carData) : undefined,
-      ),
-    );
-  };
-  const selectableCars = createSelectableCars(
-    userSettings.selectableCars.length > 0 ? userSettings.selectableCars : cars,
-  );
-  const { showCars, filterCarClasses } = selectSettings();
-
-  const dispatch = useDispatch();
-
-  const onSelectCarClassChange = (values: string[]) => {
-    const newShowcars = processCarClassSelectionNew({
-      cars: cars,
-      currentFilter: filterCarClasses,
-      currentShowCars: showCars,
-      newSelection: values,
-    });
-
-    const sortedSelectabled = createSelectableCars(collectCarsByCarClassFilter(cars, values));
-
-    const reorderedShowCars = sortedSelectabled
-      .map((c) => c.carNum)
-      .filter((carNum) => newShowcars.includes(carNum));
-
-    const curSettings = {
-      ...userSettings,
-      filterCarClasses: values,
-      showCars: reorderedShowCars,
-      selectableCars: sortedSelectabled,
-    };
-    // const curSettings = { ...userSettings, filterCarClasses: values };
-    dispatch(circleOfDoomSettings(curSettings));
-    if (stateGlobalSettings.syncSelection) {
-      dispatch(
-        globalSettings({
-          ...stateGlobalSettings,
-          showCars: reorderedShowCars,
-          filterCarClasses: values,
-        }),
-      );
-    }
-  };
+  const availableCars = useAppSelector((state) => state.availableCars);
+  const carsRaw = useAppSelector((state) => state.classification);
+  const carClasses = useAppSelector((state) => state.carClasses);
+  const userSettings = useAppSelector((state) => state.userSettings.circleOfDoom);
+  const carLaps = useAppSelector((state) => state.carLaps);
+  const carPits = useAppSelector((state) => state.carPits);
+  const eventInfo = useAppSelector((state) => state.eventInfo);
+  const replaySettings = useAppSelector((state) => state.userSettings.replay);
+  const stateGlobalSettings = useAppSelector((state) => state.userSettings.global);
+  const raceOrder = useAppSelector((state) => state.raceOrder);
+  const entryByIdx = useAppSelector((state) => state.byIdxLookup.carNum);
+  const dispatch = useAppDispatch();
 
   const onSelectReferenceCar = (value: any) => {
     const curSettings = { ...userSettings, referenceCarNum: value as string };
-    dispatch(circleOfDoomSettings(curSettings));
+    dispatch(updateCircleOfDoom(curSettings));
   };
   const onPitStopTimeChanged = (value: any) => {
     const curSettings = { ...userSettings, pitstopTime: value as number };
-    dispatch(circleOfDoomSettings(curSettings));
+    dispatch(updateCircleOfDoom(curSettings));
   };
   const onCalcSpeedChanged = (value: any) => {
     const curSettings = { ...userSettings, calcSpeed: value as number };
-    dispatch(circleOfDoomSettings(curSettings));
+    dispatch(updateCircleOfDoom(curSettings));
   };
 
-  const props = {
-    availableCars: selectableCars,
+  const inputData: InputData = {
+    stateGlobalSettings: stateGlobalSettings,
+    pageFilterSettings: userSettings,
+
+    raceOrder: raceOrder,
+    availableCars: availableCars,
     availableClasses: carClasses.map((v) => v.name),
-    selectedCars: showCars,
-    selectedCarClasses: filterCarClasses,
-    onSelectCarFilter: (selection: string[]) => {
-      const curSettings = { ...userSettings, showCars: selection };
-      dispatch(circleOfDoomSettings(curSettings));
+    selectedCallback: (arg: IMultiCarSelectFilterSettings) => {
+      const curSettings = {
+        ...userSettings,
+        ...arg,
+      };
+      // const curSettings = { ...userSettings, filterCarClasses: values };
+      dispatch(updateCircleOfDoom(curSettings));
       if (stateGlobalSettings.syncSelection) {
-        dispatch(globalSettings({ ...stateGlobalSettings, showCars: selection }));
+        dispatch(
+          updateGlobalSettings({
+            ...stateGlobalSettings,
+            showCars: arg.showCars,
+            filterCarClasses: arg.filterCarClasses,
+          }),
+        );
       }
     },
-    onSelectCarClassFilter: onSelectCarClassChange,
+  };
+  const filterProps = prepareFilterData(inputData);
+  const props = {
+    ...filterProps,
+    onSelectCarFilter: (selection: string[]) => {
+      const curSettings = { ...userSettings, showCars: selection };
+      dispatch(updateCircleOfDoom(curSettings));
+      if (stateGlobalSettings.syncSelection) {
+        dispatch(updateGlobalSettings({ ...stateGlobalSettings, showCars: selection }));
+      }
+    },
   };
 
-  const dataRaw = carsRaw.map((c: any, idx: number) => ({
-    carNum: getValueViaSpec(c, stateCarManifest, "carNum"),
-    trackPos: getValueViaSpec(c, stateCarManifest, "trackPos"),
+  const dataRaw = carsRaw.map((c: Car) => ({
+    carNum: entryByIdx[c.carIdx],
+    trackPos: c.trackPos,
     // state: getValueViaSpec(c, stateCarManifest, "state"),
     // pos: idx,
     // pic: getValueViaSpec(c, stateCarManifest, "pic"),
@@ -230,7 +180,7 @@ export const CustomStandingsContainer: React.FC = () => {
   const posAfterPit = newPosAfterPitstop({
     carLaps: carLaps.find((c) => c.carNum === userSettings.referenceCarNum)!,
     pitInfo: carPits.find((c) => c.carNum === userSettings.referenceCarNum)!,
-    eventInfo,
+    trackLength: eventInfo.track?.length,
     pitstopTime: userSettings.pitstopTime,
     trackPos,
   });
@@ -238,7 +188,7 @@ export const CustomStandingsContainer: React.FC = () => {
   const pitstopProps: SelectPitstopProps = {
     pitstopTime: userSettings.pitstopTime,
     selectedCarNum: userSettings.referenceCarNum,
-    availableCars: selectableCars,
+    availableCars: filterProps.availableCars,
     onPitStopTimeChanged: onPitStopTimeChanged,
     onSelectCar: onSelectReferenceCar,
   };
@@ -246,7 +196,7 @@ export const CustomStandingsContainer: React.FC = () => {
   return (
     <>
       <Row gutter={16}>
-        <CarFilter {...props} />
+        <MultiSelectCarFilter {...props} />
 
         <Col offset={9} span={1}>
           <Popover content={<StandingsColumnControl />} title="Select columns">
@@ -257,7 +207,7 @@ export const CustomStandingsContainer: React.FC = () => {
       <Row gutter={16}>
         <Col span="6">
           <CircleOfDoom
-            showCars={showCars}
+            showCars={filterProps.selectedCars}
             referenceCarNum={userSettings.referenceCarNum}
             pitstopTime={userSettings.pitstopTime}
           />
@@ -277,7 +227,7 @@ export const CustomStandingsContainer: React.FC = () => {
             <Row>
               <Col span="24">
                 <ZoomTrackPos
-                  showCars={showCars}
+                  showCars={filterProps.selectedCars}
                   referenceCarNum={userSettings.referenceCarNum}
                   trackPos={trackPos}
                 />
@@ -291,7 +241,7 @@ export const CustomStandingsContainer: React.FC = () => {
             <Row>
               <Col span="24">
                 <ZoomTrackPos
-                  showCars={showCars}
+                  showCars={filterProps.selectedCars}
                   referenceCarNum={userSettings.referenceCarNum}
                   trackPos={posAfterPit}
                 />
@@ -303,7 +253,7 @@ export const CustomStandingsContainer: React.FC = () => {
         </Col>
       </Row>
 
-      <Standings showCars={showCars} />
+      <Standings showCars={filterProps.selectedCars} />
     </>
   );
 };

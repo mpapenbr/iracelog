@@ -1,51 +1,31 @@
 import { Line } from "@ant-design/charts";
 import { Types } from "@antv/g2/lib";
-import { IRaceGraph } from "@mpapenbr/iracelog-analysis/dist/stints/types";
+
+import { RaceGraph } from "@buf/mpapenbr_testrepo.community_timostamm-protobuf-ts/testrepo/analysis/v1/racegraph_pb";
 import { Empty } from "antd";
 import _, { isNumber } from "lodash";
 import React from "react";
-import { useSelector } from "react-redux";
 import { sprintf } from "sprintf-js";
 import { globalWamp } from "../../commons/globals";
-import { ApplicationState } from "../../stores";
+import { useAppSelector } from "../../stores";
 import { assignCarColors } from "../live/colorAssignment";
-import { extractSomeCarData } from "../live/util";
 
 interface MyProps {
   showCars: string[];
 }
 const LeaderGraph: React.FC<MyProps> = (props: MyProps) => {
-  const availableCars = useSelector((state: ApplicationState) => state.raceData.availableCars);
-  const carLaps = useSelector((state: ApplicationState) => state.raceData.carLaps);
+  const availableCars = useAppSelector((state) => state.availableCars);
 
-  const carInfos = useSelector((state: ApplicationState) => state.raceData.carInfo);
-  const raceGraph = useSelector((state: ApplicationState) => state.raceData.raceGraph);
-  const userSettings = useSelector((state: ApplicationState) => state.userSettings.raceGraph);
-  const stateGlobalSettings = useSelector((state: ApplicationState) => state.userSettings.global);
+  const userSettings = useAppSelector((state) => state.userSettings.raceGraph);
+  const raceGraph = useAppSelector((state) => state.raceGraph);
 
-  const currentCarLaps = (carNum: string) => carLaps.find((v) => v.carNum === carNum);
-
-  const selectSettings = () => {
-    // eslint-disable-next-line no-constant-condition
-    if (false && stateGlobalSettings.syncSelection) {
-      return {
-        showCars: stateGlobalSettings.showCars,
-        filterCarClasses: stateGlobalSettings.filterCarClasses,
-        referenceCarNum: stateGlobalSettings.referenceCarNum,
-      };
-    } else {
-      return {
-        showCars: userSettings.showCars,
-        filterCarClasses: userSettings.filterCarClasses,
-      };
-    }
-  };
   const { showCars } = props;
-  console.log(showCars);
+  // console.log(showCars);
   if (!showCars.length) return <Empty description="Please select cars to show" />;
 
-  const carDataContainer = extractSomeCarData(carInfos);
-  const { carInfoLookup, allCarNums, allCarClasses } = carDataContainer;
+  const carInfoLookup = Object.assign({}, ...availableCars.map((e) => ({ [e.carNum]: e })));
+  const allCarClasses = _.uniq(availableCars.map((e) => e.carClass));
+  const allCarNums = availableCars.map((e) => e.carNum);
 
   interface IGraphData {
     carNum: string;
@@ -61,12 +41,12 @@ const LeaderGraph: React.FC<MyProps> = (props: MyProps) => {
       prev.set(cur.carClass, [cur]);
     }
     return prev;
-  }, new Map<string, IRaceGraph[]>());
+  }, new Map<string, RaceGraph[]>());
 
   const dataForCar = (carNum: string) => {
-    const source: IRaceGraph[] =
+    const source: RaceGraph[] =
       userSettings.gapRelativeToClassLeader && allCarClasses.length > 0
-        ? dataLookup.get(carInfoLookup.get(carNum)!.carClass)!
+        ? dataLookup.get(carInfoLookup[carNum]!.carClass)!
         : dataLookup.get("overall")!;
     return source.reduce((prev, current) => {
       const carEntry = current.gaps.find((gi) => gi.carNum === carNum);

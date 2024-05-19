@@ -1,45 +1,53 @@
-import { getValueViaSpec } from "@mpapenbr/iracelog-analysis/dist/stints/util";
+import {
+  MessageSubType,
+  MessageType,
+} from "@buf/mpapenbr_testrepo.community_timostamm-protobuf-ts/testrepo/racestate/v1/racestate_pb";
 import { Col, Row, Table } from "antd";
 import { ColumnsType, TablePaginationConfig } from "antd/lib/table";
 import _ from "lodash";
 import React from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { ApplicationState } from "../../stores";
-import { messagesSettings } from "../../stores/ui/actions";
+import { useAppDispatch, useAppSelector } from "../../stores";
+import { MessageExt } from "../../stores/grpc/slices/messagesSlice";
+import { updateMessages } from "../../stores/grpc/slices/userSettingsSlice";
 
-interface IInfoMsgData {
-  timestamp: Date;
-  type: string;
-  carClass: string;
-  msg: string;
-}
 const RaceMessages: React.FC = () => {
-  const uiSettings = useSelector((state: ApplicationState) => state.userSettings.messages);
-  const infoMsgRaw = useSelector((state: ApplicationState) => state.raceData.infoMessages);
-  const messageManifest = useSelector(
-    (state: ApplicationState) => state.raceData.manifests.message,
-  );
-  const dispatch = useDispatch();
-  // each entry in infoMsgRaw is an array with messages, which needs to be flatten for the list
-  const data = [...infoMsgRaw].reverse().reduce((work, current) => {
-    return work.concat(
-      current.data.map((v: any) => ({
-        timestamp: new Date(current.timestamp * 1000),
-        type: getValueViaSpec(v, messageManifest, "type"),
-        carClass: getValueViaSpec(v, messageManifest, "carClass"),
-        msg: getValueViaSpec(v, messageManifest, "msg"),
-      })),
-    );
-  }, []);
+  const uiSettings = useAppSelector((state) => state.userSettings.messages);
+  const infoMsgRaw = useAppSelector((state) => state.infoMessages.messages);
+
+  const dispatch = useAppDispatch();
+
+  const resolveMessageType = (m: MessageType): string => {
+    switch (m) {
+      case MessageType.TIMING:
+        return "Timing";
+      case MessageType.PITS:
+        return "Pits";
+      default:
+        return "";
+    }
+  };
+  const resolveMessageSubType = (m: MessageSubType): string => {
+    switch (m) {
+      case MessageSubType.RACE_CONTROL:
+        return "Race control";
+      case MessageSubType.DRIVER:
+        return "Driver";
+      default:
+        return "";
+    }
+  };
+  const data = [...infoMsgRaw].reverse();
   const filterValuesType = Array.from(
-    data.reduce((prev, cur: IInfoMsgData) => prev.add(cur.type), new Set<string>()).values(),
+    data
+      .reduce((prev, cur: MessageExt) => prev.add(cur.message.type), new Set<MessageType>())
+      .values(),
   )
-    .sort((a, b) => a.localeCompare(b))
-    .map((s) => ({ text: s, value: s }));
+    .sort((a, b) => resolveMessageType(a).localeCompare(resolveMessageType(b)))
+    .map((s) => ({ text: resolveMessageType(s), value: s }));
   const filterValuesCarClass = Array.from(
     data
       .reduce(
-        (prev, cur: IInfoMsgData) => (cur.carClass ? prev.add(cur.carClass) : prev),
+        (prev, cur: MessageExt) => (cur.message.carClass ? prev.add(cur.message.carClass) : prev),
         new Set<string>(),
       )
       .values(),
@@ -47,7 +55,7 @@ const RaceMessages: React.FC = () => {
     .sort((a, b) => a.localeCompare(b))
     .map((s) => ({ text: s, value: s }));
 
-  const columns: ColumnsType<IInfoMsgData> = [
+  const columns: ColumnsType<MessageExt> = [
     {
       key: "timestamp",
       title: "Time",
@@ -57,18 +65,20 @@ const RaceMessages: React.FC = () => {
     {
       key: "type",
       title: "Type",
-      dataIndex: "type",
+      dataIndex: "message",
       filters: filterValuesType,
-      onFilter: (v, r) => r.type === v,
+      onFilter: (v, r) => r.message.type === v,
+      render: (d) => resolveMessageType(d.type),
     },
     {
       key: "carClass",
       title: "CarClass",
-      dataIndex: "carClass",
+      dataIndex: "message",
       filters: filterValuesCarClass,
-      onFilter: (v, r) => r.carClass === v,
+      render: (d) => d.carClass,
+      onFilter: (v, r) => r.message.carClass === v,
     },
-    { key: "msg", title: "Message", dataIndex: "msg" },
+    { key: "msg", title: "Message", dataIndex: "message", render: (d) => d.msg },
   ];
   const pagination: TablePaginationConfig = {
     defaultPageSize: 20,
@@ -76,13 +86,13 @@ const RaceMessages: React.FC = () => {
     onShowSizeChange: (curPage, newPageSize) => {
       // console.log("current:" + curPage + " new: " + newPageSize);
 
-      dispatch(messagesSettings({ pageSize: newPageSize }));
+      dispatch(updateMessages({ pageSize: newPageSize }));
     },
     showSizeChanger: true,
   };
   return (
     <Row gutter={16}>
-      <Col span={12}>
+      <Col span={18}>
         <Table
           columns={columns}
           className="iracelog-compact"

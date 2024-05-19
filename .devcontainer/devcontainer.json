@@ -2,7 +2,7 @@
 // https://github.com/microsoft/vscode-dev-containers/tree/v0.112.0/containers/typescript-node-12
 {
   "name": "iracelog",
-  "image": "mcr.microsoft.com/vscode/devcontainers/typescript-node:0-18",
+  "image": "mcr.microsoft.com/vscode/devcontainers/typescript-node:20",
 
   // Set *default* container specific settings.json values on container create.
   "customizations": {
@@ -16,13 +16,13 @@
         "[typescript]": {
           "editor.defaultFormatter": "esbenp.prettier-vscode",
           "editor.codeActionsOnSave": {
-            "source.organizeImports": true
+            "source.organizeImports": "explicit"
           }
         },
         "[typescriptreact]": {
           "editor.defaultFormatter": "esbenp.prettier-vscode",
           "editor.codeActionsOnSave": {
-            "source.organizeImports": true
+            "source.organizeImports": "explicit"
           }
         }
       },
@@ -35,7 +35,7 @@
         "sleistner.vscode-fileutils",
         "patbenatar.advanced-new-file",
         "formulahendry.auto-rename-tag",
-
+        "vitest.explorer",
         "wallabyjs.quokka-vscode",
         "dsznajder.es7-react-js-snippets"
       ]

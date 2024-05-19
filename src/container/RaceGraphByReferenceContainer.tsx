@@ -1,162 +1,108 @@
 import { Col, InputNumber, Row, Select } from "antd";
 import * as React from "react";
-import { useDispatch, useSelector } from "react-redux";
 import { globalWamp } from "../commons/globals";
 import Delta from "../components/antcharts/deltagraph";
-import CarFilter from "../components/live/carFilter";
+import ReferenceCarFilter from "../components/live/referenceCarSelectFilter";
+import { useAppDispatch, useAppSelector } from "../stores";
+import { IReferenceCarSelectFilterSettings } from "../stores/grpc/slices/types";
 import {
-  carNumberByCarIdx,
-  collectCarsByCarClassFilter,
-  orderedCarNumsByPosition,
-  processCarClassSelectionNew,
-  sortedSelectableCars,
-  supportsCarData,
-} from "../components/live/util";
-import { ApplicationState } from "../stores";
-import { ICarBaseData } from "../stores/racedata/types";
-import { globalSettings, raceGraphRelativeSettings } from "../stores/ui/actions";
+  updateGlobalSettings,
+  updateRaceGraphRelative,
+} from "../stores/grpc/slices/userSettingsSlice";
+import { InputData, prepareFilterData } from "./referenceCarSelectFilterHelper";
 
 const { Option } = Select;
 
 export const RaceGraphByReferenceContainer: React.FC = () => {
-  const cars = useSelector((state: ApplicationState) => state.raceData.availableCars);
-  const carClasses = useSelector((state: ApplicationState) => state.raceData.availableCarClasses);
+  const availableCars = useAppSelector((state) => state.availableCars);
+  const carClasses = useAppSelector((state) => state.carClasses);
+  const userSettings = useAppSelector((state) => state.userSettings.raceGraphRelative);
+  const stateGlobalSettings = useAppSelector((state) => state.userSettings.global);
+  const raceOrder = useAppSelector((state) => state.raceOrder);
+  const dispatch = useAppDispatch();
 
-  const userSettings = useSelector(
-    (state: ApplicationState) => state.userSettings.raceGraphRelative,
-  );
+  const inputData: InputData = {
+    stateGlobalSettings: stateGlobalSettings,
+    pageFilterSettings: userSettings,
 
-  // const showCars = useSelector((state: ApplicationState) => state.userSettings.raceGraphRelative.showCars);
-  // const filterCarClasses = useSelector(
-  //   (state: ApplicationState) => state.userSettings.raceGraphRelative.filterCarClasses
-  // );
-  const stateGlobalSettings = useSelector((state: ApplicationState) => state.userSettings.global);
-  const stateCarManifest = useSelector((state: ApplicationState) => state.raceData.manifests.car);
-  const raceOrder = useSelector((state: ApplicationState) => state.raceData.classification);
-  const carData = useSelector((state: ApplicationState) => state.carData);
-  const eventInfo = useSelector((state: ApplicationState) => state.raceData.eventInfo);
-  const createSelectableCars = (cars: ICarBaseData[]): ICarBaseData[] => {
-    return sortedSelectableCars(cars, stateGlobalSettings.filterOrderByPosition, () =>
-      orderedCarNumsByPosition(
-        raceOrder,
-        stateCarManifest,
-        supportsCarData(eventInfo.raceloggerVersion) ? carNumberByCarIdx(carData) : undefined,
-      ),
-    );
-  };
-  const orderedShowCars = (carNums: string[]): string[] => {
-    return createSelectableCars(cars)
-      .filter((c) => carNums.includes(c.carNum))
-      .map((c) => c.carNum);
-  };
-  const selectSettings = () => {
-    if (stateGlobalSettings.syncSelection) {
-      return {
-        showCars: orderedShowCars(stateGlobalSettings.showCars),
-        filterCarClasses: stateGlobalSettings.filterCarClasses,
-        referenceCarNum: stateGlobalSettings.referenceCarNum,
+    raceOrder: raceOrder,
+    availableCars: availableCars,
+    availableClasses: carClasses.map((v) => v.name),
+    autoFillCars: true,
+
+    selectedCallback: (arg: IReferenceCarSelectFilterSettings) => {
+      const curSettings = {
+        ...userSettings,
+        ...arg,
       };
-    } else {
-      return {
-        showCars: orderedShowCars(userSettings.showCars),
-        filterCarClasses: userSettings.filterCarClasses,
-        referenceCarNum: userSettings.referenceCarNum,
-      };
-    }
+      // const curSettings = { ...userSettings, filterCarClasses: values };
+      dispatch(updateRaceGraphRelative(curSettings));
+      if (stateGlobalSettings.syncSelection) {
+        dispatch(
+          updateGlobalSettings({
+            ...stateGlobalSettings,
+            showCars: arg.showCars,
+            filterCarClasses: arg.filterCarClasses,
+          }),
+        );
+      }
+    },
   };
-
-  const { showCars, filterCarClasses, referenceCarNum } = selectSettings();
-  const dispatch = useDispatch();
-  const selectableCars = createSelectableCars(
-    userSettings.selectableCars.length > 0 ? userSettings.selectableCars : cars,
-  );
-  const onSelectCarClassChange = (values: string[]) => {
-    const newShowcars = processCarClassSelectionNew({
-      cars: cars,
-      currentFilter: filterCarClasses,
-      currentShowCars: showCars,
-      newSelection: values,
-    });
-
-    const sortedSelectabled = createSelectableCars(collectCarsByCarClassFilter(cars, values));
-
-    const reorderedShowCars = sortedSelectabled
-      .map((c) => c.carNum)
-      .filter((carNum) => newShowcars.includes(carNum));
-
-    const curSettings = {
-      ...userSettings,
-      filterCarClasses: values,
-      showCars: reorderedShowCars,
-      selectableCars: sortedSelectabled,
-    };
-    // const curSettings = { ...userSettings, filterCarClasses: values };
-    dispatch(raceGraphRelativeSettings(curSettings));
-    if (stateGlobalSettings.syncSelection) {
-      dispatch(
-        globalSettings({
-          ...stateGlobalSettings,
-          showCars: reorderedShowCars,
-          filterCarClasses: values,
-        }),
-      );
-    }
+  const filterProps = prepareFilterData(inputData);
+  const props = {
+    ...filterProps,
+    onSelectCarFilter: (selection: string[]) => {
+      const curSettings = { ...userSettings, showCars: selection };
+      dispatch(updateRaceGraphRelative(curSettings));
+      if (stateGlobalSettings.syncSelection) {
+        dispatch(updateGlobalSettings({ ...stateGlobalSettings, showCars: selection }));
+      }
+    },
+    onSelectReferenceCar: (selection: string) => {
+      const curSettings = { ...userSettings, referenceCarNum: selection };
+      dispatch(updateRaceGraphRelative(curSettings));
+      if (stateGlobalSettings.syncSelection) {
+        dispatch(updateGlobalSettings({ ...stateGlobalSettings, referenceCarNum: selection }));
+      }
+    },
   };
 
   const onDeltaRangeChange = (value: any) => {
     const curSettings = { ...userSettings, deltaRange: value };
-    dispatch(raceGraphRelativeSettings(curSettings));
+    dispatch(updateRaceGraphRelative(curSettings));
   };
 
-  const onSelectReferenceCar = (value: any) => {
-    const curSettings = { ...userSettings, referenceCarNum: value as string };
-    dispatch(raceGraphRelativeSettings(curSettings));
-    if (stateGlobalSettings.syncSelection) {
-      dispatch(globalSettings({ ...stateGlobalSettings, referenceCarNum: value as string }));
-    }
-  };
   const onLimitLastLapsChange = (value: any) => {
     const curSettings = { ...userSettings, limitLastLaps: value };
-    dispatch(raceGraphRelativeSettings(curSettings));
+    dispatch(updateRaceGraphRelative(curSettings));
   };
 
-  const referenceOptions = selectableCars.map((d) => (
-    <Option key={d.carNum} value={d.carNum}>
-      #{d.carNum} {d.name}
-    </Option>
-  ));
-
-  const props = {
-    availableCars: selectableCars,
-    availableClasses: carClasses.map((v) => v.name),
-    selectedCars: showCars,
-    selectedCarClasses: filterCarClasses,
-    onSelectCarFilter: (selection: string[]) => {
-      const curSettings = { ...userSettings, showCars: selection };
-      dispatch(raceGraphRelativeSettings(curSettings));
-      if (stateGlobalSettings.syncSelection) {
-        dispatch(globalSettings({ ...stateGlobalSettings, showCars: selection }));
-      }
-    },
-    onSelectCarClassFilter: onSelectCarClassChange,
+  // const props = {
+  //   availableCars: selectableCars,
+  //   availableClasses: carClasses.map((v) => v.name),
+  //   selectedCars: showCars,
+  //   selectedCarClasses: filterCarClasses,
+  //   onSelectCarFilter: (selection: string[]) => {
+  //     const curSettings = { ...userSettings, showCars: selection };
+  //     dispatch(raceGraphRelativeSettings(curSettings));
+  //     if (stateGlobalSettings.syncSelection) {
+  //       dispatch(globalSettings({ ...stateGlobalSettings, showCars: selection }));
+  //     }
+  //   },
+  //   onSelectCarClassFilter: onSelectCarClassChange,
+  // };
+  const graphProps = {
+    showCars: props.selectedCars,
+    referenceCarNum: props.selectedReferenceCar,
+    limitLastLaps: userSettings.limitLastLaps,
+    deltaRange: userSettings.deltaRange,
+    height: 700,
   };
-  const graphProps = { showCars, referenceCarNum };
+  // console.log(graphProps);
   return (
     <>
       <Row gutter={16}>
-        <Col span={4}>
-          <Select
-            style={{ width: "100%" }}
-            allowClear
-            value={referenceCarNum}
-            placeholder="Select reference car"
-            onChange={onSelectReferenceCar}
-            maxTagCount="responsive"
-          >
-            {referenceOptions}
-          </Select>
-        </Col>
-        <CarFilter {...props} />
+        <ReferenceCarFilter {...props} />
         <Col span={6}>
           <InputNumber
             // defaultValue={userSettings.deltaRange}

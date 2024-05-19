@@ -9,9 +9,9 @@
       "args": ["--runInBand"],
       "console": "integratedTerminal",
       "internalConsoleOptions": "neverOpen",
-      "disableOptimisticBPs": true,
+
       "windows": {
-        "program": "${workspaceFolder}/node_modules/jest/bin/jest",
+        "program": "${workspaceFolder}/node_modules/jest/bin/jest"
       }
     },
     {
@@ -19,32 +19,27 @@
       "request": "launch",
       "name": "Jest Current File",
       "program": "${workspaceFolder}/node_modules/.bin/jest",
-      "args": [
-        "${fileBasenameNoExtension}",
-        "--config",
-        "jest.config.js"
-      ],
+      "args": ["${fileBasenameNoExtension}", "--config", "jest.config.js"],
       "console": "integratedTerminal",
       "internalConsoleOptions": "neverOpen",
-      "disableOptimisticBPs": true,
+
       "windows": {
-        "program": "${workspaceFolder}/node_modules/jest/bin/jest",
+        "program": "${workspaceFolder}/node_modules/jest/bin/jest"
       }
     },
     {
-      "type": "pwa-msedge",
+      "type": "msedge",
       "request": "launch",
       "name": "Launch Edge against localhost",
       "url": "http://localhost:3000",
       "webRoot": "${workspaceFolder}"
     },
     {
-      "type": "pwa-chrome",
+      "type": "chrome",
       "request": "launch",
       "name": "Launch Chrome against localhost",
       "url": "http://localhost:3000",
       "webRoot": "${workspaceFolder}"
     }
-    
   ]
 }

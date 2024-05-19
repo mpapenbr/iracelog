@@ -1,9 +1,8 @@
-import { getValueViaSpec } from "@mpapenbr/iracelog-analysis/dist/stints/util";
+import { TrackWetness } from "@buf/mpapenbr_testrepo.community_timostamm-protobuf-ts/testrepo/common/v1/common_pb";
 import { Col, Row } from "antd";
 import * as React from "react";
-import { useDispatch, useSelector } from "react-redux";
 import { sprintf } from "sprintf-js";
-import { ApplicationState } from "../stores";
+import { useAppSelector } from "../stores";
 import { secAsHHMMSS, secAsString } from "../utils/output";
 
 interface ElapsedProps {
@@ -58,64 +57,46 @@ const RemainingRace: React.FC<RemainingProps> = (props: RemainingProps) => {
 };
 
 export const EventHeaderContainer: React.FC = () => {
-  const cars = useSelector((state: ApplicationState) => state.raceData.availableCars);
-  const carClasses = useSelector((state: ApplicationState) => state.raceData.availableCarClasses);
-  const userSettings = useSelector((state: ApplicationState) => state.userSettings.dashboard);
-  const stintInfo = useSelector((state: ApplicationState) => state.raceData.carStints);
-  const stateGlobalSettings = useSelector((state: ApplicationState) => state.userSettings.global);
+  const sInfo = useAppSelector((state) => state.session);
+  const eInfo = useAppSelector((state) => state.eventInfo);
 
-  const showCars = useSelector((state: ApplicationState) => state.userSettings.dashboard.showCars);
-  const filterCarClasses = useSelector(
-    (state: ApplicationState) => state.userSettings.dashboard.filterCarClasses,
-  );
-
-  const selectableCars =
-    userSettings.selectableCars.length > 0 ? userSettings.selectableCars : cars;
-  // console.log(selectableCars);
-  const dispatch = useDispatch();
-
-  const eventInfo = useSelector((state: ApplicationState) => state.raceData.eventInfo);
-  const sInfo = useSelector((state: ApplicationState) => state.raceData.sessionInfo);
-  const manifestData = useSelector((state: ApplicationState) => state.raceData.manifests.session);
-
-  if (!sInfo.data?.length) {
+  if (sInfo.flagState === "") {
     return <></>;
   }
-  const getValue = (key: string) => {
-    return getValueViaSpec(sInfo.data, manifestData, key);
-  };
-  const numOut = (key: string) => {
+  const eventInfo = { name: eInfo.event.name, trackDisplayName: eInfo.track.name };
+  const numOut = (v: number) => {
     // console.log("key:" + key + " value: " + getValue(key));
-    return sprintf("%.1f", getValue(key));
+    return sprintf("%.1f", v);
   };
 
   const trackLabel = () => {
-    const trackCondidtion = (v: number): string => {
-      switch (getValue("trackWetness")) {
-        case 0:
+    const trackCondidtion = (v: TrackWetness): string => {
+      switch (v) {
+        case TrackWetness.UNSPECIFIED:
           return "";
-        case 1:
+        case TrackWetness.DRY:
           return "(dry)";
-        case 2:
+        case TrackWetness.MOSTLY_DRY:
           return "(mostly dry)";
-        case 3:
+        case TrackWetness.VERY_LIGHTLY_WET:
           return "(very lightly wet)";
-        case 4:
+        case TrackWetness.LIGHTLY_WET:
           return "(lightly wet)";
-        case 5:
+        case TrackWetness.MODERATELY_WET:
           return "(moderately wet)";
-        case 6:
+        case TrackWetness.VERY_WET:
           return "(very wet)";
-        case 7:
-          return "(extremly wet)";
+        case TrackWetness.EXTREMELY_WET:
+          return "(extremely wet)";
+        default:
+          return v + "";
       }
-      return "";
     };
-    return "Track " + trackCondidtion(getValue("trackWetness"));
+    return "Track " + trackCondidtion(sInfo.trackWetness);
   };
 
   let flagBackground = "";
-  switch (getValue("flagState")) {
+  switch (sInfo.flagState) {
     case "CHECKERED":
       flagBackground = "iracelog-background-checkered";
       break;
@@ -127,18 +108,20 @@ export const EventHeaderContainer: React.FC = () => {
     <Row className="raceHeader">
       <Col flex={1}>
         <table width="100%" style={{ lineHeight: "1rem" }}>
-          <tr>
-            <td>State</td>
-            <td align="right">{getValue("flagState")}</td>
-          </tr>
-          <tr>
-            <td>Air</td>
-            <td align="right">{numOut("airTemp")}</td>
-          </tr>
-          <tr>
-            <td>{trackLabel()}</td>
-            <td align="right">{numOut("trackTemp")}</td>
-          </tr>
+          <tbody>
+            <tr>
+              <td>State</td>
+              <td align="right">{sInfo.flagState}</td>
+            </tr>
+            <tr>
+              <td>Air</td>
+              <td align="right">{numOut(sInfo.airTemp)}</td>
+            </tr>
+            <tr>
+              <td>{trackLabel()}</td>
+              <td align="right">{numOut(sInfo.trackTemp)}</td>
+            </tr>
+          </tbody>
         </table>
       </Col>
 
@@ -165,20 +148,22 @@ export const EventHeaderContainer: React.FC = () => {
       </Col> */}
       <Col flex={1}>
         <table width="100%" style={{ lineHeight: "1rem" }}>
-          <tr>
-            <td>Sim-Time</td>
-            <td align="right">{secAsHHMMSS(getValue("timeOfDay"))}</td>
-          </tr>
-          <tr>
-            <td>Elapsed</td>
-            <td align="right">{secAsString(getValue("sessionTime"))}</td>
-          </tr>
-          <tr>
-            <td>Remaining</td>
-            <td align="right">
-              {<RemainingRace time={getValue("timeRemain")} laps={getValue("lapsRemain")} />}
-            </td>
-          </tr>
+          <tbody>
+            <tr>
+              <td>Sim-Time</td>
+              <td align="right">{secAsHHMMSS(sInfo.timeOfDay)}</td>
+            </tr>
+            <tr>
+              <td>Elapsed</td>
+              <td align="right">{secAsString(sInfo.sessionTime)}</td>
+            </tr>
+            <tr>
+              <td>Remaining</td>
+              <td align="right">
+                {<RemainingRace time={sInfo.timeRemain} laps={sInfo.lapsRemain} />}
+              </td>
+            </tr>
+          </tbody>
         </table>
       </Col>
     </Row>

@@ -41,36 +41,30 @@ jobs:
         working-directory: ./go
         run: make build
 
-      - name: Cache node modules
-        uses: actions/cache@v4
-        env:
-          cache-name: cache-node-modules
+      - name: Install pnpm
+        uses: pnpm/action-setup@v3
         with:
-          # npm cache files are stored in `~/.npm` on Linux/macOS
-          path: ~/.npm
-          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/yarn.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-build-${{ env.cache-name }}-
-            ${{ runner.os }}-build-
-            ${{ runner.os }}-
-      - name: Use Node.js 18
+          version: 9
+      - name: Use Node.js 20
         uses: actions/setup-node@v4
         with:
-          node-version: "18"
+          node-version: "20"
+          cache: "pnpm"
       - name: Prep npm for using packages from github
         run: |
           echo "//npm.pkg.github.com/:_authToken=${{ secrets.GITHUB_TOKEN }}" > ~/.npmrc
           echo "@${{ github.repository_owner }}:registry=https://npm.pkg.github.com/" >> ~/.npmrc
+          pnpm config set @buf:registry  https://buf.build/gen/npm/v1/
 
       - name: Install dependencies
-        run: yarn install
+        run: pnpm install
       - name: Test
-        run: yarn test:no-watch --passWithNoTests
+        run: pnpm test:no-watch --passWithNoTests
         env:
           CI: true
           RUN_SLOW_TESTS: true
       - name: Build
-        run: yarn build
+        run: pnpm build
         env:
           CI: false
       - name: Copy to docker

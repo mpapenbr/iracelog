@@ -1,9 +1,6 @@
 import { Line } from "@ant-design/charts";
 import * as React from "react";
-import { useSelector } from "react-redux";
-import { ApplicationState } from "../../stores";
-import { ICarClass } from "../../stores/cars/types";
-import { ISpeedmapData } from "../../stores/speedmap/types";
+import { useAppSelector } from "../../stores";
 
 interface IColor {
   red: number;
@@ -12,12 +9,9 @@ interface IColor {
 }
 
 export const Speedmap: React.FC = () => {
-  const payload: ISpeedmapData = useSelector(
-    (state: ApplicationState) => state.speedmap.speedmapData,
-  );
-  const carClasses: ICarClass[] = useSelector(
-    (state: ApplicationState) => state.carData.carClasses,
-  );
+  const payload = useAppSelector((state) => state.speedmap);
+  const carClasses = useAppSelector((state) => state.carClasses);
+  const trackInfo = useAppSelector((state) => state.eventInfo.track);
 
   const carClassLookup = carClasses.reduce((prev, cur) => {
     prev.set(cur.id.toString(), cur.name);

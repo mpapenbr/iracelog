@@ -1,10 +1,9 @@
 import { Layout, Menu, Modal, notification } from "antd";
 import React, { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
 import { Link, Route, Routes, useParams } from "react-router-dom";
 import { Comparator } from "semver";
 import { globalWamp } from "../commons/globals";
-import { LoaderPage } from "../components/events/loader";
+import { LoaderPageGrpc } from "../components/events/loaderGrpc";
 import Classification from "../components/live/classification";
 import RaceMessages from "../components/live/raceMessages";
 import { BigCircleOfDoomContainer } from "../container/BigCircleOfDoomContainer";
@@ -24,15 +23,17 @@ import { StintRankingContainer } from "../container/StintRankingContainer";
 import { StintSummaryContainer } from "../container/StintSummaryContainer";
 import { StrategyContainer } from "../container/StrategyContainer";
 import { TestContainer } from "../container/Test";
-import { ApplicationState } from "../stores";
+import { useAppSelector } from "../stores";
 const { Header, Sider, Content } = Layout;
 
 const OtherContent: React.FC = () => <div>Here goes other content</div>;
 
 export const AnalysisMainPage: React.FC = () => {
   const params = useParams();
-  const replaySettings = useSelector((state: ApplicationState) => state.userSettings.replay);
-  const eventInfo = useSelector((state: ApplicationState) => state.raceData.eventInfo);
+  console.log("TODO: handle replay settings");
+  // const replaySettings = useSelector((state: ApplicationState) => state.userSettings.replay);
+  const replaySettings = { eventKey: "test" };
+  const eventInfo = useAppSelector((state) => state.eventInfo);
   const [loadTrigger, setLoadTrigger] = useState(0);
   const [loading, setLoading] = useState(false);
 
@@ -73,12 +74,12 @@ export const AnalysisMainPage: React.FC = () => {
     { label: <Link to="settings">Settings</Link>, key: "settings" },
   ];
   const compareRaceloggerVersion = (arg: string): string => {
-    const val = eventInfo.raceloggerVersion ?? "0.0.0";
+    const val = eventInfo.event.raceloggerVersion ?? "0.0.0";
     return val.length > 0 ? val : "0.0.0";
   };
   const items = allItems.filter((v) =>
     new Comparator(v.requires ?? ">=0.0.0").test(
-      compareRaceloggerVersion(eventInfo.raceloggerVersion),
+      compareRaceloggerVersion(eventInfo.event.raceloggerVersion),
     ),
   );
   return (
@@ -89,7 +90,7 @@ export const AnalysisMainPage: React.FC = () => {
       <Content>
         <Modal title="Loading" open={loading} closable={false} footer={<></>}>
           {/* {info} */}
-          <LoaderPage
+          <LoaderPageGrpc
             eventKey={params.eventKey}
             onFinished={(success) => {
               if (!success) {

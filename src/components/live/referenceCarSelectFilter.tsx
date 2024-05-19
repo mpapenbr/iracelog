@@ -8,17 +8,19 @@ interface Props {
   availableClasses: string[];
   selectedCars: string[];
   selectedCarClasses: string[];
+  selectedReferenceCar?: string;
 }
 interface DispatchProps {
   onSelectCarFilter: (value: string[]) => void;
   onSelectCarClassFilter: (value: any) => void;
+  onSelectReferenceCar: (value: string) => void;
 }
 type MyProps = Props & DispatchProps;
 
 const { Option } = Select;
 
-const CarFilter: React.FC<MyProps> = (props: MyProps) => {
-  const referenceOptions = props.availableCars.map((d) => (
+const ReferenceCarFilter: React.FC<MyProps> = (props: MyProps) => {
+  const availableCarsOptions = props.availableCars.map((d) => (
     <Option key={d.carNum} value={d.carNum}>
       #{d.carNum} {d.name}
     </Option>
@@ -35,9 +37,24 @@ const CarFilter: React.FC<MyProps> = (props: MyProps) => {
   const handleOnSelectCarClassFilter = (value: any) => {
     props.onSelectCarClassFilter(value as string[]);
   };
+  const handleOnSelectReferenceCar = (value: string) => {
+    props.onSelectReferenceCar(value);
+  };
   // console.log("Dings");
   return (
     <>
+      <Col span={4}>
+        <Select
+          style={{ width: "100%" }}
+          allowClear
+          value={props.selectedReferenceCar}
+          placeholder="Select reference car"
+          onChange={handleOnSelectReferenceCar}
+          maxTagCount="responsive"
+        >
+          {availableCarsOptions}
+        </Select>
+      </Col>
       <Col span={10}>
         <Select
           style={{ width: "100%" }}
@@ -48,7 +65,7 @@ const CarFilter: React.FC<MyProps> = (props: MyProps) => {
           onChange={handleOnSelectCarFilter}
           maxTagCount="responsive"
         >
-          {referenceOptions}
+          {availableCarsOptions}
         </Select>
       </Col>
       {props.availableClasses.length > -1 ? (
@@ -70,4 +87,4 @@ const CarFilter: React.FC<MyProps> = (props: MyProps) => {
     </>
   );
 };
-export default CarFilter;
+export default ReferenceCarFilter;

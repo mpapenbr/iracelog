@@ -1,8 +1,8 @@
+import { StintInfo } from "@buf/mpapenbr_testrepo.community_timostamm-protobuf-ts/testrepo/analysis/v1/car_stint_pb";
 import { IStintInfo } from "@mpapenbr/iracelog-analysis/dist/stints/types";
 import { Empty, Tooltip } from "antd";
 import _ from "lodash";
-import { useSelector } from "react-redux";
-import { ApplicationState } from "../../stores";
+import { useAppSelector } from "../../stores";
 import { lapTimeString, secAsHHMM } from "../../utils/output";
 import { boxPlotDataFor } from "../live/statsutil";
 import { findDriverByStint } from "../live/util";
@@ -25,8 +25,7 @@ interface IStintInfoExt extends IStintInfo {
   avgLapTime: number;
 }
 const StintRankingSvg: React.FC<MyProps> = (props: MyProps) => {
-  const carLaps = useSelector((state: ApplicationState) => state.raceData.carLaps);
-  const carInfo = useSelector((state: ApplicationState) => state.raceData.carInfo);
+  const carOccs = useAppSelector((state) => state.carOccupancies);
 
   const width = props.width ?? 800;
   const height = props.height ?? 600;
@@ -71,7 +70,7 @@ const StintRankingSvg: React.FC<MyProps> = (props: MyProps) => {
 
         // todo: reuse avg from above computation. create own interface?
         // const avg = computeAvg(d.data as IStintInfo);
-        const currentCarInfo = carInfo.find((v) => v.carNum === carData.carNum)!;
+        const currentCarInfo = carOccs.find((v) => v.carNum === carData.carNum)!;
 
         return (
           <Tooltip
@@ -82,9 +81,7 @@ const StintRankingSvg: React.FC<MyProps> = (props: MyProps) => {
                 stintInfo={d.data as IStintInfo}
                 carNum={carData.carNum}
                 no={d.idx}
-                driver={
-                  findDriverByStint(currentCarInfo, d.data as IStintInfo)?.driverName ?? "n.a."
-                }
+                driver={findDriverByStint(currentCarInfo, d.data as StintInfo)?.name ?? "n.a."}
                 avgLap={d.avgTime}
               />
             }
@@ -92,7 +89,7 @@ const StintRankingSvg: React.FC<MyProps> = (props: MyProps) => {
             <rect
               key={carData.carNum + "_" + d.idx}
               height={5}
-              width={d.data.stintTime * stepX}
+              width={(d.data as StintInfo).stintTime * stepX}
               x={(d.data.exitTime - xInfo.lmin) * stepX}
               y={(yInfo.lmax - d.avgTime) * stepY - 2}
               // x={d.eventTime[0] * stepX}

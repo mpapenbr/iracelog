@@ -1,88 +1,78 @@
 import { Checkbox, Col, Row } from "antd";
 import * as React from "react";
-import { useDispatch, useSelector } from "react-redux";
-import CarFilter from "../components/live/carFilter";
-import {
-  carNumberByCarIdx,
-  collectCarsByCarClassFilter,
-  orderedCarNumsByPosition,
-  processCarClassSelectionNew,
-  sortedSelectableCars,
-  supportsCarData,
-} from "../components/live/util";
+import MultiSelectCarFilter from "../components/live/multiCarSelectFilter";
 import RacePositionGraphNivo from "../components/nivo/racePositionGraph";
-import { ApplicationState } from "../stores";
-import { ICarBaseData } from "../stores/racedata/types";
-import { racePositionsSettings } from "../stores/ui/actions";
+import { useAppDispatch, useAppSelector } from "../stores";
+import { IMultiCarSelectFilterSettings } from "../stores/grpc/slices/types";
+import { updateGlobalSettings, updateRacePositions } from "../stores/grpc/slices/userSettingsSlice";
+import { InputData, prepareFilterData } from "./multiCarSelectFilterHelper";
 
 export const RacePositionsContainer: React.FC = () => {
-  const cars = useSelector((state: ApplicationState) => state.raceData.availableCars);
-  const carClasses = useSelector((state: ApplicationState) => state.raceData.availableCarClasses);
-  const userSettings = useSelector((state: ApplicationState) => state.userSettings.racePositions);
+  const availableCars = useAppSelector((state) => state.availableCars);
+  const carClasses = useAppSelector((state) => state.carClasses);
+  const userSettings = useAppSelector((state) => state.userSettings.racePositions);
+  const stateGlobalSettings = useAppSelector((state) => state.userSettings.global);
+  const raceOrder = useAppSelector((state) => state.raceOrder);
+  const dispatch = useAppDispatch();
 
-  const showCars = useSelector(
-    (state: ApplicationState) => state.userSettings.racePositions.showCars,
-  );
-  const filterCarClasses = useSelector(
-    (state: ApplicationState) => state.userSettings.racePositions.filterCarClasses,
-  );
-  const dispatch = useDispatch();
-
-  const stateGlobalSettings = useSelector((state: ApplicationState) => state.userSettings.global);
-  const stateCarManifest = useSelector((state: ApplicationState) => state.raceData.manifests.car);
-  const raceOrder = useSelector((state: ApplicationState) => state.raceData.classification);
-  const eventInfo = useSelector((state: ApplicationState) => state.raceData.eventInfo);
-  const carData = useSelector((state: ApplicationState) => state.carData);
-  const createSelectableCars = (cars: ICarBaseData[]): ICarBaseData[] => {
-    return sortedSelectableCars(cars, stateGlobalSettings.filterOrderByPosition, () =>
-      orderedCarNumsByPosition(
-        raceOrder,
-        stateCarManifest,
-        supportsCarData(eventInfo.raceloggerVersion) ? carNumberByCarIdx(carData) : undefined,
-      ),
-    );
-  };
-
-  const selectableCars = createSelectableCars(
-    userSettings.selectableCars.length > 0 ? userSettings.selectableCars : cars,
-  );
-
-  const onSelectCarClassChange = (values: string[]) => {
-    const newShowcars = processCarClassSelectionNew({
-      cars: cars,
-      currentFilter: userSettings.filterCarClasses,
-      currentShowCars: userSettings.showCars,
-      newSelection: values,
-    });
-    const curSettings = {
-      ...userSettings,
-      filterCarClasses: values,
-      showCars: newShowcars,
-      selectableCars: collectCarsByCarClassFilter(cars, values),
-    };
-    dispatch(racePositionsSettings(curSettings));
-  };
-  const onCheckboxChange = () => {
-    dispatch(
-      racePositionsSettings({ ...userSettings, showPosInClass: !userSettings.showPosInClass }),
-    );
-  };
-  const props = {
-    availableCars: selectableCars,
+  const inputData: InputData = {
+    stateGlobalSettings: stateGlobalSettings,
+    pageFilterSettings: userSettings,
+    autoFillCars: true,
+    raceOrder: raceOrder,
+    availableCars: availableCars,
     availableClasses: carClasses.map((v) => v.name),
-    selectedCars: showCars,
-    selectedCarClasses: filterCarClasses,
+    selectedCallback: (arg: IMultiCarSelectFilterSettings) => {
+      const curSettings = {
+        ...userSettings,
+        ...arg,
+      };
+      // const curSettings = { ...userSettings, filterCarClasses: values };
+      dispatch(updateRacePositions(curSettings));
+      if (stateGlobalSettings.syncSelection) {
+        dispatch(
+          updateGlobalSettings({
+            ...stateGlobalSettings,
+            showCars: arg.showCars,
+            filterCarClasses: arg.filterCarClasses,
+          }),
+        );
+      }
+    },
+  };
+  const filterProps = prepareFilterData(inputData);
+  const props = {
+    ...filterProps,
     onSelectCarFilter: (selection: string[]) => {
       const curSettings = { ...userSettings, showCars: selection };
-      dispatch(racePositionsSettings(curSettings));
+      dispatch(updateRacePositions(curSettings));
+      if (stateGlobalSettings.syncSelection) {
+        dispatch(updateGlobalSettings({ ...stateGlobalSettings, showCars: selection }));
+      }
     },
-    onSelectCarClassFilter: onSelectCarClassChange,
   };
+
+  const onCheckboxChange = () => {
+    dispatch(
+      updateRacePositions({ ...userSettings, showPosInClass: !userSettings.showPosInClass }),
+    );
+  };
+  // const props = {
+  //   availableCars: selectableCars,
+  //   availableClasses: carClasses.map((v) => v.name),
+  //   selectedCars: showCars,
+  //   selectedCarClasses: filterCarClasses,
+  //   onSelectCarFilter: (selection: string[]) => {
+  //     const curSettings = { ...userSettings, showCars: selection };
+  //     dispatch(racePositionsSettings(curSettings));
+  //   },
+  //   onSelectCarClassFilter: onSelectCarClassChange,
+  // };
 
   return (
     <>
       <Row gutter={16}>
-        <CarFilter {...props} />
+        <MultiSelectCarFilter {...props} />
         <Col span={3}>
           <Checkbox
             defaultChecked={userSettings.showPosInClass}
@@ -94,7 +84,10 @@ export const RacePositionsContainer: React.FC = () => {
         </Col>
       </Row>
 
-      <RacePositionGraphNivo />
+      <RacePositionGraphNivo
+        showCars={props.selectedCars}
+        showPosInClass={userSettings.showPosInClass}
+      />
     </>
   );
 };
