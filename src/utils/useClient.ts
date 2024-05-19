@@ -8,14 +8,15 @@ import {
 } from "@connectrpc/connect";
 import { createConnectTransport, createGrpcWebTransport } from "@connectrpc/connect-web";
 import { useMemo } from "react";
-import { API_GRPC_BINARY_FORMAT, API_GRPC_URL } from "../constants";
+import { globalWamp } from "../commons/globals";
+import { API_GRPC_BINARY_FORMAT } from "../constants";
 
 // This transport is going to be used throughout the app
 const transport = API_GRPC_BINARY_FORMAT
   ? createGrpcWebTransport({
-      baseUrl: API_GRPC_URL,
+      baseUrl: globalWamp.backendConfig.grpc.url,
     })
-  : createConnectTransport({ baseUrl: API_GRPC_URL });
+  : createConnectTransport({ baseUrl: globalWamp.backendConfig.grpc.url });
 
 /**
  * Get a callback client for the given service.

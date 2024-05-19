@@ -9,4 +9,7 @@ export interface Config {
   graphql: {
     url: string;
   };
+  grpc: {
+    url: string;
+  };
 }
