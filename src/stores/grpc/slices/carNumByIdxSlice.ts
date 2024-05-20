@@ -22,7 +22,7 @@ export const byIdxLookupSlice = createSlice({
       Object.entries(state.carNum);
       const carEntries = action.payload;
 
-      if (carEntries.entries.length != Object.entries(state.carNum).length) {
+      if (carEntries.length != Object.entries(state.carNum).length) {
         console.log(`change in driver count detected`);
         const cRef = Object.assign(
           {},
