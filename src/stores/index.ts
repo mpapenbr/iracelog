@@ -1,18 +1,8 @@
 import { configureStore } from "@reduxjs/toolkit";
 import { combineReducers } from "redux";
-import { ICarInfoContainer } from "./cars/types";
-import { IRaceData } from "./racedata/reducer";
-
-import { ISpeedmap } from "./speedmap/types";
-import { IUserSettings } from "./ui/types";
 
 // new grpc stuff starts here
-import {
-  Car,
-  Session,
-} from "@buf/mpapenbr_testrepo.community_timostamm-protobuf-ts/testrepo/racestate/v1/racestate_pb";
 import { useDispatch, useSelector } from "react-redux";
-import { CurrentCarOcc } from "./grpc/car/types";
 import { availableCarsSlice } from "./grpc/slices/availableCarsSlice";
 import { carClassesSlice } from "./grpc/slices/carClassesSlice";
 import { carEntrySlice } from "./grpc/slices/carEntrySlice";
@@ -34,18 +24,7 @@ import { speedmapEvolutionSlice } from "./grpc/slices/speedmapEvolutionSlice";
 import { speedmapSlice } from "./grpc/slices/speedmapSlice";
 import { combined } from "./grpc/slices/userSettingsSlice";
 
-export interface ApplicationState {
-  userSettings: IUserSettings;
-  raceData: IRaceData;
-
-  speedmap: ISpeedmap;
-  carData: ICarInfoContainer;
-  // new grpc stuff starts here
-  session: Session;
-  classification: Car[];
-  dummy: { a: number; b: string };
-  carStuff: CurrentCarOcc[];
-}
+export interface ApplicationState {}
 
 // export interface IMetaActions extends PayloadMetaAction<TypeConstant,IMeta> {}
 

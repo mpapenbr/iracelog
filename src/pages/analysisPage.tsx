@@ -18,11 +18,10 @@ import { RaceGraphContainer } from "../container/RaceGraphContainer";
 import { RacePositionsContainer } from "../container/RacePositionsContainer";
 import { SettingsContainer } from "../container/SettingsContainer";
 import { SpeedmapContainer } from "../container/SpeedmapContainer";
-import { StintLapsContainer } from "../container/StintLapsContainer";
 import { StintRankingContainer } from "../container/StintRankingContainer";
 import { StintSummaryContainer } from "../container/StintSummaryContainer";
 import { StrategyContainer } from "../container/StrategyContainer";
-import { TestContainer } from "../container/Test";
+
 import { useAppSelector } from "../stores";
 const { Header, Sider, Content } = Layout;
 
@@ -122,12 +121,12 @@ export const AnalysisMainPage: React.FC = () => {
           <Route path="carPitstops" element={<CarPitstopsContainer />} />
 
           <Route path="stintDurations" element={<CarStintsContainer />} />
-          <Route path="stintLaps" element={<StintLapsContainer />} />
+
           <Route path="stintSummary" element={<StintSummaryContainer />} />
           <Route path="stintRanking" element={<StintRankingContainer />} />
           <Route path="messages" element={<RaceMessages />} />
           <Route path="settings" element={<SettingsContainer />} />
-          <Route path="test" element={<TestContainer />} />
+
           <Route path="speedmap" element={<SpeedmapContainer />} />
           <Route path="raceEntries" element={<RaceEntriesContainer />} />
         </Routes>

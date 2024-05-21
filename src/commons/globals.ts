@@ -1,6 +1,3 @@
-import { BulkProcessor } from "@mpapenbr/iracelog-analysis";
-import { IProcessRaceStateData } from "@mpapenbr/iracelog-analysis/dist/stints/types";
-import { Connection } from "autobahn";
 import { Config } from "../api/config";
 import { API_CROSSBAR_URL, API_GRAPHQL_URL, API_GRPC_URL } from "../constants";
 import { ReplayDataHolder } from "../processor/ReplayDataHolder";
@@ -42,12 +39,6 @@ interface IGlobalWamp {
   speedmapHolder?: SpeedmapDataHolder;
   backendConfig: Config;
   streamContainer?: StreamContainer;
-  // @deprecated
-  conn?: Connection;
-  // @deprecated
-  processor?: BulkProcessor;
-  // @deprecated
-  currentData?: IProcessRaceStateData;
 }
 
 export const globalWamp: IGlobalWamp = {

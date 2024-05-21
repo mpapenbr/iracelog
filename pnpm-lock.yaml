@@ -38,9 +38,6 @@ importers:
       '@connectrpc/connect-web':
         specifier: ^1.4.0
         version: 1.4.0(@bufbuild/protobuf@1.9.0)(@connectrpc/connect@1.4.0(@bufbuild/protobuf@1.9.0))
-      '@mpapenbr/iracelog-analysis':
-        specifier: ^1.2.0
-        version: 1.2.0
       '@nivo/bar':
         specifier: ^0.85.1
         version: 0.85.1(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
@@ -969,9 +966,6 @@ packages:
   '@maplibre/maplibre-gl-style-spec@19.3.3':
     resolution: {integrity: sha512-cOZZOVhDSulgK0meTsTkmNXb1ahVvmTmWmfx9gRBwc6hq98wS9JP35ESIoNq3xqEan+UN+gn8187Z6E4NKhLsw==}
     hasBin: true
-
-  '@mpapenbr/iracelog-analysis@1.2.0':
-    resolution: {integrity: sha512-uzv2BaTJp093BiAhhw6tPotY3JmieF1LyUDIaqQoxJoHEnQVm+4quOv+JTWM1uYd5BFoGqWZjstiFiwCWDH4DA==, tarball: https://npm.pkg.github.com/download/@mpapenbr/iracelog-analysis/1.2.0/73a5affee56f93e9eaeb06debe1941da3e51f846}
 
   '@nivo/annotations@0.85.1':
     resolution: {integrity: sha512-+YVFKMokf6MMXsztpEoOoFwG+XcEJV90xezuqJ8FmS0hgEzJ8xTeWNxPRWfrvxndMXNrau4QIRU5GrumBmiy4Q==}
@@ -5657,10 +5651,6 @@ snapshots:
       minimist: 1.2.8
       rw: 1.3.3
       sort-object: 3.0.3
-
-  '@mpapenbr/iracelog-analysis@1.2.0':
-    dependencies:
-      lodash: 4.17.21
 
   '@nivo/annotations@0.85.1(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
     dependencies:

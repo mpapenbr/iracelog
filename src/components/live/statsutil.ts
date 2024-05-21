@@ -1,4 +1,8 @@
-import { ICarLaps, ILapInfo, IStintInfo } from "@mpapenbr/iracelog-analysis/dist/stints/types";
+import {
+  CarLaps,
+  Lap,
+} from "@buf/mpapenbr_testrepo.community_timostamm-protobuf-ts/testrepo/analysis/v1/car_laps_pb";
+import { StintInfo } from "@buf/mpapenbr_testrepo.community_timostamm-protobuf-ts/testrepo/analysis/v1/car_stint_pb";
 
 export const quantile = (sorted: number[], q: number) => {
   const pos = (sorted.length - 1) * q;
@@ -77,8 +81,10 @@ export const boxPlotDataFor = (laptimes: number[]): IBoxPlotDataExtended => {
   };
 };
 
-export const stintLaps = (si: IStintInfo, laptimes: ICarLaps): ILapInfo[] => {
+export const stintLaps = (si: StintInfo, laptimes: CarLaps): Lap[] => {
   // exclude in and outlap from calculation
-  const laps = laptimes?.laps?.filter((v) => v.lapNo >= si.lapExit && v.lapNo <= si.lapEnter).slice(1, -1) ?? [];
+  const laps =
+    laptimes?.laps?.filter((v) => v.lapNo >= si.lapExit && v.lapNo <= si.lapEnter).slice(1, -1) ??
+    [];
   return laps;
 };

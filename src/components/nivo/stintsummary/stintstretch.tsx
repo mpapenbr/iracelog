@@ -1,6 +1,6 @@
 import { PitInfo } from "@buf/mpapenbr_testrepo.community_timostamm-protobuf-ts/testrepo/analysis/v1/car_pit_pb";
 import { StintInfo } from "@buf/mpapenbr_testrepo.community_timostamm-protobuf-ts/testrepo/analysis/v1/car_stint_pb";
-import { IStintInfo } from "@mpapenbr/iracelog-analysis/dist/stints/types";
+
 import { Tooltip } from "antd";
 import React from "react";
 import { useAppSelector } from "../../../stores";
@@ -91,7 +91,7 @@ const StintStretch: React.FC<MyProps> = (props: MyProps) => {
                   overlay={
                     <StintTooltip
                       carNum={props.carNum ?? "n.a."}
-                      stintInfo={c.data as IStintInfo}
+                      stintInfo={c.data as StintInfo}
                       no={c.idx}
                       driver={
                         findDriverByStint(currentCarInfo, c.data as StintInfo)?.name ?? "n.a."

@@ -1,26 +1,23 @@
 import { Card, Checkbox, Col, Row, Select } from "antd";
 import * as React from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { ApplicationState } from "../stores";
-import { globalSettings } from "../stores/ui/actions";
+import { useAppDispatch, useAppSelector } from "../stores";
+import {
+  toggleFilterOrderByPosition,
+  toggleSyncSelection,
+} from "../stores/grpc/slices/userSettingsSlice";
 
 const { Option } = Select;
 
 export const SettingsContainer: React.FC = () => {
-  const userSettings = useSelector((state: ApplicationState) => state.userSettings.strategy);
-
-  const stateGlobalSettings = useSelector((state: ApplicationState) => state.userSettings.global);
-
+  const stateGlobalSettings = useAppSelector((state) => state.userSettings.global);
   // console.log(selectableCars);
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
 
   const onGlobalSynchChange = () => {
-    dispatch(globalSettings({ ...stateGlobalSettings, syncSelection: !stateGlobalSettings.syncSelection }));
+    dispatch(toggleSyncSelection());
   };
   const onGlobalFilterOrdering = () => {
-    dispatch(
-      globalSettings({ ...stateGlobalSettings, filterOrderByPosition: !stateGlobalSettings.filterOrderByPosition })
-    );
+    dispatch(toggleFilterOrderByPosition());
   };
   return (
     <>
@@ -33,7 +30,10 @@ export const SettingsContainer: React.FC = () => {
               </Checkbox>
             </p>
             <p>
-              <Checkbox checked={stateGlobalSettings.filterOrderByPosition} onChange={onGlobalFilterOrdering}>
+              <Checkbox
+                checked={stateGlobalSettings.filterOrderByPosition}
+                onChange={onGlobalFilterOrdering}
+              >
                 Order cars in filter by race position
               </Checkbox>
             </p>

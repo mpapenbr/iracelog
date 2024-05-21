@@ -13,7 +13,6 @@
     "@bufbuild/protobuf": "^1.9.0",
     "@connectrpc/connect": "^1.4.0",
     "@connectrpc/connect-web": "^1.4.0",
-    "@mpapenbr/iracelog-analysis": "^1.2.0",
     "@nivo/bar": "^0.85.1",
     "@nivo/bullet": "^0.85.1",
     "@nivo/core": "^0.85.1",

@@ -1,5 +1,5 @@
 import { StintInfo } from "@buf/mpapenbr_testrepo.community_timostamm-protobuf-ts/testrepo/analysis/v1/car_stint_pb";
-import { IStintInfo } from "@mpapenbr/iracelog-analysis/dist/stints/types";
+
 import { Empty, Tooltip } from "antd";
 import _ from "lodash";
 import { useAppSelector } from "../../stores";
@@ -21,7 +21,7 @@ interface MyProps {
   showCars: string[];
 }
 
-interface IStintInfoExt extends IStintInfo {
+interface IStintInfoExt extends StintInfo {
   avgLapTime: number;
 }
 const StintRankingSvg: React.FC<MyProps> = (props: MyProps) => {
@@ -78,7 +78,7 @@ const StintRankingSvg: React.FC<MyProps> = (props: MyProps) => {
             color={d.color}
             overlay={
               <StintTooltip
-                stintInfo={d.data as IStintInfo}
+                stintInfo={d.data as StintInfo}
                 carNum={carData.carNum}
                 no={d.idx}
                 driver={findDriverByStint(currentCarInfo, d.data as StintInfo)?.name ?? "n.a."}
