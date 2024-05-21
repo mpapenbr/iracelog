@@ -1,9 +1,9 @@
-import { IRaceGraph } from "@mpapenbr/iracelog-analysis/dist/stints/types";
 import { ResponsiveLine } from "@nivo/line";
 import { Col, Empty, Row, Spin } from "antd";
 import React from "react";
 import { useAppSelector } from "../../stores";
 
+import { RaceGraph } from "@buf/mpapenbr_testrepo.community_timostamm-protobuf-ts/testrepo/analysis/v1/racegraph_pb";
 import { sortCarNumberStr } from "../../utils/output";
 
 interface IGraphData {
@@ -33,10 +33,10 @@ const RacePositionGraphNivo: React.FC<MyProps> = (props) => {
       prev.set(cur.carClass, [cur]);
     }
     return prev;
-  }, new Map<string, IRaceGraph[]>());
+  }, new Map<string, RaceGraph[]>());
 
   const dataForCar = (carNum: string) => {
-    const source: IRaceGraph[] = dataLookup.get("overall")!;
+    const source: RaceGraph[] = dataLookup.get("overall")!;
     return source.reduce((prev, current) => {
       const carEntry = current.gaps.find((gi) => gi.carNum === carNum);
 

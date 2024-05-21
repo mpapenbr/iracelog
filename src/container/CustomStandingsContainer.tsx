@@ -1,7 +1,8 @@
 import { SettingOutlined } from "@ant-design/icons";
 import { CarPit } from "@buf/mpapenbr_testrepo.community_timostamm-protobuf-ts/testrepo/analysis/v1/car_pit_pb";
 import { Car } from "@buf/mpapenbr_testrepo.community_timostamm-protobuf-ts/testrepo/racestate/v1/racestate_pb";
-import { ICarLaps } from "@mpapenbr/iracelog-analysis/dist/stints/types";
+
+import { CarLaps } from "@buf/mpapenbr_testrepo.community_timostamm-protobuf-ts/testrepo/analysis/v1/car_laps_pb";
 import { Button, Col, Form, InputNumber, Popover, Row, Select, Slider } from "antd";
 import * as React from "react";
 import { CircleOfDoom } from "../components/live/circleofdoom";
@@ -20,7 +21,7 @@ const { Option } = Select;
 
 interface SelectPitstopProps {
   availableCars: ICarFilterData[];
-  selectedCarNum: string;
+  selectedCarNum?: string;
   pitstopTime: number;
   onSelectCar: (value: string) => void;
   onPitStopTimeChanged: (value: any) => void;
@@ -75,7 +76,7 @@ const SelectPitStopParam: React.FC<SelectPitstopProps> = (props: SelectPitstopPr
 };
 
 interface IProcData {
-  carLaps: ICarLaps;
+  carLaps: CarLaps;
   pitInfo: CarPit;
   trackLength: number;
   pitstopTime: number;

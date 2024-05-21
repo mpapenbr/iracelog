@@ -1,4 +1,4 @@
-import { IStintInfo } from "@mpapenbr/iracelog-analysis/dist/stints/types";
+import { StintInfo } from "@buf/mpapenbr_testrepo.community_timostamm-protobuf-ts/testrepo/analysis/v1/car_stint_pb";
 import { Col, Divider, Empty, Row, Select, Slider } from "antd";
 import * as React from "react";
 import { globalWamp } from "../commons/globals";
@@ -76,14 +76,14 @@ export const StintRankingContainer: React.FC = () => {
 
   // console.log(`current ${currentSettings.lowerRangeTime} ${currentSettings.upperRangeTime}`);
   const combinedData = props.selectedCars.map((carNum) => {
-    const computeAvgLap = (d: IStintInfo): number => {
+    const computeAvgLap = (d: StintInfo): number => {
       const currentCarLaps = carLaps.find((v) => v.carNum === carNum)!;
       const laps = stintLaps(d, currentCarLaps);
       const avg = laps.reduce((prev, cur) => prev + cur.lapTime, 0) / laps.length;
       return avg;
     };
 
-    const carColor = (si: IStintInfo): string => getColor(carNum) ?? "black";
+    const carColor = (si: StintInfo): string => getColor(carNum) ?? "black";
     return {
       carNum: carNum,
       data: getCombinedStintData(

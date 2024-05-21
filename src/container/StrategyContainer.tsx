@@ -1,4 +1,4 @@
-import { IStintInfo } from "@mpapenbr/iracelog-analysis/dist/stints/types";
+import { StintInfo } from "@buf/mpapenbr_testrepo.community_timostamm-protobuf-ts/testrepo/analysis/v1/car_stint_pb";
 import { Divider, Empty, Row, Select } from "antd";
 import * as React from "react";
 import MultiSelectCarFilter from "../components/live/multiCarSelectFilter";
@@ -77,7 +77,7 @@ export const StrategyContainer: React.FC = () => {
   const combinedData = filterProps.selectedCars.map((carNum) => {
     const currentCarInfo = carOccs.find((v) => v.carNum === carNum)!;
     const { colorLookup } = colorsBySeatTime(currentCarInfo.drivers);
-    const driverColor = (si: IStintInfo): string =>
+    const driverColor = (si: StintInfo): string =>
       colorLookup.get(findDriverByStint(currentCarInfo, si)?.name ?? "n.a.") ?? "black";
     return {
       carNum: carNum,

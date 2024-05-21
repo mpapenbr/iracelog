@@ -1,4 +1,3 @@
-import { IStintInfo } from "@mpapenbr/iracelog-analysis/dist/stints/types";
 import { ResponsiveBar, ResponsiveBarCanvas } from "@nivo/bar";
 import { Empty } from "antd";
 import _ from "lodash";
@@ -38,7 +37,7 @@ const CarStintsNivo: React.FC<MyProps> = (props: MyProps) => {
   const stintData = carOrder.map((carNum) => {
     const carData = dataLookup.get(carNum);
     let work = { car: carNum };
-    const getValue = (v: IStintInfo) => {
+    const getValue = (v: StintInfo) => {
       switch (props.showAsLabel) {
         case "duration":
           return v.stintTime;
@@ -53,7 +52,7 @@ const CarStintsNivo: React.FC<MyProps> = (props: MyProps) => {
   });
 
   const stintDriverLookup: Map<string, string[]> = carOrder.reduce((prev, cur) => {
-    const si: IStintInfo[] = dataLookup.get(cur)!;
+    const si: StintInfo[] = dataLookup.get(cur)!;
     if (si === undefined) {
       // may happen if some driver did not move the car at all (for example)
       return prev;

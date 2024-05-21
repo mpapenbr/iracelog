@@ -56,6 +56,12 @@ const globalSettings = createSlice({
     updateGlobalSettings(state, action: PayloadAction<IGlobalSettings>) {
       return action.payload;
     },
+    toggleSyncSelection(state) {
+      state.syncSelection = !state.syncSelection;
+    },
+    toggleFilterOrderByPosition(state) {
+      state.filterOrderByPosition = !state.filterOrderByPosition;
+    },
     resetGlobalSettings() {
       return initialStateGlobalSettings;
     },
@@ -413,7 +419,12 @@ export const combined = combineSlices(
   },
 );
 
-export const { updateGlobalSettings, resetGlobalSettings } = globalSettings.actions;
+export const {
+  updateGlobalSettings,
+  resetGlobalSettings,
+  toggleFilterOrderByPosition,
+  toggleSyncSelection,
+} = globalSettings.actions;
 export const { updateStandingColumns, resetStandingsColumns } = standingsColumns.actions;
 export const { updateClassification, resetClassification } = classificationSettings.actions;
 export const { updateCircleOfDoom, resetCircleOfDoom } = circleOfDoom.actions;

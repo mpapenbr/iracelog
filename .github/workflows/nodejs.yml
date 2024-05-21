@@ -19,10 +19,8 @@ jobs:
         with:
           node-version: "20"
           cache: "pnpm"
-      - name: Prep npm for using packages from github
+      - name: Prep npm for using packages from buf.build
         run: |
-          echo "//npm.pkg.github.com/:_authToken=${{ secrets.GITHUB_TOKEN }}" > ~/.npmrc
-          echo "@${{ github.repository_owner }}:registry=https://npm.pkg.github.com/" >> ~/.npmrc
           pnpm config set @buf:registry  https://buf.build/gen/npm/v1/
 
       - name: Install dependencies

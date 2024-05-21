@@ -18,7 +18,7 @@ type TrackPosData = {
 
 interface MyProps {
   showCars: string[];
-  referenceCarNum: string;
+  referenceCarNum?: string;
   pitstopTime: number;
 }
 

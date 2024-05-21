@@ -1,11 +1,11 @@
-import { IStintInfo } from "@mpapenbr/iracelog-analysis/dist/stints/types";
+import { StintInfo } from "@buf/mpapenbr_testrepo.community_timostamm-protobuf-ts/testrepo/analysis/v1/car_stint_pb";
 import React from "react";
 import { lapTimeString, secAsHHMMSS } from "../../utils/output";
 
 interface MyProps {
   no: number;
   carNum: string;
-  stintInfo: IStintInfo;
+  stintInfo: StintInfo;
   driver: string;
   avgLap?: number;
 }
