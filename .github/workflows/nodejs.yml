@@ -10,15 +10,6 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      # see https://github.com/mpapenbr/iracelog/issues/957
-      # - name: Install TinyGo
-      #   run: |
-      #     sudo ./installTinyGo.sh
-
-      - name: Build go wasm
-        working-directory: ./go
-        run: make build
-
       - name: Install pnpm
         uses: pnpm/action-setup@v4
         with:

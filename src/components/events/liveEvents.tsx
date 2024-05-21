@@ -24,7 +24,7 @@ import { defaultStateData as defaultUiStateData } from "../../stores/ui/reducer"
 
 import { applyPatch } from "fast-json-patch";
 import { MessageType } from "../../stores/types/message";
-import wasmMethods from "../../wasm/wasmloader";
+// import wasmMethods from "../../wasm/wasmloader";
 import { doDistribute, resetUi } from "./datahandler";
 
 export const LiveEvents: React.FC = () => {
@@ -56,9 +56,10 @@ export const LiveEvents: React.FC = () => {
       ])) as any;
 
       console.log(eventInfo);
-      wasmMethods.initProc(eventInfo.data.manifests);
-      wasmMethods.processCarMessage(carData);
-      wasmMethods.reinitWithAnalysisData(analysisData.kwargs.processedData);
+
+      // wasmMethods.initProc(eventInfo.data.manifests);
+      // wasmMethods.processCarMessage(carData);
+      // wasmMethods.reinitWithAnalysisData(analysisData.kwargs.processedData);
 
       resetUi(dispatch);
       dispatch(updateEventInfo(eventInfo.data.info));
