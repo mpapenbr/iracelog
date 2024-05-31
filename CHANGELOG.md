@@ -1,3 +1,9 @@
+#### 0.24.2 (2024-05-31)
+
+##### Other Changes
+
+* **deps:**  bump pnpm/action-setup in the github-actions group (eb8a5c90)
+
 #### 0.24.1 (2024-05-20)
 
 ### 0.24.0 (2024-05-19)
