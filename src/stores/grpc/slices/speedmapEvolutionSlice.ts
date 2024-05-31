@@ -1,4 +1,4 @@
-import { LiveSpeedmapResponse } from "@buf/mpapenbr_testrepo.community_timostamm-protobuf-ts/testrepo/livedata/v1/live_service_pb";
+import { LiveSpeedmapResponse } from "@buf/mpapenbr_iracelog.community_timostamm-protobuf-ts/iracelog/livedata/v1/live_service_pb";
 import type { PayloadAction } from "@reduxjs/toolkit";
 import { createSlice } from "@reduxjs/toolkit";
 import { ISpeedmapEvolution } from "../../speedmap/types";

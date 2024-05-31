@@ -20,15 +20,15 @@ importers:
       '@apollo/client':
         specifier: ^3.10.4
         version: 3.10.4(@types/react@18.3.2)(graphql@16.8.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
-      '@buf/mpapenbr_testrepo.bufbuild_es':
-        specifier: 1.9.0-20240519093930-3e9de22e3668.1
-        version: 1.9.0-20240519093930-3e9de22e3668.1(@bufbuild/protobuf@1.9.0)
-      '@buf/mpapenbr_testrepo.community_timostamm-protobuf-ts':
-        specifier: 2.9.4-20240519093930-3e9de22e3668.3
-        version: 2.9.4-20240519093930-3e9de22e3668.3(@protobuf-ts/runtime-rpc@2.9.4)(@protobuf-ts/runtime@2.9.4)
-      '@buf/mpapenbr_testrepo.connectrpc_es':
-        specifier: 1.4.0-20240519093930-3e9de22e3668.2
-        version: 1.4.0-20240519093930-3e9de22e3668.2(@bufbuild/protobuf@1.9.0)(@connectrpc/connect@1.4.0(@bufbuild/protobuf@1.9.0))
+      '@buf/mpapenbr_iracelog.bufbuild_es':
+        specifier: 1.9.0-20240531140606-7b7655704e96.1
+        version: 1.9.0-20240531140606-7b7655704e96.1(@bufbuild/protobuf@1.9.0)
+      '@buf/mpapenbr_iracelog.community_timostamm-protobuf-ts':
+        specifier: 2.9.4-20240531140606-7b7655704e96.3
+        version: 2.9.4-20240531140606-7b7655704e96.3(@protobuf-ts/runtime-rpc@2.9.4)(@protobuf-ts/runtime@2.9.4)
+      '@buf/mpapenbr_iracelog.connectrpc_es':
+        specifier: 1.4.0-20240531140606-7b7655704e96.2
+        version: 1.4.0-20240531140606-7b7655704e96.2(@bufbuild/protobuf@1.9.0)(@connectrpc/connect@1.4.0(@bufbuild/protobuf@1.9.0))
       '@bufbuild/protobuf':
         specifier: ^1.9.0
         version: 1.9.0
@@ -62,15 +62,9 @@ importers:
       antd:
         specifier: ^5.17.3
         version: 5.17.3(moment@2.30.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
-      autobahn-browser:
-        specifier: ^22.11.1
-        version: 22.11.1
       deep-object-diff:
         specifier: ^1.1.9
         version: 1.1.9
-      fast-json-patch:
-        specifier: ^3.1.1
-        version: 3.1.1
       graphql:
         specifier: ^16.8.1
         version: 16.8.1
@@ -138,9 +132,6 @@ importers:
       '@testing-library/user-event':
         specifier: ^14.5.2
         version: 14.5.2(@testing-library/dom@10.1.0)
-      '@types/autobahn':
-        specifier: ^20.9.4
-        version: 20.9.4
       '@types/lodash':
         specifier: ^4.17.4
         version: 4.17.4
@@ -642,45 +633,24 @@ packages:
   '@bcoe/v8-coverage@0.2.3':
     resolution: {integrity: sha512-0hYQ8SB4Db5zvZB4axdMHGwEaQjkZzFjQiN9LVYvIFB2nSUHW9tYpxWriPrWDASIxiaXax83REcLxuSdnGPZtw==}
 
-  '@buf/mpapenbr_testrepo.bufbuild_es@1.7.2-20240519093930-3e9de22e3668.1':
-    resolution: {tarball: https://buf.build/gen/npm/v1/@buf/mpapenbr_testrepo.bufbuild_es/-/mpapenbr_testrepo.bufbuild_es-1.7.2-20240519093930-3e9de22e3668.1.tgz}
+  '@buf/mpapenbr_iracelog.bufbuild_es@1.7.2-20240531140606-7b7655704e96.1':
+    resolution: {tarball: https://buf.build/gen/npm/v1/@buf/mpapenbr_iracelog.bufbuild_es/-/mpapenbr_iracelog.bufbuild_es-1.7.2-20240531140606-7b7655704e96.1.tgz}
     peerDependencies:
       '@bufbuild/protobuf': ^1.7.2
 
-  '@buf/mpapenbr_testrepo.bufbuild_es@1.9.0-20240519093930-3e9de22e3668.1':
-    resolution: {tarball: https://buf.build/gen/npm/v1/@buf/mpapenbr_testrepo.bufbuild_es/-/mpapenbr_testrepo.bufbuild_es-1.9.0-20240519093930-3e9de22e3668.1.tgz}
+  '@buf/mpapenbr_iracelog.bufbuild_es@1.9.0-20240531140606-7b7655704e96.1':
+    resolution: {tarball: https://buf.build/gen/npm/v1/@buf/mpapenbr_iracelog.bufbuild_es/-/mpapenbr_iracelog.bufbuild_es-1.9.0-20240531140606-7b7655704e96.1.tgz}
     peerDependencies:
       '@bufbuild/protobuf': ^1.9.0
 
-  '@buf/mpapenbr_testrepo.community_timostamm-protobuf-ts@2.9.4-20240519093930-3e9de22e3668.3':
-    resolution: {tarball: https://buf.build/gen/npm/v1/@buf/mpapenbr_testrepo.community_timostamm-protobuf-ts/-/mpapenbr_testrepo.community_timostamm-protobuf-ts-2.9.4-20240519093930-3e9de22e3668.3.tgz}
+  '@buf/mpapenbr_iracelog.community_timostamm-protobuf-ts@2.9.4-20240531140606-7b7655704e96.3':
+    resolution: {tarball: https://buf.build/gen/npm/v1/@buf/mpapenbr_iracelog.community_timostamm-protobuf-ts/-/mpapenbr_iracelog.community_timostamm-protobuf-ts-2.9.4-20240531140606-7b7655704e96.3.tgz}
     peerDependencies:
       '@protobuf-ts/runtime': ^2.9.4
       '@protobuf-ts/runtime-rpc': ^2.9.4
 
-  '@buf/mpapenbr_testrepo.connectrpc_es@1.4.0-20240519093930-3e9de22e3668.2':
-    resolution: {tarball: https://buf.build/gen/npm/v1/@buf/mpapenbr_testrepo.connectrpc_es/-/mpapenbr_testrepo.connectrpc_es-1.4.0-20240519093930-3e9de22e3668.2.tgz}
-    peerDependencies:
-      '@connectrpc/connect': ^1.4.0
-
-  '@buf/protocolbuffers_wellknowntypes.bufbuild_es@1.7.2-20240313220449-3186086b2a8e.1':
-    resolution: {tarball: https://buf.build/gen/npm/v1/@buf/protocolbuffers_wellknowntypes.bufbuild_es/-/protocolbuffers_wellknowntypes.bufbuild_es-1.7.2-20240313220449-3186086b2a8e.1.tgz}
-    peerDependencies:
-      '@bufbuild/protobuf': ^1.7.2
-
-  '@buf/protocolbuffers_wellknowntypes.bufbuild_es@1.9.0-20240313220449-3186086b2a8e.1':
-    resolution: {tarball: https://buf.build/gen/npm/v1/@buf/protocolbuffers_wellknowntypes.bufbuild_es/-/protocolbuffers_wellknowntypes.bufbuild_es-1.9.0-20240313220449-3186086b2a8e.1.tgz}
-    peerDependencies:
-      '@bufbuild/protobuf': ^1.9.0
-
-  '@buf/protocolbuffers_wellknowntypes.community_timostamm-protobuf-ts@2.9.4-20240313220449-3186086b2a8e.3':
-    resolution: {tarball: https://buf.build/gen/npm/v1/@buf/protocolbuffers_wellknowntypes.community_timostamm-protobuf-ts/-/protocolbuffers_wellknowntypes.community_timostamm-protobuf-ts-2.9.4-20240313220449-3186086b2a8e.3.tgz}
-    peerDependencies:
-      '@protobuf-ts/runtime': ^2.9.4
-      '@protobuf-ts/runtime-rpc': ^2.9.4
-
-  '@buf/protocolbuffers_wellknowntypes.connectrpc_es@1.4.0-20240313220449-3186086b2a8e.2':
-    resolution: {tarball: https://buf.build/gen/npm/v1/@buf/protocolbuffers_wellknowntypes.connectrpc_es/-/protocolbuffers_wellknowntypes.connectrpc_es-1.4.0-20240313220449-3186086b2a8e.2.tgz}
+  '@buf/mpapenbr_iracelog.connectrpc_es@1.4.0-20240531140606-7b7655704e96.2':
+    resolution: {tarball: https://buf.build/gen/npm/v1/@buf/mpapenbr_iracelog.connectrpc_es/-/mpapenbr_iracelog.connectrpc_es-1.4.0-20240531140606-7b7655704e96.2.tgz}
     peerDependencies:
       '@connectrpc/connect': ^1.4.0
 
@@ -1401,9 +1371,6 @@ packages:
   '@types/aria-query@5.0.4':
     resolution: {integrity: sha512-rfT93uj5s0PRL7EzccGMs3brplhcrghnDoV26NqKhCAS1hVo+WdNsPvE/yb6ilfr5hi2MEk6d5EWJTKdxg8jVw==}
 
-  '@types/autobahn@20.9.4':
-    resolution: {integrity: sha512-0XWKblxEz8bKoqUpiSWmpuHo4miKTWpu81bTczdtOwGF3x4KY9MVBJ1btmgY3ARBP28vxZ4Q/1blS8UsLMxf3g==}
-
   '@types/babel__core@7.20.5':
     resolution: {integrity: sha512-qoQprZvz5wQFJwMDqeseRXWv3rqMvhgpbXFfVyWhbx9X47POIA6i/+dXefEmZKoAgOaTdaIgNSMqMIU61yRyzA==}
 
@@ -1529,9 +1496,6 @@ packages:
 
   '@types/use-sync-external-store@0.0.3':
     resolution: {integrity: sha512-EwmlvuaxPNej9+T4v5AuBPJa2x2UOJVdjCtDHgcDqitUeOtjnJKJ+apYjVcAoBEMjKW1VVFGZLUb5+qqa09XFA==}
-
-  '@types/when@2.4.41':
-    resolution: {integrity: sha512-o/j5X9Bnv6mMG4ZcNJur8UaU17Rl0mLbTZvWcODVVy+Xdh8LEc7s6I0CvbEuTP786LTa0OyJby5P4hI7C+ZJNg==}
 
   '@typescript-eslint/eslint-plugin@7.10.0':
     resolution: {integrity: sha512-PzCr+a/KAef5ZawX7nbyNwBDtM1HdLIT53aSA2DDlxmxMngZ43O8SIePOeX8H5S+FHXeI6t97mTt/dDdzY4Fyw==}
@@ -1789,9 +1753,6 @@ packages:
 
   asynckit@0.4.0:
     resolution: {integrity: sha512-Oei9OH4tRh0YqU3GxhX79dM/mwVgvbZJaSNaRk+bshkj0S5cfHcgYakreBjrHwatXKbz+IoIdYLxrKim2MjW0Q==}
-
-  autobahn-browser@22.11.1:
-    resolution: {integrity: sha512-LXsP82RdaxtzW81Zh9Q139sbgz8lZOJDcUOiuQoXNiLK39Qy98raRgOOJu7WBkFk/jB6//HbJdhjob7z9VsaxQ==}
 
   available-typed-arrays@1.0.7:
     resolution: {integrity: sha512-wvUjBtSGN7+7SjNpq/9M2Tg350UZD3q62IFZLbRAR1bSMlCo1ZaeW+BJ+D090e4hIIZLBcTDWe4Mh4jvUDajzQ==}
@@ -2438,9 +2399,6 @@ packages:
   fast-glob@3.3.2:
     resolution: {integrity: sha512-oX2ruAFQwf/Orj8m737Y5adxDQO0LAB7/S5MnxCdTNDd4p6BsyIVsv9JQsATbTSq8KHRpLwIHbVlUNatxd+1Ow==}
     engines: {node: '>=8.6.0'}
-
-  fast-json-patch@3.1.1:
-    resolution: {integrity: sha512-vf6IHUX2SBcA+5/+4883dsIjpBTqmfBjmYiWK1savxQmFk4JfBMLa7ynTYOs1Rolp/T1betJxHiGD3g1Mn8lUQ==}
 
   fast-json-stable-stringify@2.1.0:
     resolution: {integrity: sha512-lhd/wF+Lk98HZoTCtlVraHtfh5XYijIjalXck7saUtuanSDyLMxnHhSXEDJqHxD7msR8D0uCmqlkwjCV8xvwHw==}
@@ -5404,46 +5362,22 @@ snapshots:
 
   '@bcoe/v8-coverage@0.2.3': {}
 
-  '@buf/mpapenbr_testrepo.bufbuild_es@1.7.2-20240519093930-3e9de22e3668.1(@bufbuild/protobuf@1.9.0)':
-    dependencies:
-      '@buf/protocolbuffers_wellknowntypes.bufbuild_es': 1.7.2-20240313220449-3186086b2a8e.1(@bufbuild/protobuf@1.9.0)
-      '@bufbuild/protobuf': 1.9.0
-
-  '@buf/mpapenbr_testrepo.bufbuild_es@1.9.0-20240519093930-3e9de22e3668.1(@bufbuild/protobuf@1.9.0)':
-    dependencies:
-      '@buf/protocolbuffers_wellknowntypes.bufbuild_es': 1.9.0-20240313220449-3186086b2a8e.1(@bufbuild/protobuf@1.9.0)
-      '@bufbuild/protobuf': 1.9.0
-
-  '@buf/mpapenbr_testrepo.community_timostamm-protobuf-ts@2.9.4-20240519093930-3e9de22e3668.3(@protobuf-ts/runtime-rpc@2.9.4)(@protobuf-ts/runtime@2.9.4)':
-    dependencies:
-      '@buf/protocolbuffers_wellknowntypes.community_timostamm-protobuf-ts': 2.9.4-20240313220449-3186086b2a8e.3(@protobuf-ts/runtime-rpc@2.9.4)(@protobuf-ts/runtime@2.9.4)
-      '@protobuf-ts/runtime': 2.9.4
-      '@protobuf-ts/runtime-rpc': 2.9.4
-
-  '@buf/mpapenbr_testrepo.connectrpc_es@1.4.0-20240519093930-3e9de22e3668.2(@bufbuild/protobuf@1.9.0)(@connectrpc/connect@1.4.0(@bufbuild/protobuf@1.9.0))':
-    dependencies:
-      '@buf/mpapenbr_testrepo.bufbuild_es': 1.7.2-20240519093930-3e9de22e3668.1(@bufbuild/protobuf@1.9.0)
-      '@buf/protocolbuffers_wellknowntypes.connectrpc_es': 1.4.0-20240313220449-3186086b2a8e.2(@bufbuild/protobuf@1.9.0)(@connectrpc/connect@1.4.0(@bufbuild/protobuf@1.9.0))
-      '@connectrpc/connect': 1.4.0(@bufbuild/protobuf@1.9.0)
-    transitivePeerDependencies:
-      - '@bufbuild/protobuf'
-
-  '@buf/protocolbuffers_wellknowntypes.bufbuild_es@1.7.2-20240313220449-3186086b2a8e.1(@bufbuild/protobuf@1.9.0)':
+  '@buf/mpapenbr_iracelog.bufbuild_es@1.7.2-20240531140606-7b7655704e96.1(@bufbuild/protobuf@1.9.0)':
     dependencies:
       '@bufbuild/protobuf': 1.9.0
 
-  '@buf/protocolbuffers_wellknowntypes.bufbuild_es@1.9.0-20240313220449-3186086b2a8e.1(@bufbuild/protobuf@1.9.0)':
+  '@buf/mpapenbr_iracelog.bufbuild_es@1.9.0-20240531140606-7b7655704e96.1(@bufbuild/protobuf@1.9.0)':
     dependencies:
       '@bufbuild/protobuf': 1.9.0
 
-  '@buf/protocolbuffers_wellknowntypes.community_timostamm-protobuf-ts@2.9.4-20240313220449-3186086b2a8e.3(@protobuf-ts/runtime-rpc@2.9.4)(@protobuf-ts/runtime@2.9.4)':
+  '@buf/mpapenbr_iracelog.community_timostamm-protobuf-ts@2.9.4-20240531140606-7b7655704e96.3(@protobuf-ts/runtime-rpc@2.9.4)(@protobuf-ts/runtime@2.9.4)':
     dependencies:
       '@protobuf-ts/runtime': 2.9.4
       '@protobuf-ts/runtime-rpc': 2.9.4
 
-  '@buf/protocolbuffers_wellknowntypes.connectrpc_es@1.4.0-20240313220449-3186086b2a8e.2(@bufbuild/protobuf@1.9.0)(@connectrpc/connect@1.4.0(@bufbuild/protobuf@1.9.0))':
+  '@buf/mpapenbr_iracelog.connectrpc_es@1.4.0-20240531140606-7b7655704e96.2(@bufbuild/protobuf@1.9.0)(@connectrpc/connect@1.4.0(@bufbuild/protobuf@1.9.0))':
     dependencies:
-      '@buf/protocolbuffers_wellknowntypes.bufbuild_es': 1.7.2-20240313220449-3186086b2a8e.1(@bufbuild/protobuf@1.9.0)
+      '@buf/mpapenbr_iracelog.bufbuild_es': 1.7.2-20240531140606-7b7655704e96.1(@bufbuild/protobuf@1.9.0)
       '@connectrpc/connect': 1.4.0(@bufbuild/protobuf@1.9.0)
     transitivePeerDependencies:
       - '@bufbuild/protobuf'
@@ -6211,10 +6145,6 @@ snapshots:
 
   '@types/aria-query@5.0.4': {}
 
-  '@types/autobahn@20.9.4':
-    dependencies:
-      '@types/when': 2.4.41
-
   '@types/babel__core@7.20.5':
     dependencies:
       '@babel/parser': 7.24.5
@@ -6342,8 +6272,6 @@ snapshots:
       '@types/geojson': 7946.0.14
 
   '@types/use-sync-external-store@0.0.3': {}
-
-  '@types/when@2.4.41': {}
 
   '@typescript-eslint/eslint-plugin@7.10.0(@typescript-eslint/parser@7.10.0(eslint@8.57.0)(typescript@5.4.5))(eslint@8.57.0)(typescript@5.4.5)':
     dependencies:
@@ -6722,8 +6650,6 @@ snapshots:
   async@3.2.5: {}
 
   asynckit@0.4.0: {}
-
-  autobahn-browser@22.11.1: {}
 
   available-typed-arrays@1.0.7:
     dependencies:
@@ -7568,8 +7494,6 @@ snapshots:
       glob-parent: 5.1.2
       merge2: 1.4.1
       micromatch: 4.0.6
-
-  fast-json-patch@3.1.1: {}
 
   fast-json-stable-stringify@2.1.0: {}
 

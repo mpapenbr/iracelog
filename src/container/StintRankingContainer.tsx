@@ -1,4 +1,4 @@
-import { StintInfo } from "@buf/mpapenbr_testrepo.community_timostamm-protobuf-ts/testrepo/analysis/v1/car_stint_pb";
+import { StintInfo } from "@buf/mpapenbr_iracelog.community_timostamm-protobuf-ts/iracelog/analysis/v1/car_stint_pb";
 import { Col, Divider, Empty, Row, Select, Slider } from "antd";
 import * as React from "react";
 import { globalWamp } from "../commons/globals";
@@ -9,9 +9,9 @@ import { getCarStints, isInSelectedRange } from "../components/live/util";
 import { getCombinedStintData } from "../components/nivo/stintsummary/commons";
 import StintRankingSvg from "../components/stintRanking/rankingSvg";
 import { useAppDispatch, useAppSelector } from "../stores";
-import { IMultiCarSelectFilterSettings } from "../stores/grpc/slices/types";
+import { IMultiCarSelectFilterSettings, IStintRankingSettings } from "../stores/grpc/slices/types";
 import { updateGlobalSettings, updateStintRankings } from "../stores/grpc/slices/userSettingsSlice";
-import { IStintRankingSettings } from "../stores/ui/types";
+
 import { secAsHHMMSS } from "../utils/output";
 import { InputData, prepareFilterData } from "./multiCarSelectFilterHelper";
 

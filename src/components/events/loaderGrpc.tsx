@@ -1,28 +1,28 @@
-import { GetEventRequest } from "@buf/mpapenbr_testrepo.bufbuild_es/testrepo/event/v1/event_service_pb";
-import { CarLaps } from "@buf/mpapenbr_testrepo.community_timostamm-protobuf-ts/testrepo/analysis/v1/car_laps_pb";
-import { CarOccupancy } from "@buf/mpapenbr_testrepo.community_timostamm-protobuf-ts/testrepo/analysis/v1/car_occupancy_pb";
-import { CarPit } from "@buf/mpapenbr_testrepo.community_timostamm-protobuf-ts/testrepo/analysis/v1/car_pit_pb";
-import { CarStint } from "@buf/mpapenbr_testrepo.community_timostamm-protobuf-ts/testrepo/analysis/v1/car_stint_pb";
-import { RaceGraph } from "@buf/mpapenbr_testrepo.community_timostamm-protobuf-ts/testrepo/analysis/v1/racegraph_pb";
+import { GetEventRequest } from "@buf/mpapenbr_iracelog.bufbuild_es/iracelog/event/v1/event_service_pb";
+import { CarLaps } from "@buf/mpapenbr_iracelog.community_timostamm-protobuf-ts/iracelog/analysis/v1/car_laps_pb";
+import { CarOccupancy } from "@buf/mpapenbr_iracelog.community_timostamm-protobuf-ts/iracelog/analysis/v1/car_occupancy_pb";
+import { CarPit } from "@buf/mpapenbr_iracelog.community_timostamm-protobuf-ts/iracelog/analysis/v1/car_pit_pb";
+import { CarStint } from "@buf/mpapenbr_iracelog.community_timostamm-protobuf-ts/iracelog/analysis/v1/car_stint_pb";
+import { RaceGraph } from "@buf/mpapenbr_iracelog.community_timostamm-protobuf-ts/iracelog/analysis/v1/racegraph_pb";
 import {
   CarClass,
   CarContainer,
   CarEntry,
   CarInfo,
-} from "@buf/mpapenbr_testrepo.community_timostamm-protobuf-ts/testrepo/car/v1/car_pb";
+} from "@buf/mpapenbr_iracelog.community_timostamm-protobuf-ts/iracelog/car/v1/car_pb";
 import {
   Event,
   ReplayInfo,
-} from "@buf/mpapenbr_testrepo.community_timostamm-protobuf-ts/testrepo/event/v1/event_pb";
+} from "@buf/mpapenbr_iracelog.community_timostamm-protobuf-ts/iracelog/event/v1/event_pb";
 import {
   Car,
   MessageContainer,
   Session,
-} from "@buf/mpapenbr_testrepo.community_timostamm-protobuf-ts/testrepo/racestate/v1/racestate_pb";
-import { Speedmap } from "@buf/mpapenbr_testrepo.community_timostamm-protobuf-ts/testrepo/speedmap/v1/speedmap_pb";
-import { AnalysisService } from "@buf/mpapenbr_testrepo.connectrpc_es/testrepo/analysis/v1/analysis_service_connect";
-import { EventService } from "@buf/mpapenbr_testrepo.connectrpc_es/testrepo/event/v1/event_service_connect";
-import { TrackService } from "@buf/mpapenbr_testrepo.connectrpc_es/testrepo/track/v1/track_service_connect";
+} from "@buf/mpapenbr_iracelog.community_timostamm-protobuf-ts/iracelog/racestate/v1/racestate_pb";
+import { Speedmap } from "@buf/mpapenbr_iracelog.community_timostamm-protobuf-ts/iracelog/speedmap/v1/speedmap_pb";
+import { AnalysisService } from "@buf/mpapenbr_iracelog.connectrpc_es/iracelog/analysis/v1/analysis_service_connect";
+import { EventService } from "@buf/mpapenbr_iracelog.connectrpc_es/iracelog/event/v1/event_service_connect";
+import { TrackService } from "@buf/mpapenbr_iracelog.connectrpc_es/iracelog/track/v1/track_service_connect";
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
 import { globalWamp } from "../../commons/globals";

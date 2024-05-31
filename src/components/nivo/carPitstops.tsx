@@ -6,7 +6,7 @@ import React from "react";
 import {
   CarPit,
   PitInfo,
-} from "@buf/mpapenbr_testrepo.community_timostamm-protobuf-ts/testrepo/analysis/v1/car_pit_pb";
+} from "@buf/mpapenbr_iracelog.community_timostamm-protobuf-ts/iracelog/analysis/v1/car_pit_pb";
 import { secAsHHMMSS, secAsMMSS } from "../../utils/output";
 
 const { Option } = Select;

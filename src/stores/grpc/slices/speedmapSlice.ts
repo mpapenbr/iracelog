@@ -1,4 +1,4 @@
-import { Speedmap } from "@buf/mpapenbr_testrepo.community_timostamm-protobuf-ts/testrepo/speedmap/v1/speedmap_pb";
+import { Speedmap } from "@buf/mpapenbr_iracelog.community_timostamm-protobuf-ts/iracelog/speedmap/v1/speedmap_pb";
 import type { PayloadAction } from "@reduxjs/toolkit";
 import { createSlice } from "@reduxjs/toolkit";
 

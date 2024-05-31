@@ -1,6 +1,6 @@
-import { Event } from "@buf/mpapenbr_testrepo.community_timostamm-protobuf-ts/testrepo/event/v1/event_pb";
-import { GetLatestEventsResponse } from "@buf/mpapenbr_testrepo.community_timostamm-protobuf-ts/testrepo/event/v1/event_service_pb";
-//import { GetLatestEventsResponse } from "@buf/mpapenbr_testrepo.bufbuild_es/testrepo/event/v1/event_service_pb";
+import { Event } from "@buf/mpapenbr_iracelog.community_timostamm-protobuf-ts/iracelog/event/v1/event_pb";
+import { GetLatestEventsResponse } from "@buf/mpapenbr_iracelog.community_timostamm-protobuf-ts/iracelog/event/v1/event_service_pb";
+//import { GetLatestEventsResponse } from "@buf/mpapenbr_iracelog.bufbuild_es/iracelog/event/v1/event_service_pb";
 import type { PayloadAction } from "@reduxjs/toolkit";
 import { createSlice } from "@reduxjs/toolkit";
 
