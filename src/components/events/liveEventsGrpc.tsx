@@ -7,17 +7,17 @@ import {
   LiveDriverDataRequest,
   LiveRaceStateRequest,
   LiveSpeedmapRequest,
-} from "@buf/mpapenbr_testrepo.bufbuild_es/testrepo/livedata/v1/live_service_pb";
-import { ListLiveEventsResponse } from "@buf/mpapenbr_testrepo.bufbuild_es/testrepo/provider/v1/provider_service_pb";
+} from "@buf/mpapenbr_iracelog.bufbuild_es/iracelog/livedata/v1/live_service_pb";
+import { ListLiveEventsResponse } from "@buf/mpapenbr_iracelog.bufbuild_es/iracelog/provider/v1/provider_service_pb";
 
-import { Event } from "@buf/mpapenbr_testrepo.community_timostamm-protobuf-ts/testrepo/event/v1/event_pb";
+import { Event } from "@buf/mpapenbr_iracelog.community_timostamm-protobuf-ts/iracelog/event/v1/event_pb";
 import {
   Car,
   Session,
-} from "@buf/mpapenbr_testrepo.community_timostamm-protobuf-ts/testrepo/racestate/v1/racestate_pb";
-import { Track } from "@buf/mpapenbr_testrepo.community_timostamm-protobuf-ts/testrepo/track/v1/track_pb";
-import { LiveDataService } from "@buf/mpapenbr_testrepo.connectrpc_es/testrepo/livedata/v1/live_service_connect";
-import { ProviderService } from "@buf/mpapenbr_testrepo.connectrpc_es/testrepo/provider/v1/provider_service_connect";
+} from "@buf/mpapenbr_iracelog.community_timostamm-protobuf-ts/iracelog/racestate/v1/racestate_pb";
+import { Track } from "@buf/mpapenbr_iracelog.community_timostamm-protobuf-ts/iracelog/track/v1/track_pb";
+import { LiveDataService } from "@buf/mpapenbr_iracelog.connectrpc_es/iracelog/livedata/v1/live_service_connect";
+import { ProviderService } from "@buf/mpapenbr_iracelog.connectrpc_es/iracelog/provider/v1/provider_service_connect";
 import { ConnectError } from "@connectrpc/connect";
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
@@ -28,12 +28,12 @@ import { updateClassification } from "../../stores/grpc/slices/classificationSli
 import { updateEvent, updateTrack } from "../../stores/grpc/slices/eventInfoSlice";
 import { updateSession } from "../../stores/grpc/slices/sessionSlice";
 
-import { CarLaps } from "@buf/mpapenbr_testrepo.community_timostamm-protobuf-ts/testrepo/analysis/v1/car_laps_pb";
-import { CarOccupancy } from "@buf/mpapenbr_testrepo.community_timostamm-protobuf-ts/testrepo/analysis/v1/car_occupancy_pb";
-import { CarPit } from "@buf/mpapenbr_testrepo.community_timostamm-protobuf-ts/testrepo/analysis/v1/car_pit_pb";
-import { CarStint } from "@buf/mpapenbr_testrepo.community_timostamm-protobuf-ts/testrepo/analysis/v1/car_stint_pb";
-import { RaceGraph } from "@buf/mpapenbr_testrepo.community_timostamm-protobuf-ts/testrepo/analysis/v1/racegraph_pb";
-import { Speedmap } from "@buf/mpapenbr_testrepo.community_timostamm-protobuf-ts/testrepo/speedmap/v1/speedmap_pb";
+import { CarLaps } from "@buf/mpapenbr_iracelog.community_timostamm-protobuf-ts/iracelog/analysis/v1/car_laps_pb";
+import { CarOccupancy } from "@buf/mpapenbr_iracelog.community_timostamm-protobuf-ts/iracelog/analysis/v1/car_occupancy_pb";
+import { CarPit } from "@buf/mpapenbr_iracelog.community_timostamm-protobuf-ts/iracelog/analysis/v1/car_pit_pb";
+import { CarStint } from "@buf/mpapenbr_iracelog.community_timostamm-protobuf-ts/iracelog/analysis/v1/car_stint_pb";
+import { RaceGraph } from "@buf/mpapenbr_iracelog.community_timostamm-protobuf-ts/iracelog/analysis/v1/racegraph_pb";
+import { Speedmap } from "@buf/mpapenbr_iracelog.community_timostamm-protobuf-ts/iracelog/speedmap/v1/speedmap_pb";
 import { updateCarClasses } from "../../stores/grpc/slices/carClassesSlice";
 import { updateCarEntries } from "../../stores/grpc/slices/carEntrySlice";
 import { updateCarInfo } from "../../stores/grpc/slices/carInfoSlice";

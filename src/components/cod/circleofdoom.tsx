@@ -1,13 +1,13 @@
 import {
   Car,
   CarState,
-} from "@buf/mpapenbr_testrepo.community_timostamm-protobuf-ts/testrepo/racestate/v1/racestate_pb";
+} from "@buf/mpapenbr_iracelog.community_timostamm-protobuf-ts/iracelog/racestate/v1/racestate_pb";
 
 import * as React from "react";
 
 import { sprintf } from "sprintf-js";
 
-import { CarEntry } from "@buf/mpapenbr_testrepo.community_timostamm-protobuf-ts/testrepo/car/v1/car_pb";
+import { CarEntry } from "@buf/mpapenbr_iracelog.community_timostamm-protobuf-ts/iracelog/car/v1/car_pb";
 import { useAppSelector } from "../../stores";
 import { ICarBaseData } from "../../stores/grpc/slices/availableCarsSlice";
 import { assignCarColors } from "../live//colorAssignment";

@@ -1,7 +1,7 @@
 import { Line } from "@ant-design/charts";
 import { Types } from "@antv/g2/lib";
 
-import { RaceGraph } from "@buf/mpapenbr_testrepo.community_timostamm-protobuf-ts/testrepo/analysis/v1/racegraph_pb";
+import { RaceGraph } from "@buf/mpapenbr_iracelog.community_timostamm-protobuf-ts/iracelog/analysis/v1/racegraph_pb";
 import { Empty } from "antd";
 import _, { isNumber } from "lodash";
 import React from "react";

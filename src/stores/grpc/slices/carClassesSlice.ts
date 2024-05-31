@@ -1,4 +1,4 @@
-import { CarClass } from "@buf/mpapenbr_testrepo.community_timostamm-protobuf-ts/testrepo/car/v1/car_pb";
+import { CarClass } from "@buf/mpapenbr_iracelog.community_timostamm-protobuf-ts/iracelog/car/v1/car_pb";
 import type { PayloadAction } from "@reduxjs/toolkit";
 import { createSlice } from "@reduxjs/toolkit";
 

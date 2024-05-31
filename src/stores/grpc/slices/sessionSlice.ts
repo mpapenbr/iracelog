@@ -1,5 +1,5 @@
-import { Session as SessionMsg } from "@buf/mpapenbr_testrepo.bufbuild_es/testrepo/racestate/v1/racestate_pb";
-import { Session } from "@buf/mpapenbr_testrepo.community_timostamm-protobuf-ts/testrepo/racestate/v1/racestate_pb";
+import { Session as SessionMsg } from "@buf/mpapenbr_iracelog.bufbuild_es/iracelog/racestate/v1/racestate_pb";
+import { Session } from "@buf/mpapenbr_iracelog.community_timostamm-protobuf-ts/iracelog/racestate/v1/racestate_pb";
 import type { PayloadAction } from "@reduxjs/toolkit";
 import { createSlice } from "@reduxjs/toolkit";
 

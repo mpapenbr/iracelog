@@ -1,4 +1,4 @@
-import { StintInfo } from "@buf/mpapenbr_testrepo.community_timostamm-protobuf-ts/testrepo/analysis/v1/car_stint_pb";
+import { StintInfo } from "@buf/mpapenbr_iracelog.community_timostamm-protobuf-ts/iracelog/analysis/v1/car_stint_pb";
 import { Divider, Empty, Row, Select } from "antd";
 import * as React from "react";
 import MultiSelectCarFilter from "../components/live/multiCarSelectFilter";

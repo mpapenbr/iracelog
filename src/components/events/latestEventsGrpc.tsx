@@ -1,4 +1,4 @@
-import { EventService } from "@buf/mpapenbr_testrepo.connectrpc_es/testrepo/event/v1/event_service_connect";
+import { EventService } from "@buf/mpapenbr_iracelog.connectrpc_es/iracelog/event/v1/event_service_connect";
 import { Button, Descriptions, List } from "antd";
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
