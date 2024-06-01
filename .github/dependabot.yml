@@ -7,11 +7,8 @@ version: 2
 updates:
   - package-ecosystem: "npm" # See documentation for possible values
     directory: "/" # Location of package manifests
-    lockfile-path: "pnpm-lock.yaml"
     schedule:
       interval: "weekly"
-    strategy:
-      versioning-policy: "lockfile-only"
     open-pull-requests-limit: 15
     groups:
       production-dependencies:
