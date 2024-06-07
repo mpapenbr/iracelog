@@ -1,6 +1,6 @@
 import { StintInfo } from "@buf/mpapenbr_iracelog.community_timostamm-protobuf-ts/iracelog/analysis/v1/car_stint_pb";
 
-import { Empty, Tooltip } from "antd";
+import { Empty, Tooltip, theme } from "antd";
 import _ from "lodash";
 import { useAppSelector } from "../../stores";
 import { lapTimeString, secAsHHMM } from "../../utils/output";
@@ -24,9 +24,10 @@ interface MyProps {
 interface IStintInfoExt extends StintInfo {
   avgLapTime: number;
 }
+const { useToken } = theme;
 const StintRankingSvg: React.FC<MyProps> = (props: MyProps) => {
   const carOccs = useAppSelector((state) => state.carOccupancies);
-
+  const { token } = useToken();
   const width = props.width ?? 800;
   const height = props.height ?? 600;
   const marginLeft = 55;
@@ -111,7 +112,7 @@ const StintRankingSvg: React.FC<MyProps> = (props: MyProps) => {
           x1={0}
           x2={graphWidth}
           y={0}
-          style={{ strokeWidth: 1, stroke: "grey" }}
+          style={{ strokeWidth: 1, stroke: token.colorTextLabel }}
         />
         {xInfo.ticks.map((d, idx) => (
           <line
@@ -120,7 +121,7 @@ const StintRankingSvg: React.FC<MyProps> = (props: MyProps) => {
             x2={(d - xInfo.lmin) * stepX}
             y1={0}
             y2={7}
-            style={{ strokeWidth: 1, stroke: "grey" }}
+            style={{ strokeWidth: 1, stroke: token.colorTextLabel }}
           />
         ))}
         {xInfo.ticks.map((d, idx) => (
@@ -128,7 +129,7 @@ const StintRankingSvg: React.FC<MyProps> = (props: MyProps) => {
             key={`x-line-label-${idx}`}
             x={(d - xInfo.lmin) * stepX}
             y={7}
-            // style={{ strokeWidth: 1, stroke: "grey" }}
+            style={{ fill: token.colorTextLabel }}
             textAnchor="middle"
             alignmentBaseline="hanging"
           >
@@ -147,7 +148,7 @@ const StintRankingSvg: React.FC<MyProps> = (props: MyProps) => {
           x={0}
           y1={0}
           y2={graphHeight}
-          style={{ strokeWidth: 1, stroke: "grey" }}
+          style={{ strokeWidth: 1, stroke: token.colorTextLabel }}
         />
         {yInfo.ticks.map((d, idx) => (
           <line
@@ -157,7 +158,7 @@ const StintRankingSvg: React.FC<MyProps> = (props: MyProps) => {
             y1={(yInfo.lmax - d) * stepY}
             y2={(yInfo.lmax - d) * stepY}
             // y2={d * stepY}
-            style={{ strokeWidth: 1, stroke: "grey" }}
+            style={{ strokeWidth: 1, stroke: token.colorTextLabel }}
           />
         ))}
         {yInfo.ticks.map((d, idx) => (
@@ -165,7 +166,8 @@ const StintRankingSvg: React.FC<MyProps> = (props: MyProps) => {
             key={`x-line-label-${idx}`}
             x={-7}
             y={(yInfo.lmax - d) * stepY}
-            // style={{ strokeWidth: 1, stroke: "grey" }}
+            // style={{ stroke: token.colorTextDescription }}
+            style={{ fill: token.colorTextLabel }}
             textAnchor="end"
             alignmentBaseline="middle"
           >
@@ -191,7 +193,7 @@ const StintRankingSvg: React.FC<MyProps> = (props: MyProps) => {
                 key={`legend-text-${idx}`}
                 x={carNumLabel - 2}
                 y={idx * 15}
-                // style={{ strokeWidth: 1, stroke: "grey" }}
+                style={{ fill: token.colorTextLabel }}
                 textAnchor="end"
                 alignmentBaseline="middle"
               >

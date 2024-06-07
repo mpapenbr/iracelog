@@ -1,4 +1,4 @@
-import { Table, TablePaginationConfig } from "antd";
+import { Table, TablePaginationConfig, theme } from "antd";
 import { ColumnsType } from "antd/lib/table";
 import _ from "lodash";
 import React from "react";
@@ -13,6 +13,7 @@ import {
   TimeWithMarker,
   TireCompound,
 } from "@buf/mpapenbr_iracelog.community_timostamm-protobuf-ts/iracelog/racestate/v1/racestate_pb";
+
 import {
   updateClassification,
   updateStandingColumns,
@@ -23,11 +24,12 @@ import { findDriverBySessionTimeGrpc } from "./live/util";
 interface MyProps {
   showCars: string[];
 }
-
+const { useToken } = theme;
 type Props = MyProps;
 
 export const Standings: React.FC<Props> = (props: Props) => {
   const uiSettings = useAppSelector((state) => state.userSettings.classification);
+  const globalSettings = useAppSelector((state) => state.userSettings.global);
   const stateColumnsAvail = useAppSelector((state) => state.userSettings.standingsColumns);
   const eventInfo = useAppSelector((state) => state.eventInfo);
   const sessionInfo = useAppSelector((state) => state.session);
@@ -39,6 +41,7 @@ export const Standings: React.FC<Props> = (props: Props) => {
   const carClasses = useAppSelector((state) => state.carClasses);
 
   const dispatch = useAppDispatch();
+  const { token } = useToken();
 
   const entryByIdx = Object.assign({}, ...availableCars.map((x) => ({ [x.carIdx]: x.carNum })));
 
@@ -52,17 +55,18 @@ export const Standings: React.FC<Props> = (props: Props) => {
     if (v < 0) {
       return "";
     }
+
     switch (d.marker) {
       case TimeMarker.OLD_VALUE:
-        return <span style={{ color: "lightgrey" }}>{lapTimeString(v)}</span>;
+        return <span style={{ color: token.colorTextDisabled }}>{lapTimeString(v)}</span>;
       case TimeMarker.OVERALL_BEST:
-        return <span style={{ color: "purple", fontWeight: 500 }}>{lapTimeString(v)}</span>;
+        return <span style={{ color: "darkorchid", fontWeight: 500 }}>{lapTimeString(v)}</span>;
       case TimeMarker.PERSONAL_BEST:
         return <span style={{ color: "green", fontWeight: 500 }}>{lapTimeString(v)}</span>;
       case TimeMarker.CLASS_BEST:
-        return <span style={{ color: "red", fontWeight: 500 }}>{lapTimeString(v)}</span>;
+        return <span style={{ color: "OrangeRed", fontWeight: 500 }}>{lapTimeString(v)}</span>;
       case TimeMarker.CAR_BEST:
-        return <span style={{ color: "blue", fontWeight: 500 }}>{lapTimeString(v)}</span>;
+        return <span style={{ color: "dodgerblue", fontWeight: 500 }}>{lapTimeString(v)}</span>;
       default:
         return lapTimeString(v);
     }
@@ -150,7 +154,7 @@ export const Standings: React.FC<Props> = (props: Props) => {
     return (
       <svg width="80px" height="12">
         <rect x={0} y={0} width="100%" height="100%" style={{ stroke: "grey", fillOpacity: 0 }} />
-        <rect x={pos} y={0} width={2} height="100%" style={{ fill: "black" }} />
+        <rect x={pos} y={0} width={2} height="100%" style={{ fill: token.colorTextBase }} />
       </svg>
     );
   };
@@ -356,7 +360,8 @@ export const Standings: React.FC<Props> = (props: Props) => {
       dataSource={cars}
       rowKey={() => _.uniqueId()}
       onRow={(data: Car, num) => ({
-        className: "standings-" + resolveState(data.state)?.toLowerCase(),
+        className:
+          "standings-" + globalSettings.theme + "-" + resolveState(data.state)?.toLowerCase(),
       })}
     />
   );

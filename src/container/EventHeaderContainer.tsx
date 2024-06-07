@@ -106,7 +106,7 @@ export const EventHeaderContainer: React.FC = () => {
   }
   return (
     <Row className="raceHeader">
-      <Col flex={1}>
+      <Col flex={2}>
         <table width="100%" style={{ lineHeight: "1rem" }}>
           <tbody>
             <tr>
@@ -146,7 +146,7 @@ export const EventHeaderContainer: React.FC = () => {
       {/* <Col flex={1}>
         <div className={flagBackground} style={{ display: "flow", verticalAlign: "center" }}></div>
       </Col> */}
-      <Col flex={1}>
+      <Col flex={2}>
         <table width="100%" style={{ lineHeight: "1rem" }}>
           <tbody>
             <tr>

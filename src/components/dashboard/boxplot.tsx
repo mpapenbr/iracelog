@@ -4,6 +4,7 @@ import React from "react";
 import { globalWamp } from "../../commons/globals";
 import { useAppSelector } from "../../stores";
 import { lapTimeString } from "../../utils/output";
+import { antChartsTheme } from "../antcharts/color";
 import { IBoxPlotDataExtended, boxPlotDataFor, stintLaps } from "../live/statsutil";
 import { getCarStints } from "../live/util";
 
@@ -14,6 +15,7 @@ const BoxPlot: React.FC<MyProps> = (props) => {
   const carStints = useAppSelector((state) => state.carStints);
 
   const carLaps = useAppSelector((state) => state.carLaps);
+  const globalSettings = useAppSelector((state) => state.userSettings.global);
   const { showCars } = props;
   const currentCarLaps = (carNum: string) => carLaps.find((v) => v.carNum === carNum);
 
@@ -61,7 +63,7 @@ const BoxPlot: React.FC<MyProps> = (props) => {
   );
   // console.log(bounds);
   const animation = globalWamp.currentLiveId ? false : true;
-
+  const graphTheme = antChartsTheme(globalSettings.theme);
   const laptimeFormatter = { formatter: (d: any) => lapTimeString(d) };
   const config = {
     data: boxData,
@@ -72,6 +74,7 @@ const BoxPlot: React.FC<MyProps> = (props) => {
     },
     groupField: "type",
     xField: "carNum",
+    theme: graphTheme.antd.theme,
     // outliersField: "outliers", // deactivated. see https://github.com/ant-design/ant-design-charts/issues/800
     meta: {
       minTime: { ...laptimeFormatter },

@@ -8,6 +8,7 @@ import * as React from "react";
 import { sprintf } from "sprintf-js";
 
 import { CarEntry } from "@buf/mpapenbr_iracelog.community_timostamm-protobuf-ts/iracelog/car/v1/car_pb";
+import { theme } from "antd";
 import { useAppSelector } from "../../stores";
 import { ICarBaseData } from "../../stores/grpc/slices/availableCarsSlice";
 import { assignCarColors } from "../live//colorAssignment";
@@ -27,7 +28,7 @@ interface MyProps {
   pitstopTime: number;
   circleSize: number;
 }
-
+const { useToken } = theme;
 // this component should be the new pluggable cod
 // NOTE: works only with raceLogger >= 0.5.0
 export const CircleOfDoom: React.FC<MyProps> = (props: MyProps) => {
@@ -39,6 +40,7 @@ export const CircleOfDoom: React.FC<MyProps> = (props: MyProps) => {
   const carInfos = useAppSelector((state) => state.availableCars);
   const speedmapData = useAppSelector((state) => state.speedmap);
   const carIdxLookup = useAppSelector((state) => state.byIdxLookup);
+  const { token } = useToken();
   const carLookup = carInfos.reduce((prev, cur) => {
     return prev.set(cur.carNum, cur);
   }, new Map<string, ICarBaseData>());
@@ -112,7 +114,12 @@ export const CircleOfDoom: React.FC<MyProps> = (props: MyProps) => {
     const yp = y;
     return (
       <>
-        <text x={circleSize} y={circleSize} textAnchor="middle">
+        <text
+          x={circleSize}
+          y={circleSize}
+          textAnchor="middle"
+          style={{ fill: token.colorTextLabel }}
+        >
           {carData.name}
         </text>
         <g transform={`rotate(${90 + newPosStart} ${circleSize} ${circleSize} )`}>
@@ -333,7 +340,7 @@ export const CircleOfDoom: React.FC<MyProps> = (props: MyProps) => {
                       y={0}
                       textAnchor="middle" /* transform={`rotate(-${pos} 250 5) translate(0 5 )`} */
                       alignmentBaseline="central"
-                      style={{ fontSize: 20, fontWeight: "bold" }}
+                      style={{ fontSize: 20, fontWeight: "bold", fill: token.colorTextLabel }}
                     >
                       {item.carNum}
                     </text>
@@ -369,6 +376,7 @@ export const CircleOfDoom: React.FC<MyProps> = (props: MyProps) => {
                   x={circleSize}
                   y={y + h + 15}
                   textAnchor="middle" /* transform={`rotate(-${pos} 250 5) translate(0 5 )`} */
+                  style={{ fill: token.colorTextLabel }}
                 >
                   {item.carNum}
                 </text>

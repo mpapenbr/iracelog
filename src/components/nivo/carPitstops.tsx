@@ -1,5 +1,5 @@
 import { ResponsiveBar, ResponsiveBarCanvas } from "@nivo/bar";
-import { Empty, Select } from "antd";
+import { Empty, Select, theme } from "antd";
 import _ from "lodash";
 import React from "react";
 
@@ -10,7 +10,7 @@ import {
 import { secAsHHMMSS, secAsMMSS } from "../../utils/output";
 
 const { Option } = Select;
-
+const { useToken } = theme;
 interface MyProps {
   carPits: CarPit[];
   showCars: string[];
@@ -21,7 +21,7 @@ const CarPitstopsNivo: React.FC<MyProps> = (props: MyProps) => {
   // const cars = useSelector((state: ApplicationState) => state.raceData.availableCars);
   // const carPits = useSelector((state: ApplicationState) => state.raceData.carPits);
   // const uiSettings = useSelector((state: ApplicationState) => state.userSettings.pitstops);
-
+  const { token } = useToken();
   const carOrder = [...props.showCars].reverse(); //.sort(sortCarNumberStr).reverse();
 
   const numEntries = (item: CarPit) =>
@@ -30,6 +30,8 @@ const CarPitstopsNivo: React.FC<MyProps> = (props: MyProps) => {
 
   const dataLookup = props.carPits.reduce((prev, cur) => {
     const pitstops = [...cur.history].concat(cur.current?.isCurrentPitstop ? cur.current : []);
+    // history data does not contain carNum. we'll add it here
+    pitstops.forEach((v) => (v.carNum = cur.carNum));
     prev.set(cur.carNum, pitstops);
     return prev;
   }, new Map<string, PitInfo[]>());
@@ -76,7 +78,7 @@ value: 77.66666666553647
 
     const pitIdx = parseInt(match![1]) - 1;
     return (
-      <div style={{ background: "white" }}>
+      <div style={{ background: token.colorBgBase, color: token.colorTextBase }}>
         <strong>
           #{pitInfo[pitIdx].carNum} {data.id}
         </strong>
@@ -97,6 +99,16 @@ value: 77.66666666553647
     margin: { top: 20, right: 130, bottom: 50, left: 60 },
     labelSkipWidth: 20,
     axisLeft: { format: (value: any) => `#${value}` },
+    theme: {
+      axis: {
+        ticks: {
+          text: {
+            fill: token.colorTextLabel,
+          },
+          line: { stroke: token.colorTextLabel },
+        },
+      },
+    },
     // the following props don't get recognized. error message is like: "string" not valid here
     // layout: "horizontal",
     // valueScale: {type: "linear"  },

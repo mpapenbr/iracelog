@@ -48,6 +48,8 @@ const initialStateGlobalSettings = {
   showCars: [],
   filterCarClasses: [],
   referenceCarNum: "",
+  theme: "light",
+  useCompact: false,
 } as IGlobalSettings;
 const globalSettings = createSlice({
   name: "globalSettings",
@@ -61,6 +63,14 @@ const globalSettings = createSlice({
     },
     toggleFilterOrderByPosition(state) {
       state.filterOrderByPosition = !state.filterOrderByPosition;
+    },
+    setTheme(state, action: PayloadAction<string>) {
+      if (["light", "dark", "dimmed"].includes(action.payload)) {
+        state.theme = action.payload;
+      }
+    },
+    toggleCompact(state) {
+      state.useCompact = !state.useCompact;
     },
     resetGlobalSettings() {
       return initialStateGlobalSettings;
@@ -424,6 +434,8 @@ export const {
   resetGlobalSettings,
   toggleFilterOrderByPosition,
   toggleSyncSelection,
+  toggleCompact,
+  setTheme,
 } = globalSettings.actions;
 export const { updateStandingColumns, resetStandingsColumns } = standingsColumns.actions;
 export const { updateClassification, resetClassification } = classificationSettings.actions;

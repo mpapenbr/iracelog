@@ -1,7 +1,7 @@
 import { PitInfo } from "@buf/mpapenbr_iracelog.community_timostamm-protobuf-ts/iracelog/analysis/v1/car_pit_pb";
 import { StintInfo } from "@buf/mpapenbr_iracelog.community_timostamm-protobuf-ts/iracelog/analysis/v1/car_stint_pb";
 
-import { Tooltip } from "antd";
+import { Tooltip, theme } from "antd";
 import React from "react";
 import { useAppSelector } from "../../../stores";
 import { secAsMMSS } from "../../../utils/output";
@@ -18,7 +18,7 @@ interface MyProps {
   maxTime: number; // already external computed values to be used
   combinedStintData: CombinedStintData[];
 }
-
+const { useToken } = theme;
 /**
  * provides a stretch with combined stints and pitstops
  * @param props
@@ -33,6 +33,7 @@ const StintStretch: React.FC<MyProps> = (props: MyProps) => {
     return <></>;
     // return <Empty />;
   }
+  const { token } = useToken();
   const currentCarInfo = carOccs.find((v) => v.carNum === props.carNum)!;
   const combined = props.combinedStintData;
 
@@ -56,6 +57,7 @@ const StintStretch: React.FC<MyProps> = (props: MyProps) => {
             x={carNumLabel - 2}
             y={textHeight + (barHeight - textHeight) / 2}
             fontSize={Math.min(12, textHeight)}
+            style={{ fill: token.colorTextLabel }}
             textAnchor="end"
           >
             {`#${props.carNum}`}

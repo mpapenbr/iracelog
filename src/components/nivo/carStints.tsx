@@ -1,5 +1,5 @@
 import { ResponsiveBar, ResponsiveBarCanvas } from "@nivo/bar";
-import { Empty } from "antd";
+import { Empty, theme } from "antd";
 import _ from "lodash";
 import React from "react";
 
@@ -10,6 +10,7 @@ import {
 } from "@buf/mpapenbr_iracelog.community_timostamm-protobuf-ts/iracelog/analysis/v1/car_stint_pb";
 import { secAsHHMMSS, secAsMMSS } from "../../utils/output";
 
+const { useToken } = theme;
 interface MyProps {
   carStints: CarStint[];
   carOccs: CarOccupancy[];
@@ -17,6 +18,7 @@ interface MyProps {
   showAsLabel: string;
 }
 const CarStintsNivo: React.FC<MyProps> = (props: MyProps) => {
+  const { token } = useToken();
   const carOrder = [...props.showCars].reverse();
   const numEntries = (item: CarStint) =>
     item.history.length + (item.current?.isCurrentStint ? 1 : 0);
@@ -24,6 +26,8 @@ const CarStintsNivo: React.FC<MyProps> = (props: MyProps) => {
 
   const dataLookup = props.carStints.reduce((prev, cur) => {
     const stints = [...cur.history].concat(cur.current?.isCurrentStint ? cur.current : []);
+    // history data does not contain carNum. we'll add it here
+    stints.forEach((v) => (v.carNum = cur.carNum));
     prev.set(cur.carNum, stints);
     return prev;
   }, new Map<string, StintInfo[]>());
@@ -91,7 +95,7 @@ value: 77.66666666553647
     const item = stintInfo[stintIdx];
     const driver = stintDriverLookup.get(item.carNum)?.[stintIdx];
     return (
-      <div style={{ background: "white" }}>
+      <div style={{ background: token.colorBgContainer, color: token.colorTextBase }}>
         <strong>
           #{item.carNum} {data.id}
         </strong>
@@ -122,6 +126,16 @@ value: 77.66666666553647
     margin: { top: 20, right: 130, bottom: 50, left: 60 },
     labelSkipWidth: 20,
     axisLeft: { format: (value: any) => `#${value}` },
+    theme: {
+      axis: {
+        ticks: {
+          text: {
+            fill: token.colorTextLabel,
+          },
+          line: { stroke: token.colorTextLabel },
+        },
+      },
+    },
     // the following props don't get recognized. error message is like: "string" not valid here
     // layout: "horizontal",
     // valueScale: {type: "linear"  },

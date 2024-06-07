@@ -2,6 +2,7 @@ import {
   Car,
   CarState,
 } from "@buf/mpapenbr_iracelog.community_timostamm-protobuf-ts/iracelog/racestate/v1/racestate_pb";
+import { theme } from "antd";
 import * as React from "react";
 import { useAppSelector } from "../../stores";
 import { ICarBaseData } from "../../stores/grpc/slices/availableCarsSlice";
@@ -22,6 +23,7 @@ interface MyProps {
   pitstopTime: number;
 }
 
+const { useToken } = theme;
 export const CircleOfDoom: React.FC<MyProps> = (props: MyProps) => {
   const carsRaw = useAppSelector((state) => state.classification);
   const carLaps = useAppSelector((state) => state.carLaps);
@@ -29,6 +31,7 @@ export const CircleOfDoom: React.FC<MyProps> = (props: MyProps) => {
   const trackInfo = useAppSelector((state) => state.eventInfo.track);
   const carInfos = useAppSelector((state) => state.availableCars);
   const carIdxLookup = useAppSelector((state) => state.byIdxLookup);
+  const { token } = useToken();
   const carLookup = carInfos.reduce((prev, cur) => {
     return prev.set(cur.carNum, cur);
   }, new Map<string, ICarBaseData>());
@@ -80,7 +83,12 @@ export const CircleOfDoom: React.FC<MyProps> = (props: MyProps) => {
     const color = getColor(data.carNum);
     return (
       <>
-        <text x={circleSize} y={circleSize} textAnchor="middle">
+        <text
+          x={circleSize}
+          y={circleSize}
+          textAnchor="middle"
+          style={{ fill: token.colorTextLabel }}
+        >
           {carData.name}
         </text>
         <g transform={`rotate(${newPos} ${circleSize} ${circleSize})`}>
@@ -194,6 +202,7 @@ export const CircleOfDoom: React.FC<MyProps> = (props: MyProps) => {
                   x={circleSize + w / 2}
                   y={y - 5}
                   textAnchor="middle" /* transform={`rotate(-${pos} 250 5) translate(0 5 )`} */
+                  style={{ fill: token.colorTextLabel }}
                 >
                   {item.carNum}
                 </text>
@@ -224,6 +233,7 @@ export const CircleOfDoom: React.FC<MyProps> = (props: MyProps) => {
                   x={circleSize}
                   y={y + h + 15}
                   textAnchor="middle" /* transform={`rotate(-${pos} 250 5) translate(0 5 )`} */
+                  style={{ fill: token.colorTextLabel }}
                 >
                   {item.carNum}
                 </text>

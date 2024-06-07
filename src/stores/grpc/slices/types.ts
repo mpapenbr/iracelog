@@ -129,6 +129,8 @@ export interface IGlobalSettings {
   showCars: string[];
   filterCarClasses: string[]; // empty = all classes, otherwise only selected
   referenceCarNum?: string; // used for graphs where a reference is needed
+  theme: string;
+  useCompact: boolean;
 }
 export interface IUiData {
   stint: IUiStints;
