@@ -3,8 +3,8 @@ import { ColumnsType } from "antd/lib/table";
 import React, { Key } from "react";
 import { useAppDispatch, useAppSelector } from "../stores";
 
+import { IColumnInfo } from "../stores/grpc/slices/types";
 import { updateClassification } from "../stores/grpc/slices/userSettingsSlice";
-import { IColumnInfo } from "../stores/ui/types";
 
 const StandingsColumnControlTable: React.FC = () => {
   const allCols = useAppSelector((state) => state.userSettings.standingsColumns);

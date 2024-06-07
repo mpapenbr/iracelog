@@ -1,5 +1,5 @@
 import { Pie } from "@nivo/pie";
-import { Empty } from "antd";
+import { Empty, theme } from "antd";
 import React from "react";
 import { useAppSelector } from "../../../stores";
 import { secAsHHMMSS } from "../../../utils/output";
@@ -15,10 +15,11 @@ interface GraphData {
   value: string | number;
   color?: string;
 }
+const { useToken } = theme;
 const StintCircle: React.FC<MyProps> = (props: MyProps) => {
   const carOccs = useAppSelector((state) => state.carOccupancies);
   const carStints = useAppSelector((state) => state.carStints);
-
+  const { token } = useToken();
   const carStint = carStints.find((v) => v.carNum === props.carNum);
   if (!props.carNum || !carStint) {
     return <Empty />;
@@ -48,6 +49,13 @@ const StintCircle: React.FC<MyProps> = (props: MyProps) => {
         innerRadius={0.7}
         // margin={{ top: 20, bottom: 20, left: 20, right: 40 }}
         layers={["arcs"]}
+        theme={{
+          tooltip: {
+            container: {
+              background: token.colorBgContainer,
+            },
+          },
+        }}
       />
     </>
   );

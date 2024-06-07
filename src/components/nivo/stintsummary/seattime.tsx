@@ -1,5 +1,5 @@
 import { Pie } from "@nivo/pie";
-import { Empty } from "antd";
+import { Empty, theme } from "antd";
 import React from "react";
 import { sprintf } from "sprintf-js";
 import { useAppSelector } from "../../../stores";
@@ -9,12 +9,12 @@ import { colorsBySeatTime, commonProps } from "./commons";
 interface MyProps {
   carNum?: string;
 }
-
+const { useToken } = theme;
 const StintSeatTime: React.FC<MyProps> = (props: MyProps) => {
   const carOccs = useAppSelector((state) => state.carOccupancies);
 
   const carStints = useAppSelector((state) => state.carStints);
-
+  const { token } = useToken();
   const carStint = carStints.find((v) => v.carNum === props.carNum);
   if (!props.carNum || !carStint) {
     return <Empty />;
@@ -26,6 +26,7 @@ const StintSeatTime: React.FC<MyProps> = (props: MyProps) => {
     0,
   );
 
+  // const dark = G2.getTheme("dark");
   const myData = colorsBySeatTime(currentCarInfo.drivers);
   const pieProps = {
     ...commonProps,
@@ -46,12 +47,19 @@ const StintSeatTime: React.FC<MyProps> = (props: MyProps) => {
         data={myData.seatTimeData}
         colors={{ datum: "data.color" }}
         valueFormat={(d) => secAsHHMMSS(d)}
+        theme={{
+          legends: {
+            text: {
+              fill: token.colorText,
+            },
+          },
+        }}
         tooltip={({ datum: { id, value, color } }) => (
           <div
             style={{
               padding: 12,
               color,
-              background: "#ffffff",
+              background: token.colorBgContainer,
             }}
           >
             <strong>
@@ -61,13 +69,6 @@ const StintSeatTime: React.FC<MyProps> = (props: MyProps) => {
             </strong>
           </div>
         )}
-        theme={{
-          tooltip: {
-            container: {
-              background: "#333",
-            },
-          },
-        }}
         layers={["arcs", "arcLabels", "legends"]}
         legends={[
           {

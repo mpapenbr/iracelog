@@ -13,6 +13,7 @@
   }
 }
 
+/* Note: currently not used */
 .App-header {
   background-color: #282c34;
 
@@ -22,7 +23,8 @@
   align-items: center;
   justify-content: center;
   font-size: calc(10px + 2vmin);
-  color: white;
+  padding-left: 10px;
+  /* color: white; */
 }
 
 .App-link {
@@ -42,9 +44,9 @@
 /* @import "~antd/dist/reset.css"; */
 
 .site-layout-content {
-  min-height: 280px;
+  /* min-height: 280px; */
   padding: 12px 6px;
-  background: #fff;
+  /* background: #fff; */
 }
 
 .logo {
@@ -126,17 +128,41 @@ div.iracelog-background-green {
 }
 
 div.iracelog-event-description {
-  color: rgba(0, 0, 0, 0.45);
+  /* color: rgba(0, 0, 0, 0.45); */
 }
 
-tr.standings-out {
+tr.standings-light-out {
   background-color: silver;
   font-style: italic;
 }
 
-tr.standings-pit {
+tr.standings-light-pit {
   background-color: beige;
 }
-tr.standings-slow {
+tr.standings-light-slow {
+  background-color: coral;
+}
+
+tr.standings-dimmed-out {
+  background-color: rgb(101, 94, 94);
+  font-style: italic;
+}
+
+tr.standings-dimmed-pit {
+  background-color: rgb(138, 138, 116);
+}
+tr.standings-dimmed-slow {
+  background-color: coral;
+}
+
+tr.standings-dark-out {
+  background-color: rgb(101, 94, 94);
+  font-style: italic;
+}
+
+tr.standings-dark-pit {
+  background-color: rgb(138, 138, 116);
+}
+tr.standings-dark-slow {
   background-color: coral;
 }

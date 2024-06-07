@@ -1,24 +1,27 @@
-import { Line } from "@ant-design/charts";
+import { Line, LineConfig } from "@ant-design/charts";
 import { Types } from "@antv/g2/lib";
 
 import { RaceGraph } from "@buf/mpapenbr_iracelog.community_timostamm-protobuf-ts/iracelog/analysis/v1/racegraph_pb";
-import { Empty } from "antd";
+import { Empty, theme } from "antd";
 import _, { isNumber } from "lodash";
 import React from "react";
 import { sprintf } from "sprintf-js";
 import { globalWamp } from "../../commons/globals";
 import { useAppSelector } from "../../stores";
 import { assignCarColors } from "../live/colorAssignment";
+import { antChartsTheme } from "./color";
 
 interface MyProps {
   showCars: string[];
 }
+const { useToken } = theme;
 const LeaderGraph: React.FC<MyProps> = (props: MyProps) => {
   const availableCars = useAppSelector((state) => state.availableCars);
 
   const userSettings = useAppSelector((state) => state.userSettings.raceGraph);
+  const globalSettings = useAppSelector((state) => state.userSettings.global);
   const raceGraph = useAppSelector((state) => state.raceGraph);
-
+  const { token } = useToken();
   const { showCars } = props;
   // console.log(showCars);
   if (!showCars.length) return <Empty description="Please select cars to show" />;
@@ -79,8 +82,8 @@ const LeaderGraph: React.FC<MyProps> = (props: MyProps) => {
   const noAnimationOption = {
     duration: 0,
   };
-
-  const config = {
+  const graphTheme = antChartsTheme(globalSettings.theme);
+  const config: LineConfig = {
     data: graphDataOrig,
     height: 700,
     limitInPlot: true,
@@ -91,10 +94,14 @@ const LeaderGraph: React.FC<MyProps> = (props: MyProps) => {
     //   size: 3,
     //   shape: "diamond",
     // },
-    line: { size: 2 },
+    // line: { size: 2 },
     colorField: "carNum",
+    lineStyle: {
+      // lineWidth: 1,
+    },
     color: localColors,
     slider: sliderData,
+    theme: graphTheme.antd.theme,
     yAxis: {
       nice: true,
 

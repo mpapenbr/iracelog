@@ -6,6 +6,7 @@ import { globalWamp } from "../../../commons/globals";
 
 import { useAppSelector } from "../../../stores";
 import { lapTimeString } from "../../../utils/output";
+import { antChartsTheme } from "../../antcharts/color";
 import { boxPlotDataFor, stintLaps } from "../../live/statsutil";
 import { getCarStints } from "../../live/util";
 
@@ -16,6 +17,7 @@ interface MyProps {
 const StintBoxplot: React.FC<MyProps> = (props: MyProps) => {
   const carLaps = useAppSelector((state) => state.carLaps);
   const carStints = useAppSelector((state) => state.carStints);
+  const globalSettings = useAppSelector((state) => state.userSettings.global);
 
   const carStint = carStints.find((v) => v.carNum === props.carNum);
   if (!props.carNum || !carStint) {
@@ -51,6 +53,7 @@ const StintBoxplot: React.FC<MyProps> = (props: MyProps) => {
   // console.log(bounds);
   // console.log(boxData);
   const laptimeFormatter = { formatter: (d: any) => lapTimeString(d) };
+  const graphTheme = antChartsTheme(globalSettings.theme);
   const config = {
     data: boxData,
     title: "huhu",
@@ -59,6 +62,7 @@ const StintBoxplot: React.FC<MyProps> = (props: MyProps) => {
 
       ...bounds,
     },
+    theme: graphTheme.antd.theme,
     xField: "stint",
     // outliersField: "outliers", // deactivated. see https://github.com/ant-design/ant-design-charts/issues/800
     meta: {

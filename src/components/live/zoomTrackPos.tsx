@@ -3,9 +3,11 @@ import {
   CarState,
 } from "@buf/mpapenbr_iracelog.community_timostamm-protobuf-ts/iracelog/racestate/v1/racestate_pb";
 import { PitInfo } from "@buf/mpapenbr_iracelog.community_timostamm-protobuf-ts/iracelog/track/v1/track_pb";
+import { theme } from "antd";
 import _ from "lodash";
 import * as React from "react";
 import { useAppSelector } from "../../stores";
+import { antChartsTheme } from "../antcharts/color";
 import { assignCarColors } from "./colorAssignment";
 
 type TrackPosData = {
@@ -22,13 +24,16 @@ interface MyProps {
   referenceCarNum: string;
   trackPos: number;
 }
-
+const { useToken } = theme;
 export const ZoomTrackPos: React.FC<MyProps> = (props: MyProps) => {
   const carsRaw = useAppSelector((state) => state.classification);
+  const globalSettings = useAppSelector((state) => state.userSettings.globalSettings);
 
   const trackInfo = useAppSelector((state) => state.eventInfo.track);
   const carInfos = useAppSelector((state) => state.availableCars);
   const carIdxLookup = useAppSelector((state) => state.byIdxLookup);
+  const { token } = useToken();
+  const graphTheme = antChartsTheme(globalSettings.theme);
 
   const dataRaw: TrackPosData[] = carsRaw.map((c: Car, idx: number) => ({
     carNum: carIdxLookup.carNum[c.carIdx],
@@ -96,14 +101,14 @@ export const ZoomTrackPos: React.FC<MyProps> = (props: MyProps) => {
         <rect
           width={boxWidth / 2}
           height={boxHeight + margin}
-          style={{ fill: "red", fillOpacity: 0.05 }}
+          style={{ fill: "red", fillOpacity: 0.2 }}
         />
       </g>
       <g transform={`translate( ${margin / 2} 0 )`}>
         <rect
           width={boxWidth / 2}
           height={boxHeight + margin}
-          style={{ fill: "green", fillOpacity: 0.05 }}
+          style={{ fill: "green", fillOpacity: 0.2 }}
         />
       </g>
 
@@ -125,7 +130,7 @@ export const ZoomTrackPos: React.FC<MyProps> = (props: MyProps) => {
             height={emphasizeHeight}
             style={{ fill: carColors.get(props.referenceCarNum) }}
           />
-          <text y={-3} textAnchor="middle">
+          <text y={-3} textAnchor="middle" style={{ fill: token.colorTextLabel }}>
             {referenceCar.carNum}
           </text>
         </g>
@@ -152,7 +157,7 @@ export const ZoomTrackPos: React.FC<MyProps> = (props: MyProps) => {
                   height={standardHeight}
                   style={{ fill: carColors.get(c.carNum) }}
                 />
-                <text y={-3} textAnchor="middle">
+                <text y={-3} textAnchor="middle" style={{ fill: token.colorTextLabel }}>
                   {c.carNum}
                 </text>
               </g>
@@ -168,7 +173,7 @@ export const ZoomTrackPos: React.FC<MyProps> = (props: MyProps) => {
               })`}
             >
               <rect width={1} height={2} style={{ fill: "grey" }} />
-              <text y={15} textAnchor="middle" style={{ fontSize: 10 }}>
+              <text y={15} textAnchor="middle" style={{ fontSize: 10, fill: token.colorTextLabel }}>
                 {`${(deltaRange / 4) * Math.abs(i)}m`}
               </text>
             </g>
@@ -194,7 +199,11 @@ export const ZoomTrackPos: React.FC<MyProps> = (props: MyProps) => {
                 } ${baseLine - sectorMarkerLen / 2})`}
               >
                 <rect width={w} height={h} style={{ fill: color }} />
-                <text y={15} textAnchor="middle" style={{ fontSize: 10 }}>
+                <text
+                  y={15}
+                  textAnchor="middle"
+                  style={{ fontSize: 10, fill: token.colorTextLabel }}
+                >
                   {item.num === 0 ? "S/F" : `S${item.num}`}
                 </text>
               </g>

@@ -1,5 +1,5 @@
 import { ResponsiveLine } from "@nivo/line";
-import { Col, Empty, Row, Spin } from "antd";
+import { Col, Empty, Row, Spin, theme } from "antd";
 import React from "react";
 import { useAppSelector } from "../../stores";
 
@@ -15,11 +15,13 @@ interface MyProps {
   showPosInClass: boolean;
 }
 
+const { useToken } = theme;
+
 const RacePositionGraphNivo: React.FC<MyProps> = (props) => {
   // const wamp = useSelector((state: ApplicationState) => state.wamp.data);
 
   const raceGraph = useAppSelector((state) => state.raceGraph);
-
+  const { token } = useToken();
   if (raceGraph.length === 0) {
     return <Spin />;
   }
@@ -81,6 +83,7 @@ const RacePositionGraphNivo: React.FC<MyProps> = (props) => {
                 anchor: "top-right",
                 direction: "column",
                 justify: false,
+                itemTextColor: token.colorTextLabel,
                 translateX: 100,
                 translateY: 0,
                 itemsSpacing: 0,
@@ -102,6 +105,21 @@ const RacePositionGraphNivo: React.FC<MyProps> = (props) => {
                 ],
               },
             ]}
+            theme={{
+              axis: {
+                ticks: {
+                  text: {
+                    fill: token.colorTextLabel,
+                  },
+                  line: { stroke: token.colorTextLabel },
+                },
+              },
+              tooltip: {
+                container: {
+                  background: token.colorBgBase,
+                },
+              },
+            }}
           />
         </div>
       </Col>

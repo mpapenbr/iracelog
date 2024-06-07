@@ -1,4 +1,4 @@
-import { Line } from "@ant-design/charts";
+import { Line, LineConfig } from "@ant-design/charts";
 import { Types } from "@antv/g2/lib";
 import { Empty } from "antd";
 import _, { isNumber } from "lodash";
@@ -8,6 +8,7 @@ import { firstBy } from "thenby";
 import { globalWamp } from "../../commons/globals";
 import { useAppSelector } from "../../stores";
 import { assignCarColors } from "../live/colorAssignment";
+import { antChartsTheme } from "./color";
 
 interface MyProps {
   showCars: string[];
@@ -19,8 +20,8 @@ interface MyProps {
 const Delta: React.FC<MyProps> = (props: MyProps) => {
   const availableCars = useAppSelector((state) => state.availableCars);
 
-  const userSettingsx = useAppSelector((state) => state.userSettings.raceGraphRelative);
   const raceGraph = useAppSelector((state) => state.raceGraph);
+  const globalSettings = useAppSelector((state) => state.userSettings.global);
 
   const { showCars, referenceCarNum } = props;
   if (!referenceCarNum) return <Empty description="Select reference car" />;
@@ -73,18 +74,22 @@ const Delta: React.FC<MyProps> = (props: MyProps) => {
   const noAnimationOption = {
     duration: 0,
   };
-  const config = {
+  const graphTheme = antChartsTheme(globalSettings.theme);
+  const config: LineConfig = {
     data: graphDataOrig,
 
     limitInPlot: true,
     xField: "lapNo",
     yField: "gap",
     seriesField: "carNum",
+    theme: graphTheme.antd.theme,
     // point: {
     //   size: 3,
     //   shape: "diamond",
     // },
-    line: { size: 2 },
+    lineStyle: {
+      // lineWidth: 1,
+    },
 
     color: localColors,
     slider: sliderData,
@@ -138,7 +143,7 @@ const Delta: React.FC<MyProps> = (props: MyProps) => {
         end: ["max", "min"] as [string, string],
 
         style: {
-          fill: "green",
+          fill: graphTheme.antd.regionGreen,
         },
         top: true,
       },
@@ -148,7 +153,7 @@ const Delta: React.FC<MyProps> = (props: MyProps) => {
         end: ["max", "max"] as [string, string],
 
         style: {
-          fill: "red",
+          fill: graphTheme.antd.regionRed,
         },
         top: true,
       },

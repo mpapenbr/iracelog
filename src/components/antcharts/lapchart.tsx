@@ -1,4 +1,4 @@
-import { Line } from "@ant-design/charts";
+import { Line, LineConfig } from "@ant-design/charts";
 
 import {
   CarLaps,
@@ -13,6 +13,7 @@ import { lapTimeString, sortCarNumberStr } from "../../utils/output";
 import { assignCarColors } from "../live/colorAssignment";
 import { statsDataFor, stintLaps } from "../live/statsutil";
 import { getCarStints } from "../live/util";
+import { antChartsTheme } from "./color";
 
 interface MyProps {
   showCars: string[];
@@ -22,10 +23,10 @@ interface MyProps {
 const Lapchart: React.FC<MyProps> = (props) => {
   const availableCars = useAppSelector((state) => state.availableCars);
 
-  const userSettxings = useAppSelector((state) => state.userSettings.driverLaps);
   const carStints = useAppSelector((state) => state.carStints);
 
   const carLaps = useAppSelector((state) => state.carLaps);
+  const globalSettings = useAppSelector((state) => state.userSettings.global);
 
   // const availableCars = useSelector((state: ApplicationState) => state.raceData.availableCars);
   // const carLaps = useSelector((state: ApplicationState) => state.raceData.carLaps);
@@ -75,7 +76,8 @@ const Lapchart: React.FC<MyProps> = (props) => {
   // console.log(lapData);
   const sliderData = globalWamp.currentLiveId ? undefined : { start: 0, end: 1 };
   const animate = globalWamp.currentLiveId ? false : true;
-  const config = {
+  const graphTheme = antChartsTheme(globalSettings.theme);
+  const config: LineConfig = {
     data: lapData,
 
     xField: "lapNoStr",
@@ -85,7 +87,10 @@ const Lapchart: React.FC<MyProps> = (props) => {
       size: 3,
       shape: "diamond",
     },
-    line: { size: 1 },
+    theme: graphTheme.antd.theme,
+    lineStyle: {
+      lineWidth: 1,
+    },
 
     color: localColors,
     slider: sliderData,

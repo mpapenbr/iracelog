@@ -1,6 +1,7 @@
 import { Line } from "@ant-design/charts";
 import * as React from "react";
 import { useAppSelector } from "../../stores";
+import { antChartsTheme } from "../antcharts/color";
 
 interface IColor {
   red: number;
@@ -12,6 +13,7 @@ export const Speedmap: React.FC = () => {
   const payload = useAppSelector((state) => state.speedmap);
   const carClasses = useAppSelector((state) => state.carClasses);
   const trackInfo = useAppSelector((state) => state.eventInfo.track);
+  const globalSettings = useAppSelector((state) => state.userSettings.global);
 
   const carClassLookup = carClasses.reduce((prev, cur) => {
     prev.set(cur.id.toString(), cur.name);
@@ -78,10 +80,11 @@ export const Speedmap: React.FC = () => {
         });
       });
     });
-
+    const graphTheme = antChartsTheme(globalSettings.theme);
     // console.log(plotdata);
     const config = {
       // width: 800,
+      theme: graphTheme.antd.theme,
       height: 400,
       data: plotdata,
       xField: "x",
