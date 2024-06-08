@@ -4,6 +4,7 @@
 # https://help.github.com/github/administering-a-repository/configuration-options-for-dependency-updates
 
 version: 2
+
 updates:
   - package-ecosystem: "npm" # See documentation for possible values
     directory: "/" # Location of package manifests
@@ -18,6 +19,8 @@ updates:
     ignore:
       - dependency-name: "@ant-design/charts"
         update-types: ["version-update:semver-major"]
+      # will be udpated manually on new functionality
+      - dependency-name: "@buf/mpapenbr_iracelog.*"
 
   - package-ecosystem: github-actions
     directory: /
