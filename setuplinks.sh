@@ -18,10 +18,3 @@ if [ ! -e $HOME/.cobra.yaml ]; then
     fi
 fi
 
-# linking .npmrc
-if [ ! -e $HOME/.npmrc ]; then
-    if [ -f $PWD/.npmrc ]; then
-        echo "Linking .npmrc"
-        ln -s $PWD/.npmrc $HOME/.npmrc
-    fi
-fi
