@@ -33,6 +33,29 @@ export const StrategyContainer: React.FC = () => {
   const entryByIdx = useAppSelector((state) => state.byIdxLookup.carNum);
   const dispatch = useAppDispatch();
 
+  // containerWidth state and ref (copilot proposal)
+  const containerRef = React.useRef<HTMLDivElement>(null); // Step 1: Create a ref for the container
+  const [containerWidth, setContainerWidth] = React.useState(0); // Step 2: Initialize state for the container's width
+
+  React.useEffect(() => {
+    const updateWidth = () => {
+      // Check if the container ref is current and update the width
+      if (containerRef.current) {
+        setContainerWidth(containerRef.current.offsetWidth);
+      }
+    };
+
+    updateWidth(); // Set initial width
+
+    window.addEventListener("resize", updateWidth); // Update width on resize
+
+    // Cleanup the event listener on component unmount
+    return () => window.removeEventListener("resize", updateWidth);
+  }, []);
+
+  // Use containerWidth as needed in your component
+  // console.log(containerWidth); // For demonstration, logs the current container width
+
   const inputData: InputData = {
     stateGlobalSettings: stateGlobalSettings,
     pageFilterSettings: userSettings,
@@ -98,7 +121,7 @@ export const StrategyContainer: React.FC = () => {
     );
 
   return (
-    <>
+    <div ref={containerRef}>
       <Row gutter={16}>
         <MultiSelectCarFilter {...props} />
       </Row>
@@ -111,7 +134,7 @@ export const StrategyContainer: React.FC = () => {
                 carNum={c.carNum}
                 height={30}
                 showCarNum
-                width={800}
+                width={containerWidth}
                 {...combinedDataMinMax}
                 combinedStintData={c.combined}
               />
@@ -121,6 +144,6 @@ export const StrategyContainer: React.FC = () => {
       ) : (
         <Empty />
       )}
-    </>
+    </div>
   );
 };

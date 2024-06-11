@@ -28,6 +28,29 @@ export const StintRankingContainer: React.FC = () => {
   const session = useAppSelector((state) => state.session);
   const dispatch = useAppDispatch();
 
+  // containerWidth state and ref (copilot proposal)
+  const containerRef = React.useRef<HTMLDivElement>(null); // Step 1: Create a ref for the container
+  const [containerWidth, setContainerWidth] = React.useState(0); // Step 2: Initialize state for the container's width
+
+  React.useEffect(() => {
+    const updateWidth = () => {
+      // Check if the container ref is current and update the width
+      if (containerRef.current) {
+        setContainerWidth(containerRef.current.offsetWidth);
+      }
+    };
+
+    updateWidth(); // Set initial width
+
+    window.addEventListener("resize", updateWidth); // Update width on resize
+
+    // Cleanup the event listener on component unmount
+    return () => window.removeEventListener("resize", updateWidth);
+  }, []);
+
+  // Use containerWidth as needed in your component
+  // console.log(containerWidth); // For demonstration, logs the current container width
+
   const inputData: InputData = {
     stateGlobalSettings: stateGlobalSettings,
     pageFilterSettings: userSettings,
@@ -111,9 +134,9 @@ export const StintRankingContainer: React.FC = () => {
     );
   };
 
-  const width = 880;
+  const width = containerWidth;
   return (
-    <>
+    <div ref={containerRef}>
       <Row gutter={16}>
         <MultiSelectCarFilter {...props} />
       </Row>
@@ -122,7 +145,7 @@ export const StintRankingContainer: React.FC = () => {
           <Divider />
           <Row>
             <StintRankingSvg
-              height={400}
+              height={800}
               width={width}
               combinedStintData={combinedData}
               {...combinedDataMinMax}
@@ -151,6 +174,6 @@ export const StintRankingContainer: React.FC = () => {
       ) : (
         <Empty />
       )}
-    </>
+    </div>
   );
 };
