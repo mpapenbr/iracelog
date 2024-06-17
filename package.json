@@ -6,7 +6,7 @@
   "dependencies": {
     "@ant-design/charts": "^1.4.3",
     "@ant-design/icons": "^5.3.7",
-    "@apollo/client": "^3.10.4",
+    "@apollo/client": "^3.10.5",
     "@buf/mpapenbr_iracelog.bufbuild_es": "1.9.0-20240531140606-7b7655704e96.1",
     "@buf/mpapenbr_iracelog.community_timostamm-protobuf-ts": "2.9.4-20240531140606-7b7655704e96.3",
     "@buf/mpapenbr_iracelog.connectrpc_es": "1.4.0-20240531140606-7b7655704e96.2",
@@ -20,8 +20,8 @@
     "@nivo/pie": "^0.87.0",
     "@redux-devtools/extension": "^3.3.0",
     "@reduxjs/toolkit": "^2.2.5",
-    "antd": "^5.18.0",
-    "graphql": "^16.8.1",
+    "antd": "^5.18.1",
+    "graphql": "^16.8.2",
     "lodash": "^4.17.21",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
@@ -34,7 +34,7 @@
     "semver": "^7.6.2",
     "sprintf-js": "^1.1.3",
     "thenby": "^1.3.4",
-    "web-vitals": "^4.0.1"
+    "web-vitals": "^4.1.1"
   },
   "devDependencies": {
     "@testing-library/jest-dom": "^6.4.5",
