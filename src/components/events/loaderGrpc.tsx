@@ -4,6 +4,7 @@ import { CarOccupancy } from "@buf/mpapenbr_iracelog.community_timostamm-protobu
 import { CarPit } from "@buf/mpapenbr_iracelog.community_timostamm-protobuf-ts/iracelog/analysis/v1/car_pit_pb";
 import { CarStint } from "@buf/mpapenbr_iracelog.community_timostamm-protobuf-ts/iracelog/analysis/v1/car_stint_pb";
 import { RaceGraph } from "@buf/mpapenbr_iracelog.community_timostamm-protobuf-ts/iracelog/analysis/v1/racegraph_pb";
+import { SnapshotData } from "@buf/mpapenbr_iracelog.community_timostamm-protobuf-ts/iracelog/analysis/v1/snapshot_data_pb";
 import {
   CarClass,
   CarContainer,
@@ -41,6 +42,7 @@ import { updateCarPits } from "../../stores/grpc/slices/carPitsSlice";
 import { updateCarStints } from "../../stores/grpc/slices/carStintsSlice";
 import { updateClassification } from "../../stores/grpc/slices/classificationSlice";
 import { updateEvent, updateTrack } from "../../stores/grpc/slices/eventInfoSlice";
+import { initSnapshotData } from "../../stores/grpc/slices/eventSnapshotData";
 import { loadedMessages } from "../../stores/grpc/slices/messagesSlice";
 import { initialRaceGraph } from "../../stores/grpc/slices/raceGraphSlice";
 import { updateRaceOrder } from "../../stores/grpc/slices/raceOrderSlice";
@@ -108,6 +110,8 @@ export const LoaderPageGrpc: React.FC<MyProps> = (props: MyProps) => {
         dispatch(loadedMessages(res.state?.messages as MessageContainer[]));
         // updates from Speedmap
         dispatch(updateSpeedmap(res.speedmap as Speedmap));
+        // updates from Snapshots
+        dispatch(initSnapshotData(res.snapshots as SnapshotData[]));
       },
     );
 
