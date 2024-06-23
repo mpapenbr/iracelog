@@ -9,6 +9,7 @@ export type StreamContainer = {
   live: CancelFn;
   driverData: CancelFn;
   speedmap: CancelFn;
+  snapshot: CancelFn;
 };
 export const closeStreams = (container?: StreamContainer) => {
   if (container === undefined) {
@@ -29,6 +30,10 @@ export const closeStreams = (container?: StreamContainer) => {
   if (container.speedmap !== undefined) {
     console.log("closing speedmap data connection");
     container.speedmap();
+  }
+  if (container.snapshot !== undefined) {
+    console.log("closing snapshot data connection");
+    container.snapshot();
   }
 };
 

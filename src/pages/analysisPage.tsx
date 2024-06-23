@@ -22,6 +22,7 @@ import { StintRankingContainer } from "../container/StintRankingContainer";
 import { StintSummaryContainer } from "../container/StintSummaryContainer";
 import { StrategyContainer } from "../container/StrategyContainer";
 
+import { WeatherContainer } from "../container/WeatherContainer";
 import { useAppSelector } from "../stores";
 const { Header, Sider, Content } = Layout;
 
@@ -68,6 +69,7 @@ export const AnalysisMainPage: React.FC = () => {
     { label: <Link to="stintSummary">Stint Summary</Link>, key: "stintSummary" },
     { label: <Link to="stintRanking">Stint Ranking</Link>, key: "stintRanking" },
     { label: <Link to="speedmap">Speedmap</Link>, key: "speedmap", requires: ">=0.4.4" },
+    { label: <Link to="weather">Weather</Link>, key: "weather", requires: ">=0.4.4" },
     { label: <Link to="raceEntries">Race entries</Link>, key: "raceEntries", requires: ">=0.4.4" },
     { label: <Link to="messages">Messages</Link>, key: "messages" },
     { label: <Link to="settings">Settings</Link>, key: "settings" },
@@ -128,6 +130,7 @@ export const AnalysisMainPage: React.FC = () => {
           <Route path="settings" element={<SettingsContainer />} />
 
           <Route path="speedmap" element={<SpeedmapContainer />} />
+          <Route path="weather" element={<WeatherContainer />} />
           <Route path="raceEntries" element={<RaceEntriesContainer />} />
         </Routes>
       </Content>

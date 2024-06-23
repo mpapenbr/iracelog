@@ -6,6 +6,7 @@ import {
   LiveAnalysisSelRequest,
   LiveDriverDataRequest,
   LiveRaceStateRequest,
+  LiveSnapshotDataRequest,
   LiveSpeedmapRequest,
 } from "@buf/mpapenbr_iracelog.bufbuild_es/iracelog/livedata/v1/live_service_pb";
 import { ListLiveEventsResponse } from "@buf/mpapenbr_iracelog.bufbuild_es/iracelog/provider/v1/provider_service_pb";
@@ -33,6 +34,7 @@ import { CarOccupancy } from "@buf/mpapenbr_iracelog.community_timostamm-protobu
 import { CarPit } from "@buf/mpapenbr_iracelog.community_timostamm-protobuf-ts/iracelog/analysis/v1/car_pit_pb";
 import { CarStint } from "@buf/mpapenbr_iracelog.community_timostamm-protobuf-ts/iracelog/analysis/v1/car_stint_pb";
 import { RaceGraph } from "@buf/mpapenbr_iracelog.community_timostamm-protobuf-ts/iracelog/analysis/v1/racegraph_pb";
+import { SnapshotData } from "@buf/mpapenbr_iracelog.community_timostamm-protobuf-ts/iracelog/analysis/v1/snapshot_data_pb";
 import { Speedmap } from "@buf/mpapenbr_iracelog.community_timostamm-protobuf-ts/iracelog/speedmap/v1/speedmap_pb";
 import { updateCarClasses } from "../../stores/grpc/slices/carClassesSlice";
 import { updateCarEntries } from "../../stores/grpc/slices/carEntrySlice";
@@ -42,6 +44,7 @@ import { updateForCarNumFromDriverData } from "../../stores/grpc/slices/carNumBy
 import { updateCarOccupancy } from "../../stores/grpc/slices/carOccupancySlice";
 import { updateCarPits } from "../../stores/grpc/slices/carPitsSlice";
 import { updateCarStints } from "../../stores/grpc/slices/carStintsSlice";
+import { initSnapshotData, updateSnapshotData } from "../../stores/grpc/slices/eventSnapshotData";
 import {
   LiveData,
   setConnected,
@@ -80,6 +83,7 @@ export const LiveEvents: React.FC = () => {
     var stateCount = 0;
     var driverDataCount = 0;
     var speedmapCount = 0;
+    var snapshotDataCount = 0;
     closeCurrentConnections();
     resetData(dispatch);
     resetUI(dispatch);
@@ -113,6 +117,7 @@ export const LiveEvents: React.FC = () => {
         if (analysisCount === 1) {
           dispatch(initialCarLaps(res.carLaps as CarLaps[]));
           dispatch(initialRaceGraph(res.raceGraph as RaceGraph[]));
+          dispatch(initSnapshotData(res.snapshots as SnapshotData[]));
         } else {
           dispatch(updateCarLaps(res.carLaps as CarLaps[]));
           dispatch(updateRaceGraph(res.raceGraph as RaceGraph[]));
@@ -174,12 +179,27 @@ export const LiveEvents: React.FC = () => {
         if (err != undefined) console.log(err);
       },
     );
+    const snapshotDataCancel = cbLiveDataClient.liveSnapshotData(
+      LiveSnapshotDataRequest.fromJson({
+        event: { key: eventKey },
+      }),
+      (res) => {
+        snapshotDataCount++;
+        console.log(`snapshot data msg: ${snapshotDataCount}: ${res.toJsonString().length}`);
+        const plain = { ...res };
+        dispatch(updateSnapshotData(res.snapshotData as SnapshotData));
+      },
+      (err) => {
+        if (err != undefined) console.log(err);
+      },
+    );
 
     const c: StreamContainer = {
       analysis: liveAnalysisCancel,
       live: liveStateCancel,
       driverData: liveDriverDataCancel,
       speedmap: speedmapDataCancel,
+      snapshot: snapshotDataCancel,
     };
     globalWamp.streamContainer = c;
   };

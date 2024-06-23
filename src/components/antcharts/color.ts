@@ -3,6 +3,7 @@ export interface IGraphTheme {
     theme: string;
     regionGreen: string;
     regionRed: string;
+    trackWetness: string[];
   };
 }
 
@@ -15,6 +16,16 @@ export const antChartsTheme = (theme: string): IGraphTheme => {
           theme: "dark",
           regionGreen: "green",
           regionRed: "red",
+          trackWetness: [
+            "rgba(0,0,0,0)",
+            "rgba(0,0,0,0)",
+            "#00bfff",
+            "#0080ff",
+            "#0040ff",
+            "#0000ff",
+            "#4000ff",
+            "#8000ff",
+          ],
         },
       };
     default:
@@ -23,6 +34,16 @@ export const antChartsTheme = (theme: string): IGraphTheme => {
           theme: "default",
           regionGreen: "green",
           regionRed: "red",
+          trackWetness: [
+            "rgba(0,0,0,0)",
+            "rgba(0,0,0,0)",
+            "#00bfff",
+            "#0080ff",
+            "#0040ff",
+            "#0000ff",
+            "#4000ff",
+            "#8000ff",
+          ],
         },
       };
   }
