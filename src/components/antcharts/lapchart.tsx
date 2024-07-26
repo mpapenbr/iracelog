@@ -1,4 +1,4 @@
-import { Line, LineConfig } from "@ant-design/charts";
+import { G2, Line, LineConfig } from "@ant-design/charts";
 
 import {
   CarLaps,
@@ -77,6 +77,10 @@ const Lapchart: React.FC<MyProps> = (props) => {
   const sliderData = globalWamp.currentLiveId ? undefined : { start: 0, end: 1 };
   const animate = globalWamp.currentLiveId ? false : true;
   const graphTheme = antChartsTheme(globalSettings.theme);
+  G2.registerTheme("element-link", {
+    start: [{ trigger: "interval:mouseenter", action: "element-link-by-color:link" }],
+    end: [{ trigger: "interval:mouseleave", action: "element-link-by-color:unlink" }],
+  });
   const config: LineConfig = {
     data: lapData,
 
@@ -87,9 +91,16 @@ const Lapchart: React.FC<MyProps> = (props) => {
       size: 3,
       shape: "diamond",
     },
+    state: {
+      inactive: { style: { opacity: 0.09 } },
+    },
     theme: graphTheme.antd.theme,
     lineStyle: {
       lineWidth: 1,
+
+      // lineDash: [4, 4],
+      // lineCap: "butt",
+      // strokeOpacity: 0.9,
     },
 
     color: localColors,
@@ -101,7 +112,14 @@ const Lapchart: React.FC<MyProps> = (props) => {
         props.filterSecs > 0 ? Math.ceil(work.median + props.filterSecs) : Math.ceil(work.q95),
       // label: {formatter: (d: number) => lapTimeString(d)},
     },
-    interactions: globalWamp.currentLiveId ? [] : [{ type: "brush" }],
+    interactions: globalWamp.currentLiveId
+      ? []
+      : [
+          { type: "brush" },
+          { type: "element-highlight" },
+
+          //{ type: "element-link" }, { type: "element-highlight-by-color" }
+        ],
     meta: {
       lapTime: {
         formatter: (d: number) => lapTimeString(d),
@@ -111,7 +129,7 @@ const Lapchart: React.FC<MyProps> = (props) => {
         tickCount: 9,
       },
     },
-    animate: animate,
+
     animation: animate,
   };
   // note: there is a bug in Line: see https://github.com/ant-design/ant-design-charts/issues/797

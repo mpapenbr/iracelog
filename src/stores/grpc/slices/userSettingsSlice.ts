@@ -46,6 +46,7 @@ const initialStateGlobalSettings = {
   syncSelection: true,
   filterOrderByPosition: true,
   showCars: [],
+  highlightCars: [],
   filterCarClasses: [],
   referenceCarNum: "",
   theme: "light",
@@ -72,6 +73,14 @@ const globalSettings = createSlice({
     toggleCompact(state) {
       state.useCompact = !state.useCompact;
     },
+    toggleHighlightCar(state, action: PayloadAction<string>) {
+      if (state.highlightCars.includes(action.payload)) {
+        state.highlightCars = state.highlightCars.filter((v) => v !== action.payload);
+      } else {
+        state.highlightCars.push(action.payload);
+      }
+    },
+
     resetGlobalSettings() {
       return initialStateGlobalSettings;
     },
@@ -435,6 +444,7 @@ export const {
   toggleFilterOrderByPosition,
   toggleSyncSelection,
   toggleCompact,
+  toggleHighlightCar,
   setTheme,
 } = globalSettings.actions;
 export const { updateStandingColumns, resetStandingsColumns } = standingsColumns.actions;

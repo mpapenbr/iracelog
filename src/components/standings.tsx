@@ -15,6 +15,7 @@ import {
 } from "@buf/mpapenbr_iracelog.community_timostamm-protobuf-ts/iracelog/racestate/v1/racestate_pb";
 
 import {
+  toggleHighlightCar,
   updateClassification,
   updateStandingColumns,
 } from "../stores/grpc/slices/userSettingsSlice";
@@ -125,11 +126,11 @@ export const Standings: React.FC<Props> = (props: Props) => {
   };
   const getCarClassName = (carNum: string): string => {
     const classId = carEntryLookup[carNum]?.carClassId;
-    return classId ? carClassLookup[classId]?.name ?? "n.a." : "n.a.";
+    return classId ? (carClassLookup[classId]?.name ?? "n.a.") : "n.a.";
   };
   const getCarName = (carNum: string): string => {
     const carId = carEntryLookup[carNum]?.carId;
-    return carId ? carInfoLookup[carId]?.name ?? "n.a." : "n.a.";
+    return carId ? (carInfoLookup[carId]?.name ?? "n.a.") : "n.a.";
   };
 
   const nullAwareOutput = (value: any, format: string): string => {
@@ -351,7 +352,14 @@ export const Standings: React.FC<Props> = (props: Props) => {
   const filteredColumns = columns.filter((c) =>
     uiSettings.showCols.map((sc) => sc.name).includes(c.key as string),
   );
-
+  const computeClassName = (c: Car): string => {
+    return sprintf(
+      "standings-%s-%s %s",
+      globalSettings.theme,
+      resolveState(c.state)?.toLowerCase(),
+      globalSettings.highlightCars.includes(getCarNum(c)) ? "standings-selected" : "",
+    );
+  };
   return (
     <Table
       className="iracelog-standings"
@@ -359,9 +367,11 @@ export const Standings: React.FC<Props> = (props: Props) => {
       columns={filteredColumns}
       dataSource={cars}
       rowKey={() => _.uniqueId()}
-      onRow={(data: Car, num) => ({
-        className:
-          "standings-" + globalSettings.theme + "-" + resolveState(data.state)?.toLowerCase(),
+      onRow={(data: Car, rowIdx?: number) => ({
+        className: computeClassName(data),
+        onClick: () => {
+          dispatch(toggleHighlightCar(getCarNum(data)));
+        },
       })}
     />
   );
