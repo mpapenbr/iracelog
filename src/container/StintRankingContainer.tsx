@@ -10,7 +10,11 @@ import { getCombinedStintData } from "../components/nivo/stintsummary/commons";
 import StintRankingSvg from "../components/stintRanking/rankingSvg";
 import { useAppDispatch, useAppSelector } from "../stores";
 import { IMultiCarSelectFilterSettings, IStintRankingSettings } from "../stores/grpc/slices/types";
-import { updateGlobalSettings, updateStintRankings } from "../stores/grpc/slices/userSettingsSlice";
+import {
+  toggleHighlightCar,
+  updateGlobalSettings,
+  updateStintRankings,
+} from "../stores/grpc/slices/userSettingsSlice";
 
 import { secAsHHMMSS } from "../utils/output";
 import { InputData, prepareFilterData } from "./multiCarSelectFilterHelper";
@@ -86,6 +90,10 @@ export const StintRankingContainer: React.FC = () => {
         dispatch(updateGlobalSettings({ ...stateGlobalSettings, showCars: selection }));
       }
     },
+    highlightCars: stateGlobalSettings.highlightCars,
+    toggleHighlightCar: (carNum: string) => {
+      dispatch(toggleHighlightCar(carNum));
+    },
   };
 
   const carColors = assignCarColors(availableCars);
@@ -150,6 +158,8 @@ export const StintRankingContainer: React.FC = () => {
               combinedStintData={combinedData}
               {...combinedDataMinMax}
               showCars={props.selectedCars}
+              hightlightCars={props.highlightCars}
+              toggleHighlightCar={props.toggleHighlightCar}
             />
           </Row>
           {globalWamp.currentLiveId === undefined ? (

@@ -166,3 +166,6 @@ tr.standings-dark-pit {
 tr.standings-dark-slow {
   background-color: coral;
 }
+tr.standings-selected {
+  font-weight: bold;
+}
