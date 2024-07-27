@@ -75,7 +75,16 @@ const Lapchart: React.FC<MyProps> = (props) => {
     .flatMap((a) => [...a]);
   // console.log(lapData);
   const sliderData = globalWamp.currentLiveId ? undefined : { start: 0, end: 1 };
-  const animate = globalWamp.currentLiveId ? false : true;
+  // const animate = globalWamp.currentLiveId ? false : true;
+  const noAnimationOption = {
+    duration: 0,
+  };
+  const animate = {
+    appear: noAnimationOption,
+    update: noAnimationOption,
+    // enter: noAnimationOption,
+    // leave: noAnimationOption,
+  };
   const graphTheme = antChartsTheme(globalSettings.theme);
   G2.registerTheme("element-link", {
     start: [{ trigger: "interval:mouseenter", action: "element-link-by-color:link" }],

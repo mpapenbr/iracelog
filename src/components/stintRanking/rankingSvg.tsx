@@ -19,6 +19,8 @@ interface MyProps {
   maxTime: number; // already external computed values to be used
   combinedStintData: ICarCombinedStintData[];
   showCars: string[];
+  hightlightCars: string[];
+  toggleHighlightCar: (carNum: string) => void;
 }
 
 interface IStintInfoExt extends StintInfo {
@@ -61,6 +63,23 @@ const StintRankingSvg: React.FC<MyProps> = (props: MyProps) => {
   }
   const stepY = graphHeight / (yInfo.lmax - yInfo.lmin);
 
+  let haveHighlightCarsToShow = props.hightlightCars && props.hightlightCars.length > 0;
+  if (haveHighlightCarsToShow) {
+    let found = false;
+    for (const carNum of props.hightlightCars) {
+      found ||= props.showCars.includes(carNum);
+    }
+    haveHighlightCarsToShow &&= found;
+  }
+  const calcOpactity = (carData: ICarCombinedStintData): number => {
+    if (haveHighlightCarsToShow) {
+      if (props.hightlightCars.includes(carData.carNum)) {
+        return 1.0;
+      }
+      return 0.2;
+    }
+    return 1.0;
+  };
   const carRow = (carData: ICarCombinedStintData) => {
     return carData.data
       .filter((d) => d.type == "stint")
@@ -95,7 +114,7 @@ const StintRankingSvg: React.FC<MyProps> = (props: MyProps) => {
               y={(yInfo.lmax - d.avgTime) * stepY - 2}
               // x={d.eventTime[0] * stepX}
               // y={d.laptime * stepY - minLaptime * stepY}
-              style={{ fill: d.color }}
+              style={{ fill: d.color, opacity: calcOpactity(carData) ?? 1.0 }}
             ></rect>
           </Tooltip>
         );
@@ -207,7 +226,10 @@ const StintRankingSvg: React.FC<MyProps> = (props: MyProps) => {
                 y={idx * 15 - 4}
                 // x={d.eventTime[0] * stepX}
                 // y={d.laptime * stepY - minLaptime * stepY}
-                style={{ fill: d.data[0].color }}
+                style={{ fill: d.data[0].color, opacity: calcOpactity(d) ?? 1.0 }}
+                onClick={() => {
+                  if (props.toggleHighlightCar) props.toggleHighlightCar(d.carNum);
+                }}
               />
             </g>
           ))}
