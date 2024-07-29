@@ -6,7 +6,7 @@
   "dependencies": {
     "@ant-design/charts": "^1.4.3",
     "@ant-design/icons": "^5.4.0",
-    "@apollo/client": "^3.10.8",
+    "@apollo/client": "^3.11.1",
     "@buf/mpapenbr_iracelog.bufbuild_es": "1.10.0-20240623151922-fb549bddc8ee.1",
     "@buf/mpapenbr_iracelog.community_timostamm-protobuf-ts": "2.9.4-20240623151922-fb549bddc8ee.4",
     "@buf/mpapenbr_iracelog.connectrpc_es": "1.4.0-20240623151922-fb549bddc8ee.3",
@@ -19,7 +19,7 @@
     "@nivo/line": "^0.87.0",
     "@nivo/pie": "^0.87.0",
     "@redux-devtools/extension": "^3.3.0",
-    "@reduxjs/toolkit": "^2.2.6",
+    "@reduxjs/toolkit": "^2.2.7",
     "antd": "^5.19.3",
     "graphql": "^16.8.2",
     "lodash": "^4.17.21",
