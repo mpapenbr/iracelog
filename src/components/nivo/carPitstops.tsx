@@ -7,7 +7,7 @@ import {
   CarPit,
   PitInfo,
 } from "@buf/mpapenbr_iracelog.community_timostamm-protobuf-ts/iracelog/analysis/v1/car_pit_pb";
-import { secAsHHMMSS, secAsMMSS } from "../../utils/output";
+import { secAsMMSS } from "../../utils/output";
 
 const { Option } = Select;
 const { useToken } = theme;
@@ -16,6 +16,7 @@ interface MyProps {
   showCars: string[];
   hideLongPitstops: boolean;
   hideThreshold: number;
+  rangeTimeFormatter: (sec: number) => string;
 }
 const CarPitstopsNivo: React.FC<MyProps> = (props: MyProps) => {
   // const cars = useSelector((state: ApplicationState) => state.raceData.availableCars);
@@ -83,7 +84,7 @@ value: 77.66666666553647
           #{pitInfo[pitIdx].carNum} {data.id}
         </strong>
         <br />
-        Lap {pitInfo[pitIdx].lapEnter} at {secAsHHMMSS(pitInfo[pitIdx].enterTime)}
+        Lap {pitInfo[pitIdx].lapEnter} at {props.rangeTimeFormatter(pitInfo[pitIdx].enterTime)}
       </div>
     );
   };

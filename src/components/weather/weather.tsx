@@ -24,7 +24,22 @@ export const WeatherEvolution: React.FC = () => {
     let lastTime = snapshots[0].timeOfDay.toString();
     const annos = [] as any[];
     snapshots.forEach((e) => {
-      const xKey = e.timeOfDay.toString();
+      var xKey;
+      switch (globalSettings.timeMode) {
+        case "session":
+          xKey = secAsHHMM(e.sessionTime);
+          break;
+        case "sim":
+          xKey = secAsHHMM(e.timeOfDay);
+          break;
+        case "real":
+          const d: Date = e.recordStamp?.toDate();
+          // JS hell when calculating days. In order to use own formatter we need the seconds.
+          // Note: TZ-offset -60 on GMT+0100 ;)
+          xKey = secAsHHMM((d.getTime() / 1000 - d.getTimezoneOffset() * 60) % 86400);
+          break;
+      }
+
       precipitationData.push({
         x: xKey,
         Precipitation: parseFloat((e.precipitation * 100.0).toPrecision(2)),
@@ -101,9 +116,6 @@ export const WeatherEvolution: React.FC = () => {
           // maxLimit: Math.ceil(work.q95),
 
           tickCount: 9,
-        },
-        x: {
-          formatter: (d: number) => secAsHHMM(d),
         },
       },
       animation: false,

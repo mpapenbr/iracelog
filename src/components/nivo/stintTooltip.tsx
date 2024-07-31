@@ -8,8 +8,10 @@ interface MyProps {
   stintInfo: StintInfo;
   driver: string;
   avgLap?: number;
+  displayTime?: (sec: number) => string;
 }
 const StintTooltip: React.FC<MyProps> = (props: MyProps) => {
+  const dispTime = props.displayTime ?? secAsHHMMSS;
   return (
     <div className="iracelog-stint-tooltip">
       <strong>
@@ -21,7 +23,7 @@ const StintTooltip: React.FC<MyProps> = (props: MyProps) => {
       {props.stintInfo.lapEnter - props.stintInfo.lapExit + 1})
       {props.avgLap ? ` (${lapTimeString(props.avgLap)})` : ""}
       <br />
-      {secAsHHMMSS(props.stintInfo.exitTime)} - {secAsHHMMSS(props.stintInfo.enterTime)}
+      {dispTime(props.stintInfo.exitTime)} - {dispTime(props.stintInfo.enterTime)}
     </div>
   );
 };

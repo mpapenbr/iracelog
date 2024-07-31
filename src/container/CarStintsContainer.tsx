@@ -1,6 +1,7 @@
 import { Col, Radio, RadioChangeEvent, Row } from "antd";
 import * as React from "react";
 import MultiSelectCarFilter from "../components/live/multiCarSelectFilter";
+import { hocDisplayTimeByUserSettings } from "../components/live/util";
 import CarStintsNivo from "../components/nivo/carStints";
 import { useAppDispatch, useAppSelector } from "../stores";
 import { IMultiCarSelectFilterSettings } from "../stores/grpc/slices/types";
@@ -15,6 +16,7 @@ export const CarStintsContainer: React.FC = () => {
   const carOccs = useAppSelector((state) => state.carOccupancies);
   const stateGlobalSettings = useAppSelector((state) => state.userSettings.global);
   const raceOrder = useAppSelector((state) => state.raceOrder);
+  const sessionData = useAppSelector((state) => state.session);
   const dispatch = useAppDispatch();
 
   const inputData: InputData = {
@@ -53,12 +55,16 @@ export const CarStintsContainer: React.FC = () => {
       }
     },
   };
-
+  const displayTimeFromSettings = hocDisplayTimeByUserSettings(
+    sessionData,
+    stateGlobalSettings.timeMode,
+  );
   const graphProps = {
     showCars: filterProps.selectedCars,
     carStints: carStints,
     carOccs: carOccs,
     showAsLabel: userSettings.showAsLabel,
+    rangeTimeFormatter: displayTimeFromSettings,
   };
   const onShowModeChange = (e: RadioChangeEvent) => {
     dispatch(updateStints({ ...userSettings, showAsLabel: e.target.value }));

@@ -7,11 +7,11 @@ import {
   CarStint,
   StintInfo,
 } from "@buf/mpapenbr_iracelog.community_timostamm-protobuf-ts/iracelog/analysis/v1/car_stint_pb";
-
 import _ from "lodash";
 import { Comparator } from "semver";
+import { SessionState } from "../../stores";
 import { ICarBaseData as ICarBaseDataGrpc } from "../../stores/grpc/slices/availableCarsSlice";
-import { sortCarNumberStr } from "../../utils/output";
+import { secAsHHMMSS, sortCarNumberStr } from "../../utils/output";
 
 export interface ICarFilterData {
   carNum: string;
@@ -177,3 +177,23 @@ export const isInSelectedRange = (si: StintInfo, range: [number, number]): boole
 export const supportsCarData = (raceloggerVersion: string): boolean => {
   return new Comparator(">=0.4.4").test(raceloggerVersion);
 };
+
+export const hocDisplayTimeByUserSettings =
+  (sessionData: SessionState, timeMode: string, formatter?: (d: number) => string) =>
+  (d: number): string => {
+    const toAdd = sessionData.session.timeOfDay - sessionData.session.sessionTime;
+    const myFormatter = formatter ?? secAsHHMMSS;
+    switch (timeMode) {
+      case "sim":
+        return myFormatter(d + toAdd);
+      case "real":
+        const ref: Date = sessionData.recordDate;
+        // // JS hell when calculating days. In order to use own formatter we need the seconds.
+        // // Note: TZ-offset -60 on GMT+0100 ;)
+        const val = myFormatter((ref.getTime() / 1000 + d - ref.getTimezoneOffset() * 60) % 86400);
+        return val;
+      case "session":
+      default:
+        return myFormatter(d);
+    }
+  };

@@ -3,9 +3,9 @@ import { StintInfo } from "@buf/mpapenbr_iracelog.community_timostamm-protobuf-t
 import { Empty, Tooltip, theme } from "antd";
 import _ from "lodash";
 import { useAppSelector } from "../../stores";
-import { lapTimeString, secAsHHMM } from "../../utils/output";
+import { lapTimeString, secAsHHMM, secAsHHMMSS } from "../../utils/output";
 import { boxPlotDataFor } from "../live/statsutil";
-import { findDriverByStint } from "../live/util";
+import { findDriverByStint, hocDisplayTimeByUserSettings } from "../live/util";
 import StintTooltip from "../nivo/stintTooltip";
 import { ICarCombinedStintData } from "../nivo/stintsummary/commons";
 
@@ -29,6 +29,8 @@ interface IStintInfoExt extends StintInfo {
 const { useToken } = theme;
 const StintRankingSvg: React.FC<MyProps> = (props: MyProps) => {
   const carOccs = useAppSelector((state) => state.carOccupancies);
+  const stateGlobalSettings = useAppSelector((state) => state.userSettings.globalSettings);
+  const sessionData = useAppSelector((state) => state.session);
   const { token } = useToken();
   const width = props.width ?? 800;
   const height = props.height ?? 600;
@@ -80,6 +82,17 @@ const StintRankingSvg: React.FC<MyProps> = (props: MyProps) => {
     }
     return 1.0;
   };
+  const displayTimeX = hocDisplayTimeByUserSettings(
+    sessionData,
+    stateGlobalSettings.timeMode,
+    secAsHHMM,
+  );
+  const displayTimeTT = hocDisplayTimeByUserSettings(
+    sessionData,
+    stateGlobalSettings.timeMode,
+    secAsHHMMSS,
+  );
+
   const carRow = (carData: ICarCombinedStintData) => {
     return carData.data
       .filter((d) => d.type == "stint")
@@ -103,6 +116,7 @@ const StintRankingSvg: React.FC<MyProps> = (props: MyProps) => {
                 no={d.idx}
                 driver={findDriverByStint(currentCarInfo, d.data as StintInfo)?.name ?? "n.a."}
                 avgLap={d.avgTime}
+                displayTime={displayTimeTT}
               />
             }
           >
@@ -152,7 +166,7 @@ const StintRankingSvg: React.FC<MyProps> = (props: MyProps) => {
             textAnchor="middle"
             alignmentBaseline="hanging"
           >
-            {secAsHHMM(d)}
+            {displayTimeX(d)}
           </text>
         ))}
       </g>

@@ -5,7 +5,7 @@ import { Tooltip, theme } from "antd";
 import React from "react";
 import { useAppSelector } from "../../../stores";
 import { secAsMMSS } from "../../../utils/output";
-import { findDriverByStint } from "../../live/util";
+import { findDriverByStint, hocDisplayTimeByUserSettings } from "../../live/util";
 import StintTooltip from "../stintTooltip";
 import { CombinedStintData } from "./commons";
 
@@ -27,8 +27,9 @@ const { useToken } = theme;
 const StintStretch: React.FC<MyProps> = (props: MyProps) => {
   const carOccs = useAppSelector((state) => state.carOccupancies);
   const carStints = useAppSelector((state) => state.carStints);
-
   const carStint = carStints.find((v) => v.carNum === props.carNum);
+  const sessionData = useAppSelector((state) => state.session);
+  const stateGlobalSettings = useAppSelector((state) => state.userSettings.global);
   if (!props.carNum || !carStint) {
     return <></>;
     // return <Empty />;
@@ -46,6 +47,10 @@ const StintStretch: React.FC<MyProps> = (props: MyProps) => {
   const textHeight = Math.min(12, barHeight);
   const carNumLabel = props.showCarNum ? 40 : 0;
 
+  const displayTimeFromSettings = hocDisplayTimeByUserSettings(
+    sessionData,
+    stateGlobalSettings.timeMode,
+  );
   const step = (w - carNumLabel) / (maxTime - minTime);
   // console.log(`min: ${minTime}, max: ${maxTime}, step: ${step}`);
   const InternalGraph = (
@@ -98,6 +103,7 @@ const StintStretch: React.FC<MyProps> = (props: MyProps) => {
                       driver={
                         findDriverByStint(currentCarInfo, c.data as StintInfo)?.name ?? "n.a."
                       }
+                      displayTime={displayTimeFromSettings}
                     />
                   }
                 >

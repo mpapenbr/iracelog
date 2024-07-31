@@ -29,7 +29,7 @@ export const StintRankingContainer: React.FC = () => {
   const raceOrder = useAppSelector((state) => state.raceOrder);
   const carLaps = useAppSelector((state) => state.carLaps);
   const carStints = useAppSelector((state) => state.carStints);
-  const session = useAppSelector((state) => state.session);
+  const sessionData = useAppSelector((state) => state.session);
   const dispatch = useAppDispatch();
 
   // containerWidth state and ref (copilot proposal)
@@ -80,6 +80,7 @@ export const StintRankingContainer: React.FC = () => {
       }
     },
   };
+
   const filterProps = prepareFilterData(inputData);
   const props = {
     ...filterProps,
@@ -102,7 +103,7 @@ export const StintRankingContainer: React.FC = () => {
   // console.log(`user: ${userSettings.lowerRangeTime} ${userSettings.upperRangeTime}`);
   const currentSettings: IStintRankingSettings =
     globalWamp.currentLiveId != undefined
-      ? { ...userSettings, lowerRangeTime: 0, upperRangeTime: session.sessionTime }
+      ? { ...userSettings, lowerRangeTime: 0, upperRangeTime: sessionData.session.sessionTime }
       : userSettings;
 
   // console.log(`current ${currentSettings.lowerRangeTime} ${currentSettings.upperRangeTime}`);

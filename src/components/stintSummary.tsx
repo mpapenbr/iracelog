@@ -5,7 +5,7 @@ import { ColumnsType } from "antd/lib/table";
 import React from "react";
 import { useAppSelector } from "../stores";
 import { lapTimeString, secAsHHMMSS } from "../utils/output";
-import { findDriverByStint, getCarStints } from "./live/util";
+import { findDriverByStint, getCarStints, hocDisplayTimeByUserSettings } from "./live/util";
 
 interface MyProps {
   carNum?: string;
@@ -27,6 +27,8 @@ const StintSummary: React.FC<MyProps> = (props: MyProps) => {
   const carInfo = useAppSelector((state) => state.carOccupancies);
   const carStints = useAppSelector((state) => state.carStints);
   const carLaps = useAppSelector((state) => state.carLaps);
+  const sessionData = useAppSelector((state) => state.session);
+  const stateGlobalSettings = useAppSelector((state) => state.userSettings.global);
 
   const carStint = carStints.find((v) => v.carNum === props.carNum);
   if (!props.carNum || !carStint) {
@@ -92,11 +94,15 @@ const StintSummary: React.FC<MyProps> = (props: MyProps) => {
       dataIndex: "avgLapTime",
     },
   ];
+  const displayTimeFromSettings = hocDisplayTimeByUserSettings(
+    sessionData,
+    stateGlobalSettings.timeMode,
+  );
   const data: IStintSummary[] = getCarStints(carStints, props.carNum).map((v, idx) => ({
     no: idx + 1,
     driver: findDriverByStint(currentCarInfo, v)?.name ?? "n.a.",
-    startStint: secAsHHMMSS(v.exitTime),
-    endStint: secAsHHMMSS(v.enterTime),
+    startStint: displayTimeFromSettings(v.exitTime),
+    endStint: displayTimeFromSettings(v.enterTime),
     laps: v.numLaps,
     stintTime: secAsHHMMSS(v.stintTime),
     avgLapTime: stintAvg(v),

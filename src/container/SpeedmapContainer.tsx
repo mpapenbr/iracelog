@@ -26,7 +26,7 @@ export const SpeedmapContainer: React.FC = () => {
       </Row>
       <Row>
         <Col>
-          <h3>Laptime over session time</h3>
+          <h3>Laptime progression</h3>
         </Col>
       </Row>
       <Row>

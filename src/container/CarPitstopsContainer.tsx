@@ -2,6 +2,7 @@ import { SettingOutlined } from "@ant-design/icons";
 import { Button, Col, Popover, Row } from "antd";
 import * as React from "react";
 import MultiSelectCarFilter from "../components/live/multiCarSelectFilter";
+import { hocDisplayTimeByUserSettings } from "../components/live/util";
 import CarPitstopsNivo from "../components/nivo/carPitstops";
 import PitstopControl from "../components/pitstopControl";
 import { useAppDispatch, useAppSelector } from "../stores";
@@ -17,6 +18,7 @@ export const CarPitstopsContainer: React.FC = () => {
 
   const stateGlobalSettings = useAppSelector((state) => state.userSettings.global);
   const raceOrder = useAppSelector((state) => state.raceOrder);
+  const sessionData = useAppSelector((state) => state.session);
   const dispatch = useAppDispatch();
 
   const inputData: InputData = {
@@ -55,12 +57,16 @@ export const CarPitstopsContainer: React.FC = () => {
       }
     },
   };
-
+  const displayTimeFromSettings = hocDisplayTimeByUserSettings(
+    sessionData,
+    stateGlobalSettings.timeMode,
+  );
   const graphProps = {
     showCars: filterProps.selectedCars,
     carPits: carPits,
     hideLongPitstops: userSettings.hideLongPitstops,
     hideThreshold: userSettings.hideThreshold,
+    rangeTimeFormatter: displayTimeFromSettings,
   };
   return (
     <>

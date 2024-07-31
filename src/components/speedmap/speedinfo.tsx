@@ -5,12 +5,13 @@ import * as React from "react";
 import { sprintf } from "sprintf-js";
 
 import { useAppSelector } from "../../stores";
-import { lapTimeString, secAsString } from "../../utils/output";
+import { lapTimeString, secAsHHMMSS } from "../../utils/output";
 
 export const SpeedInfo: React.FC = () => {
   const payload = useAppSelector((state) => state.speedmap);
   const carClasses = useAppSelector((state) => state.carClasses);
   const trackInfo = useAppSelector((state) => state.eventInfo.track);
+  const globalSettings = useAppSelector((state) => state.userSettings.global);
 
   const carClassLookup = carClasses.reduce((prev, cur) => {
     prev.set(cur.id.toString(), cur.name);
@@ -18,11 +19,21 @@ export const SpeedInfo: React.FC = () => {
   }, new Map());
 
   const data = Object.entries(payload.data).map((cur) => {
+    var xKey = "";
+    switch (globalSettings.timeMode) {
+      case "session":
+        xKey = secAsHHMMSS(payload.sessionTime);
+        break;
+      case "sim":
+      case "real": // don't have real time data, so we use sim time instead
+        xKey = secAsHHMMSS(payload.timeOfDay);
+        break;
+    }
     return {
       carClass: carClassLookup.get(cur[0]) ?? "CarClass " + cur[0],
       avgSpeed: (trackInfo.length / cur[1].laptime) * 3.6,
       avgLaptime: cur[1].laptime,
-      lastRead: payload.timeOfDay,
+      lastRead: xKey,
     };
   });
   // eslint-disable-next-line @typescript-eslint/ban-types
@@ -45,7 +56,7 @@ export const SpeedInfo: React.FC = () => {
     {
       key: "lastRead",
       title: "Last update",
-      render: (d) => secAsString(d.lastRead),
+      render: (d) => d.lastRead,
       width: 20,
       align: "right",
     },
