@@ -20,6 +20,7 @@ import {
   IStintSummarySettings,
   IStintsSettings,
   IStrategySettings,
+  TimeMode,
 } from "./types";
 
 interface IUserSettings {
@@ -51,6 +52,7 @@ const initialStateGlobalSettings = {
   referenceCarNum: "",
   theme: "light",
   useCompact: false,
+  timeMode: "session",
 } as IGlobalSettings;
 const globalSettings = createSlice({
   name: "globalSettings",
@@ -79,6 +81,9 @@ const globalSettings = createSlice({
       } else {
         state.highlightCars.push(action.payload);
       }
+    },
+    setTimeMode(state, action: PayloadAction<TimeMode>) {
+      state.timeMode = action.payload;
     },
 
     resetGlobalSettings() {
@@ -446,6 +451,7 @@ export const {
   toggleCompact,
   toggleHighlightCar,
   setTheme,
+  setTimeMode,
 } = globalSettings.actions;
 export const { updateStandingColumns, resetStandingsColumns } = standingsColumns.actions;
 export const { updateClassification, resetClassification } = classificationSettings.actions;

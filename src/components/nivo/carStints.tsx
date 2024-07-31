@@ -8,7 +8,7 @@ import {
   CarStint,
   StintInfo,
 } from "@buf/mpapenbr_iracelog.community_timostamm-protobuf-ts/iracelog/analysis/v1/car_stint_pb";
-import { secAsHHMMSS, secAsMMSS } from "../../utils/output";
+import { secAsMMSS } from "../../utils/output";
 
 const { useToken } = theme;
 interface MyProps {
@@ -16,6 +16,7 @@ interface MyProps {
   carOccs: CarOccupancy[];
   showCars: string[];
   showAsLabel: string;
+  rangeTimeFormatter: (sec: number) => string;
 }
 const CarStintsNivo: React.FC<MyProps> = (props: MyProps) => {
   const { token } = useToken();
@@ -103,7 +104,7 @@ value: 77.66666666553647
         <br />
         Lap {item.lapExit} - {item.lapEnter} ({item.lapEnter - item.lapExit + 1})
         <br />
-        {secAsHHMMSS(item.exitTime)} - {secAsHHMMSS(item.enterTime)}
+        {props.rangeTimeFormatter(item.exitTime)} - {props.rangeTimeFormatter(item.enterTime)}
       </div>
     );
   };

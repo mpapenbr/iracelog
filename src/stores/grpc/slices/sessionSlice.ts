@@ -8,15 +8,21 @@ const defaultSession = (): Session => {
 };
 interface SessionState {
   session: Session;
+  recordDate: Date;
 }
-const initialState = { ...defaultSession() };
+const initialState = { session: defaultSession(), recordDate: new Date() } as SessionState;
 
 export const sessionSlice = createSlice({
   name: "session",
   initialState,
   reducers: {
     updateSession(state, action: PayloadAction<Session>) {
-      return action.payload;
+      state.session = action.payload;
+      // state.recordDate = action.payload.timestamp?.toDate()
+    },
+    updateRecordstamp(state, action: PayloadAction<Date>) {
+      state.recordDate = action.payload;
+      // state.recordDate = action.payload.timestamp?.toDate()
     },
     resetSession: () => {
       return initialState;
@@ -24,5 +30,5 @@ export const sessionSlice = createSlice({
   },
 });
 
-export const { updateSession, resetSession } = sessionSlice.actions;
+export const { updateSession, updateRecordstamp, resetSession } = sessionSlice.actions;
 export default sessionSlice.reducer;

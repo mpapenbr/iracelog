@@ -3,6 +3,7 @@ import * as React from "react";
 import { useAppDispatch, useAppSelector } from "../stores";
 import {
   setTheme,
+  setTimeMode,
   toggleCompact,
   toggleFilterOrderByPosition,
   toggleSyncSelection,
@@ -27,6 +28,9 @@ export const GlobalSettings: React.FC = () => {
   const onGlobalThemeSelect = (e: RadioChangeEvent) => {
     dispatch(setTheme(e.target.value));
   };
+  const onGlobalTimeMode = (e: RadioChangeEvent) => {
+    dispatch(setTimeMode(e.target.value));
+  };
   return (
     <>
       <Row>
@@ -43,6 +47,13 @@ export const GlobalSettings: React.FC = () => {
             >
               Order cars in filter by race position
             </Checkbox>
+          </p>
+          <p>
+            <Radio.Group defaultValue={stateGlobalSettings.timeMode} onChange={onGlobalTimeMode}>
+              <Radio.Button value="session">Session time</Radio.Button>
+              <Radio.Button value="sim">Simualtion time</Radio.Button>
+              <Radio.Button value="real">Real time</Radio.Button>
+            </Radio.Group>
           </p>
           <p>
             <Radio.Group defaultValue={stateGlobalSettings.theme} onChange={onGlobalThemeSelect}>

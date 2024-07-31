@@ -122,7 +122,7 @@ export interface IReplaySettings {
   currentSessionTime: number;
   currentTimestamp: number; // holds the current timestamp
 }
-
+export type TimeMode = "session" | "sim" | "real";
 export interface IGlobalSettings {
   syncSelection: boolean; // if true, selection for showCars,referenceCars are pushed to all relevant pages
   filterOrderByPosition: boolean; // if true, cars in selections will be ordered by race position
@@ -132,6 +132,7 @@ export interface IGlobalSettings {
   referenceCarNum?: string; // used for graphs where a reference is needed
   theme: string;
   useCompact: boolean;
+  timeMode: TimeMode;
 }
 export interface IUiData {
   stint: IUiStints;

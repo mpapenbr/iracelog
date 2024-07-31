@@ -60,7 +60,7 @@ export const EventHeaderContainer: React.FC = () => {
   const sInfo = useAppSelector((state) => state.session);
   const eInfo = useAppSelector((state) => state.eventInfo);
 
-  if (sInfo.flagState === "") {
+  if (sInfo.session.flagState === "") {
     return <></>;
   }
   const eventInfo = { name: eInfo.event.name, trackDisplayName: eInfo.track.name };
@@ -92,11 +92,11 @@ export const EventHeaderContainer: React.FC = () => {
           return v + "";
       }
     };
-    return "Track " + trackCondidtion(sInfo.trackWetness);
+    return "Track " + trackCondidtion(sInfo.session.trackWetness);
   };
 
   let flagBackground = "";
-  switch (sInfo.flagState) {
+  switch (sInfo.session.flagState) {
     case "CHECKERED":
       flagBackground = "iracelog-background-checkered";
       break;
@@ -111,15 +111,15 @@ export const EventHeaderContainer: React.FC = () => {
           <tbody>
             <tr>
               <td>State</td>
-              <td align="right">{sInfo.flagState}</td>
+              <td align="right">{sInfo.session.flagState}</td>
             </tr>
             <tr>
               <td>Air</td>
-              <td align="right">{numOut(sInfo.airTemp)}</td>
+              <td align="right">{numOut(sInfo.session.airTemp)}</td>
             </tr>
             <tr>
               <td>{trackLabel()}</td>
-              <td align="right">{numOut(sInfo.trackTemp)}</td>
+              <td align="right">{numOut(sInfo.session.trackTemp)}</td>
             </tr>
           </tbody>
         </table>
@@ -151,16 +151,16 @@ export const EventHeaderContainer: React.FC = () => {
           <tbody>
             <tr>
               <td>Sim-Time</td>
-              <td align="right">{secAsHHMMSS(sInfo.timeOfDay)}</td>
+              <td align="right">{secAsHHMMSS(sInfo.session.timeOfDay)}</td>
             </tr>
             <tr>
               <td>Elapsed</td>
-              <td align="right">{secAsString(sInfo.sessionTime)}</td>
+              <td align="right">{secAsString(sInfo.session.sessionTime)}</td>
             </tr>
             <tr>
               <td>Remaining</td>
               <td align="right">
-                {<RemainingRace time={sInfo.timeRemain} laps={sInfo.lapsRemain} />}
+                {<RemainingRace time={sInfo.session.timeRemain} laps={sInfo.session.lapsRemain} />}
               </td>
             </tr>
           </tbody>

@@ -98,7 +98,7 @@ export const Standings: React.FC<Props> = (props: Props) => {
   };
   const getCarNum = getCarNumByIdx;
 
-  const sessionTime = sessionInfo.sessionTime;
+  const sessionTime = sessionInfo.session.sessionTime;
 
   // key: carNum
   const carOccLookup = Object.assign({}, ...carOcc.map((v) => ({ [v.carNum]: v })));
