@@ -46,7 +46,11 @@ import { initSnapshotData } from "../../stores/grpc/slices/eventSnapshotData";
 import { loadedMessages } from "../../stores/grpc/slices/messagesSlice";
 import { initialRaceGraph } from "../../stores/grpc/slices/raceGraphSlice";
 import { updateRaceOrder } from "../../stores/grpc/slices/raceOrderSlice";
-import { updateRecordstamp, updateSession } from "../../stores/grpc/slices/sessionSlice";
+import {
+  updateRecordstamp,
+  updateRefTimeOfDay,
+  updateSession,
+} from "../../stores/grpc/slices/sessionSlice";
 import { updateSpeedmap } from "../../stores/grpc/slices/speedmapSlice";
 import {
   updateReplayInfo,
@@ -106,6 +110,7 @@ export const LoaderPageGrpc: React.FC<MyProps> = (props: MyProps) => {
         dispatch(initialRaceGraph(res.analysis?.raceGraph as RaceGraph[]));
         // updates from RaceState
         dispatch(updateSession(res.state?.session as Session));
+        dispatch(updateRefTimeOfDay(res.state?.session as Session));
         const x =
           res.event!.replayInfo!.minTimestamp!.toDate().getTime() -
           res.event!.replayInfo!.minSessionTime * 1000;

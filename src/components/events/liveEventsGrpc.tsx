@@ -27,7 +27,11 @@ import { useAppDispatch, useAppSelector } from "../../stores";
 import { updateFromDriverData } from "../../stores/grpc/slices/availableCarsSlice";
 import { updateClassification } from "../../stores/grpc/slices/classificationSlice";
 import { updateEvent, updateTrack } from "../../stores/grpc/slices/eventInfoSlice";
-import { updateRecordstamp, updateSession } from "../../stores/grpc/slices/sessionSlice";
+import {
+  updateRecordstamp,
+  updateRefTimeOfDay,
+  updateSession,
+} from "../../stores/grpc/slices/sessionSlice";
 
 import { CarLaps } from "@buf/mpapenbr_iracelog.community_timostamm-protobuf-ts/iracelog/analysis/v1/car_laps_pb";
 import { CarOccupancy } from "@buf/mpapenbr_iracelog.community_timostamm-protobuf-ts/iracelog/analysis/v1/car_occupancy_pb";
@@ -135,6 +139,7 @@ export const LiveEvents: React.FC = () => {
         stateCount++;
         // console.log(`state msg: ${stateCount}: ${res.toJsonString().length}`);
         dispatch(updateSession({ ...res.session } as Session));
+        dispatch(updateRefTimeOfDay({ ...res.session } as Session));
         dispatch(updateRecordstamp(res.timestamp!.toDate()));
 
         const pureCarJsonObj = res.cars.map((c) => ({ ...c }));
