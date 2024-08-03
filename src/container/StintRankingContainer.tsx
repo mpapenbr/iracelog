@@ -5,7 +5,11 @@ import { globalWamp } from "../commons/globals";
 import { assignCarColors } from "../components/live/colorAssignment";
 import MultiSelectCarFilter from "../components/live/multiCarSelectFilter";
 import { stintLaps } from "../components/live/statsutil";
-import { getCarStints, isInSelectedRange } from "../components/live/util";
+import {
+  getCarStints,
+  hocDisplayTimeByUserSettings,
+  isInSelectedRange,
+} from "../components/live/util";
 import { getCombinedStintData } from "../components/nivo/stintsummary/commons";
 import StintRankingSvg from "../components/stintRanking/rankingSvg";
 import { useAppDispatch, useAppSelector } from "../stores";
@@ -16,7 +20,6 @@ import {
   updateStintRankings,
 } from "../stores/grpc/slices/userSettingsSlice";
 
-import { secAsHHMMSS } from "../utils/output";
 import { InputData, prepareFilterData } from "./multiCarSelectFilterHelper";
 
 const { Option } = Select;
@@ -143,6 +146,10 @@ export const StintRankingContainer: React.FC = () => {
     );
   };
 
+  const displayTimeFromSettings = hocDisplayTimeByUserSettings(
+    sessionData,
+    stateGlobalSettings.timeMode,
+  );
   const width = containerWidth;
   return (
     <div ref={containerRef}>
@@ -168,7 +175,7 @@ export const StintRankingContainer: React.FC = () => {
               <Row justify="center">
                 <Col span={22}>
                   <Slider
-                    tooltip={{ formatter: (d) => secAsHHMMSS(d!) }}
+                    tooltip={{ formatter: (d) => displayTimeFromSettings(d!) }}
                     min={userSettings.minSessionTime}
                     max={userSettings.maxSessionTime}
                     defaultValue={[userSettings.lowerRangeTime, userSettings.upperRangeTime]}
