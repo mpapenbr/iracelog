@@ -1,3 +1,9 @@
+### 0.27.0 (2024-08-03)
+
+##### Other Changes
+
+* **deps:**  bump docker/build-push-action in the github-actions group (d9d860e3)
+
 ### 0.26.0 (2024-06-23)
 
 ### 0.25.0 (2024-06-08)
