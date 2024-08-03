@@ -181,11 +181,11 @@ export const supportsCarData = (raceloggerVersion: string): boolean => {
 export const hocDisplayTimeByUserSettings =
   (sessionData: SessionState, timeMode: string, formatter?: (d: number) => string) =>
   (d: number): string => {
-    const toAdd = sessionData.session.timeOfDay - sessionData.session.sessionTime;
+    // note: d is always the sessionTime in seconds
     const myFormatter = formatter ?? secAsHHMMSS;
     switch (timeMode) {
       case "sim":
-        return myFormatter(d + toAdd);
+        return myFormatter((d + sessionData.refTimeOfDay) % 86400);
       case "real":
         const ref: Date = sessionData.recordDate;
         // // JS hell when calculating days. In order to use own formatter we need the seconds.
