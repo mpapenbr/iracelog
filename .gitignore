@@ -12,6 +12,7 @@
 # production
 /build
 /docker/build
+/docker/dist
 /dist
 *.wasm
 
