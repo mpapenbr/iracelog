@@ -81,7 +81,7 @@ jobs:
       - name: Release via goreleaser
         uses: goreleaser/goreleaser-action@v6
         with:
-          args: release --release-notes="${{ runner.temp }}/CHANGELOG.md"
+          args: release --clean --release-notes="${{ runner.temp }}/CHANGELOG.md"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         if: github.ref_type == 'tag'

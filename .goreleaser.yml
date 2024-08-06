@@ -1,5 +1,9 @@
 version: 2
 
+builds:
+  - id: dummy
+    skip: true
+
 dockers:
   - id: web-amd64
     image_templates:
