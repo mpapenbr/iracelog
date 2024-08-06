@@ -1,0 +1,61 @@
+version: 2
+
+dockers:
+  - id: web-amd64
+    image_templates:
+      - "ghcr.io/mpapenbr/{{ .ProjectName }}-web:{{ .Tag }}-amd64"
+    build_flag_templates:
+      - "--pull"
+      - "--label=org.opencontainers.image.created={{.Date}}"
+      - "--label=org.opencontainers.image.title={{.ProjectName}}"
+      - "--label=org.opencontainers.image.revision={{.FullCommit}}"
+      - "--label=org.opencontainers.image.version={{.Version}}"
+      - "--label=org.opencontainers.image.source=https://{{.ModulePath}}"
+      - "--label=org.opencontainers.image.url=https://{{.ModulePath}}"
+      - "--label=org.opencontainers.image.description=iRacelog frontend"
+      - "--label=org.opencontainers.image.licenses=MIT license"
+      - "--platform=linux/amd64"
+    use: buildx
+    dockerfile: Dockerfile.nginx
+    extra_files:
+      - docker/my-default.conf
+      - docker/dist
+
+  - id: web-arm64
+    image_templates:
+      - "ghcr.io/mpapenbr/{{ .ProjectName }}-web:{{ .Tag }}-arm64"
+    build_flag_templates:
+      - "--pull"
+      - "--label=org.opencontainers.image.created={{.Date}}"
+      - "--label=org.opencontainers.image.title={{.ProjectName}}"
+      - "--label=org.opencontainers.image.revision={{.FullCommit}}"
+      - "--label=org.opencontainers.image.version={{.Version}}"
+      - "--label=org.opencontainers.image.source=https://{{.ModulePath}}"
+      - "--label=org.opencontainers.image.url=https://{{.ModulePath}}"
+      - "--label=org.opencontainers.image.description=iRacelog frontend"
+      - "--label=org.opencontainers.image.licenses=MIT license"
+      - "--platform=linux/arm64"
+    use: buildx
+    dockerfile: Dockerfile.nginx
+    extra_files:
+      - docker/my-default.conf
+      - docker/dist
+
+docker_manifests:
+  - name_template: "ghcr.io/mpapenbr/{{ .ProjectName }}-web:{{ .Tag }}"
+    image_templates:
+      - "ghcr.io/mpapenbr/{{ .ProjectName }}-web:{{ .Tag }}-amd64"
+      - "ghcr.io/mpapenbr/{{ .ProjectName }}-web:{{ .Tag }}-arm64"
+sboms:
+  - artifacts: archive
+
+checksum:
+  name_template: "checksums.txt"
+snapshot:
+  name_template: "{{ incpatch .Version }}-next"
+
+release:
+  prerelease: auto
+  footer: |
+    ---
+    _Released with [GoReleaser](https://goreleaser.com)!_
