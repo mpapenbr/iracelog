@@ -88,3 +88,8 @@ export const stintLaps = (si: StintInfo, laptimes: CarLaps): Lap[] => {
     [];
   return laps;
 };
+// this method includes the in/out laps
+export const stintLapsRaw = (si: StintInfo, laptimes: CarLaps): Lap[] => {
+  const laps = laptimes?.laps?.filter((v) => v.lapNo >= si.lapExit && v.lapNo <= si.lapEnter) ?? [];
+  return laps;
+};
