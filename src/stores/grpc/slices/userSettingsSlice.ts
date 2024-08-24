@@ -53,6 +53,7 @@ const initialStateGlobalSettings = {
   theme: "light",
   useCompact: false,
   timeMode: "session",
+  useInOutTimes: true,
 } as IGlobalSettings;
 const globalSettings = createSlice({
   name: "globalSettings",
@@ -84,6 +85,9 @@ const globalSettings = createSlice({
     },
     setTimeMode(state, action: PayloadAction<TimeMode>) {
       state.timeMode = action.payload;
+    },
+    toggleInOutTimes(state) {
+      state.useInOutTimes = !state.useInOutTimes;
     },
 
     resetGlobalSettings() {
@@ -452,6 +456,7 @@ export const {
   toggleHighlightCar,
   setTheme,
   setTimeMode,
+  toggleInOutTimes,
 } = globalSettings.actions;
 export const { updateStandingColumns, resetStandingsColumns } = standingsColumns.actions;
 export const { updateClassification, resetClassification } = classificationSettings.actions;

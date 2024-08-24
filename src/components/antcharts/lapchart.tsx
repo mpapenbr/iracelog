@@ -7,11 +7,12 @@ import {
 import { StintInfo } from "@buf/mpapenbr_iracelog.community_timostamm-protobuf-ts/iracelog/analysis/v1/car_stint_pb";
 import _ from "lodash";
 import React from "react";
+import { Comparator } from "semver";
 import { globalWamp } from "../../commons/globals";
 import { useAppSelector } from "../../stores";
 import { lapTimeString, sortCarNumberStr } from "../../utils/output";
 import { assignCarColors } from "../live/colorAssignment";
-import { statsDataFor, stintLaps } from "../live/statsutil";
+import { statsDataFor, stintLaps, stintLapsRaw } from "../live/statsutil";
 import { getCarStints } from "../live/util";
 import { antChartsTheme } from "./color";
 
@@ -20,6 +21,7 @@ interface MyProps {
   limitLastLaps: number;
   filterSecs: number;
 }
+type StintLapProvider = (si: StintInfo, laptimes: CarLaps) => Lap[];
 const Lapchart: React.FC<MyProps> = (props) => {
   const availableCars = useAppSelector((state) => state.availableCars);
 
@@ -27,16 +29,27 @@ const Lapchart: React.FC<MyProps> = (props) => {
 
   const carLaps = useAppSelector((state) => state.carLaps);
   const globalSettings = useAppSelector((state) => state.userSettings.global);
+  const eventInfo = useAppSelector((state) => state.eventInfo);
 
   // const availableCars = useSelector((state: ApplicationState) => state.raceData.availableCars);
   // const carLaps = useSelector((state: ApplicationState) => state.raceData.carLaps);
   // const carStints = useSelector((state: ApplicationState) => state.raceData.carStints);
   // const userSettings = useSelector((state: ApplicationState) => state.userSettings.driverLaps);
 
+  // in/out laps are supported since 0.14.0
+  const supportsInOut =
+    globalSettings.useInOutTimes &&
+    new Comparator(">=0.14.0").test(eventInfo.event.raceloggerVersion);
+  var stintLapProvider: StintLapProvider;
+  if (supportsInOut) {
+    stintLapProvider = stintLapsRaw;
+  } else {
+    stintLapProvider = stintLaps;
+  }
   const { showCars } = props;
   const currentCarLaps = (carNum: string) => carLaps.find((v) => v.carNum === carNum);
   const mergeComputeCarLaps = (stints: StintInfo[], carNum: string): CarLaps[] => {
-    const myStintLaps = (v: StintInfo) => stintLaps(v, currentCarLaps(carNum)!);
+    const myStintLaps = (v: StintInfo) => stintLapProvider(v, currentCarLaps(carNum)!);
     const x = stints.flatMap((v) => ({ carNum: carNum, laps: myStintLaps(v) }));
     return globalWamp.currentLiveId && props.limitLastLaps > 0 ? x.slice(-props.limitLastLaps) : x;
   };
@@ -57,20 +70,35 @@ const Lapchart: React.FC<MyProps> = (props) => {
     .map((v) => mergeComputeCarLaps(getCarStints(carStints, v.carNum), v.carNum))
     .flatMap((li) => [...li]);
 
-  const work = statsDataFor(computeCarLaps.flatMap((v) => v.laps.map((l) => l.lapTime)));
+  const selectLapTime = (l: Lap): number => {
+    if (!globalSettings.useInOutTimes) return l.lapTime;
+    if (l.lapInfo) {
+      return l.lapInfo.time;
+    } else return l.lapTime;
+  };
+
+  const work = statsDataFor(computeCarLaps.flatMap((v) => v.laps.map((l) => selectLapTime(l))));
   const workLapNo = _.max(computeCarLaps.flatMap((v) => v.laps.map((l) => l.lapNo)));
-  // console.log(work);
+
   const toShowLaps = (laps: Lap[]): Lap[] =>
     globalWamp.currentLiveId && props.limitLastLaps > 0
       ? laps.slice(-props.limitLastLaps).filter((v) => v.lapNo >= workLapNo! - props.limitLastLaps)
       : laps;
+
+  const handleInOut = (l: Lap): Lap => {
+    return { lapNo: l.lapNo, lapTime: selectLapTime(l) };
+  };
   // some strange ant-design/charts bug: https://github.com/ant-design/ant-design-charts/issues/797
   // workaround is to use strings for xaxis...
   const lapData = allCarLaps
     .sort((a, b) => showCars.indexOf(a.carNum) - showCars.indexOf(b.carNum))
     // .sort((a, b) => showCars.indexOf(a.carNum) - showCars.indexOf(b.carNum))
     .map((v) =>
-      toShowLaps(v.laps).map((l) => ({ carNum: `#${v.carNum}`, ...l, lapNoStr: "" + l.lapNo })),
+      toShowLaps(v.laps).map((l) => ({
+        carNum: `#${v.carNum}`,
+        ...handleInOut(l),
+        lapNoStr: "" + l.lapNo,
+      })),
     )
     .flatMap((a) => [...a]);
   // console.log(lapData);

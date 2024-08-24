@@ -133,6 +133,7 @@ export interface IGlobalSettings {
   theme: string;
   useCompact: boolean;
   timeMode: TimeMode;
+  useInOutTimes: boolean; // if true use in/outlap time instead of "offical" lap time
 }
 export interface IUiData {
   stint: IUiStints;

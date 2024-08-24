@@ -6,6 +6,7 @@ import {
   setTimeMode,
   toggleCompact,
   toggleFilterOrderByPosition,
+  toggleInOutTimes,
   toggleSyncSelection,
 } from "../stores/grpc/slices/userSettingsSlice";
 
@@ -24,6 +25,9 @@ export const GlobalSettings: React.FC = () => {
   };
   const onGlobalCompactModeChanged = () => {
     dispatch(toggleCompact());
+  };
+  const onGlobalInOutLaptimeChanged = () => {
+    dispatch(toggleInOutTimes());
   };
   const onGlobalThemeSelect = (e: RadioChangeEvent) => {
     dispatch(setTheme(e.target.value));
@@ -68,6 +72,14 @@ export const GlobalSettings: React.FC = () => {
               onChange={onGlobalCompactModeChanged}
             >
               Use compact mode
+            </Checkbox>
+          </p>
+          <p>
+            <Checkbox
+              checked={stateGlobalSettings.useInOutTimes}
+              onChange={onGlobalInOutLaptimeChanged}
+            >
+              Use in/out laptimes
             </Checkbox>
           </p>
         </Col>
