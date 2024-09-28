@@ -11,7 +11,6 @@ import {
   Car,
   CarState,
   TimeWithMarker,
-  TireCompound,
 } from "@buf/mpapenbr_iracelog.community_timostamm-protobuf-ts/iracelog/racestate/v1/racestate_pb";
 
 import {
@@ -130,7 +129,7 @@ export const Standings: React.FC<Props> = (props: Props) => {
   };
   const getCarName = (carNum: string): string => {
     const carId = carEntryLookup[carNum]?.carId;
-    return carId ? (carInfoLookup[carId]?.name ?? "n.a.") : "n.a.";
+    return carId ? (carInfoLookup[carId]?.nameShort ?? "n.a.") : "n.a.";
   };
 
   const nullAwareOutput = (value: any, format: string): string => {
@@ -138,9 +137,35 @@ export const Standings: React.FC<Props> = (props: Props) => {
       return sprintf(format, value);
     } else return "";
   };
-  const tireCompound = (v: TireCompound): string => {
-    if (v) {
-      return v.rawValue == 0 ? "D" : "W";
+
+  const tireCompound = (d: Car): string => {
+    if (d.tireCompound) {
+      const carId = carEntryLookup[getCarNum(d)]?.carId as number;
+      const carInfo = carInfoLookup[carId];
+      if (carInfo === undefined) {
+        return "";
+      }
+      switch (carId) {
+        case 99: // Dallara IR 18
+          return d.tireCompound.rawValue == 0 ? "P" : "A"; // primary:0, alternate: 1
+
+        case 71: // McLaren MP4-30
+        case 145: // F1 Merc 12
+        case 161: // F1 Merc 13
+          switch (d.tireCompound.rawValue) {
+            case 0:
+              return "S"; // soft
+            case 1:
+              return "M"; // medium
+            case 2:
+              return "H"; // hard
+            default:
+              return "";
+          }
+          break;
+        default:
+          return d.tireCompound.rawValue == 0 ? "D" : "W";
+      }
     } else return "";
   };
   const lapsOutput = (d: Car) => {
@@ -264,7 +289,7 @@ export const Standings: React.FC<Props> = (props: Props) => {
     {
       key: "tireCompound",
       title: "T",
-      render: (d) => tireCompound(d.tireCompound),
+      render: (d) => tireCompound(d),
       width: 30,
       align: "right",
     },
