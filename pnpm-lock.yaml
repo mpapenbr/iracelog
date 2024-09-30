@@ -22,22 +22,22 @@ importers:
         version: 3.11.8(@types/react@18.3.10)(graphql@16.9.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@buf/mpapenbr_iracelog.bufbuild_es':
         specifier: 1.10.0-20240818164234-8da4d13e1b88.1
-        version: 1.10.0-20240818164234-8da4d13e1b88.1(@bufbuild/protobuf@1.10.0)
+        version: 1.10.0-20240818164234-8da4d13e1b88.1(@bufbuild/protobuf@2.1.0)
       '@buf/mpapenbr_iracelog.community_timostamm-protobuf-ts':
         specifier: 2.9.4-20240818164234-8da4d13e1b88.4
         version: 2.9.4-20240818164234-8da4d13e1b88.4(@protobuf-ts/runtime-rpc@2.9.4)(@protobuf-ts/runtime@2.9.4)
       '@buf/mpapenbr_iracelog.connectrpc_es':
         specifier: 1.4.0-20240818164234-8da4d13e1b88.3
-        version: 1.4.0-20240818164234-8da4d13e1b88.3(@bufbuild/protobuf@1.10.0)(@connectrpc/connect@1.5.0(@bufbuild/protobuf@1.10.0))
+        version: 1.4.0-20240818164234-8da4d13e1b88.3(@bufbuild/protobuf@2.1.0)(@connectrpc/connect@1.5.0(@bufbuild/protobuf@2.1.0))
       '@bufbuild/protobuf':
-        specifier: ^1.10.0
-        version: 1.10.0
+        specifier: ^2.1.0
+        version: 2.1.0
       '@connectrpc/connect':
         specifier: ^1.5.0
-        version: 1.5.0(@bufbuild/protobuf@1.10.0)
+        version: 1.5.0(@bufbuild/protobuf@2.1.0)
       '@connectrpc/connect-web':
         specifier: ^1.5.0
-        version: 1.5.0(@bufbuild/protobuf@1.10.0)(@connectrpc/connect@1.5.0(@bufbuild/protobuf@1.10.0))
+        version: 1.5.0(@bufbuild/protobuf@2.1.0)(@connectrpc/connect@1.5.0(@bufbuild/protobuf@2.1.0))
       '@nivo/bar':
         specifier: ^0.87.0
         version: 0.87.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
@@ -631,8 +631,8 @@ packages:
     peerDependencies:
       '@connectrpc/connect': ^1.4.0
 
-  '@bufbuild/protobuf@1.10.0':
-    resolution: {integrity: sha512-QDdVFLoN93Zjg36NoQPZfsVH9tZew7wKDKyV5qRdj8ntT4wQCOradQjRaTdwMhWUYsgKsvCINKKm87FdEk96Ag==}
+  '@bufbuild/protobuf@2.1.0':
+    resolution: {integrity: sha512-+2Mx67Y3skJ4NCD/qNSdBJNWtu6x6Qr53jeNg+QcwiL6mt0wK+3jwHH2x1p7xaYH6Ve2JKOVn0OxU35WsmqI9A==}
 
   '@connectrpc/connect-web@1.5.0':
     resolution: {integrity: sha512-xjiiQ932Kibddaka18fGZ6yQL7xjXuLcYFYh/cU+q1WWEIrFPkZfViG/Ee6yrZbrlZkjcBuDibng+q7baTndfg==}
@@ -5249,36 +5249,36 @@ snapshots:
 
   '@bcoe/v8-coverage@0.2.3': {}
 
-  '@buf/mpapenbr_iracelog.bufbuild_es@1.10.0-20240818164234-8da4d13e1b88.1(@bufbuild/protobuf@1.10.0)':
+  '@buf/mpapenbr_iracelog.bufbuild_es@1.10.0-20240818164234-8da4d13e1b88.1(@bufbuild/protobuf@2.1.0)':
     dependencies:
-      '@bufbuild/protobuf': 1.10.0
+      '@bufbuild/protobuf': 2.1.0
 
-  '@buf/mpapenbr_iracelog.bufbuild_es@1.7.2-20240818164234-8da4d13e1b88.2(@bufbuild/protobuf@1.10.0)':
+  '@buf/mpapenbr_iracelog.bufbuild_es@1.7.2-20240818164234-8da4d13e1b88.2(@bufbuild/protobuf@2.1.0)':
     dependencies:
-      '@bufbuild/protobuf': 1.10.0
+      '@bufbuild/protobuf': 2.1.0
 
   '@buf/mpapenbr_iracelog.community_timostamm-protobuf-ts@2.9.4-20240818164234-8da4d13e1b88.4(@protobuf-ts/runtime-rpc@2.9.4)(@protobuf-ts/runtime@2.9.4)':
     dependencies:
       '@protobuf-ts/runtime': 2.9.4
       '@protobuf-ts/runtime-rpc': 2.9.4
 
-  '@buf/mpapenbr_iracelog.connectrpc_es@1.4.0-20240818164234-8da4d13e1b88.3(@bufbuild/protobuf@1.10.0)(@connectrpc/connect@1.5.0(@bufbuild/protobuf@1.10.0))':
+  '@buf/mpapenbr_iracelog.connectrpc_es@1.4.0-20240818164234-8da4d13e1b88.3(@bufbuild/protobuf@2.1.0)(@connectrpc/connect@1.5.0(@bufbuild/protobuf@2.1.0))':
     dependencies:
-      '@buf/mpapenbr_iracelog.bufbuild_es': 1.7.2-20240818164234-8da4d13e1b88.2(@bufbuild/protobuf@1.10.0)
-      '@connectrpc/connect': 1.5.0(@bufbuild/protobuf@1.10.0)
+      '@buf/mpapenbr_iracelog.bufbuild_es': 1.7.2-20240818164234-8da4d13e1b88.2(@bufbuild/protobuf@2.1.0)
+      '@connectrpc/connect': 1.5.0(@bufbuild/protobuf@2.1.0)
     transitivePeerDependencies:
       - '@bufbuild/protobuf'
 
-  '@bufbuild/protobuf@1.10.0': {}
+  '@bufbuild/protobuf@2.1.0': {}
 
-  '@connectrpc/connect-web@1.5.0(@bufbuild/protobuf@1.10.0)(@connectrpc/connect@1.5.0(@bufbuild/protobuf@1.10.0))':
+  '@connectrpc/connect-web@1.5.0(@bufbuild/protobuf@2.1.0)(@connectrpc/connect@1.5.0(@bufbuild/protobuf@2.1.0))':
     dependencies:
-      '@bufbuild/protobuf': 1.10.0
-      '@connectrpc/connect': 1.5.0(@bufbuild/protobuf@1.10.0)
+      '@bufbuild/protobuf': 2.1.0
+      '@connectrpc/connect': 1.5.0(@bufbuild/protobuf@2.1.0)
 
-  '@connectrpc/connect@1.5.0(@bufbuild/protobuf@1.10.0)':
+  '@connectrpc/connect@1.5.0(@bufbuild/protobuf@2.1.0)':
     dependencies:
-      '@bufbuild/protobuf': 1.10.0
+      '@bufbuild/protobuf': 2.1.0
 
   '@ctrl/tinycolor@3.6.1': {}
 
