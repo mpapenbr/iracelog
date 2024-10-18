@@ -1,3 +1,10 @@
+### 0.29.0 (2024-10-18)
+
+##### Other Changes
+
+*  keep protobuf 1.10.0 (9575d937)
+*  keep protobuf on 1.10.0 to be compatible with connectrpc (f3f8f81f)
+
 ### 0.28.0 (2024-08-31)
 
 #### 0.27.4 (2024-08-06)
