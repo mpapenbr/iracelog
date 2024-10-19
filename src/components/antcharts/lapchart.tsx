@@ -82,7 +82,9 @@ const Lapchart: React.FC<MyProps> = (props) => {
 
   const toShowLaps = (laps: Lap[]): Lap[] =>
     globalWamp.currentLiveId && props.limitLastLaps > 0
-      ? laps.slice(-props.limitLastLaps).filter((v) => v.lapNo >= workLapNo! - props.limitLastLaps)
+      ? laps
+          .slice(-props.limitLastLaps)
+          .filter((v) => v.lapNo >= workLapNo! - props.limitLastLaps + 1)
       : laps;
 
   const handleInOut = (l: Lap): Lap => {
@@ -101,7 +103,7 @@ const Lapchart: React.FC<MyProps> = (props) => {
       })),
     )
     .flatMap((a) => [...a]);
-  // console.log(lapData);
+
   const sliderData = globalWamp.currentLiveId ? undefined : { start: 0, end: 1 };
   // const animate = globalWamp.currentLiveId ? false : true;
   const noAnimationOption = {
