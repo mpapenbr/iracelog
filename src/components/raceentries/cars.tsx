@@ -5,6 +5,7 @@ import * as React from "react";
 
 import { sprintf } from "sprintf-js";
 import { useAppSelector } from "../../stores";
+import { iRacingCarDataLookup } from "../../utils/cardata";
 
 export const Cars: React.FC = () => {
   const entries = useAppSelector((state) => state.carEntries);
@@ -38,6 +39,12 @@ export const Cars: React.FC = () => {
   // eslint-disable-next-line @typescript-eslint/ban-types
   const columns: ColumnsType<{}> = [
     { key: "cars_name", title: "Car", render: (d) => d.nameShort, align: "left" },
+    {
+      key: "cars_abbrev",
+      title: "Abbrev",
+      render: (d) => iRacingCarDataLookup.get(d.carId)?.abbrev ?? "n.a.",
+      align: "left",
+    },
     {
       key: "cars_carClass",
       title: "Car class",
