@@ -18,6 +18,7 @@ import {
   updateClassification,
   updateStandingColumns,
 } from "../stores/grpc/slices/userSettingsSlice";
+import { iRacingCarDataLookup } from "../utils/cardata";
 import { lapTimeString } from "../utils/output";
 import { findDriverBySessionTimeGrpc } from "./live/util";
 
@@ -107,6 +108,7 @@ export const Standings: React.FC<Props> = (props: Props) => {
   );
   const carClassLookup = Object.assign({}, ...carClasses.map((v) => ({ [v.id]: v })));
   const carInfoLookup = Object.assign({}, ...carInfo.map((v) => ({ [v.carId]: v })));
+
   // const carDataLookup = new Map<string, ICarEntry>(carInfo.map((o) => [o.car.carNumber, o.car]));
   // const carClassLookup = new Map<number, ICarClass>(carData.carClasses.map((o) => [o.id, o]));
 
@@ -129,7 +131,9 @@ export const Standings: React.FC<Props> = (props: Props) => {
   };
   const getCarName = (carNum: string): string => {
     const carId = carEntryLookup[carNum]?.carId;
-    return carId ? (carInfoLookup[carId]?.nameShort ?? "n.a.") : "n.a.";
+    return carId
+      ? (iRacingCarDataLookup.get(carId)?.abbrev ?? carInfoLookup[carId]?.nameShort ?? "n.a.")
+      : "n.a.";
   };
 
   const nullAwareOutput = (value: any, format: string): string => {
