@@ -85,7 +85,7 @@ export const LatestEventsGrpc: React.FC = () => {
             </Descriptions.Item>
             {item.event.description ? (
               <Descriptions.Item>
-                <div className="iracelog-event-description">{item.description}</div>
+                <div className="iracelog-event-description">{item.event.description}</div>
               </Descriptions.Item>
             ) : (
               <></>
