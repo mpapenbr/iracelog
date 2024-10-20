@@ -12,6 +12,7 @@ export const Drivers: React.FC = () => {
   const entries = useAppSelector((state) => state.carEntries);
   const cars = useAppSelector((state) => state.carInfos);
   const carClasses = useAppSelector((state) => state.carClasses);
+  const event = useAppSelector((state) => state.eventInfo);
 
   const carClassLookup = Object.assign({}, ...carClasses.map((x) => ({ [x.id]: x })));
   const entryByIdx = Object.assign({}, ...entries.map((x) => ({ [x.car!.carIdx]: x })));
@@ -122,12 +123,15 @@ export const Drivers: React.FC = () => {
       defaultSortOrder: "ascend",
     },
   ];
+  const showColumns = event.event.teamRacing
+    ? columns
+    : columns.filter((item) => item.key != "teamName");
 
   return (
     <Card title="Drivers">
       <Table
         className="iracelog-compact"
-        columns={columns}
+        columns={showColumns}
         dataSource={extDriverData}
         pagination={false}
         rowKey={(d: any) => d.id}
