@@ -51,6 +51,7 @@ const LeaderGraph: React.FC<MyProps> = (props: MyProps) => {
       userSettings.gapRelativeToClassLeader && allCarClasses.length > 0
         ? dataLookup.get(carInfoLookup[carNum]!.carClass)!
         : dataLookup.get("overall")!;
+    if (source === undefined) return [] as IGraphData[];
     return source.reduce((prev, current) => {
       const carEntry = current.gaps.find((gi) => gi.carNum === carNum);
 
@@ -107,7 +108,7 @@ const LeaderGraph: React.FC<MyProps> = (props: MyProps) => {
 
       minLimit: 0,
       maxLimit: Math.ceil(
-        Math.min(_.maxBy(graphDataOrig, (d) => d.gap)!.gap, userSettings.deltaRange),
+        Math.min(_.maxBy(graphDataOrig, (d) => d.gap)?.gap ?? 0, userSettings.deltaRange),
       ),
 
       // label: {formatter: (d: number) => lapTimeString(d)},
@@ -141,10 +142,12 @@ const LeaderGraph: React.FC<MyProps> = (props: MyProps) => {
   };
 
   // note: there is a bug in Line: see https://github.com/ant-design/ant-design-charts/issues/797
-  return (
+  return dataLookup.size > 0 ? (
     <div>
       <Line {...config} />
     </div>
+  ) : (
+    <Empty />
   );
 
   // return <Scatter {...config} />;
