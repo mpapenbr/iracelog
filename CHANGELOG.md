@@ -1,3 +1,10 @@
+### 0.30.0 (2024-11-08)
+
+##### Other Changes
+
+*  changed to protobuf to 1.10.0 (compatibility reasons) (50e0a8ef)
+*  changed to protobuf to 1.10.0 (compatibility reasons) (e783ef00)
+
 ### 0.29.0 (2024-10-18)
 
 ##### Other Changes
