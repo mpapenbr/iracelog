@@ -112,7 +112,7 @@ export const Standings: React.FC<Props> = (props: Props) => {
   // const carDataLookup = new Map<string, ICarEntry>(carInfo.map((o) => [o.car.carNumber, o.car]));
   // const carClassLookup = new Map<number, ICarClass>(carData.carClasses.map((o) => [o.id, o]));
 
-  const resolveCarDriver = (carNum: string): Driver => {
+  const resolveCarDriver = (carNum: string): Driver | undefined => {
     if (carOccLookup[carNum] === undefined) {
       console.log("carInfoLookup: ", carOccLookup);
     }
@@ -123,7 +123,7 @@ export const Standings: React.FC<Props> = (props: Props) => {
 
   const getDriverName = (carNum: string): string => {
     const x = resolveCarDriver(carNum);
-    return x.name;
+    return x?.name ?? "n.a";
   };
   const getCarClassName = (carNum: string): string => {
     const classId = carEntryLookup[carNum]?.carClassId;

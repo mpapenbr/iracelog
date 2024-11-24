@@ -74,8 +74,13 @@ export const StintSummaryContainer: React.FC = () => {
   const currentCarInfo = carOccs.find((v) => v.carNum === userSettings.referenceCarNum);
   const { colorLookup } = colorsBySeatTime(currentCarInfo?.drivers ?? []);
 
-  const driverColor = (si: StintInfo): string =>
-    colorLookup.get(findDriverByStint(currentCarInfo!, si)!.name) ?? "black";
+  const driverColor = (si: StintInfo): string => {
+    const driver = findDriverByStint(currentCarInfo!, si);
+    if (driver) {
+      return colorLookup.get(driver.name) ?? "black";
+    }
+    return "black";
+  };
   const combinedData = getCombinedStintData(
     getCarStints(carStints, userSettings.referenceCarNum!),
     getCarPitStops(carPits, userSettings.referenceCarNum!),
