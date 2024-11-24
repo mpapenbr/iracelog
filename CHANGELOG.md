@@ -1,3 +1,9 @@
+#### 0.30.1 (2024-11-24)
+
+##### Other Changes
+
+*  changed to protobuf to 1.10.0 (compatibility reasons) (d3812ac8)
+
 ### 0.30.0 (2024-11-08)
 
 ##### Other Changes
