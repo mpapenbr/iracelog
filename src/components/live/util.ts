@@ -111,6 +111,8 @@ export const findDriverByStint = (carOcc: CarOccupancy, stint: StintInfo) =>
  * @returns the Driver entry within carOccupancy of the driving the stint
  */
 export const findDriverBySessionTimeGrpc = (carInfo: CarOccupancy, sessionTime: number) => {
+  if (carInfo?.drivers === undefined) return undefined;
+
   const ret = carInfo.drivers.find((v) =>
     v.seatTimes.find((st) => st.enterCarTime <= sessionTime && st.leaveCarTime >= sessionTime),
   );
