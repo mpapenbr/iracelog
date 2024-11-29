@@ -1,10 +1,11 @@
-import { EventService } from "@buf/mpapenbr_iracelog.connectrpc_es/iracelog/event/v1/event_service_connect";
+import { EventService } from "@buf/mpapenbr_iracelog.bufbuild_es/iracelog/event/v1/event_service_pb";
+import { timestampDate } from "@bufbuild/protobuf/wkt";
 import { Button, Descriptions, List } from "antd";
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
 import { globalWamp } from "../../commons/globals";
 import { useAppDispatch, useAppSelector } from "../../stores";
-import { updateEventData } from "../../stores/grpc/slices/eventDataSlice";
+import { EventListData, updateEventData } from "../../stores/grpc/slices/eventDataSlice";
 import { useClient } from "../../utils/useClient";
 
 export const LatestEventsGrpc: React.FC = () => {
@@ -51,14 +52,14 @@ export const LatestEventsGrpc: React.FC = () => {
       header={<h3>Latest events</h3>}
       dataSource={events}
       size="small"
-      renderItem={(item: any) => (
+      renderItem={(item: EventListData) => (
         <List.Item
           actions={[
             // <Button value={item.key} type="default" onClick={onLoadButtonClicked_OoO}>
             //   Load
             // </Button>,
             <Button
-              key={"bt-replay" + item.event.Id}
+              key={"bt-replay" + item.event.id}
               value={item.event.key}
               type="default"
               onClick={onLoadForReplayButtonClicked}
@@ -91,7 +92,12 @@ export const LatestEventsGrpc: React.FC = () => {
               <></>
             )}
             <Descriptions.Item span={2} label={"ID: " + item.event.id}>
-              {item.event.eventTime?.toDate().toLocaleDateString(undefined, {
+              {/* {item.event.eventTime?.toDate().toLocaleDateString(undefined, {
+                year: "numeric",
+                month: "2-digit",
+                day: "2-digit",
+              })} */}
+              {timestampDate(item.event.eventTime!).toLocaleDateString(navigator.language, {
                 year: "numeric",
                 month: "2-digit",
                 day: "2-digit",

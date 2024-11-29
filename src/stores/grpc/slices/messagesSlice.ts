@@ -1,8 +1,9 @@
-import { LiveRaceStateResponse } from "@buf/mpapenbr_iracelog.community_timostamm-protobuf-ts/iracelog/livedata/v1/live_service_pb";
+import { LiveRaceStateResponse } from "@buf/mpapenbr_iracelog.bufbuild_es/iracelog/livedata/v1/live_service_pb";
 import {
   Message,
   MessageContainer,
-} from "@buf/mpapenbr_iracelog.community_timostamm-protobuf-ts/iracelog/racestate/v1/racestate_pb";
+} from "@buf/mpapenbr_iracelog.bufbuild_es/iracelog/racestate/v1/racestate_pb";
+import { timestampDate } from "@bufbuild/protobuf/wkt";
 import type { PayloadAction } from "@reduxjs/toolkit";
 import { createSlice } from "@reduxjs/toolkit";
 
@@ -24,7 +25,7 @@ export const infoMessagesSlice = createSlice({
       if (action.payload.messages.length > 0) {
         // console.log("updateMessages", action.payload.messages);
         const newMessages = action.payload.messages.map((m) => ({
-          timestamp: action.payload.timestamp?.toDate(),
+          timestamp: timestampDate(action.payload.timestamp!),
           sessionTime: action.payload.session?.sessionTime!,
           message: m,
         }));
@@ -36,7 +37,7 @@ export const infoMessagesSlice = createSlice({
       if (action.payload.length > 0) {
         // console.log("updateMessages", action.payload.messages);
         const newMessages = action.payload.map((m) => ({
-          timestamp: m.timestamp?.toDate(),
+          timestamp: timestampDate(m.timestamp!),
           sessionTime: m.sessionTime,
           message: m.message!,
         }));

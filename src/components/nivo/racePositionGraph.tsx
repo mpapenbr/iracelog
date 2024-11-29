@@ -3,7 +3,7 @@ import { Col, Empty, Row, Spin, theme } from "antd";
 import React from "react";
 import { useAppSelector } from "../../stores";
 
-import { RaceGraph } from "@buf/mpapenbr_iracelog.community_timostamm-protobuf-ts/iracelog/analysis/v1/racegraph_pb";
+import { RaceGraph } from "@buf/mpapenbr_iracelog.bufbuild_es/iracelog/analysis/v1/racegraph_pb";
 import { sortCarNumberStr } from "../../utils/output";
 
 interface IGraphData {

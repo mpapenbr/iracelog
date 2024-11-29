@@ -1,10 +1,14 @@
-import { Session as SessionMsg } from "@buf/mpapenbr_iracelog.bufbuild_es/iracelog/racestate/v1/racestate_pb";
-import { Session } from "@buf/mpapenbr_iracelog.community_timostamm-protobuf-ts/iracelog/racestate/v1/racestate_pb";
+import {
+  Session,
+  SessionSchema,
+} from "@buf/mpapenbr_iracelog.bufbuild_es/iracelog/racestate/v1/racestate_pb";
+// import { Session } from "@buf/mpapenbr_iracelog.bufbuild_es/iracelog/racestate/v1/racestate_pb";
+import { create } from "@bufbuild/protobuf";
 import type { PayloadAction } from "@reduxjs/toolkit";
 import { createSlice } from "@reduxjs/toolkit";
 
 const defaultSession = (): Session => {
-  return new SessionMsg({});
+  return create(SessionSchema);
 };
 interface SessionState {
   session: Session;

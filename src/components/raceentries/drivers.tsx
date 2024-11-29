@@ -3,8 +3,8 @@ import { ColumnsType } from "antd/lib/table";
 import _ from "lodash";
 import * as React from "react";
 
-import { CarEntry } from "@buf/mpapenbr_iracelog.community_timostamm-protobuf-ts/iracelog/car/v1/car_pb";
-import { Driver } from "@buf/mpapenbr_iracelog.community_timostamm-protobuf-ts/iracelog/driver/v1/driver_pb";
+import { CarEntry } from "@buf/mpapenbr_iracelog.bufbuild_es/iracelog/car/v1/car_pb";
+import { Driver } from "@buf/mpapenbr_iracelog.bufbuild_es/iracelog/driver/v1/driver_pb";
 import { useAppSelector } from "../../stores";
 import { sortCarNumberStr } from "../../utils/output";
 

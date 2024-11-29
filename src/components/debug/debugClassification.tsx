@@ -1,7 +1,7 @@
 import {
   Car,
   TimeWithMarker,
-} from "@buf/mpapenbr_iracelog.community_timostamm-protobuf-ts/iracelog/racestate/v1/racestate_pb";
+} from "@buf/mpapenbr_iracelog.bufbuild_es/iracelog/racestate/v1/racestate_pb";
 
 import { Col, Row, Table, TableProps } from "antd";
 import _ from "lodash";

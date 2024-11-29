@@ -5,13 +5,13 @@ import React from "react";
 import { sprintf } from "sprintf-js";
 import { useAppDispatch, useAppSelector } from "../stores";
 
-import { TimeMarker } from "@buf/mpapenbr_iracelog.bufbuild_es/iracelog/racestate/v1/racestate_pb";
-import { Driver } from "@buf/mpapenbr_iracelog.community_timostamm-protobuf-ts/iracelog/analysis/v1/car_occupancy_pb";
+import { Driver } from "@buf/mpapenbr_iracelog.bufbuild_es/iracelog/analysis/v1/car_occupancy_pb";
 import {
   Car,
   CarState,
+  TimeMarker,
   TimeWithMarker,
-} from "@buf/mpapenbr_iracelog.community_timostamm-protobuf-ts/iracelog/racestate/v1/racestate_pb";
+} from "@buf/mpapenbr_iracelog.bufbuild_es/iracelog/racestate/v1/racestate_pb";
 
 import {
   toggleHighlightCar,

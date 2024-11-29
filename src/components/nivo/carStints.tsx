@@ -3,11 +3,11 @@ import { Empty, theme } from "antd";
 import _ from "lodash";
 import React from "react";
 
-import { CarOccupancy } from "@buf/mpapenbr_iracelog.community_timostamm-protobuf-ts/iracelog/analysis/v1/car_occupancy_pb";
+import { CarOccupancy } from "@buf/mpapenbr_iracelog.bufbuild_es/iracelog/analysis/v1/car_occupancy_pb";
 import {
   CarStint,
   StintInfo,
-} from "@buf/mpapenbr_iracelog.community_timostamm-protobuf-ts/iracelog/analysis/v1/car_stint_pb";
+} from "@buf/mpapenbr_iracelog.bufbuild_es/iracelog/analysis/v1/car_stint_pb";
 import { secAsMMSS } from "../../utils/output";
 
 const { useToken } = theme;
@@ -28,8 +28,8 @@ const CarStintsNivo: React.FC<MyProps> = (props: MyProps) => {
   const dataLookup = props.carStints.reduce((prev, cur) => {
     const stints = [...cur.history].concat(cur.current?.isCurrentStint ? cur.current : []);
     // history data does not contain carNum. we'll add it here
-    stints.forEach((v) => (v.carNum = cur.carNum));
-    prev.set(cur.carNum, stints);
+    const newStints = stints.map((v) => ({ ...v, carNum: cur.carNum }));
+    prev.set(cur.carNum, newStints);
     return prev;
   }, new Map<string, StintInfo[]>());
 

@@ -1,4 +1,4 @@
-import { ReplayInfo } from "@buf/mpapenbr_iracelog.community_timostamm-protobuf-ts/iracelog/event/v1/event_pb";
+import { ReplayInfo } from "@buf/mpapenbr_iracelog.bufbuild_es/iracelog/event/v1/event_pb";
 import type { PayloadAction } from "@reduxjs/toolkit";
 import { combineSlices, createSlice } from "@reduxjs/toolkit";
 import {

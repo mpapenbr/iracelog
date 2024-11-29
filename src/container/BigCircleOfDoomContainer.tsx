@@ -1,9 +1,9 @@
 import { Col, Form, InputNumber, Row, Select, Slider } from "antd";
 import * as React from "react";
 
-import { CarLaps } from "@buf/mpapenbr_iracelog.community_timostamm-protobuf-ts/iracelog/analysis/v1/car_laps_pb";
-import { CarPit } from "@buf/mpapenbr_iracelog.community_timostamm-protobuf-ts/iracelog/analysis/v1/car_pit_pb";
-import { Car } from "@buf/mpapenbr_iracelog.community_timostamm-protobuf-ts/iracelog/racestate/v1/racestate_pb";
+import { CarLaps } from "@buf/mpapenbr_iracelog.bufbuild_es/iracelog/analysis/v1/car_laps_pb";
+import { CarPit } from "@buf/mpapenbr_iracelog.bufbuild_es/iracelog/analysis/v1/car_pit_pb";
+import { Car } from "@buf/mpapenbr_iracelog.bufbuild_es/iracelog/racestate/v1/racestate_pb";
 import { CircleOfDoom } from "../components/cod/circleofdoom";
 import MultiSelectCarFilter from "../components/live/multiCarSelectFilter";
 import { ICarFilterData } from "../components/live/util";

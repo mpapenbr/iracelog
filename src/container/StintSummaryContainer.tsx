@@ -1,4 +1,4 @@
-import { StintInfo } from "@buf/mpapenbr_iracelog.community_timostamm-protobuf-ts/iracelog/analysis/v1/car_stint_pb";
+import { StintInfo } from "@buf/mpapenbr_iracelog.bufbuild_es/iracelog/analysis/v1/car_stint_pb";
 import { Col, Divider, Empty, Row, Select } from "antd";
 import * as React from "react";
 import SingleSelectCarFilter from "../components/live/singleCarSelectFilter";

@@ -1,8 +1,8 @@
 import {
   Car,
   CarState,
-} from "@buf/mpapenbr_iracelog.community_timostamm-protobuf-ts/iracelog/racestate/v1/racestate_pb";
-import { PitInfo } from "@buf/mpapenbr_iracelog.community_timostamm-protobuf-ts/iracelog/track/v1/track_pb";
+} from "@buf/mpapenbr_iracelog.bufbuild_es/iracelog/racestate/v1/racestate_pb";
+import { PitInfo } from "@buf/mpapenbr_iracelog.bufbuild_es/iracelog/track/v1/track_pb";
 import { theme } from "antd";
 import _ from "lodash";
 import * as React from "react";

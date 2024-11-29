@@ -1,29 +1,24 @@
-import { GetEventRequest } from "@buf/mpapenbr_iracelog.bufbuild_es/iracelog/event/v1/event_service_pb";
-import { CarLaps } from "@buf/mpapenbr_iracelog.community_timostamm-protobuf-ts/iracelog/analysis/v1/car_laps_pb";
-import { CarOccupancy } from "@buf/mpapenbr_iracelog.community_timostamm-protobuf-ts/iracelog/analysis/v1/car_occupancy_pb";
-import { CarPit } from "@buf/mpapenbr_iracelog.community_timostamm-protobuf-ts/iracelog/analysis/v1/car_pit_pb";
-import { CarStint } from "@buf/mpapenbr_iracelog.community_timostamm-protobuf-ts/iracelog/analysis/v1/car_stint_pb";
-import { RaceGraph } from "@buf/mpapenbr_iracelog.community_timostamm-protobuf-ts/iracelog/analysis/v1/racegraph_pb";
-import { SnapshotData } from "@buf/mpapenbr_iracelog.community_timostamm-protobuf-ts/iracelog/analysis/v1/snapshot_data_pb";
+import { AnalysisService } from "@buf/mpapenbr_iracelog.bufbuild_es/iracelog/analysis/v1/analysis_service_pb";
+import { CarLaps } from "@buf/mpapenbr_iracelog.bufbuild_es/iracelog/analysis/v1/car_laps_pb";
+import { CarOccupancy } from "@buf/mpapenbr_iracelog.bufbuild_es/iracelog/analysis/v1/car_occupancy_pb";
+import { CarPit } from "@buf/mpapenbr_iracelog.bufbuild_es/iracelog/analysis/v1/car_pit_pb";
+import { CarStint } from "@buf/mpapenbr_iracelog.bufbuild_es/iracelog/analysis/v1/car_stint_pb";
+import { RaceGraph } from "@buf/mpapenbr_iracelog.bufbuild_es/iracelog/analysis/v1/racegraph_pb";
+import { SnapshotData } from "@buf/mpapenbr_iracelog.bufbuild_es/iracelog/analysis/v1/snapshot_data_pb";
 import {
   CarClass,
   CarContainer,
   CarEntry,
   CarInfo,
-} from "@buf/mpapenbr_iracelog.community_timostamm-protobuf-ts/iracelog/car/v1/car_pb";
-import {
-  Event,
-  ReplayInfo,
-} from "@buf/mpapenbr_iracelog.community_timostamm-protobuf-ts/iracelog/event/v1/event_pb";
+} from "@buf/mpapenbr_iracelog.bufbuild_es/iracelog/car/v1/car_pb";
+import { EventService } from "@buf/mpapenbr_iracelog.bufbuild_es/iracelog/event/v1/event_service_pb";
 import {
   Car,
-  MessageContainer,
   Session,
-} from "@buf/mpapenbr_iracelog.community_timostamm-protobuf-ts/iracelog/racestate/v1/racestate_pb";
-import { Speedmap } from "@buf/mpapenbr_iracelog.community_timostamm-protobuf-ts/iracelog/speedmap/v1/speedmap_pb";
-import { AnalysisService } from "@buf/mpapenbr_iracelog.connectrpc_es/iracelog/analysis/v1/analysis_service_connect";
-import { EventService } from "@buf/mpapenbr_iracelog.connectrpc_es/iracelog/event/v1/event_service_connect";
-import { TrackService } from "@buf/mpapenbr_iracelog.connectrpc_es/iracelog/track/v1/track_service_connect";
+} from "@buf/mpapenbr_iracelog.bufbuild_es/iracelog/racestate/v1/racestate_pb";
+import { Speedmap } from "@buf/mpapenbr_iracelog.bufbuild_es/iracelog/speedmap/v1/speedmap_pb";
+import { TrackService } from "@buf/mpapenbr_iracelog.bufbuild_es/iracelog/track/v1/track_service_pb";
+import { timestampDate } from "@bufbuild/protobuf/wkt";
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
 import { globalWamp } from "../../commons/globals";
@@ -78,9 +73,7 @@ export const LoaderPageGrpc: React.FC<MyProps> = (props: MyProps) => {
 
   useEffect(() => {
     cbEventClient.getEvent(
-      GetEventRequest.fromJson({
-        eventSelector: { key: props.eventKey! },
-      }),
+      { eventSelector: { arg: { case: "key", value: props.eventKey! } } },
       (err, res) => {
         if (err != undefined) {
           console.log(err);
@@ -90,10 +83,10 @@ export const LoaderPageGrpc: React.FC<MyProps> = (props: MyProps) => {
         resetData(dispatch);
         resetUI(dispatch);
         console.log("Event fetched", res);
-        dispatch(updateEvent(res.event as Event));
+        dispatch(updateEvent(res.event!));
         dispatch(updateTrack(res.track!));
-        dispatch(updateReplayInfo(res.event?.replayInfo as ReplayInfo));
-        dispatch(updateStintRankingsRange(res.event?.replayInfo as ReplayInfo));
+        dispatch(updateReplayInfo(res.event?.replayInfo!));
+        dispatch(updateStintRankingsRange(res.event?.replayInfo!));
         // updates form CarContainer
         dispatch(updateFromCarContainer(res.car as CarContainer));
         dispatch(updateFromCarOccupancy(res.analysis?.carOccupancies as CarOccupancy[]));
@@ -112,12 +105,12 @@ export const LoaderPageGrpc: React.FC<MyProps> = (props: MyProps) => {
         dispatch(updateSession(res.state?.session as Session));
         dispatch(updateRefTimeOfDay(res.state?.session as Session));
         const x =
-          res.event!.replayInfo!.minTimestamp!.toDate().getTime() -
+          timestampDate(res.event!.replayInfo!.minTimestamp!).getTime() -
           res.event!.replayInfo!.minSessionTime * 1000;
         dispatch(updateRecordstamp(new Date(x)));
 
         dispatch(updateClassification(res.state?.cars as Car[]));
-        dispatch(loadedMessages(res.state?.messages as MessageContainer[]));
+        dispatch(loadedMessages(res.state?.messages!));
         // updates from Speedmap
         dispatch(updateSpeedmap(res.speedmap as Speedmap));
         // updates from Snapshots

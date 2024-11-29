@@ -1,4 +1,4 @@
-import { TrackWetness } from "@buf/mpapenbr_iracelog.community_timostamm-protobuf-ts/iracelog/common/v1/common_pb";
+import { TrackWetness } from "@buf/mpapenbr_iracelog.bufbuild_es/iracelog/common/v1/common_pb";
 import { Col, Row } from "antd";
 import * as React from "react";
 import { sprintf } from "sprintf-js";
