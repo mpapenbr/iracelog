@@ -6,7 +6,7 @@ import React from "react";
 import {
   CarPit,
   PitInfo,
-} from "@buf/mpapenbr_iracelog.community_timostamm-protobuf-ts/iracelog/analysis/v1/car_pit_pb";
+} from "@buf/mpapenbr_iracelog.bufbuild_es/iracelog/analysis/v1/car_pit_pb";
 import { secAsMMSS } from "../../utils/output";
 
 const { Option } = Select;
@@ -32,8 +32,8 @@ const CarPitstopsNivo: React.FC<MyProps> = (props: MyProps) => {
   const dataLookup = props.carPits.reduce((prev, cur) => {
     const pitstops = [...cur.history].concat(cur.current?.isCurrentPitstop ? cur.current : []);
     // history data does not contain carNum. we'll add it here
-    pitstops.forEach((v) => (v.carNum = cur.carNum));
-    prev.set(cur.carNum, pitstops);
+    const newPitstops = pitstops.map((v) => ({ ...v, carNum: cur.carNum }));
+    prev.set(cur.carNum, newPitstops);
     return prev;
   }, new Map<string, PitInfo[]>());
 

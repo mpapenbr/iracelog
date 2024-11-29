@@ -1,4 +1,4 @@
-import { StintInfo } from "@buf/mpapenbr_iracelog.community_timostamm-protobuf-ts/iracelog/analysis/v1/car_stint_pb";
+import { StintInfo } from "@buf/mpapenbr_iracelog.bufbuild_es/iracelog/analysis/v1/car_stint_pb";
 import React from "react";
 import { lapTimeString, secAsHHMMSS } from "../../utils/output";
 

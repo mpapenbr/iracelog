@@ -1,8 +1,8 @@
 import { SettingOutlined } from "@ant-design/icons";
-import { CarPit } from "@buf/mpapenbr_iracelog.community_timostamm-protobuf-ts/iracelog/analysis/v1/car_pit_pb";
-import { Car } from "@buf/mpapenbr_iracelog.community_timostamm-protobuf-ts/iracelog/racestate/v1/racestate_pb";
+import { CarPit } from "@buf/mpapenbr_iracelog.bufbuild_es/iracelog/analysis/v1/car_pit_pb";
+import { Car } from "@buf/mpapenbr_iracelog.bufbuild_es/iracelog/racestate/v1/racestate_pb";
 
-import { CarLaps } from "@buf/mpapenbr_iracelog.community_timostamm-protobuf-ts/iracelog/analysis/v1/car_laps_pb";
+import { CarLaps } from "@buf/mpapenbr_iracelog.bufbuild_es/iracelog/analysis/v1/car_laps_pb";
 import { Button, Col, Form, InputNumber, Popover, Row, Select, Slider } from "antd";
 import * as React from "react";
 import { CircleOfDoom } from "../components/live/circleofdoom";

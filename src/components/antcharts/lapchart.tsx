@@ -1,10 +1,7 @@
 import { G2, Line, LineConfig } from "@ant-design/charts";
 
-import {
-  CarLaps,
-  Lap,
-} from "@buf/mpapenbr_iracelog.community_timostamm-protobuf-ts/iracelog/analysis/v1/car_laps_pb";
-import { StintInfo } from "@buf/mpapenbr_iracelog.community_timostamm-protobuf-ts/iracelog/analysis/v1/car_stint_pb";
+import { CarLaps, Lap } from "@buf/mpapenbr_iracelog.bufbuild_es/iracelog/analysis/v1/car_laps_pb";
+import { StintInfo } from "@buf/mpapenbr_iracelog.bufbuild_es/iracelog/analysis/v1/car_stint_pb";
 import _ from "lodash";
 import React from "react";
 import { Comparator } from "semver";

@@ -1,9 +1,9 @@
-import { CarOccupancy } from "@buf/mpapenbr_iracelog.community_timostamm-protobuf-ts/iracelog/analysis/v1/car_occupancy_pb";
-import { CarContainer } from "@buf/mpapenbr_iracelog.community_timostamm-protobuf-ts/iracelog/car/v1/car_pb";
+import { CarOccupancy } from "@buf/mpapenbr_iracelog.bufbuild_es/iracelog/analysis/v1/car_occupancy_pb";
+import { CarContainer } from "@buf/mpapenbr_iracelog.bufbuild_es/iracelog/car/v1/car_pb";
 import {
   LiveAnalysisSelResponse,
   LiveDriverDataResponse,
-} from "@buf/mpapenbr_iracelog.community_timostamm-protobuf-ts/iracelog/livedata/v1/live_service_pb";
+} from "@buf/mpapenbr_iracelog.bufbuild_es/iracelog/livedata/v1/live_service_pb";
 import type { PayloadAction } from "@reduxjs/toolkit";
 import { createSlice } from "@reduxjs/toolkit";
 

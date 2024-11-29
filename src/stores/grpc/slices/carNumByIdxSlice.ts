@@ -1,4 +1,4 @@
-import { CarEntry } from "@buf/mpapenbr_iracelog.community_timostamm-protobuf-ts/iracelog/car/v1/car_pb";
+import { CarEntry } from "@buf/mpapenbr_iracelog.bufbuild_es/iracelog/car/v1/car_pb";
 import type { PayloadAction } from "@reduxjs/toolkit";
 import { createSlice } from "@reduxjs/toolkit";
 

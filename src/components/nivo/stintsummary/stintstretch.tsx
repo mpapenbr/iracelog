@@ -1,5 +1,5 @@
-import { PitInfo } from "@buf/mpapenbr_iracelog.community_timostamm-protobuf-ts/iracelog/analysis/v1/car_pit_pb";
-import { StintInfo } from "@buf/mpapenbr_iracelog.community_timostamm-protobuf-ts/iracelog/analysis/v1/car_stint_pb";
+import { PitInfo } from "@buf/mpapenbr_iracelog.bufbuild_es/iracelog/analysis/v1/car_pit_pb";
+import { StintInfo } from "@buf/mpapenbr_iracelog.bufbuild_es/iracelog/analysis/v1/car_stint_pb";
 
 import { Tooltip, theme } from "antd";
 import React from "react";

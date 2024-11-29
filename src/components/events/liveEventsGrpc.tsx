@@ -3,22 +3,20 @@ import { Button, Col, Descriptions, List, Row } from "antd";
 
 import {
   AnalysisComponent,
-  LiveAnalysisSelRequest,
-  LiveDriverDataRequest,
-  LiveRaceStateRequest,
-  LiveSnapshotDataRequest,
-  LiveSpeedmapRequest,
+  LiveDriverDataResponseSchema,
+  LiveSnapshotDataResponseSchema,
+  LiveSpeedmapResponseSchema,
 } from "@buf/mpapenbr_iracelog.bufbuild_es/iracelog/livedata/v1/live_service_pb";
 import { ListLiveEventsResponse } from "@buf/mpapenbr_iracelog.bufbuild_es/iracelog/provider/v1/provider_service_pb";
 
-import { Event } from "@buf/mpapenbr_iracelog.community_timostamm-protobuf-ts/iracelog/event/v1/event_pb";
+import { Event } from "@buf/mpapenbr_iracelog.bufbuild_es/iracelog/event/v1/event_pb";
+import { LiveDataService } from "@buf/mpapenbr_iracelog.bufbuild_es/iracelog/livedata/v1/live_service_pb";
+import { ProviderService } from "@buf/mpapenbr_iracelog.bufbuild_es/iracelog/provider/v1/provider_service_pb";
 import {
   Car,
   Session,
-} from "@buf/mpapenbr_iracelog.community_timostamm-protobuf-ts/iracelog/racestate/v1/racestate_pb";
-import { Track } from "@buf/mpapenbr_iracelog.community_timostamm-protobuf-ts/iracelog/track/v1/track_pb";
-import { LiveDataService } from "@buf/mpapenbr_iracelog.connectrpc_es/iracelog/livedata/v1/live_service_connect";
-import { ProviderService } from "@buf/mpapenbr_iracelog.connectrpc_es/iracelog/provider/v1/provider_service_connect";
+} from "@buf/mpapenbr_iracelog.bufbuild_es/iracelog/racestate/v1/racestate_pb";
+import { Track } from "@buf/mpapenbr_iracelog.bufbuild_es/iracelog/track/v1/track_pb";
 import { ConnectError } from "@connectrpc/connect";
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
@@ -33,13 +31,15 @@ import {
   updateSession,
 } from "../../stores/grpc/slices/sessionSlice";
 
-import { CarLaps } from "@buf/mpapenbr_iracelog.community_timostamm-protobuf-ts/iracelog/analysis/v1/car_laps_pb";
-import { CarOccupancy } from "@buf/mpapenbr_iracelog.community_timostamm-protobuf-ts/iracelog/analysis/v1/car_occupancy_pb";
-import { CarPit } from "@buf/mpapenbr_iracelog.community_timostamm-protobuf-ts/iracelog/analysis/v1/car_pit_pb";
-import { CarStint } from "@buf/mpapenbr_iracelog.community_timostamm-protobuf-ts/iracelog/analysis/v1/car_stint_pb";
-import { RaceGraph } from "@buf/mpapenbr_iracelog.community_timostamm-protobuf-ts/iracelog/analysis/v1/racegraph_pb";
-import { SnapshotData } from "@buf/mpapenbr_iracelog.community_timostamm-protobuf-ts/iracelog/analysis/v1/snapshot_data_pb";
-import { Speedmap } from "@buf/mpapenbr_iracelog.community_timostamm-protobuf-ts/iracelog/speedmap/v1/speedmap_pb";
+import { CarLaps } from "@buf/mpapenbr_iracelog.bufbuild_es/iracelog/analysis/v1/car_laps_pb";
+import { CarOccupancy } from "@buf/mpapenbr_iracelog.bufbuild_es/iracelog/analysis/v1/car_occupancy_pb";
+import { CarPit } from "@buf/mpapenbr_iracelog.bufbuild_es/iracelog/analysis/v1/car_pit_pb";
+import { CarStint } from "@buf/mpapenbr_iracelog.bufbuild_es/iracelog/analysis/v1/car_stint_pb";
+import { RaceGraph } from "@buf/mpapenbr_iracelog.bufbuild_es/iracelog/analysis/v1/racegraph_pb";
+import { SnapshotData } from "@buf/mpapenbr_iracelog.bufbuild_es/iracelog/analysis/v1/snapshot_data_pb";
+import { Speedmap } from "@buf/mpapenbr_iracelog.bufbuild_es/iracelog/speedmap/v1/speedmap_pb";
+import { toJsonString } from "@bufbuild/protobuf";
+import { timestampDate } from "@bufbuild/protobuf/wkt";
 import { updateCarClasses } from "../../stores/grpc/slices/carClassesSlice";
 import { updateCarEntries } from "../../stores/grpc/slices/carEntrySlice";
 import { updateCarInfo } from "../../stores/grpc/slices/carInfoSlice";
@@ -91,9 +91,10 @@ export const LiveEvents: React.FC = () => {
     closeCurrentConnections();
     resetData(dispatch);
     resetUI(dispatch);
+
     const liveAnalysisCancel = cbLiveDataClient.liveAnalysisSel(
-      LiveAnalysisSelRequest.fromJson({
-        event: { key: eventKey },
+      {
+        event: { arg: { case: "key", value: eventKey } },
         selector: {
           components: [
             AnalysisComponent.CAR_OCCUPANCIES,
@@ -106,7 +107,7 @@ export const LiveEvents: React.FC = () => {
           carLapsNumTail: 1,
           raceGraphNumTail: 1,
         },
-      }),
+      },
       (res) => {
         // const x: LiveAnalysisSelResponse = res;
 
@@ -132,15 +133,15 @@ export const LiveEvents: React.FC = () => {
       },
     );
     const liveStateCancel = cbLiveDataClient.liveRaceState(
-      LiveRaceStateRequest.fromJson({
-        event: { key: eventKey },
-      }),
+      {
+        event: { arg: { case: "key", value: eventKey } },
+      },
       (res) => {
         stateCount++;
         // console.log(`state msg: ${stateCount}: ${res.toJsonString().length}`);
         dispatch(updateSession({ ...res.session } as Session));
         dispatch(updateRefTimeOfDay({ ...res.session } as Session));
-        dispatch(updateRecordstamp(res.timestamp!.toDate()));
+        dispatch(updateRecordstamp(timestampDate(res.timestamp!)));
 
         const pureCarJsonObj = res.cars.map((c) => ({ ...c }));
         dispatch(updateClassification(pureCarJsonObj as Car[]));
@@ -154,12 +155,14 @@ export const LiveEvents: React.FC = () => {
       },
     );
     const liveDriverDataCancel = cbLiveDataClient.liveDriverData(
-      LiveDriverDataRequest.fromJson({
-        event: { key: eventKey },
-      }),
+      {
+        event: { arg: { case: "key", value: eventKey } },
+      },
       (res) => {
         driverDataCount++;
-        console.log(`driver data msg: ${driverDataCount}: ${res.toJsonString().length}`);
+        console.log(
+          `driver data msg: ${driverDataCount}: ${toJsonString(LiveDriverDataResponseSchema, res).length}`,
+        );
         const plain = { ...res };
         dispatch(updateForCarNumFromDriverData(plain.entries));
         dispatch(updateFromDriverData(plain));
@@ -172,12 +175,14 @@ export const LiveEvents: React.FC = () => {
       },
     );
     const speedmapDataCancel = cbLiveDataClient.liveSpeedmap(
-      LiveSpeedmapRequest.fromJson({
-        event: { key: eventKey },
-      }),
+      {
+        event: { arg: { case: "key", value: eventKey } },
+      },
       (res) => {
         speedmapCount++;
-        console.log(`speedmap data msg: ${speedmapCount}: ${res.toJsonString().length}`);
+        console.log(
+          `speedmap data msg: ${speedmapCount}: ${toJsonString(LiveSpeedmapResponseSchema, res).length}`,
+        );
         const plain = { ...res };
         dispatch(updateSpeedmap(res.speedmap as Speedmap));
       },
@@ -186,12 +191,14 @@ export const LiveEvents: React.FC = () => {
       },
     );
     const snapshotDataCancel = cbLiveDataClient.liveSnapshotData(
-      LiveSnapshotDataRequest.fromJson({
-        event: { key: eventKey },
-      }),
+      {
+        event: { arg: { case: "key", value: eventKey } },
+      },
       (res) => {
         snapshotDataCount++;
-        console.log(`snapshot data msg: ${snapshotDataCount}: ${res.toJsonString().length}`);
+        console.log(
+          `snapshot data msg: ${snapshotDataCount}: ${toJsonString(LiveSnapshotDataResponseSchema, res).length}`,
+        );
         const plain = { ...res };
         dispatch(updateSnapshotData(res.snapshotData as SnapshotData));
       },
