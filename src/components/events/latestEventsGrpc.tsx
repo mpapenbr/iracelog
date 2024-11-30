@@ -45,7 +45,7 @@ export const LatestEventsGrpc: React.FC = () => {
   const onLoadForReplayButtonClicked = (e: React.MouseEvent) => {
     const arg = (e.currentTarget as HTMLInputElement).value;
     globalWamp.currentLiveId = undefined;
-    navigate("/analysis/" + arg);
+    navigate("/analysis/" + arg + "/classification");
   };
   return (
     <List

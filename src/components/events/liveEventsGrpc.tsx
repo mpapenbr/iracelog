@@ -265,7 +265,7 @@ export const LiveEvents: React.FC = () => {
   const redirectAnalysis = (e: React.MouseEvent) => {
     console.log("settings check");
     const id = (e.currentTarget as HTMLInputElement).value as string;
-    navigate("/analysis/" + id);
+    navigate("/analysis/" + id + "/classification");
   };
   const buttons = (item: LiveData) => {
     if (!item.connected) {
