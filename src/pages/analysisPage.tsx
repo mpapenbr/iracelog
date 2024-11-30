@@ -1,6 +1,6 @@
 import { Layout, Menu, Modal, notification } from "antd";
 import React, { useEffect, useState } from "react";
-import { Link, Route, Routes, useParams } from "react-router-dom";
+import { Link, Route, Routes, useParams } from "react-router";
 import { Comparator } from "semver";
 import { globalWamp } from "../commons/globals";
 import { LoaderPageGrpc } from "../components/events/loaderGrpc";
