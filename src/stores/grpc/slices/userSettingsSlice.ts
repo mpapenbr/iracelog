@@ -93,6 +93,12 @@ const globalSettings = createSlice({
     resetGlobalSettings() {
       return initialStateGlobalSettings;
     },
+    resetRaceGlobalSettings(state) {
+      state.filterCarClasses = [];
+      state.referenceCarNum = undefined;
+      state.showCars = [];
+      state.highlightCars = [];
+    },
   },
 });
 const initialStateStandings = { availableColumns: [] as IColumnInfo[] };
@@ -450,6 +456,7 @@ export const combined = combineSlices(
 export const {
   updateGlobalSettings,
   resetGlobalSettings,
+  resetRaceGlobalSettings,
   toggleFilterOrderByPosition,
   toggleSyncSelection,
   toggleCompact,

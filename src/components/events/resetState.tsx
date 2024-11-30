@@ -17,6 +17,7 @@ import {
   resetDriverStints,
   resetMessages,
   resetPits,
+  resetRaceGlobalSettings,
   resetRaceGraph,
   resetRaceGraphRelative,
   resetRacePositions,
@@ -31,7 +32,7 @@ import {
 // import { initialReplaySettings } from "../../stores/ui/reducer";
 
 export const resetUI = (dispatch: Dispatch) => {
-  // dispatch(resetGlobalSettings());
+  dispatch(resetRaceGlobalSettings());
   dispatch(resetStandingsColumns());
   dispatch(resetClassification());
   dispatch(resetCircleOfDoom());
