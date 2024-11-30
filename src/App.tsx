@@ -9,6 +9,7 @@ import { AnalysisMainPage } from "./pages/analysisPage";
 
 import { SettingOutlined } from "@ant-design/icons";
 import { GlobalSettings } from "./components/globalSettingsControl";
+import Classification from "./components/live/classification";
 import { EventHeaderContainer } from "./container/EventHeaderContainer";
 import { Events } from "./pages/eventsPage";
 import { FakeLoaderPage } from "./pages/fakeLoader";
@@ -92,7 +93,7 @@ const App: React.FC<{}> = () => {
 
   return (
     <Provider store={store}>
-      <Router>
+      <Router future={{ v7_relativeSplatPath: true, v7_startTransition: true }}>
         <HOCConfig>
           <Layout
             className="layout"
@@ -144,7 +145,10 @@ const App: React.FC<{}> = () => {
                   <Route path="/" element={<Events />} />
                   <Route path="/events" element={<Events />} />
 
-                  <Route path="/analysis/:eventKey/*" element={<AnalysisMainPage />} />
+                  <Route path="/analysis/:eventKey">
+                    <Route path="*" element={<AnalysisMainPage />} />
+                    <Route index element={<Classification />} />
+                  </Route>
 
                   {API_LOCAL_DEV_MODE ? (
                     <Route path="/devloader" element={<FakeLoaderPage />} />

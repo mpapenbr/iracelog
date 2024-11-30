@@ -55,24 +55,28 @@ export const AnalysisMainPage: React.FC = () => {
   const allItems = [
     { label: <Link to="/events">Events</Link>, key: "events" },
     { type: "divider", key: "menuDivider" },
-    { label: <Link to="classification">Classification</Link>, key: "classification" },
-    { label: <Link to="customStandings">Standings (custom)</Link>, key: "customStandings" },
-    { label: <Link to="cod">Circle of doom</Link>, key: "cod", requires: ">=0.4.4" },
-    { label: <Link to="raceGraphA">Race graph (Leader)</Link>, key: "raceGraphA" },
-    { label: <Link to="raceGraphB">Race graph (Car)</Link>, key: "raceGraphB" },
-    { label: <Link to="racePositionsNivo">Race positions</Link>, key: "racePositionsNivo" },
-    { label: <Link to="dashboard">Dashboard</Link>, key: "dashboard" },
-    { label: <Link to="strategy">Strategy</Link>, key: "strategy" },
-    { label: <Link to="driverLaps">Driver laps </Link>, key: "driverLaps" },
-    { label: <Link to="carPitstops">Pitstops</Link>, key: "carPitstops" },
-    { label: <Link to="stintDurations">Stint Durations</Link>, key: "stintDurations" },
-    { label: <Link to="stintSummary">Stint Summary</Link>, key: "stintSummary" },
-    { label: <Link to="stintRanking">Stint Ranking</Link>, key: "stintRanking" },
-    { label: <Link to="speedmap">Speedmap</Link>, key: "speedmap", requires: ">=0.4.4" },
-    { label: <Link to="weather">Weather</Link>, key: "weather", requires: ">=0.4.4" },
-    { label: <Link to="raceEntries">Race entries</Link>, key: "raceEntries", requires: ">=0.4.4" },
-    { label: <Link to="messages">Messages</Link>, key: "messages" },
-    { label: <Link to="settings">Settings</Link>, key: "settings" },
+    { label: <Link to="../classification">Classification</Link>, key: "classification" },
+    { label: <Link to="../customStandings">Standings (custom)</Link>, key: "customStandings" },
+    { label: <Link to="../cod">Circle of doom</Link>, key: "cod", requires: ">=0.4.4" },
+    { label: <Link to="../raceGraphA">Race graph (Leader)</Link>, key: "raceGraphA" },
+    { label: <Link to="../raceGraphB">Race graph (Car)</Link>, key: "raceGraphB" },
+    { label: <Link to="../racePositionsNivo">Race positions</Link>, key: "racePositionsNivo" },
+    { label: <Link to="../dashboard">Dashboard</Link>, key: "dashboard" },
+    { label: <Link to="../strategy">Strategy</Link>, key: "strategy" },
+    { label: <Link to="../driverLaps">Driver laps </Link>, key: "driverLaps" },
+    { label: <Link to="../carPitstops">Pitstops</Link>, key: "carPitstops" },
+    { label: <Link to="../stintDurations">Stint Durations</Link>, key: "stintDurations" },
+    { label: <Link to="../stintSummary">Stint Summary</Link>, key: "stintSummary" },
+    { label: <Link to="../stintRanking">Stint Ranking</Link>, key: "stintRanking" },
+    { label: <Link to="../speedmap">Speedmap</Link>, key: "speedmap", requires: ">=0.4.4" },
+    { label: <Link to="../weather">Weather</Link>, key: "weather", requires: ">=0.4.4" },
+    {
+      label: <Link to="../raceEntries">Race entries</Link>,
+      key: "raceEntries",
+      requires: ">=0.4.4",
+    },
+    { label: <Link to="../messages">Messages</Link>, key: "messages" },
+    { label: <Link to="../settings">Settings</Link>, key: "settings" },
   ];
   const compareRaceloggerVersion = (arg: string): string => {
     const val = eventInfo.event.raceloggerVersion ?? "0.0.0";
@@ -106,7 +110,6 @@ export const AnalysisMainPage: React.FC = () => {
         </Modal>
         <Routes>
           <Route path="classification" element={<Classification />} />
-          <Route index element={<Classification />} />
 
           <Route path="customStandings" element={<CustomStandingsContainer />} />
           <Route path="cod" element={<BigCircleOfDoomContainer />} />
