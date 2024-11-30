@@ -1,7 +1,7 @@
 import { Button, ConfigProvider, Flex, Layout, Popover, ThemeConfig, theme } from "antd";
 import React from "react";
 import { Provider } from "react-redux";
-import { Link, Route, BrowserRouter as Router, Routes } from "react-router-dom";
+import { Link, Route, BrowserRouter as Router, Routes } from "react-router";
 import { Store } from "redux";
 import "./App.css";
 import { API_LOCAL_DEV_MODE, APP_VERSION_DISPLAY } from "./constants";
@@ -93,7 +93,7 @@ const App: React.FC<{}> = () => {
 
   return (
     <Provider store={store}>
-      <Router future={{ v7_relativeSplatPath: true, v7_startTransition: true }}>
+      <Router>
         <HOCConfig>
           <Layout
             className="layout"
