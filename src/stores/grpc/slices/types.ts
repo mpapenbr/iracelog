@@ -90,6 +90,11 @@ export interface IStintRankingSettings extends IMultiCarSelectFilterSettings {
   lowerRangeTime: number; // left side of selected time range
   upperRangeTime: number; // right side of selected time range
 }
+export interface IPredictRaceSettings extends IMultiCarSelectFilterSettings {
+  minSessionTime: number; // minimum session time of event
+  maxSessionTime: number; // maximum session time of event
+  selectTime: number; // the value of the slider
+}
 
 export interface IRaceStintSharedSettings {
   showCars: string[];
@@ -176,6 +181,7 @@ export interface IUserSettings {
   stints: IStintsSettings;
   stintSummary: IStintSummarySettings;
   stintRanking: IStintRankingSettings;
+  predict: IPredictRaceSettings;
 
   dashboard: IDashboardSettings;
   strategy: IStrategySettings;
