@@ -13,10 +13,16 @@ import {
   updatePredictRace,
 } from "../stores/grpc/slices/userSettingsSlice";
 
+import {
+  PredictParamSchema,
+  PredictResultSchema,
+} from "@buf/mpapenbr_iracelog.bufbuild_es/iracelog/predict/v1/predict_pb";
 import { PredictService } from "@buf/mpapenbr_iracelog.bufbuild_es/iracelog/predict/v1/predict_service_pb";
 import { RaceStateService } from "@buf/mpapenbr_iracelog.bufbuild_es/iracelog/racestate/v1/racestate_service_pb";
+import { create, toJsonString } from "@bufbuild/protobuf";
+import { DurationSchema } from "@bufbuild/protobuf/wkt";
 import _ from "lodash";
-import PredictRaceSvg from "../components/predict/predict";
+import PredictRace from "../components/predict/predict";
 import { mergePredictResult, setRaceLeaderResult } from "../stores/grpc/slices/predictSlice";
 import { useClient } from "../utils/useClient";
 import { InputData, prepareFilterData } from "./multiCarSelectFilterHelper";
@@ -152,6 +158,19 @@ export const PredictContainer: React.FC = () => {
                   return;
                 }
                 console.log(leaderResult);
+                console.log(
+                  "Prediction for leader " +
+                    toJsonString(PredictResultSchema, leaderResult.result!),
+                );
+                const lEnd = _.last(leaderResult.result?.parts)?.end!;
+                const lStart = res.param?.race?.session!;
+
+                // const leaderRaceDuration = Number(lEnd.seconds - lStart.seconds)
+                const leaderRaceDuration = create(DurationSchema, {
+                  seconds: lEnd.seconds - lStart.seconds,
+                });
+
+                console.log("Leader raceDur: ", lEnd.seconds - lStart.seconds);
                 dispatch(setRaceLeaderResult(leaderResult.result!));
                 props.selectedCars.forEach((selCarNum) => {
                   cbPredictService.getPredictParam(
@@ -160,15 +179,22 @@ export const PredictContainer: React.FC = () => {
                       startSelector: { arg: { case: "sessionTime", value: value } },
                       carNum: selCarNum,
                     },
-                    (err, res) => {
+                    (err, carRes) => {
                       if (err != undefined) {
                         console.log(err);
                         return;
                       }
-                      res.param!.race!.duration = _.last(leaderResult.result?.parts)?.end;
+                      carRes.param!.race!.duration = leaderRaceDuration;
+                      console.log(
+                        "carNum: " +
+                          selCarNum +
+                          " " +
+                          toJsonString(PredictParamSchema, carRes.param!),
+                      );
+
                       cbPredictService.predictRace(
                         {
-                          param: res.param,
+                          param: carRes.param,
                         },
                         (err, res) => {
                           if (err != undefined) {
@@ -205,7 +231,7 @@ export const PredictContainer: React.FC = () => {
         <>
           <Divider />
           <Row>
-            <PredictRaceSvg
+            <PredictRace
               height={800}
               width={width}
               minTime={userSettings.minSessionTime}
