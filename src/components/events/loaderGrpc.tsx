@@ -48,6 +48,7 @@ import {
 } from "../../stores/grpc/slices/sessionSlice";
 import { updateSpeedmap } from "../../stores/grpc/slices/speedmapSlice";
 import {
+  updatePredictRaceRange,
   updateReplayInfo,
   updateStintRankingsRange,
 } from "../../stores/grpc/slices/userSettingsSlice";
@@ -87,6 +88,7 @@ export const LoaderPageGrpc: React.FC<MyProps> = (props: MyProps) => {
         dispatch(updateTrack(res.track!));
         dispatch(updateReplayInfo(res.event?.replayInfo!));
         dispatch(updateStintRankingsRange(res.event?.replayInfo!));
+        dispatch(updatePredictRaceRange(res.event?.replayInfo!));
         // updates form CarContainer
         dispatch(updateFromCarContainer(res.car as CarContainer));
         dispatch(updateFromCarOccupancy(res.analysis?.carOccupancies as CarOccupancy[]));

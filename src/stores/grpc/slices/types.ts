@@ -1,3 +1,4 @@
+import { LaptimeSelector } from "@buf/mpapenbr_iracelog.bufbuild_es/iracelog/predict/v1/predict_service_pb";
 import { ICarBaseData } from "./availableCarsSlice";
 
 export interface IUiStints {
@@ -90,6 +91,14 @@ export interface IStintRankingSettings extends IMultiCarSelectFilterSettings {
   lowerRangeTime: number; // left side of selected time range
   upperRangeTime: number; // right side of selected time range
 }
+export interface IPredictRaceSettings extends IMultiCarSelectFilterSettings {
+  minSessionTime: number; // minimum session time of event
+  maxSessionTime: number; // maximum session time of event
+  selectTime: number; // the value of the slider
+  lowerRangeTime: number; // left side of selected time range
+  upperRangeTime: number; // right side of selected time range
+  laptimeSelector: LaptimeSelector; //
+}
 
 export interface IRaceStintSharedSettings {
   showCars: string[];
@@ -176,6 +185,7 @@ export interface IUserSettings {
   stints: IStintsSettings;
   stintSummary: IStintSummarySettings;
   stintRanking: IStintRankingSettings;
+  predict: IPredictRaceSettings;
 
   dashboard: IDashboardSettings;
   strategy: IStrategySettings;

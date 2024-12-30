@@ -1,4 +1,5 @@
 import { ReplayInfo } from "@buf/mpapenbr_iracelog.bufbuild_es/iracelog/event/v1/event_pb";
+import { LaptimeSelector } from "@buf/mpapenbr_iracelog.bufbuild_es/iracelog/predict/v1/predict_service_pb";
 import type { PayloadAction } from "@reduxjs/toolkit";
 import { combineSlices, createSlice } from "@reduxjs/toolkit";
 import {
@@ -11,6 +12,7 @@ import {
   IGlobalSettings,
   IMessagesSettings,
   IPitstopsSettings,
+  IPredictRaceSettings,
   IRaceGraphRelativeSettings,
   IRaceGraphSettings,
   IRacePositionsSettings,
@@ -346,6 +348,44 @@ const stintRankings = createSlice({
     },
   },
 });
+const initialStatePredictRace = {
+  showCars: [],
+  selectableCars: [],
+  filterCarClasses: [],
+  minSessionTime: 0,
+  maxSessionTime: 0,
+  selectTime: 0,
+  lowerRangeTime: 0,
+  upperRangeTime: 0,
+  laptimeSelector: LaptimeSelector.PREVIOUS_STINT_AVG,
+} as IPredictRaceSettings;
+const predictRace = createSlice({
+  name: "predictRaceSettings",
+  initialState: initialStatePredictRace,
+  reducers: {
+    updatePredictRace(state, action: PayloadAction<IPredictRaceSettings>) {
+      return action.payload;
+    },
+    updatePredictRaceRange(state, action: PayloadAction<ReplayInfo>) {
+      state.minSessionTime = action.payload.minSessionTime;
+      state.maxSessionTime = action.payload.maxSessionTime;
+      state.selectTime = (action.payload.maxSessionTime - action.payload.minSessionTime) / 2;
+    },
+    updatePredictPoint(state, action: PayloadAction<number>) {
+      state.selectTime = action.payload;
+    },
+    updatePredictShowRange(state, action: PayloadAction<{ min: number; max: number }>) {
+      state.lowerRangeTime = action.payload.min;
+      state.upperRangeTime = action.payload.max;
+    },
+    updateLaptimeSelector(state, action: PayloadAction<LaptimeSelector>) {
+      state.laptimeSelector = action.payload;
+    },
+    resetPredictRace() {
+      return initialStatePredictRace;
+    },
+  },
+});
 
 const initialStateDashboard = {
   showCars: [],
@@ -429,6 +469,7 @@ export const combined = combineSlices(
   raceGraphRelative,
   racePositions,
   stintRankings,
+  predictRace,
   dashboard,
   replay,
   messages,
@@ -447,6 +488,7 @@ export const combined = combineSlices(
     raceGraphRelative: raceGraphRelative.reducer,
     racePositions: racePositions.reducer,
     stintRankings: stintRankings.reducer,
+    predictRace: predictRace.reducer,
     dashboard: dashboard.reducer,
     replay: replay.reducer,
     messages: messages.reducer,
@@ -479,6 +521,14 @@ export const { updateRaceGraphRelative, resetRaceGraphRelative } = raceGraphRela
 export const { updateRacePositions, resetRacePositions } = racePositions.actions;
 export const { updateStintRankings, updateStintRankingsRange, resetStintRankings } =
   stintRankings.actions;
+export const {
+  updatePredictRace,
+  updatePredictRaceRange,
+  updatePredictShowRange,
+  updatePredictPoint,
+  resetPredictRace,
+  updateLaptimeSelector,
+} = predictRace.actions;
 export const { updateDashboard, resetDashboard } = dashboard.actions;
 
 export const { updateReplay, updateReplayInfo, resetReplay } = replay.actions;

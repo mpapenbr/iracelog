@@ -9,6 +9,7 @@ import { resetCarOccupancy } from "../../stores/grpc/slices/carOccupancySlice";
 import { resetCarPits } from "../../stores/grpc/slices/carPitsSlice";
 import { resetCarStints } from "../../stores/grpc/slices/carStintsSlice";
 import { resetEventInfo } from "../../stores/grpc/slices/eventInfoSlice";
+import { resetPredictions } from "../../stores/grpc/slices/predictSlice";
 import {
   resetCircleOfDoom,
   resetClassification,
@@ -17,6 +18,7 @@ import {
   resetDriverStints,
   resetMessages,
   resetPits,
+  resetPredictRace,
   resetRaceGlobalSettings,
   resetRaceGraph,
   resetRaceGraphRelative,
@@ -46,6 +48,7 @@ export const resetUI = (dispatch: Dispatch) => {
   dispatch(resetRaceGraphRelative());
   dispatch(resetRacePositions());
   dispatch(resetStintRankings());
+  dispatch(resetPredictRace());
   dispatch(resetDashboard());
   dispatch(resetReplay());
   dispatch(resetMessages());
@@ -61,4 +64,5 @@ export const resetData = (dispatch: Dispatch) => {
   dispatch(resetCarStints());
   dispatch(resetAvailableCars());
   dispatch(resetByIdxLookup());
+  dispatch(resetPredictions());
 };
