@@ -18,6 +18,7 @@ import { eventInfoSlice } from "./grpc/slices/eventInfoSlice";
 import { eventSnapshotDataSlice } from "./grpc/slices/eventSnapshotData";
 import { liveDataSlice } from "./grpc/slices/liveDataSlice";
 import { infoMessagesSlice } from "./grpc/slices/messagesSlice";
+import { predictSlice } from "./grpc/slices/predictSlice";
 import { raceGraphSlice } from "./grpc/slices/raceGraphSlice";
 import { raceOrderSlice } from "./grpc/slices/raceOrderSlice";
 import { sessionSlice } from "./grpc/slices/sessionSlice";
@@ -61,6 +62,7 @@ export const store = configureStore({
     speedmap: speedmapSlice.reducer,
     eventSnapshots: eventSnapshotDataSlice.reducer,
     infoMessages: infoMessagesSlice.reducer,
+    predict: predictSlice.reducer,
 
     carClasses: carClassesSlice.reducer,
     userSettings: combined,
