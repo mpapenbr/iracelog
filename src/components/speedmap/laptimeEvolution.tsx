@@ -1,11 +1,10 @@
-import { DualAxes } from "@ant-design/charts";
+import { DualAxes, DualAxesConfig } from "@ant-design/charts";
 import * as React from "react";
 
 import { timestampDate } from "@bufbuild/protobuf/wkt";
 import { useAppSelector } from "../../stores";
 import { lapTimeString, secAsHHMM } from "../../utils/output";
 import { antChartsTheme } from "../antcharts/color";
-import { statsDataFor } from "../live/statsutil";
 
 export const LaptimeEvolution: React.FC = () => {
   const snapshots = useAppSelector((state) => state.eventSnapshots);
@@ -19,7 +18,8 @@ export const LaptimeEvolution: React.FC = () => {
 
   const LaptimeEvolutionChart = () => {
     const plotdata: { x: string; y: number; carClass: string }[] = [];
-    const trackTempData: { x: string; "Track temp": number }[] = [];
+    const alldata: { x: string; y: number; carClass: string; trackTemp: number }[] = [];
+    const trackTempData: { x: string; trackTemp: number; "Track temp": number }[] = [];
     const graphTheme = antChartsTheme(globalSettings.theme);
 
     snapshots.forEach((e) => {
@@ -43,8 +43,10 @@ export const LaptimeEvolution: React.FC = () => {
           xKey = secAsHHMM((d.getTime() / 1000 - d.getTimezoneOffset() * 60) % 86400);
           break;
       }
+
       trackTempData.push({
         x: xKey,
+        trackTemp: parseFloat(e.trackTemp.toPrecision(3)),
         "Track temp": parseFloat(e.trackTemp.toPrecision(3)),
       });
       Object.entries(e.carClassLaptimes)
@@ -64,48 +66,93 @@ export const LaptimeEvolution: React.FC = () => {
         });
     });
 
-    const work = statsDataFor(plotdata.map((v) => v.y));
+    const ccConfig = [];
+    carClasses.forEach((cc, idx) => {
+      const yAxis = (i: number) => {
+        if (i == 0) {
+          return {
+            y: {
+              nice: true,
+              labelFormatter: (d: number) => lapTimeString(d),
+            },
+          };
+        } else return { y: false };
+      };
+      ccConfig.push({
+        data: plotdata,
+        type: "line",
+        yField: "y",
+        seriesField: "carClass",
+        colorField: "carClass",
+        axis: yAxis(idx),
+        style: {
+          lineWidth: 2,
+        },
+        tooltip: {
+          items: [
+            {
+              channel: "y",
+              valueFormatter: lapTimeString,
+            },
+          ],
+        },
+      });
+    });
+    ccConfig.push({
+      data: trackTempData,
+      type: "line",
+      yField: "trackTemp",
 
-    // console.log(plotdata);
-    const config = {
+      axis: {
+        y: {
+          nice: true,
+          position: "right",
+          title: "temp °C",
+          style: {
+            titleFill: "orange",
+          },
+          gridLineWidth: 1,
+          gridLineDash: [0, 0],
+        },
+      },
+      style: {
+        stroke: "orange",
+        lineDash: [4, 4],
+      },
+      tooltip: {
+        items: [
+          {
+            channel: "y",
+            field: "trackTemp",
+            name: "trackTemp",
+            valueFormatter: (d: number) => d.toFixed(1) + "°C",
+          },
+        ],
+      },
+    });
+    // current problems:
+    // - track temps does not show up in legend
+    // - track temp is shown with car class name in tooltip
+    const config: DualAxesConfig = {
       // width: 800,
       height: 400,
       theme: graphTheme.antd.theme,
-      data: [plotdata, trackTempData],
+      // data: alldata,
       xField: "x",
-      yField: ["y", "Track temp"],
-      geometryOptions: [
-        {
-          geometry: "line",
-          seriesField: "carClass",
-        },
-        {
-          geometry: "line",
-          lineStyle: { lineDash: [4, 4] },
-          color: "orange",
-        },
-      ],
-      yAxis: {
-        y: {
+      // legend: true,
+      axis: {
+        x: {
           nice: true,
-          minLimit: Math.floor(work.minTime),
-          maxLimit: Math.ceil(work.q99),
+          style: {
+            labelTransform: "rotate(0)",
+          },
         },
       },
-      meta: {
-        y: {
-          formatter: (d: number) => lapTimeString(d),
-          // minLimit: Math.floor(work.minTime),
-          // maxLimit: Math.ceil(work.q95),
+      children: ccConfig,
 
-          tickCount: 9,
-        },
-        "Track temp": {
-          formatter: (d: number) => d.toFixed(1) + "°C",
-        },
-      },
       animation: false,
     };
+
     return <DualAxes {...config} />;
   };
   return (
