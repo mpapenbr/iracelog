@@ -4,7 +4,7 @@
   "private": true,
   "type": "module",
   "dependencies": {
-    "@ant-design/charts": "^1.4.3",
+    "@ant-design/charts": "^2.6.2",
     "@ant-design/icons": "^6.0.0",
     "@ant-design/v5-patch-for-react-19": "^1.0.3",
     "@apollo/client": "^4.0.3",

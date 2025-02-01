@@ -87,13 +87,31 @@ export const Speedmap: React.FC = () => {
     // console.log(plotdata);
     const config = {
       // width: 800,
+
       theme: graphTheme.antd.theme,
       height: 400,
       data: plotdata,
       xField: "x",
       yField: "y",
       seriesField: "carClass",
-      animation: false,
+      colorField: "carClass",
+      style: {
+        lineWidth: 2,
+      },
+      axis: {
+        y: {
+          nice: true,
+
+          gridLineWidth: 1,
+          gridLineDash: [0, 0],
+        },
+        x: {
+          style: {
+            labelTransform: "rotate(0)",
+          },
+        },
+      },
+      animate: false,
     };
     return <Line {...config} />;
   };

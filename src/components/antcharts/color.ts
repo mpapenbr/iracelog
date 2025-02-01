@@ -10,6 +10,23 @@ export interface IGraphTheme {
 export const antChartsTheme = (theme: string): IGraphTheme => {
   switch (theme) {
     case "dark":
+      return {
+        antd: {
+          theme: "classicDark",
+          regionGreen: "green",
+          regionRed: "red",
+          trackWetness: [
+            "rgba(0,0,0,0)",
+            "rgba(0,0,0,0)",
+            "#00bfff",
+            "#0080ff",
+            "#0040ff",
+            "#0000ff",
+            "#4000ff",
+            "#8000ff",
+          ],
+        },
+      };
     case "dimmed":
       return {
         antd: {
@@ -31,7 +48,7 @@ export const antChartsTheme = (theme: string): IGraphTheme => {
     default:
       return {
         antd: {
-          theme: "default",
+          theme: "classic",
           regionGreen: "green",
           regionRed: "red",
           trackWetness: [
