@@ -1,6 +1,7 @@
 import { DualAxes } from "@ant-design/charts";
 import * as React from "react";
 
+import { timestampDate } from "@bufbuild/protobuf/wkt";
 import { useAppSelector } from "../../stores";
 import { lapTimeString, secAsHHMM } from "../../utils/output";
 import { antChartsTheme } from "../antcharts/color";
@@ -36,7 +37,7 @@ export const LaptimeEvolution: React.FC = () => {
           xKey = secAsHHMM(e.timeOfDay);
           break;
         case "real":
-          const d: Date = e.recordStamp?.toDate();
+          const d: Date = timestampDate(e.recordStamp!);
           // JS hell when calculating days. In order to use own formatter we need the seconds.
           // Note: TZ-offset -60 on GMT+0100 ;)
           xKey = secAsHHMM((d.getTime() / 1000 - d.getTimezoneOffset() * 60) % 86400);
@@ -46,17 +47,21 @@ export const LaptimeEvolution: React.FC = () => {
         x: xKey,
         "Track temp": parseFloat(e.trackTemp.toPrecision(3)),
       });
-      Object.entries(e.carClassLaptimes).forEach((classData) => {
-        if (classData[1] > 0) {
-          plotdata.push({
-            // x: e.sessionTime.toString(),
-            x: xKey,
-            y: classData[1],
+      Object.entries(e.carClassLaptimes)
+        .sort((a, b) => a[1] - b[1]) // sort by laptimes desc
+        .forEach((classData) => {
+          if (classData[1] > 0) {
+            plotdata.push({
+              // x: e.sessionTime.toString(),
+              x: xKey,
+              y: classData[1],
 
-            carClass: carClassLookup.get(classData[0]) ?? "Class " + classData[0],
-          });
-        }
-      });
+              carClass: carClassLookup.get(classData[0]) ?? "Class " + classData[0],
+            });
+          } else {
+            console.log("No laptimes for", classData[0], e);
+          }
+        });
     });
 
     const work = statsDataFor(plotdata.map((v) => v.y));

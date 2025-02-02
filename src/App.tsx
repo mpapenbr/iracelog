@@ -163,7 +163,7 @@ const App: React.FC<{}> = () => {
               <a target={"_blank"} rel="noreferrer" href={link}>
                 {APP_VERSION_DISPLAY}
               </a>{" "}
-              ©2024 Markus Papenbrock
+              ©2025 Markus Papenbrock
             </Footer>
           </Layout>
         </HOCConfig>
