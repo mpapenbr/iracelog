@@ -18,7 +18,7 @@ export const Speedmap: React.FC = () => {
   const carClassLookup = carClasses.reduce((prev, cur) => {
     prev.set(cur.id.toString(), cur.name);
     return prev;
-  }, new Map());
+  }, new Map<string, string>());
 
   const { minVal, maxVal, numItems } = Object.entries(payload.data).reduce(
     (prev, cur) => ({
@@ -71,15 +71,18 @@ export const Speedmap: React.FC = () => {
 
   const SpeedChart = () => {
     const plotdata: { x: string; y: number; carClass: string }[] = [];
-    Object.entries(payload.data).forEach((e) => {
-      e[1].chunkSpeeds.forEach((v, idx) => {
-        plotdata.push({
-          x: Math.round(idx * payload.chunkSize).toString(), // antd-charts need strings for x, otherwise strange graph effects
-          y: Math.round(v),
-          carClass: carClassLookup.get(e[0]) ?? "Class " + e[0],
+    Object.entries(payload.data)
+      // .sort((a, b) => carClassLookup.get(a[0])!.localeCompare(carClassLookup.get(b[0])!))
+      .sort((a, b) => a[1].laptime - b[1].laptime)
+      .forEach((e) => {
+        e[1].chunkSpeeds.forEach((v, idx) => {
+          plotdata.push({
+            x: Math.round(idx * payload.chunkSize).toString(), // antd-charts need strings for x, otherwise strange graph effects
+            y: Math.round(v),
+            carClass: carClassLookup.get(e[0]) ?? "Class " + e[0],
+          });
         });
       });
-    });
     const graphTheme = antChartsTheme(globalSettings.theme);
     // console.log(plotdata);
     const config = {

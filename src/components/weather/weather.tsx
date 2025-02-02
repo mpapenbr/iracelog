@@ -1,6 +1,7 @@
 import { DualAxes } from "@ant-design/charts";
 import * as React from "react";
 
+import { timestampDate } from "@bufbuild/protobuf/wkt";
 import { Empty } from "antd";
 import { useAppSelector } from "../../stores";
 import { secAsHHMM } from "../../utils/output";
@@ -33,7 +34,7 @@ export const WeatherEvolution: React.FC = () => {
           xKey = secAsHHMM(e.timeOfDay);
           break;
         case "real":
-          const d: Date = e.recordStamp?.toDate();
+          const d: Date = timestampDate(e.recordStamp!);
           // JS hell when calculating days. In order to use own formatter we need the seconds.
           // Note: TZ-offset -60 on GMT+0100 ;)
           xKey = secAsHHMM((d.getTime() / 1000 - d.getTimezoneOffset() * 60) % 86400);
