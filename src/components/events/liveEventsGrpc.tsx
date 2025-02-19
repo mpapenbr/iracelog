@@ -249,7 +249,11 @@ export const LiveEvents: React.FC = () => {
     console.log("fetching current live data providers");
 
     cbProviderClient.listLiveEvents(
-      {},
+      {
+        tenantSelector: {
+          arg: { case: "externalId", value: { id: globalWamp.backendConfig.tenant.id } },
+        },
+      },
       (err: ConnectError | undefined, res: ListLiveEventsResponse) => {
         if (!err) {
           dispatch(updateLiveData({ ...res }));

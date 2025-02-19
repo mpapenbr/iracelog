@@ -31,16 +31,25 @@ export const LatestEventsGrpc: React.FC = () => {
     setLoading(true);
     console.log("fetching events from  provider");
 
-    cbEventClient.getLatestEvents({}, (err, res) => {
-      if (err != undefined) {
-        console.log(err);
-        return;
-      }
-      console.log("Events fetched", res);
+    cbEventClient.getLatestEvents(
+      {
+        tenantSelector: {
+          arg: { case: "externalId", value: { id: globalWamp.backendConfig.tenant.id } },
+        },
 
-      dispatch(updateEventData(res));
-      // setData({ events: res.getEventsList() });
-    });
+        // { externalId: globalWamp.backendConfig.tenant.id },
+      },
+      (err, res) => {
+        if (err != undefined) {
+          console.log(err);
+          return;
+        }
+        console.log("Events fetched", res);
+
+        dispatch(updateEventData(res));
+        // setData({ events: res.getEventsList() });
+      },
+    );
   };
   const onLoadForReplayButtonClicked = (e: React.MouseEvent) => {
     const arg = (e.currentTarget as HTMLInputElement).value;
