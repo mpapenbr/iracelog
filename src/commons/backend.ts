@@ -1,10 +1,10 @@
 import { Config } from "../api/config";
-import { API_CROSSBAR_URL, API_GRAPHQL_URL, API_GRPC_URL } from "../constants";
+import { API_GRAPHQL_URL, API_GRPC_URL, API_TENANT_ID } from "../constants";
 
 const backendConfig: Config = {
-  crossbar: { url: API_CROSSBAR_URL ?? "API_CROSSBAR_URL", realm: "racelog" },
   graphql: { url: API_GRAPHQL_URL ?? "API_GRAPHQL_URL" },
   grpc: { url: API_GRPC_URL ?? "API_GRPC_URL" },
+  tenant: { id: API_TENANT_ID ?? "API_TENANT_ID" },
 };
 export const checkForExternalConfig = async () => {
   // console.log("checking for config.json");

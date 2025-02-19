@@ -1,5 +1,5 @@
 import { Config } from "../api/config";
-import { API_CROSSBAR_URL, API_GRAPHQL_URL, API_GRPC_URL } from "../constants";
+import { API_GRAPHQL_URL, API_GRPC_URL } from "../constants";
 import { ReplayDataHolder } from "../processor/ReplayDataHolder";
 import { SpeedmapDataHolder } from "../processor/SpeedmapDataHolder";
 
@@ -48,8 +48,8 @@ interface IGlobalWamp {
 
 export const globalWamp: IGlobalWamp = {
   backendConfig: {
-    crossbar: { url: API_CROSSBAR_URL ?? "API_CROSSBAR_URL", realm: "racelog" },
     graphql: { url: API_GRAPHQL_URL ?? "API_GRAPHQL_URL" },
     grpc: { url: API_GRPC_URL ?? "API_GRPC_URL" },
+    tenant: { id: "API_TENANT_ID" },
   },
 };
