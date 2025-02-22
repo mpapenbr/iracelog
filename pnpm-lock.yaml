@@ -13,13 +13,13 @@ importers:
     dependencies:
       '@ant-design/charts':
         specifier: ^1.4.3
-        version: 1.4.3(@ant-design/icons@5.6.1(react-dom@19.0.0(react@19.0.0))(react@19.0.0))(antd@5.24.0(moment@2.30.1)(react-dom@19.0.0(react@19.0.0))(react@19.0.0))(classnames@2.5.1)(lodash@4.17.21)(react-dom@19.0.0(react@19.0.0))(react@19.0.0)(reflect-metadata@0.1.14)
+        version: 1.4.3(@ant-design/icons@5.6.1(react-dom@19.0.0(react@19.0.0))(react@19.0.0))(antd@5.24.1(moment@2.30.1)(react-dom@19.0.0(react@19.0.0))(react@19.0.0))(classnames@2.5.1)(lodash@4.17.21)(react-dom@19.0.0(react@19.0.0))(react@19.0.0)(reflect-metadata@0.1.14)
       '@ant-design/icons':
         specifier: ^5.6.1
         version: 5.6.1(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
       '@ant-design/v5-patch-for-react-19':
         specifier: ^1.0.3
-        version: 1.0.3(antd@5.24.0(moment@2.30.1)(react-dom@19.0.0(react@19.0.0))(react@19.0.0))(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
+        version: 1.0.3(antd@5.24.1(moment@2.30.1)(react-dom@19.0.0(react@19.0.0))(react@19.0.0))(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
       '@apollo/client':
         specifier: ^3.13.1
         version: 3.13.1(@types/react@19.0.8)(graphql@16.10.0)(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
@@ -57,8 +57,8 @@ importers:
         specifier: ^2.5.1
         version: 2.5.1(react-redux@9.2.0(@types/react@19.0.8)(react@19.0.0)(redux@5.0.1))(react@19.0.0)
       antd:
-        specifier: ^5.24.0
-        version: 5.24.0(moment@2.30.1)(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
+        specifier: ^5.24.1
+        version: 5.24.1(moment@2.30.1)(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
       graphql:
         specifier: ^16.10.0
         version: 16.10.0
@@ -75,8 +75,8 @@ importers:
         specifier: ^9.2.0
         version: 9.2.0(@types/react@19.0.8)(react@19.0.0)(redux@5.0.1)
       react-router:
-        specifier: 7.1.5
-        version: 7.1.5(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
+        specifier: 7.2.0
+        version: 7.2.0(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
       react-use:
         specifier: ^17.6.0
         version: 17.6.0(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
@@ -1698,8 +1698,8 @@ packages:
     resolution: {integrity: sha512-bN798gFfQX+viw3R7yrGWRqnrN2oRkEkUjjl4JNn4E8GxxbjtG3FbrEIIY3l8/hrwUwIeCZvi4QuOTP4MErVug==}
     engines: {node: '>=12'}
 
-  antd@5.24.0:
-    resolution: {integrity: sha512-05PZBIf6ijLHAQskBTW3nwS2t7tQmyLA6Xq8vK2Sk5tsgCsH/UE1cNCDYnKFGRJ7cKYuWJ565JDo9LejbiO42A==}
+  antd@5.24.1:
+    resolution: {integrity: sha512-RGwpXpSr2RtoUnrpJl3V6ZaTExwSXkFVxV24VUowwC04n6oA1sGyJrofQOKNqD623sVxL5UJBmf0a+BFBImP3Q==}
     peerDependencies:
       react: '>=16.9.0'
       react-dom: '>=16.9.0'
@@ -3518,8 +3518,8 @@ packages:
       react: '>=16.9.0'
       react-dom: '>=16.9.0'
 
-  rc-menu@9.16.0:
-    resolution: {integrity: sha512-vAL0yqPkmXWk3+YKRkmIR8TYj3RVdEt3ptG2jCJXWNAvQbT0VJJdRyHZ7kG/l1JsZlB+VJq/VcYOo69VR4oD+w==}
+  rc-menu@9.16.1:
+    resolution: {integrity: sha512-ghHx6/6Dvp+fw8CJhDUHFHDJ84hJE3BXNCzSgLdmNiFErWSOaZNsihDAsKq9ByTALo/xkNIwtDFGIl6r+RPXBg==}
     peerDependencies:
       react: '>=16.9.0'
       react-dom: '>=16.9.0'
@@ -3549,8 +3549,8 @@ packages:
       react: '>=16.9.0'
       react-dom: '>=16.9.0'
 
-  rc-picker@4.11.1:
-    resolution: {integrity: sha512-qHaZrHrYjAVwMcKqMXJz9xHifQgQpKSav0E1ejOe3SFTHZggPlmKzLnA5i//Y4DEumR4HZEsePSOdOlmX1JvAw==}
+  rc-picker@4.11.2:
+    resolution: {integrity: sha512-Cwa3frWpefhESBF20HBJtvWx3q1hCrMxSUrzuuWMTGoZVPhQllGEp2IUfzo9jC5LKm4kJx7IrH8q/W/y9wClAw==}
     engines: {node: '>=8.x'}
     peerDependencies:
       date-fns: '>= 2.x'
@@ -3750,8 +3750,8 @@ packages:
       react: ^16.0.0 || ^17.0.0 || ^18.0.0
       react-dom: ^16.0.0 || ^17.0.0 || ^18.0.0
 
-  react-router@7.1.5:
-    resolution: {integrity: sha512-8BUF+hZEU4/z/JD201yK6S+UYhsf58bzYIDq2NS1iGpwxSXDu7F+DeGSkIXMFBuHZB21FSiCzEcUb18cQNdRkA==}
+  react-router@7.2.0:
+    resolution: {integrity: sha512-fXyqzPgCPZbqhrk7k3hPcCpYIlQ2ugIXDboHUzhJISFVy2DEPsmHgN588MyGmkIOv3jDgNfUE3kJi83L28s/LQ==}
     engines: {node: '>=20.0.0'}
     peerDependencies:
       react: '>=18'
@@ -4636,14 +4636,14 @@ snapshots:
       '@jridgewell/gen-mapping': 0.3.8
       '@jridgewell/trace-mapping': 0.3.25
 
-  '@ant-design/charts@1.4.3(@ant-design/icons@5.6.1(react-dom@19.0.0(react@19.0.0))(react@19.0.0))(antd@5.24.0(moment@2.30.1)(react-dom@19.0.0(react@19.0.0))(react@19.0.0))(classnames@2.5.1)(lodash@4.17.21)(react-dom@19.0.0(react@19.0.0))(react@19.0.0)(reflect-metadata@0.1.14)':
+  '@ant-design/charts@1.4.3(@ant-design/icons@5.6.1(react-dom@19.0.0(react@19.0.0))(react@19.0.0))(antd@5.24.1(moment@2.30.1)(react-dom@19.0.0(react@19.0.0))(react@19.0.0))(classnames@2.5.1)(lodash@4.17.21)(react-dom@19.0.0(react@19.0.0))(react@19.0.0)(reflect-metadata@0.1.14)':
     dependencies:
-      '@ant-design/flowchart': 1.2.2(@ant-design/icons@5.6.1(react-dom@19.0.0(react@19.0.0))(react@19.0.0))(antd@5.24.0(moment@2.30.1)(react-dom@19.0.0(react@19.0.0))(react@19.0.0))(classnames@2.5.1)(lodash@4.17.21)(react-dom@19.0.0(react@19.0.0))(react@19.0.0)(reflect-metadata@0.1.14)
+      '@ant-design/flowchart': 1.2.2(@ant-design/icons@5.6.1(react-dom@19.0.0(react@19.0.0))(react@19.0.0))(antd@5.24.1(moment@2.30.1)(react-dom@19.0.0(react@19.0.0))(react@19.0.0))(classnames@2.5.1)(lodash@4.17.21)(react-dom@19.0.0(react@19.0.0))(react@19.0.0)(reflect-metadata@0.1.14)
       '@ant-design/graphs': 1.4.1(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
       '@ant-design/icons': 5.6.1(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
       '@ant-design/maps': 1.0.8(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
       '@ant-design/plots': 1.2.6(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
-      antd: 5.24.0(moment@2.30.1)(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
+      antd: 5.24.1(moment@2.30.1)(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
       lodash: 4.17.21
       react: 19.0.0
       react-dom: 19.0.0(react@19.0.0)
@@ -4683,15 +4683,15 @@ snapshots:
     dependencies:
       '@babel/runtime': 7.26.9
 
-  '@ant-design/flowchart@1.2.2(@ant-design/icons@5.6.1(react-dom@19.0.0(react@19.0.0))(react@19.0.0))(antd@5.24.0(moment@2.30.1)(react-dom@19.0.0(react@19.0.0))(react@19.0.0))(classnames@2.5.1)(lodash@4.17.21)(react-dom@19.0.0(react@19.0.0))(react@19.0.0)(reflect-metadata@0.1.14)':
+  '@ant-design/flowchart@1.2.2(@ant-design/icons@5.6.1(react-dom@19.0.0(react@19.0.0))(react@19.0.0))(antd@5.24.1(moment@2.30.1)(react-dom@19.0.0(react@19.0.0))(react@19.0.0))(classnames@2.5.1)(lodash@4.17.21)(react-dom@19.0.0(react@19.0.0))(react@19.0.0)(reflect-metadata@0.1.14)':
     dependencies:
       '@ant-design/icons': 5.6.1(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
       '@antv/layout': 0.1.31
       '@antv/x6': 1.35.1
-      '@antv/x6-react-components': 1.1.20(antd@5.24.0(moment@2.30.1)(react-dom@19.0.0(react@19.0.0))(react@19.0.0))(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
+      '@antv/x6-react-components': 1.1.20(antd@5.24.1(moment@2.30.1)(react-dom@19.0.0(react@19.0.0))(react@19.0.0))(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
       '@antv/x6-react-shape': 1.6.6(@antv/x6@1.35.1)(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
-      '@antv/xflow': 1.1.52(@ant-design/icons@5.6.1(react-dom@19.0.0(react@19.0.0))(react@19.0.0))(antd@5.24.0(moment@2.30.1)(react-dom@19.0.0(react@19.0.0))(react@19.0.0))(classnames@2.5.1)(lodash@4.17.21)(react-dom@19.0.0(react@19.0.0))(react@19.0.0)(reflect-metadata@0.1.14)
-      antd: 5.24.0(moment@2.30.1)(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
+      '@antv/xflow': 1.1.52(@ant-design/icons@5.6.1(react-dom@19.0.0(react@19.0.0))(react@19.0.0))(antd@5.24.1(moment@2.30.1)(react-dom@19.0.0(react@19.0.0))(react@19.0.0))(classnames@2.5.1)(lodash@4.17.21)(react-dom@19.0.0(react@19.0.0))(react@19.0.0)(reflect-metadata@0.1.14)
+      antd: 5.24.1(moment@2.30.1)(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
       lodash: 4.17.21
       react: 19.0.0
       react-color: 2.17.3(react@19.0.0)
@@ -4750,9 +4750,9 @@ snapshots:
       resize-observer-polyfill: 1.5.1
       throttle-debounce: 5.0.2
 
-  '@ant-design/v5-patch-for-react-19@1.0.3(antd@5.24.0(moment@2.30.1)(react-dom@19.0.0(react@19.0.0))(react@19.0.0))(react-dom@19.0.0(react@19.0.0))(react@19.0.0)':
+  '@ant-design/v5-patch-for-react-19@1.0.3(antd@5.24.1(moment@2.30.1)(react-dom@19.0.0(react@19.0.0))(react@19.0.0))(react-dom@19.0.0(react@19.0.0))(react@19.0.0)':
     dependencies:
-      antd: 5.24.0(moment@2.30.1)(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
+      antd: 5.24.1(moment@2.30.1)(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
       react: 19.0.0
       react-dom: 19.0.0(react@19.0.0)
 
@@ -5221,9 +5221,9 @@ snapshots:
       gl-matrix: 3.4.3
       tslib: 2.8.1
 
-  '@antv/x6-react-components@1.1.20(antd@5.24.0(moment@2.30.1)(react-dom@19.0.0(react@19.0.0))(react@19.0.0))(react-dom@19.0.0(react@19.0.0))(react@19.0.0)':
+  '@antv/x6-react-components@1.1.20(antd@5.24.1(moment@2.30.1)(react-dom@19.0.0(react@19.0.0))(react@19.0.0))(react-dom@19.0.0(react@19.0.0))(react@19.0.0)':
     dependencies:
-      antd: 5.24.0(moment@2.30.1)(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
+      antd: 5.24.1(moment@2.30.1)(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
       clamp: 1.0.1
       classnames: 2.5.1
       rc-dropdown: 3.6.2(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
@@ -5249,14 +5249,14 @@ snapshots:
       mousetrap: 1.6.5
       utility-types: 3.11.0
 
-  '@antv/xflow-core@1.1.52(@ant-design/icons@5.6.1(react-dom@19.0.0(react@19.0.0))(react@19.0.0))(@antv/x6-react-components@1.1.20(antd@5.24.0(moment@2.30.1)(react-dom@19.0.0(react@19.0.0))(react@19.0.0))(react-dom@19.0.0(react@19.0.0))(react@19.0.0))(@antv/x6-react-shape@1.6.6(@antv/x6@1.35.1)(react-dom@19.0.0(react@19.0.0))(react@19.0.0))(@antv/x6@1.35.1)(antd@5.24.0(moment@2.30.1)(react-dom@19.0.0(react@19.0.0))(react@19.0.0))(lodash@4.17.21)(react-dom@19.0.0(react@19.0.0))(react@19.0.0)':
+  '@antv/xflow-core@1.1.52(@ant-design/icons@5.6.1(react-dom@19.0.0(react@19.0.0))(react@19.0.0))(@antv/x6-react-components@1.1.20(antd@5.24.1(moment@2.30.1)(react-dom@19.0.0(react@19.0.0))(react@19.0.0))(react-dom@19.0.0(react@19.0.0))(react@19.0.0))(@antv/x6-react-shape@1.6.6(@antv/x6@1.35.1)(react-dom@19.0.0(react@19.0.0))(react@19.0.0))(@antv/x6@1.35.1)(antd@5.24.1(moment@2.30.1)(react-dom@19.0.0(react@19.0.0))(react@19.0.0))(lodash@4.17.21)(react-dom@19.0.0(react@19.0.0))(react@19.0.0)':
     dependencies:
       '@ant-design/icons': 5.6.1(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
       '@antv/x6': 1.35.1
-      '@antv/x6-react-components': 1.1.20(antd@5.24.0(moment@2.30.1)(react-dom@19.0.0(react@19.0.0))(react@19.0.0))(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
+      '@antv/x6-react-components': 1.1.20(antd@5.24.1(moment@2.30.1)(react-dom@19.0.0(react@19.0.0))(react@19.0.0))(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
       '@antv/x6-react-shape': 1.6.6(@antv/x6@1.35.1)(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
       '@antv/xflow-hook': 1.0.52
-      antd: 5.24.0(moment@2.30.1)(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
+      antd: 5.24.1(moment@2.30.1)(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
       classnames: 2.5.1
       immer: 9.0.21
       lodash: 4.17.21
@@ -5267,15 +5267,15 @@ snapshots:
       reflect-metadata: 0.1.14
       rxjs: 6.6.7
 
-  '@antv/xflow-extension@1.1.52(@ant-design/icons@5.6.1(react-dom@19.0.0(react@19.0.0))(react@19.0.0))(@antv/x6-react-components@1.1.20(antd@5.24.0(moment@2.30.1)(react-dom@19.0.0(react@19.0.0))(react@19.0.0))(react-dom@19.0.0(react@19.0.0))(react@19.0.0))(@antv/x6-react-shape@1.6.6(@antv/x6@1.35.1)(react-dom@19.0.0(react@19.0.0))(react@19.0.0))(@antv/x6@1.35.1)(antd@5.24.0(moment@2.30.1)(react-dom@19.0.0(react@19.0.0))(react@19.0.0))(classnames@2.5.1)(lodash@4.17.21)(react-dom@19.0.0(react@19.0.0))(react@19.0.0)(reflect-metadata@0.1.14)':
+  '@antv/xflow-extension@1.1.52(@ant-design/icons@5.6.1(react-dom@19.0.0(react@19.0.0))(react@19.0.0))(@antv/x6-react-components@1.1.20(antd@5.24.1(moment@2.30.1)(react-dom@19.0.0(react@19.0.0))(react@19.0.0))(react-dom@19.0.0(react@19.0.0))(react@19.0.0))(@antv/x6-react-shape@1.6.6(@antv/x6@1.35.1)(react-dom@19.0.0(react@19.0.0))(react@19.0.0))(@antv/x6@1.35.1)(antd@5.24.1(moment@2.30.1)(react-dom@19.0.0(react@19.0.0))(react@19.0.0))(classnames@2.5.1)(lodash@4.17.21)(react-dom@19.0.0(react@19.0.0))(react@19.0.0)(reflect-metadata@0.1.14)':
     dependencies:
       '@ant-design/icons': 5.6.1(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
       '@antv/x6': 1.35.1
-      '@antv/x6-react-components': 1.1.20(antd@5.24.0(moment@2.30.1)(react-dom@19.0.0(react@19.0.0))(react@19.0.0))(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
+      '@antv/x6-react-components': 1.1.20(antd@5.24.1(moment@2.30.1)(react-dom@19.0.0(react@19.0.0))(react@19.0.0))(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
       '@antv/x6-react-shape': 1.6.6(@antv/x6@1.35.1)(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
-      '@antv/xflow-core': 1.1.52(@ant-design/icons@5.6.1(react-dom@19.0.0(react@19.0.0))(react@19.0.0))(@antv/x6-react-components@1.1.20(antd@5.24.0(moment@2.30.1)(react-dom@19.0.0(react@19.0.0))(react@19.0.0))(react-dom@19.0.0(react@19.0.0))(react@19.0.0))(@antv/x6-react-shape@1.6.6(@antv/x6@1.35.1)(react-dom@19.0.0(react@19.0.0))(react@19.0.0))(@antv/x6@1.35.1)(antd@5.24.0(moment@2.30.1)(react-dom@19.0.0(react@19.0.0))(react@19.0.0))(lodash@4.17.21)(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
+      '@antv/xflow-core': 1.1.52(@ant-design/icons@5.6.1(react-dom@19.0.0(react@19.0.0))(react@19.0.0))(@antv/x6-react-components@1.1.20(antd@5.24.1(moment@2.30.1)(react-dom@19.0.0(react@19.0.0))(react@19.0.0))(react-dom@19.0.0(react@19.0.0))(react@19.0.0))(@antv/x6-react-shape@1.6.6(@antv/x6@1.35.1)(react-dom@19.0.0(react@19.0.0))(react@19.0.0))(@antv/x6@1.35.1)(antd@5.24.1(moment@2.30.1)(react-dom@19.0.0(react@19.0.0))(react@19.0.0))(lodash@4.17.21)(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
       '@antv/xflow-hook': 1.0.52
-      antd: 5.24.0(moment@2.30.1)(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
+      antd: 5.24.1(moment@2.30.1)(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
       classnames: 2.5.1
       mana-syringe: 0.2.2
       moment: 2.30.1
@@ -5295,17 +5295,17 @@ snapshots:
     dependencies:
       toposort: 2.0.2
 
-  '@antv/xflow@1.1.52(@ant-design/icons@5.6.1(react-dom@19.0.0(react@19.0.0))(react@19.0.0))(antd@5.24.0(moment@2.30.1)(react-dom@19.0.0(react@19.0.0))(react@19.0.0))(classnames@2.5.1)(lodash@4.17.21)(react-dom@19.0.0(react@19.0.0))(react@19.0.0)(reflect-metadata@0.1.14)':
+  '@antv/xflow@1.1.52(@ant-design/icons@5.6.1(react-dom@19.0.0(react@19.0.0))(react@19.0.0))(antd@5.24.1(moment@2.30.1)(react-dom@19.0.0(react@19.0.0))(react@19.0.0))(classnames@2.5.1)(lodash@4.17.21)(react-dom@19.0.0(react@19.0.0))(react@19.0.0)(reflect-metadata@0.1.14)':
     dependencies:
       '@ant-design/icons': 5.6.1(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
       '@antv/layout': 0.1.31
       '@antv/x6': 1.35.1
-      '@antv/x6-react-components': 1.1.20(antd@5.24.0(moment@2.30.1)(react-dom@19.0.0(react@19.0.0))(react@19.0.0))(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
+      '@antv/x6-react-components': 1.1.20(antd@5.24.1(moment@2.30.1)(react-dom@19.0.0(react@19.0.0))(react@19.0.0))(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
       '@antv/x6-react-shape': 1.6.6(@antv/x6@1.35.1)(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
-      '@antv/xflow-core': 1.1.52(@ant-design/icons@5.6.1(react-dom@19.0.0(react@19.0.0))(react@19.0.0))(@antv/x6-react-components@1.1.20(antd@5.24.0(moment@2.30.1)(react-dom@19.0.0(react@19.0.0))(react@19.0.0))(react-dom@19.0.0(react@19.0.0))(react@19.0.0))(@antv/x6-react-shape@1.6.6(@antv/x6@1.35.1)(react-dom@19.0.0(react@19.0.0))(react@19.0.0))(@antv/x6@1.35.1)(antd@5.24.0(moment@2.30.1)(react-dom@19.0.0(react@19.0.0))(react@19.0.0))(lodash@4.17.21)(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
-      '@antv/xflow-extension': 1.1.52(@ant-design/icons@5.6.1(react-dom@19.0.0(react@19.0.0))(react@19.0.0))(@antv/x6-react-components@1.1.20(antd@5.24.0(moment@2.30.1)(react-dom@19.0.0(react@19.0.0))(react@19.0.0))(react-dom@19.0.0(react@19.0.0))(react@19.0.0))(@antv/x6-react-shape@1.6.6(@antv/x6@1.35.1)(react-dom@19.0.0(react@19.0.0))(react@19.0.0))(@antv/x6@1.35.1)(antd@5.24.0(moment@2.30.1)(react-dom@19.0.0(react@19.0.0))(react@19.0.0))(classnames@2.5.1)(lodash@4.17.21)(react-dom@19.0.0(react@19.0.0))(react@19.0.0)(reflect-metadata@0.1.14)
+      '@antv/xflow-core': 1.1.52(@ant-design/icons@5.6.1(react-dom@19.0.0(react@19.0.0))(react@19.0.0))(@antv/x6-react-components@1.1.20(antd@5.24.1(moment@2.30.1)(react-dom@19.0.0(react@19.0.0))(react@19.0.0))(react-dom@19.0.0(react@19.0.0))(react@19.0.0))(@antv/x6-react-shape@1.6.6(@antv/x6@1.35.1)(react-dom@19.0.0(react@19.0.0))(react@19.0.0))(@antv/x6@1.35.1)(antd@5.24.1(moment@2.30.1)(react-dom@19.0.0(react@19.0.0))(react@19.0.0))(lodash@4.17.21)(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
+      '@antv/xflow-extension': 1.1.52(@ant-design/icons@5.6.1(react-dom@19.0.0(react@19.0.0))(react@19.0.0))(@antv/x6-react-components@1.1.20(antd@5.24.1(moment@2.30.1)(react-dom@19.0.0(react@19.0.0))(react@19.0.0))(react-dom@19.0.0(react@19.0.0))(react@19.0.0))(@antv/x6-react-shape@1.6.6(@antv/x6@1.35.1)(react-dom@19.0.0(react@19.0.0))(react@19.0.0))(@antv/x6@1.35.1)(antd@5.24.1(moment@2.30.1)(react-dom@19.0.0(react@19.0.0))(react@19.0.0))(classnames@2.5.1)(lodash@4.17.21)(react-dom@19.0.0(react@19.0.0))(react@19.0.0)(reflect-metadata@0.1.14)
       '@antv/xflow-hook': 1.1.52
-      antd: 5.24.0(moment@2.30.1)(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
+      antd: 5.24.1(moment@2.30.1)(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
       lodash: 4.17.21
       react: 19.0.0
       react-dom: 19.0.0(react@19.0.0)
@@ -6599,7 +6599,7 @@ snapshots:
 
   ansi-styles@6.2.1: {}
 
-  antd@5.24.0(moment@2.30.1)(react-dom@19.0.0(react@19.0.0))(react@19.0.0):
+  antd@5.24.1(moment@2.30.1)(react-dom@19.0.0(react@19.0.0))(react@19.0.0):
     dependencies:
       '@ant-design/colors': 7.2.0
       '@ant-design/cssinjs': 1.23.0(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
@@ -6627,11 +6627,11 @@ snapshots:
       rc-input: 1.7.2(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
       rc-input-number: 9.4.0(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
       rc-mentions: 2.19.1(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
-      rc-menu: 9.16.0(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
+      rc-menu: 9.16.1(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
       rc-motion: 2.9.5(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
       rc-notification: 5.6.3(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
       rc-pagination: 5.1.0(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
-      rc-picker: 4.11.1(dayjs@1.11.13)(moment@2.30.1)(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
+      rc-picker: 4.11.2(dayjs@1.11.13)(moment@2.30.1)(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
       rc-progress: 4.0.0(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
       rc-rate: 2.13.1(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
       rc-resize-observer: 1.4.3(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
@@ -8805,13 +8805,13 @@ snapshots:
       '@rc-component/trigger': 2.2.6(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
       classnames: 2.5.1
       rc-input: 1.7.2(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
-      rc-menu: 9.16.0(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
+      rc-menu: 9.16.1(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
       rc-textarea: 1.9.0(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
       rc-util: 5.44.4(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
       react: 19.0.0
       react-dom: 19.0.0(react@19.0.0)
 
-  rc-menu@9.16.0(react-dom@19.0.0(react@19.0.0))(react@19.0.0):
+  rc-menu@9.16.1(react-dom@19.0.0(react@19.0.0))(react@19.0.0):
     dependencies:
       '@babel/runtime': 7.26.9
       '@rc-component/trigger': 2.2.6(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
@@ -8856,7 +8856,7 @@ snapshots:
       react: 19.0.0
       react-dom: 19.0.0(react@19.0.0)
 
-  rc-picker@4.11.1(dayjs@1.11.13)(moment@2.30.1)(react-dom@19.0.0(react@19.0.0))(react@19.0.0):
+  rc-picker@4.11.2(dayjs@1.11.13)(moment@2.30.1)(react-dom@19.0.0(react@19.0.0))(react@19.0.0):
     dependencies:
       '@babel/runtime': 7.26.9
       '@rc-component/trigger': 2.2.6(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
@@ -8956,7 +8956,7 @@ snapshots:
       '@babel/runtime': 7.26.9
       classnames: 2.5.1
       rc-dropdown: 4.2.1(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
-      rc-menu: 9.16.0(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
+      rc-menu: 9.16.1(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
       rc-motion: 2.9.5(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
       rc-resize-observer: 1.4.3(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
       rc-util: 5.44.4(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
@@ -9105,7 +9105,7 @@ snapshots:
       react: 19.0.0
       react-dom: 19.0.0(react@19.0.0)
 
-  react-router@7.1.5(react-dom@19.0.0(react@19.0.0))(react@19.0.0):
+  react-router@7.2.0(react-dom@19.0.0(react@19.0.0))(react@19.0.0):
     dependencies:
       '@types/cookie': 0.6.0
       cookie: 1.0.2
