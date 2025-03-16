@@ -1,6 +1,7 @@
 export const API_BASE_URL = import.meta.env.VITE_BASE_URL;
 export const API_AUTH_URL = import.meta.env.VITE_AUTH_URL;
 export const API_GRAPHQL_URL = import.meta.env.VITE_GRAPHQL_URL;
+export const API_GRAPHQL_ENABLED : boolean = (import.meta.env.VITE_GRAPHQL_ENABLED === "true");
 export const API_GRPC_URL = import.meta.env.VITE_GRPC_URL;
 export const API_TENANT_ID = import.meta.env.VITE_TENANT_ID;
 export const API_GRPC_BINARY_FORMAT = import.meta.env.VITE_GRPC_BINARY_FORMAT;
