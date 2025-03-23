@@ -1,4 +1,5 @@
-import { ApolloClient, ApolloProvider, InMemoryCache } from "@apollo/client";
+import { ApolloClient, ApolloProvider, createHttpLink, InMemoryCache } from "@apollo/client";
+import { setContext } from "@apollo/client/link/context";
 import React from "react";
 import { createRoot } from "react-dom/client";
 import App from "./App";
@@ -11,8 +12,19 @@ import reportWebVitals from "./reportWebVitals";
   const config = await checkForExternalConfig();
   // console.log(y);
   globalWamp.backendConfig = config;
-  const client = new ApolloClient({
+  const httpLink = createHttpLink({
     uri: globalWamp.backendConfig.graphql.url,
+  });
+  const customHeaders = setContext((_, { headers }) => {
+    return {
+      headers: {
+        ...headers,
+        "x-tenant-id": globalWamp.backendConfig.tenant.id,
+      },
+    };
+  });
+  const client = new ApolloClient({
+    link: customHeaders.concat(httpLink),
     cache: new InMemoryCache({
       typePolicies: {
         Query: {
