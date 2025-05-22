@@ -132,17 +132,19 @@ export interface IReplaySettings {
   currentTimestamp: number; // holds the current timestamp
 }
 export type TimeMode = "session" | "sim" | "real";
-export interface IGlobalSettings {
+export interface IPersistedSettings {
   syncSelection: boolean; // if true, selection for showCars,referenceCars are pushed to all relevant pages
   filterOrderByPosition: boolean; // if true, cars in selections will be ordered by race position
-  showCars: string[];
-  highlightCars: string[]; // cars to highlight in various places
-  filterCarClasses: string[]; // empty = all classes, otherwise only selected
-  referenceCarNum?: string; // used for graphs where a reference is needed
   theme: string;
   useCompact: boolean;
   timeMode: TimeMode;
   useInOutTimes: boolean; // if true use in/outlap time instead of "offical" lap time
+}
+export interface IGlobalSettings extends IPersistedSettings {
+  showCars: string[];
+  highlightCars: string[]; // cars to highlight in various places
+  filterCarClasses: string[]; // empty = all classes, otherwise only selected
+  referenceCarNum?: string; // used for graphs where a reference is needed
 }
 export interface IUiData {
   stint: IUiStints;

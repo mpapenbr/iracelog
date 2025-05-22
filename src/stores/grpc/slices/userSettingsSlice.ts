@@ -2,6 +2,7 @@ import { ReplayInfo } from "@buf/mpapenbr_iracelog.bufbuild_es/iracelog/event/v1
 import { LaptimeSelector } from "@buf/mpapenbr_iracelog.bufbuild_es/iracelog/predict/v1/predict_service_pb";
 import type { PayloadAction } from "@reduxjs/toolkit";
 import { combineSlices, createSlice } from "@reduxjs/toolkit";
+import { loadSettings, saveSettings } from "../../localStorage";
 import {
   ICircleOfDoomSettings,
   IClassificationSettings,
@@ -57,26 +58,36 @@ const initialStateGlobalSettings = {
   timeMode: "session",
   useInOutTimes: true,
 } as IGlobalSettings;
+const useSettings: IGlobalSettings = {
+  ...initialStateGlobalSettings,
+  ...loadSettings(),
+};
 const globalSettings = createSlice({
   name: "globalSettings",
-  initialState: initialStateGlobalSettings,
+  // initialState: initialStateGlobalSettings,
+  initialState: useSettings,
   reducers: {
     updateGlobalSettings(state, action: PayloadAction<IGlobalSettings>) {
+      saveSettings(action.payload);
       return action.payload;
     },
     toggleSyncSelection(state) {
       state.syncSelection = !state.syncSelection;
+      saveSettings(state);
     },
     toggleFilterOrderByPosition(state) {
       state.filterOrderByPosition = !state.filterOrderByPosition;
+      saveSettings(state);
     },
     setTheme(state, action: PayloadAction<string>) {
       if (["light", "dark", "dimmed"].includes(action.payload)) {
         state.theme = action.payload;
+        saveSettings(state);
       }
     },
     toggleCompact(state) {
       state.useCompact = !state.useCompact;
+      saveSettings(state);
     },
     toggleHighlightCar(state, action: PayloadAction<string>) {
       if (state.highlightCars.includes(action.payload)) {
@@ -84,15 +95,19 @@ const globalSettings = createSlice({
       } else {
         state.highlightCars.push(action.payload);
       }
+      saveSettings(state);
     },
     setTimeMode(state, action: PayloadAction<TimeMode>) {
       state.timeMode = action.payload;
+      saveSettings(state);
     },
     toggleInOutTimes(state) {
       state.useInOutTimes = !state.useInOutTimes;
+      saveSettings(state);
     },
 
     resetGlobalSettings() {
+      saveSettings(initialStateGlobalSettings);
       return initialStateGlobalSettings;
     },
     resetRaceGlobalSettings(state) {
