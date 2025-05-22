@@ -1,5 +1,4 @@
 import { configureStore } from "@reduxjs/toolkit";
-import { combineReducers } from "redux";
 
 // new grpc stuff starts here
 import { useDispatch, useSelector } from "react-redux";
@@ -26,20 +25,6 @@ import { speedmapSlice } from "./grpc/slices/speedmapSlice";
 import { combined } from "./grpc/slices/userSettingsSlice";
 
 export interface ApplicationState {}
-
-// export interface IMetaActions extends PayloadMetaAction<TypeConstant,IMeta> {}
-
-export const createRootReducer = () =>
-  combineReducers({
-    // raceData: raceDataReducers, // this is new place for everything concerning the race data of a single event
-    // userSettings: userSettingsReducer, // this is the new place for user settings
-    // speedmap: speedmapReducers,
-    // carData: carDataReducers,
-    // session: SessionReducer,
-    // classification: ClassificationReducer,
-    // carStuff: CurrentCarOccReducer,
-    // dummy: DummyReducer,
-  });
 
 export const store = configureStore({
   reducer: {
@@ -75,6 +60,15 @@ export const store = configureStore({
   },
   middleware: (getDefaultMiddleware) => getDefaultMiddleware({ serializableCheck: false }),
 });
+
+// store.subscribe(() => {
+//   const userSettings = store.getState().userSettings.globalSettings;
+
+//   const lsSettings: IPersistedSettings = {
+//     theme: userSettings.theme,
+//   };
+//   // console.log(lsSettings);
+// });
 export type RootState = ReturnType<typeof store.getState>;
 export type SessionState = ReturnType<typeof sessionSlice.reducer>;
 export type AppDispatch = typeof store.dispatch;
