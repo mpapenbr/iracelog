@@ -132,6 +132,7 @@ const StintStretch: React.FC<MyProps> = (props: MyProps) => {
                   y={textHeight}
                   // y={Math.min(12, barHeight)}
                   // fontSizeAdjust={1.75}
+                  style={{ fill: token.colorTextLabel }}
                   fontSize={Math.min(12, textHeight)}
                   textAnchor="middle"
                 >
