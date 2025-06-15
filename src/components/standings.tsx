@@ -142,7 +142,7 @@ export const Standings: React.FC<Props> = (props: Props) => {
     } else return "";
   };
 
-  const tireCompound = (d: Car): string => {
+  const tireCompoundLegacy = (d: Car): string => {
     if (d.tireCompound) {
       const carId = carEntryLookup[getCarNum(d)]?.carId as number;
       const carInfo = carInfoLookup[carId];
@@ -151,7 +151,16 @@ export const Standings: React.FC<Props> = (props: Props) => {
       }
       switch (carId) {
         case 99: // Dallara IR 18
-          return d.tireCompound.rawValue == 0 ? "P" : "A"; // primary:0, alternate: 1
+          switch (d.tireCompound.rawValue) {
+            case 0:
+              return "H"; // primary
+            case 1:
+              return "S"; // alternate
+            case 2:
+              return "W"; // rain
+            default:
+              return "";
+          }
 
         case 71: // McLaren MP4-30
         case 145: // F1 Merc 12
@@ -172,6 +181,18 @@ export const Standings: React.FC<Props> = (props: Props) => {
       }
     } else return "";
   };
+  const tireCompound = (d: Car): string => {
+    if (eventInfo.event.tireInfos.length > 0) {
+      const raw = d.tireCompound?.rawValue ?? -1;
+      if (raw < 0 || raw >= eventInfo.event.tireInfos.length) {
+        return "";
+      }
+      return eventInfo.event.tireInfos[raw].compoundType[0].toUpperCase();
+    } else {
+      return tireCompoundLegacy(d);
+    }
+  };
+
   const lapsOutput = (d: Car) => {
     if (d.state == CarState.OUT) {
       // console.log(getValue(d, "lc"));
