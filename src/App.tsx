@@ -13,6 +13,7 @@ import Classification from "./components/live/classification";
 import { EventHeaderContainer } from "./container/EventHeaderContainer";
 import { Events } from "./pages/eventsPage";
 import { FakeLoaderPage } from "./pages/fakeLoader";
+import { Racelogger } from "./pages/raceloggerPage";
 import { ApplicationState, store, useAppSelector } from "./stores";
 
 const { Header, Content, Footer, Sider } = Layout;
@@ -143,6 +144,7 @@ const App: React.FC<{}> = () => {
               <div className="site-layout-content">
                 <Routes>
                   <Route path="/" element={<Events />} />
+                  <Route path="/racelogger" element={<Racelogger />} />
                   <Route path="/events" element={<Events />} />
 
                   <Route path="/analysis/:eventKey">
