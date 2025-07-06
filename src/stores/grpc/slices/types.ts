@@ -146,6 +146,21 @@ export interface IGlobalSettings extends IPersistedSettings {
   filterCarClasses: string[]; // empty = all classes, otherwise only selected
   referenceCarNum?: string; // used for graphs where a reference is needed
 }
+export interface IRaceloggerSettings {
+  url: string; // the url of the racelogger server
+}
+export interface IRaceloggerStatus {
+  raceloggerServerAvailable: boolean; // true if the racelogger server is available
+  simulationRunning: boolean; // true if the simulation is running
+  telemetryAvailable: boolean; // true if sim data is available
+  recording: boolean; // true if recording is active
+  backendAvailable: boolean; // true if the backend is available
+  backendCompatible: boolean; // true if the backend is compatible with racelogger
+  validCredentials: boolean; // true if the credentials are valid
+  backendVersion: string; // the version of the backend
+  currentSessionNum: number; // the current session number
+  raceSessions: { num: number; name: string }[]; // list of race sessions
+}
 export interface IUiData {
   stint: IUiStints;
   entries: IUiEntries;
