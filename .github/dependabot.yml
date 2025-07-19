@@ -8,6 +8,9 @@ version: 2
 updates:
   - package-ecosystem: "npm" # See documentation for possible values
     directory: "/" # Location of package manifests
+    # Auto assign PRs raised to this account on Github
+    assignees:
+      - "mpapenbr"
     schedule:
       interval: "weekly"
       day: "saturday"
@@ -27,6 +30,9 @@ updates:
     directory: /
     labels:
       - build
+    # Auto assign PRs raised to this account on Github
+    assignees:
+      - "mpapenbr"
     schedule:
       interval: "weekly"
       day: "saturday"
