@@ -1,4 +1,5 @@
-import { gql, useQuery } from "@apollo/client";
+import { gql } from "@apollo/client";
+import { useQuery } from "@apollo/client/react";
 import { Button, Descriptions, List, Spin } from "antd";
 import React from "react";
 import { useNavigate } from "react-router";
