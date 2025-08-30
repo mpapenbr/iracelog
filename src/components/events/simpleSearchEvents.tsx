@@ -1,4 +1,5 @@
-import { gql, useLazyQuery } from "@apollo/client";
+import { gql } from "@apollo/client";
+import { useLazyQuery } from "@apollo/client/react";
 import { Button, Descriptions, Input, List, Space, Spin } from "antd";
 import React, { ChangeEvent, useState } from "react";
 import { useNavigate } from "react-router";
