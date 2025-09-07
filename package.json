@@ -4,8 +4,8 @@
   "private": true,
   "type": "module",
   "dependencies": {
-    "@ant-design/charts": "^1.4.3",
     "@ant-design/icons": "^6.0.0",
+    "@ant-design/plots": "^2.6.4",
     "@ant-design/v5-patch-for-react-19": "^1.0.3",
     "@apollo/client": "^4.0.3",
     "@buf/mpapenbr_iracelog.bufbuild_es": "2.6.0-20250705185745-385bdc10baf0.1",

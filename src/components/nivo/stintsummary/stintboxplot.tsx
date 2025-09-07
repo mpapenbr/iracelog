@@ -1,4 +1,4 @@
-import { Box } from "@ant-design/charts";
+import { Box } from "@ant-design/plots";
 import { Empty } from "antd";
 import React from "react";
 
@@ -52,27 +52,26 @@ const StintBoxplot: React.FC<MyProps> = (props: MyProps) => {
   );
   // console.log(bounds);
   // console.log(boxData);
-  const laptimeFormatter = { formatter: (d: any) => lapTimeString(d) };
+  const laptimeFormatter = (d: number) => lapTimeString(d);
   const graphTheme = antChartsTheme(globalSettings.theme);
   const config = {
     data: boxData,
     title: "huhu",
-    yAxis: {
-      label: { formatter: (d: any) => lapTimeString(d) },
-
-      ...bounds,
+    axis: {
+      y: { labelFormatter: laptimeFormatter },
+    },
+    tooltip: {
+      items: [
+        { name: "minTime", channel: "y", valueFormatter: laptimeFormatter },
+        { name: "q25", channel: "y1", valueFormatter: laptimeFormatter },
+        { name: "median", channel: "y2", valueFormatter: laptimeFormatter },
+        { name: "q75", channel: "y3", valueFormatter: laptimeFormatter },
+        { name: "maxTime", channel: "y4", valueFormatter: laptimeFormatter },
+      ],
     },
     theme: graphTheme.antd.theme,
     xField: "stint",
     // outliersField: "outliers", // deactivated. see https://github.com/ant-design/ant-design-charts/issues/800
-    meta: {
-      minTime: { ...laptimeFormatter },
-      maxTime: { ...laptimeFormatter },
-      median: { ...laptimeFormatter },
-      q25: { ...laptimeFormatter },
-      q75: { ...laptimeFormatter },
-      outliers: { ...laptimeFormatter },
-    },
   };
   if (boxData.length === 0) {
     return <Empty description="not enough data for box plot" />;
