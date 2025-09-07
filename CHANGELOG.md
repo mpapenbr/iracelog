@@ -1,3 +1,9 @@
+### 0.39.0 (2025-09-07)
+
+##### Other Changes
+
+* **deps:**  bump actions/checkout from 4 to 5 in the github-actions group (29228abc)
+
 ### 0.38.0 (2025-07-12)
 
 ### 0.37.0 (2025-06-15)
