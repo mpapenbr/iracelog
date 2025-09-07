@@ -1,4 +1,4 @@
-import { G2, Line, LineConfig } from "@ant-design/charts";
+import { Line, LineConfig } from "@ant-design/plots";
 
 import { CarLaps, Lap } from "@buf/mpapenbr_iracelog.bufbuild_es/iracelog/analysis/v1/car_laps_pb";
 import { StintInfo } from "@buf/mpapenbr_iracelog.bufbuild_es/iracelog/analysis/v1/car_stint_pb";
@@ -101,53 +101,73 @@ const Lapchart: React.FC<MyProps> = (props) => {
     )
     .flatMap((a) => [...a]);
 
-  const sliderData = globalWamp.currentLiveId ? undefined : { start: 0, end: 1 };
-  // const animate = globalWamp.currentLiveId ? false : true;
-  const noAnimationOption = {
-    duration: 0,
+  const sliderData = () => {
+    if (globalWamp.currentLiveId) {
+      return undefined;
+    }
+    if (showCars.length > 0) return { x: { start: 0, end: 1 } };
+    return undefined;
   };
-  const animate = {
-    appear: noAnimationOption,
-    update: noAnimationOption,
-    // enter: noAnimationOption,
-    // leave: noAnimationOption,
-  };
+
   const graphTheme = antChartsTheme(globalSettings.theme);
-  G2.registerTheme("element-link", {
-    start: [{ trigger: "interval:mouseenter", action: "element-link-by-color:link" }],
-    end: [{ trigger: "interval:mouseleave", action: "element-link-by-color:unlink" }],
-  });
+  // G2.registerTheme("element-link", {
+  //   start: [{ trigger: "interval:mouseenter", action: "element-link-by-color:link" }],
+  //   end: [{ trigger: "interval:mouseleave", action: "element-link-by-color:unlink" }],
+  // });
   const config: LineConfig = {
     data: lapData,
 
     xField: "lapNoStr",
     yField: "lapTime",
     seriesField: "carNum",
+    colorField: "carNum",
     point: {
-      size: 3,
-      shape: "diamond",
+      sizeField: 1,
+      shapeField: "circle",
     },
     state: {
-      inactive: { style: { opacity: 0.09 } },
+      inactive: { opacity: 0.09 },
     },
     theme: graphTheme.antd.theme,
-    lineStyle: {
-      lineWidth: 1,
+    slider: sliderData(),
+    axis: {
+      y: {
+        nice: true,
+        labelFormatter: (d: number) => lapTimeString(d),
+        gridLineWidth: 1,
+        gridLineDash: [0, 0],
+      },
+      x: {
+        style: {
+          labelTransform: "rotate(0)",
+        },
+      },
+    },
+    scale: {
+      y: {
+        nice: true,
+        domainMin: Math.floor(work.minTime),
+        domainMax:
+          props.filterSecs > 0 ? Math.ceil(work.median + props.filterSecs) : Math.ceil(work.q95),
+      },
 
-      // lineDash: [4, 4],
-      // lineCap: "butt",
-      // strokeOpacity: 0.9,
+      color: {
+        range: localColors,
+      },
     },
 
-    color: localColors,
-    slider: sliderData,
-    yAxis: {
-      nice: true,
-      minLimit: Math.floor(work.minTime),
-      maxLimit:
-        props.filterSecs > 0 ? Math.ceil(work.median + props.filterSecs) : Math.ceil(work.q95),
-      // label: {formatter: (d: number) => lapTimeString(d)},
+    tooltip: {
+      title: (d) => `Lap ${d.lapNo}`,
+      items: [
+        {
+          channel: "y",
+          field: "lapTime",
+          name: "Laptime",
+          valueFormatter: (d: number) => lapTimeString(d),
+        },
+      ],
     },
+    interaction: { elementHighlight: true },
     interactions: globalWamp.currentLiveId
       ? []
       : [
@@ -156,17 +176,8 @@ const Lapchart: React.FC<MyProps> = (props) => {
 
           //{ type: "element-link" }, { type: "element-highlight-by-color" }
         ],
-    meta: {
-      lapTime: {
-        formatter: (d: number) => lapTimeString(d),
-        // minLimit: Math.floor(work.minTime),
-        // maxLimit: Math.ceil(work.q95),
 
-        tickCount: 9,
-      },
-    },
-
-    animation: animate,
+    animate: false,
   };
   // note: there is a bug in Line: see https://github.com/ant-design/ant-design-charts/issues/797
   return <Line {...config} />;

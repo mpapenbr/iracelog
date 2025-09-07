@@ -1,10 +1,9 @@
-import { Line, LineConfig } from "@ant-design/charts";
-import { Types } from "@antv/g2/lib";
+import { Line, LineConfig } from "@ant-design/plots";
+// import { Types } from "@antv/g2/lib";
 import { Empty } from "antd";
 import _, { isNumber } from "lodash";
 import React from "react";
 import { sprintf } from "sprintf-js";
-import { firstBy } from "thenby";
 import { globalWamp } from "../../commons/globals";
 import { useAppSelector } from "../../stores";
 import { assignCarColors } from "../live/colorAssignment";
@@ -43,7 +42,7 @@ const Delta: React.FC<MyProps> = (props: MyProps) => {
           if (isNumber(carEntry.gap) && !isNaN(carEntry.gap) && carEntry.lapNo > 0) {
             prev.push({
               lapNo: "" + current.lapNo,
-              carNum: carNum,
+              carNum: "#" + carNum,
               gap: refCarEntry.gap - carEntry.gap,
             });
           }
@@ -69,11 +68,23 @@ const Delta: React.FC<MyProps> = (props: MyProps) => {
   // some strange ant-design/charts bug: https://github.com/ant-design/ant-design-charts/issues/797
   // workaround is to use strings for xaxis...
 
-  const sliderData = globalWamp.currentLiveId ? undefined : { start: 0, end: 1 };
-
-  const noAnimationOption = {
-    duration: 0,
+  const sliderData = () => {
+    if (globalWamp.currentLiveId) {
+      return undefined;
+    }
+    if (showCars.length > 0) return { x: { start: 0, end: 1 } };
+    return undefined;
   };
+
+  const formatDelta = (d: number) => {
+    return sprintf("%.1fs", d);
+  };
+
+  const range = {
+    min: Math.floor(Math.max(_.minBy(graphDataOrig, (d) => d.gap)?.gap ?? 0, -props.deltaRange)),
+    max: Math.ceil(Math.max(_.minBy(graphDataOrig, (d) => d.gap)?.gap ?? 0, props.deltaRange)),
+  };
+
   const graphTheme = antChartsTheme(globalSettings.theme);
   const config: LineConfig = {
     data: graphDataOrig,
@@ -82,61 +93,75 @@ const Delta: React.FC<MyProps> = (props: MyProps) => {
     xField: "lapNo",
     yField: "gap",
     seriesField: "carNum",
+    colorField: "carNum",
+
     theme: graphTheme.antd.theme,
-    // point: {
-    //   size: 3,
-    //   shape: "diamond",
-    // },
-    lineStyle: {
-      // lineWidth: 1,
+    slider: sliderData(),
+
+    axis: {
+      y: {
+        nice: true,
+        labelFormatter: formatDelta,
+        gridLineWidth: 1,
+        gridLineDash: [0, 0],
+      },
+      x: {
+        style: {
+          labelTransform: "rotate(0)",
+        },
+      },
     },
+    scale: {
+      y: {
+        nice: false,
+        domainMin: range.min,
+        domainMax: range.max,
+      },
 
-    color: localColors,
-    slider: sliderData,
-    yAxis: {
-      nice: true,
-
-      minLimit: Math.floor(
-        Math.max(_.minBy(graphDataOrig, (d) => d.gap)?.gap ?? 0, -props.deltaRange),
-      ),
-      maxLimit: Math.ceil(
-        Math.min(_.maxBy(graphDataOrig, (d) => d.gap)?.gap ?? 0, props.deltaRange),
-      ),
-      // label: {formatter: (d: number) => lapTimeString(d)},
+      color: {
+        range: localColors,
+      },
+    },
+    style: {
+      lineWidth: 2,
     },
     tooltip: {
-      customItems: (orig: Types.TooltipItem[]) => {
-        return orig.sort(
-          firstBy<Types.TooltipItem>(
-            (a, b) => Math.sign(b.data.gap) - Math.sign(a.data.gap),
-          ).thenBy((a, b) => b.data.gap - a.data.gap),
-        );
-
-        // return orig.sort((a, b) => a.data.gap - b.data.gap);
-      },
+      title: (d) => `Lap ${d.lapNo}`,
+      items: [
+        {
+          channel: "y",
+          field: "gap",
+          name: "gap",
+          valueFormatter: formatDelta,
+        },
+      ],
     },
-    interactions: globalWamp.currentLiveId ? [] : [{ type: "brush" }],
-    meta: {
-      gap: {
-        formatter: (d: number) => sprintf("%.1fs", d),
-        // minLimit: Math.floor(work.minTime),
-        // maxLimit: Math.ceil(work.q95),
 
-        tickCount: 9,
-      },
-      carNum: {
-        formatter: (d: string) => "#" + d,
-      },
-    },
+    interaction: globalWamp.currentLiveId ? {} : { brushFilter: true },
 
     animate: false,
-    animation: {
-      appear: noAnimationOption,
-      update: noAnimationOption,
-      // enter: noAnimationOption,
-      // leave: noAnimationOption,
-    },
     annotations: [
+      {
+        type: "rangeY",
+        yField: "y",
+
+        colorField: "region",
+        data: [
+          { y: [range.min, 0], region: "1" },
+          { y: [0, range.max], region: "2" },
+        ],
+        scale: {
+          color: {
+            range: [graphTheme.antd.regionGreen, graphTheme.antd.regionRed],
+            independent: true,
+            guide: null,
+          },
+        },
+        style: { fillOpacity: 0.15 },
+        animate: false,
+      },
+    ],
+    annotationsOldV1: [
       {
         type: "region",
         start: [0, 0] as [number, number],

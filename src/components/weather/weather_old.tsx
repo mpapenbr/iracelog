@@ -8,23 +8,23 @@ import { useAppSelector } from "../../stores";
 import { secAsHHMM } from "../../utils/output";
 import { antChartsTheme } from "../antcharts/color";
 import { statsDataFor } from "../live/statsutil";
-// Important: In order to develop this component you need to disable react.strictmode in index.tsx
-// Otherwise the chart will not get the correct legends and line colors.
-// MP 2025-09-07
-export const WeatherEvolution: React.FC = () => {
+
+export const WeatherEvolutionOld: React.FC = () => {
   const snapshots = useAppSelector((state) => state.eventSnapshots);
 
   const globalSettings = useAppSelector((state) => state.userSettings.global);
 
-  const WorkWeatherChart = () => {
-    const plotdata: {
-      x: string;
-      trackTemp: number;
-      airTemp: number;
-      precipitation: number;
-      trackWetness: TrackWetness;
-    }[] = [];
+  const WeatherChart = () => {
+    interface Plotdata {
+      x: String;
+      y: number;
+    }
+    const airTemps: Plotdata[] = [];
+    const trackTemps: Plotdata[] = [];
 
+    const plotdata: { x: string; y: number; temp: string }[] = [];
+    const precipitationData: { x: string; Precipitation: number }[] = [];
+    const trackConditions: { x: string; trackCondition: number }[] = [];
     const graphTheme = antChartsTheme(globalSettings.theme);
 
     if (snapshots.length === 0) {
@@ -77,7 +77,22 @@ export const WeatherEvolution: React.FC = () => {
     snapshots.forEach((e, idx) => {
       var xKey;
       xKey = "" + idx; // ant charts prefer strings as x axis values
-
+      airTemps.push({
+        x: xKey,
+        y: e.airTemp,
+      });
+      trackTemps.push({
+        x: xKey,
+        y: e.trackTemp,
+      });
+      precipitationData.push({
+        x: xKey,
+        Precipitation: parseFloat((e.precipitation * 100.0).toPrecision(2)),
+      });
+      trackConditions.push({
+        x: xKey,
+        trackCondition: e.trackWetness,
+      });
       if (e.trackWetness !== lastWetness) {
         // console.log("Wetness change", lastWetness, e.trackWetness, lastTime, xKey);
         annos.push({
@@ -89,13 +104,15 @@ export const WeatherEvolution: React.FC = () => {
         lastWetness = e.trackWetness;
         lastTime = xKey;
       }
-
       plotdata.push({
         x: xKey,
-        airTemp: e.airTemp,
-        trackTemp: e.trackTemp,
-        trackWetness: e.trackWetness,
-        precipitation: parseFloat((e.precipitation * 100.0).toPrecision(2)),
+        y: e.trackTemp,
+        temp: "Track",
+      });
+      plotdata.push({
+        x: xKey,
+        y: e.airTemp,
+        temp: "Air",
       });
     });
 
@@ -110,73 +127,71 @@ export const WeatherEvolution: React.FC = () => {
 
     const ccConfig = [];
 
-    const workTrack = statsDataFor(plotdata.map((v) => v.trackTemp));
-    const workAir = statsDataFor(plotdata.map((v) => v.airTemp));
+    const work = statsDataFor(plotdata.map((v) => v.y));
 
     const tempValueFormatter = (d: number) => d.toFixed(1) + "°C";
     // don't worry about the minTime attr. We use reuse the common structure here ;)
     // the key is important if we want to use this scale for multiple data streams
 
     const tempScale = {
-      y: {
-        domainMin: Math.min(workTrack.minTime, workAir.minTime),
-        domainMax: Math.max(workTrack.maxTime, workAir.maxTime),
-        key: "temps",
-      },
+      y: { domainMin: Math.floor(work.minTime), domainMax: Math.ceil(work.q99), key: "temps" },
     };
-
     const configTrackTemp = {
+      data: trackTemps,
       type: "line",
-      yField: "trackTemp",
+      yField: "y",
       colorField: () => "Track",
-      scale: tempScale,
-      axis: {
-        y: {
-          nice: true,
-          title: "temp °C",
-          style: { titleFill: "orange" },
-          gridLineWidth: 1,
-          gridLineDash: [0, 0],
-        },
+      style: {
+        stroke: "orange",
       },
+
+      scale: tempScale,
+      axis: { y: { nice: true, title: "temp °C", style: { titleFill: "orange" } } },
       tooltip: {
         items: [
           {
             channel: "y",
             valueFormatter: tempValueFormatter,
+            color: "orange",
           },
         ],
       },
     };
     const configAirTemp = {
+      data: airTemps,
       type: "line",
-      yField: "airTemp",
+      yField: "y",
+      axis: { y: false },
       colorField: () => "Air",
+      style: {
+        stroke: "red",
+      },
       scale: tempScale,
       tooltip: {
         items: [
           {
             channel: "y",
             valueFormatter: tempValueFormatter,
+            color: "red",
           },
         ],
       },
-      axis: { y: false },
     };
 
-    const statsPrecipitation = statsDataFor(plotdata.map((v) => v.precipitation));
+    const statsPrecipitation = statsDataFor(precipitationData.map((v) => v.Precipitation));
 
     const configPrecipitation = {
+      data: precipitationData,
       type: "line",
-      yField: "precipitation",
+      yField: "Precipitation",
 
+      // needs range and/or scale
       axis: {
         y: {
           nice: true,
           position: "right",
           title: "Precipitation",
           style: { titleFill: "blue" },
-          gridLineWidth: 0,
         },
       },
       scale: {
@@ -186,21 +201,27 @@ export const WeatherEvolution: React.FC = () => {
         },
       },
       colorField: () => "Precipitation",
-
+      style: {
+        stroke: "blue",
+      },
       tooltip: {
         items: [
           {
             channel: "y",
+            color: "blue",
           },
         ],
       },
     };
+
     const configTrackCondition = {
+      data: trackConditions,
       type: "line",
-      yField: "trackWetness",
-      colorField: () => "Track condition",
+      yField: "trackCondition",
+      colorField: () => "Track Condition",
 
       style: {
+        stroke: "purple",
         lineWidth: 0,
       },
 
@@ -212,35 +233,27 @@ export const WeatherEvolution: React.FC = () => {
             valueFormatter: (d: number) => {
               return trackConditionText(d);
             },
+            // valueFormatter: tempValueFormatter,
+            color: "purple",
           },
         ],
       },
     };
-    ccConfig.push(configTrackTemp, configAirTemp, configPrecipitation, configTrackCondition);
-
+    ccConfig.push(configTrackTemp, configAirTemp, configPrecipitation);
+    ccConfig.push(configTrackCondition);
     const config = {
       // width: 800,
       // height: 400,
-
-      legend: { color: { itemMarker: "circle" } },
-      data: plotdata,
-      xField: "x",
       theme: graphTheme.antd.theme,
+      // data: [plotdata, precipitationData],
+      xField: "x",
 
-      children: ccConfig,
+      // yField: ["y", "Precipitation"],
+      // annotations: testAnnos,
+
       tooltip: {
         title: (item: any) => {
           return xLabelValue(item.x);
-        },
-      },
-      scale: {
-        color: {
-          relations: [
-            ["Track", "orange"],
-            ["Air", "red"],
-            ["Precipitation", "blue"],
-            ["Track condition", "purple"],
-          ],
         },
       },
       axis: {
@@ -252,11 +265,14 @@ export const WeatherEvolution: React.FC = () => {
           labelFormatter: (v: string) => xLabelValue(v),
         },
       },
+      children: ccConfig,
       annotations: [
         {
           type: "rangeX",
           xField: "x",
+
           colorField: "color",
+          // data: [{ x: ["100", "120"], color: "red" }],
           data: annos,
           scale: {
             color: {
@@ -269,14 +285,13 @@ export const WeatherEvolution: React.FC = () => {
           animate: false,
         },
       ],
-
       animation: false,
     };
     return <DualAxes {...config} />;
   };
   return (
     <>
-      <WorkWeatherChart />
+      <WeatherChart />
     </>
   );
 };

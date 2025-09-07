@@ -1,5 +1,4 @@
-import { Line, LineConfig } from "@ant-design/charts";
-import { Types } from "@antv/g2/lib";
+import { Line, LineConfig } from "@ant-design/plots";
 
 import { RaceGraph } from "@buf/mpapenbr_iracelog.bufbuild_es/iracelog/analysis/v1/racegraph_pb";
 import { Empty, theme } from "antd";
@@ -59,7 +58,7 @@ const LeaderGraph: React.FC<MyProps> = (props: MyProps) => {
       if (carEntry !== undefined) {
         if (isNumber(carEntry.gap) && !isNaN(carEntry.gap) && carEntry.lapNo > 0) {
           // prev.push({ lapNo: current.lapNo, ["#" + carNum]: carEntry.gap });
-          prev.push({ lapNo: "" + current.lapNo, carNum: carNum, gap: carEntry.gap });
+          prev.push({ lapNo: "" + current.lapNo, carNum: "#" + carNum, gap: carEntry.gap });
         }
       }
       return prev;
@@ -78,11 +77,22 @@ const LeaderGraph: React.FC<MyProps> = (props: MyProps) => {
     .filter((carNum) => allCarNums.includes(carNum))
     .map((carNum) => getColor(carNum));
 
-  const sliderData = globalWamp.currentLiveId ? undefined : { start: 0, end: 1 };
-
-  const noAnimationOption = {
-    duration: 0,
+  const sliderData = () => {
+    if (globalWamp.currentLiveId) {
+      return undefined;
+    }
+    if (showCars.length > 0) return { x: { start: 0, end: 1 } };
+    return undefined;
   };
+
+  const formatDelta = (d: number) => {
+    return sprintf("%.1fs", d);
+  };
+  const range = {
+    min: Math.floor(Math.min(_.minBy(graphDataOrig, (d) => d.gap)?.gap ?? 0, -props.deltaRange)),
+    max: Math.ceil(Math.max(_.minBy(graphDataOrig, (d) => d.gap)?.gap ?? 0, props.deltaRange)),
+  };
+
   const graphTheme = antChartsTheme(globalSettings.theme);
   const config: LineConfig = {
     data: graphDataOrig,
@@ -101,8 +111,49 @@ const LeaderGraph: React.FC<MyProps> = (props: MyProps) => {
       // lineWidth: 1,
     },
     color: localColors,
-    slider: sliderData,
+    slider: sliderData(),
     theme: graphTheme.antd.theme,
+
+    axis: {
+      y: {
+        nice: true,
+        labelFormatter: formatDelta,
+        gridLineWidth: 1,
+        gridLineDash: [0, 0],
+      },
+      x: {
+        style: {
+          labelTransform: "rotate(0)",
+        },
+      },
+    },
+    scale: {
+      y: {
+        nice: true,
+        domainMin: 0,
+        domainMax: Math.ceil(
+          Math.min(_.maxBy(graphDataOrig, (d) => d.gap)?.gap ?? 0, userSettings.deltaRange),
+        ),
+      },
+
+      color: {
+        range: localColors,
+      },
+    },
+    style: {
+      lineWidth: 2,
+    },
+    tooltip: {
+      title: (d) => `Lap ${d.lapNo}`,
+      items: [
+        {
+          channel: "y",
+          field: "gap",
+          name: "gap",
+          valueFormatter: formatDelta,
+        },
+      ],
+    },
     yAxis: {
       nice: true,
 
@@ -113,12 +164,8 @@ const LeaderGraph: React.FC<MyProps> = (props: MyProps) => {
 
       // label: {formatter: (d: number) => lapTimeString(d)},
     },
-    tooltip: {
-      customItems: (orig: Types.TooltipItem[]) => {
-        return orig.sort((a, b) => a.data.gap - b.data.gap);
-      },
-    },
-    interactions: globalWamp.currentLiveId ? [] : [{ type: "brush" }],
+
+    interaction: globalWamp.currentLiveId ? {} : { brushFilter: true },
     meta: {
       gap: {
         formatter: (d: number) => sprintf("%.1fs", d),
@@ -133,12 +180,6 @@ const LeaderGraph: React.FC<MyProps> = (props: MyProps) => {
     },
 
     animate: false,
-    animation: {
-      appear: noAnimationOption,
-      update: noAnimationOption,
-      // enter: noAnimationOption,
-      // leave: noAnimationOption,
-    },
   };
 
   // note: there is a bug in Line: see https://github.com/ant-design/ant-design-charts/issues/797

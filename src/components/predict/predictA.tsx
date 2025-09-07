@@ -1,4 +1,4 @@
-import { Line, LineConfig } from "@ant-design/charts";
+import { Line, LineConfig } from "@ant-design/plots";
 import { Part, StintPart } from "@buf/mpapenbr_iracelog.bufbuild_es/iracelog/predict/v1/predict_pb";
 import { Empty } from "antd";
 import { useAppSelector } from "../../stores";

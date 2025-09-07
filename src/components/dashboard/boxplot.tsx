@@ -1,4 +1,4 @@
-import { Box } from "@ant-design/charts";
+import { Box } from "@ant-design/plots";
 import { Empty } from "antd";
 import React from "react";
 import { globalWamp } from "../../commons/globals";
@@ -64,15 +64,24 @@ const BoxPlot: React.FC<MyProps> = (props) => {
   // console.log(bounds);
   const animation = globalWamp.currentLiveId ? false : true;
   const graphTheme = antChartsTheme(globalSettings.theme);
-  const laptimeFormatter = { formatter: (d: any) => lapTimeString(d) };
+  const laptimeFormatter = (d: number) => lapTimeString(d);
   const config = {
     data: boxData,
-    yAxis: {
-      label: { formatter: (d: any) => lapTimeString(d) },
 
-      ...bounds,
+    axis: {
+      y: { labelFormatter: laptimeFormatter },
     },
-    groupField: "type",
+    tooltip: {
+      items: [
+        { name: "minTime", channel: "y", valueFormatter: laptimeFormatter },
+        { name: "q25", channel: "y1", valueFormatter: laptimeFormatter },
+        { name: "median", channel: "y2", valueFormatter: laptimeFormatter },
+        { name: "q75", channel: "y3", valueFormatter: laptimeFormatter },
+        { name: "maxTime", channel: "y4", valueFormatter: laptimeFormatter },
+      ],
+    },
+    seriesField: "type",
+    colorField: "type",
     xField: "carNum",
     theme: graphTheme.antd.theme,
     // outliersField: "outliers", // deactivated. see https://github.com/ant-design/ant-design-charts/issues/800
@@ -84,7 +93,8 @@ const BoxPlot: React.FC<MyProps> = (props) => {
       q75: { ...laptimeFormatter },
       outliers: { ...laptimeFormatter },
     },
-    animate: globalWamp.currentLiveId ? false : true,
+    // animate: globalWamp.currentLiveId ? false : true,
+    animate: false,
   };
 
   if (boxData.length === 0) {
