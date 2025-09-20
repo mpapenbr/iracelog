@@ -42,3 +42,5 @@ updates:
     commit-message:
       prefix: "gha"
       include: "scope"
+
+# dummy to trigger dependabot
