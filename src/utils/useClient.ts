@@ -6,13 +6,23 @@ import { useMemo } from "react";
 import { globalWamp } from "../commons/globals";
 import { API_GRPC_BINARY_FORMAT } from "../constants";
 
+const credentialedFetch: typeof fetch = (input, init) => {
+  return fetch(input, {
+    ...init,
+    credentials: "include", // Include cookies in requests
+  });
+};
 // This transport is going to be used throughout the app
 const createTransport = () => {
   return API_GRPC_BINARY_FORMAT
     ? createGrpcWebTransport({
         baseUrl: globalWamp.backendConfig.grpc.url,
+        fetch: credentialedFetch,
       })
-    : createConnectTransport({ baseUrl: globalWamp.backendConfig.grpc.url });
+    : createConnectTransport({
+        baseUrl: globalWamp.backendConfig.grpc.url,
+        fetch: credentialedFetch,
+      });
 };
 
 /**
