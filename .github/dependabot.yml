@@ -21,7 +21,7 @@ updates:
       development-dependencies:
         dependency-type: "development"
     ignore:
-      - dependency-name: "@ant-design/charts"
+      - dependency-name: "@ant-design/plots"
         update-types: ["version-update:semver-major"]
       # will be udpated manually on new functionality
       - dependency-name: "@buf/mpapenbr_iracelog.*"
