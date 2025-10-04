@@ -24,6 +24,8 @@ export const DemoLogin: React.FC = () => {
     cbAuthClient.login(
       {
         // { externalId: globalWamp.backendConfig.tenant.id },
+        // redirectUrl: window.location.href,
+        redirectUrl: window.location.href,
       },
       (err, res) => {
         if (err != undefined) {
@@ -31,7 +33,7 @@ export const DemoLogin: React.FC = () => {
           return;
         }
         console.log("login called", res);
-
+        window.location.href = res.loginUrl;
         // setData({ events: res.getEventsList() });
       },
     );
