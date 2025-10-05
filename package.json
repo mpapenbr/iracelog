@@ -8,7 +8,7 @@
     "@ant-design/plots": "^2.6.5",
     "@ant-design/v5-patch-for-react-19": "^1.0.3",
     "@apollo/client": "^4.0.7",
-    "@buf/mpapenbr_iracelog.bufbuild_es": "2.9.0-00000000000000-1c8fc4317bf2.1",
+    "@buf/mpapenbr_iracelog.bufbuild_es": "2.9.0-00000000000000-5d8af11c3c61.1",
     "@bufbuild/protobuf": "^2.9.0",
     "@connectrpc/connect": "^2.1.0",
     "@connectrpc/connect-web": "^2.1.0",

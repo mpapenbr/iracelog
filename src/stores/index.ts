@@ -22,8 +22,10 @@ import { raceGraphSlice } from "./grpc/slices/raceGraphSlice";
 import { raceloggerSettingsSlice } from "./grpc/slices/raceloggerSettingsSlice";
 import { raceloggerStatusSlice } from "./grpc/slices/raceloggerStatusSlice";
 import { raceOrderSlice } from "./grpc/slices/raceOrderSlice";
+import { serverSettingsSlice } from "./grpc/slices/serverSettingsSlice";
 import { sessionSlice } from "./grpc/slices/sessionSlice";
 import { speedmapSlice } from "./grpc/slices/speedmapSlice";
+import { userInfoSlice } from "./grpc/slices/userInfoSlice";
 import { combined } from "./grpc/slices/userSettingsSlice";
 
 export interface ApplicationState {}
@@ -59,6 +61,9 @@ export const store = configureStore({
 
     raceloggerSettings: raceloggerSettingsSlice.reducer,
     raceloggerStatus: raceloggerStatusSlice.reducer,
+
+    userInfo: userInfoSlice.reducer,
+    serverSettings: serverSettingsSlice.reducer,
     // classification: ClassificationReducer,
     // carStuff: CurrentCarOccReducer,
     // dummy: DummyReducer,

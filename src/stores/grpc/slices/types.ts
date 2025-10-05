@@ -161,6 +161,10 @@ export interface IRaceloggerStatus {
   currentSessionNum: number; // the current session number
   raceSessions: { num: number; name: string }[]; // list of race sessions
 }
+export interface IServerSettings {
+  supportsLogins: boolean;
+}
+
 export interface IUiData {
   stint: IUiStints;
   entries: IUiEntries;
