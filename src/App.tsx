@@ -1,5 +1,5 @@
 import { Button, ConfigProvider, Flex, Layout, Popover, ThemeConfig, theme } from "antd";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Provider } from "react-redux";
 import { Link, Route, BrowserRouter as Router, Routes } from "react-router";
 import { Store } from "redux";
@@ -8,13 +8,19 @@ import { API_LOCAL_DEV_MODE, APP_VERSION_DISPLAY } from "./constants";
 import { AnalysisMainPage } from "./pages/analysisPage";
 
 import { SettingOutlined } from "@ant-design/icons";
+import { SettingsService } from "@buf/mpapenbr_iracelog.bufbuild_es/iracelog/settings/v1/settings_service_pb";
+import { UserService } from "@buf/mpapenbr_iracelog.bufbuild_es/iracelog/user/v1/user_service_pb";
+import { Code } from "@connectrpc/connect";
 import { GlobalSettings } from "./components/globalSettingsControl";
 import Classification from "./components/live/classification";
 import { EventHeaderContainer } from "./container/EventHeaderContainer";
 import { Events } from "./pages/eventsPage";
 import { FakeLoaderPage } from "./pages/fakeLoader";
 import { Racelogger } from "./pages/raceloggerPage";
-import { ApplicationState, store, useAppSelector } from "./stores";
+import { ApplicationState, store, useAppDispatch, useAppSelector } from "./stores";
+import { updateLoginSupport } from "./stores/grpc/slices/serverSettingsSlice";
+import { resetUserInfo, updateUserInfo } from "./stores/grpc/slices/userInfoSlice";
+import { useClient } from "./utils/useClient";
 
 const { Header, Content, Footer, Sider } = Layout;
 
@@ -25,7 +31,39 @@ const OtherContent: React.FC = () => <div>Here goes other content</div>;
 
 const HOCConfig = (props: any) => {
   const userSettings = useAppSelector((state) => state.userSettings.global);
+  const serverSettings = useAppSelector((state) => state.serverSettings);
 
+  const cbSettingsClient = useClient(SettingsService);
+  const cbUserClient = useClient(UserService);
+  const [loadTrigger, setLoadTrigger] = useState(0);
+  const dispatch = useAppDispatch();
+
+  useEffect(() => {
+    cbSettingsClient.getServerSettings({}, (err, res) => {
+      if (err != undefined) {
+        console.log(err);
+        return;
+      }
+      console.log("getServerSettings called", res);
+      dispatch(updateLoginSupport(res.supportsLogin));
+    });
+  }, [loadTrigger]);
+
+  if (serverSettings.supportsLogins) {
+    cbUserClient.getUserInfo({}, (err, res) => {
+      if (err != undefined) {
+        if (err.code === Code.Unauthenticated) {
+          // not logged in
+          dispatch(resetUserInfo());
+          return;
+        }
+        console.log("getUserInfo error", err);
+        return;
+      }
+      console.log("getUserInfo called", res);
+      dispatch(updateUserInfo(res.userInfo!));
+    });
+  }
   let t: ThemeConfig;
   switch (userSettings.theme) {
     case "dark":
