@@ -1,0 +1,35 @@
+version: 2
+
+builds:
+  - id: dummy
+    skip: true
+
+dockers_v2:
+  - id: web-amd64
+    images:
+      - "ghcr.io/mpapenbr/{{ .ProjectName }}-web"
+    tags:
+      - "v{{ .Version }}"
+      - "latest"
+    dockerfile: Dockerfile.nginx
+    labels:
+      "org.opencontainers.image.created": "{{.Date}}"
+      "org.opencontainers.image.title": "{{.ProjectName}}"
+      "org.opencontainers.image.revision": "{{.FullCommit}}"
+      "org.opencontainers.image.version": "{{.Version}}"
+      "org.opencontainers.image.source": "https://{{.ModulePath}}"
+      "org.opencontainers.image.url": "https://{{.ModulePath}}"
+      "org.opencontainers.image.description": "Web frontend for iRacelog"
+      "org.opencontainers.image.licenses": "MIT license"
+
+    platforms:
+      - linux/amd64
+    extra_files:
+      - docker/my-default.conf
+      - docker/dist
+
+
+
+snapshot:
+  version_template: "{{ incpatch .Version }}-next"
+
