@@ -24,8 +24,8 @@ importers:
         specifier: ^4.0.7
         version: 4.0.7(graphql@16.11.0)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(rxjs@7.8.2)
       '@buf/mpapenbr_iracelog.bufbuild_es':
-        specifier: 2.6.0-20250705185745-385bdc10baf0.1
-        version: 2.6.0-20250705185745-385bdc10baf0.1(@bufbuild/protobuf@2.9.0)
+        specifier: 2.9.0-20251019125030-8cb75f92a51d.1
+        version: 2.9.0-20251019125030-8cb75f92a51d.1(@bufbuild/protobuf@2.9.0)
       '@bufbuild/protobuf':
         specifier: ^2.9.0
         version: 2.9.0
@@ -480,10 +480,10 @@ packages:
     resolution: {integrity: sha512-6zABk/ECA/QYSCQ1NGiVwwbQerUCZ+TQbp64Q3AgmfNvurHH0j8TtXa1qbShXA6qqkpAj4V5W8pP6mLe1mcMqA==}
     engines: {node: '>=18'}
 
-  '@buf/mpapenbr_iracelog.bufbuild_es@2.6.0-20250705185745-385bdc10baf0.1':
-    resolution: {tarball: https://buf.build/gen/npm/v1/@buf/mpapenbr_iracelog.bufbuild_es/-/mpapenbr_iracelog.bufbuild_es-2.6.0-20250705185745-385bdc10baf0.1.tgz}
+  '@buf/mpapenbr_iracelog.bufbuild_es@2.9.0-20251019125030-8cb75f92a51d.1':
+    resolution: {tarball: https://buf.build/gen/npm/v1/@buf/mpapenbr_iracelog.bufbuild_es/-/mpapenbr_iracelog.bufbuild_es-2.9.0-20251019125030-8cb75f92a51d.1.tgz}
     peerDependencies:
-      '@bufbuild/protobuf': ^2.6.0
+      '@bufbuild/protobuf': ^2.9.0
 
   '@bufbuild/protobuf@2.9.0':
     resolution: {integrity: sha512-rnJenoStJ8nvmt9Gzye8nkYd6V22xUAnu4086ER7h1zJ508vStko4pMvDeQ446ilDTFpV5wnoc5YS7XvMwwMqA==}
@@ -4413,7 +4413,7 @@ snapshots:
 
   '@bcoe/v8-coverage@1.0.2': {}
 
-  '@buf/mpapenbr_iracelog.bufbuild_es@2.6.0-20250705185745-385bdc10baf0.1(@bufbuild/protobuf@2.9.0)':
+  '@buf/mpapenbr_iracelog.bufbuild_es@2.9.0-20251019125030-8cb75f92a51d.1(@bufbuild/protobuf@2.9.0)':
     dependencies:
       '@bufbuild/protobuf': 2.9.0
 

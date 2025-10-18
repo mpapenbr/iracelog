@@ -1,13 +1,15 @@
 import { Col, Row } from "antd";
 import React from "react";
+import { DemoLogin } from "../components/auth/login";
 import { LatestEvents } from "../components/events/latestEvents";
 import { LatestEventsGrpc } from "../components/events/latestEventsGrpc";
 import { LiveEvents } from "../components/events/liveEventsGrpc";
 import { SimpleSearchEvents } from "../components/events/simpleSearchEvents";
 import { API_GRAPHQL_ENABLED } from "../constants";
+import { useAppSelector } from "../stores";
 
-export const Events: React.FC = () => {  
-  
+export const Events: React.FC = () => {
+  const serverSettings = useAppSelector((state) => state.serverSettings);
   return (
     <Row gutter={16}>
       <Col span={12}>
@@ -21,14 +23,24 @@ export const Events: React.FC = () => {
             <LiveEvents />
           </Col>
         </Row>
-        {API_GRAPHQL_ENABLED === true ? 
-        <Row>
-          <Col span={24}>
-            <SimpleSearchEvents />
-          </Col>
-        </Row> 
-        : <></>}
-        
+        {API_GRAPHQL_ENABLED === true ? (
+          <Row>
+            <Col span={24}>
+              <SimpleSearchEvents />
+            </Col>
+          </Row>
+        ) : (
+          <></>
+        )}
+        {serverSettings.supportsLogins === true ? (
+          <Row>
+            <Col span={24}>
+              <DemoLogin />
+            </Col>
+          </Row>
+        ) : (
+          <></>
+        )}
         {/* <Row>
           <Col span={24}>
             <DebugSession />

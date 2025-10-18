@@ -8,7 +8,7 @@
     "@ant-design/plots": "^2.6.5",
     "@ant-design/v5-patch-for-react-19": "^1.0.3",
     "@apollo/client": "^4.0.7",
-    "@buf/mpapenbr_iracelog.bufbuild_es": "2.6.0-20250705185745-385bdc10baf0.1",
+    "@buf/mpapenbr_iracelog.bufbuild_es": "2.9.0-20251019125030-8cb75f92a51d.1",
     "@bufbuild/protobuf": "^2.9.0",
     "@connectrpc/connect": "^2.1.0",
     "@connectrpc/connect-web": "^2.1.0",
@@ -73,6 +73,7 @@
   },
   "scripts": {
     "start": "vite",
+    "start-cl": "vite --host web.127.0.0.1.nip.io",
     "build": "vite build",
     "preview": "vite preview",
     "tscBuild": "tsc && vite build",
