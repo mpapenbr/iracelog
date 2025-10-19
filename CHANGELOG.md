@@ -1,3 +1,10 @@
+### 0.40.0 (2025-10-19)
+
+##### Other Changes
+
+* **deps:**  bump actions/setup-node in the github-actions group (8ab348b1)
+*  update to setup-node v5 (90e77ae6)
+
 ### 0.39.0 (2025-09-07)
 
 ##### Other Changes
