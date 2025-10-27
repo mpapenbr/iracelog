@@ -134,10 +134,7 @@ const App: React.FC<{}> = () => {
     <Provider store={store}>
       <Router>
         <HOCConfig>
-          <Layout
-            className="layout"
-            style={{ display: "flex", flexDirection: "column", height: "100vh" }}
-          >
+          <Layout className="layout" style={{ minHeight: "100vh" }}>
             <Header
               style={{
                 background: "rgba(29, 34, 36, 0.835)",
@@ -177,6 +174,7 @@ const App: React.FC<{}> = () => {
             <Content
               style={{
                 padding: "0 5px",
+                flex: 1,
               }}
             >
               <div className="site-layout-content">
@@ -198,7 +196,7 @@ const App: React.FC<{}> = () => {
                 </Routes>
               </div>
             </Content>
-            <Footer style={{ textAlign: "center" }}>
+            <Footer style={{ textAlign: "center", marginTop: "auto" }}>
               iRacelog{" "}
               <a target={"_blank"} rel="noreferrer" href={link}>
                 {APP_VERSION_DISPLAY}
