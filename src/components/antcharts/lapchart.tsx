@@ -17,6 +17,7 @@ interface MyProps {
   showCars: string[];
   limitLastLaps: number;
   filterSecs: number;
+  height?: number;
 }
 type StintLapProvider = (si: StintInfo, laptimes: CarLaps) => Lap[];
 const Lapchart: React.FC<MyProps> = (props) => {
@@ -108,6 +109,7 @@ const Lapchart: React.FC<MyProps> = (props) => {
     if (showCars.length > 0) return { x: { start: 0, end: 1 } };
     return undefined;
   };
+  const useHeight = props.height !== undefined ? props.height : 500;
 
   const graphTheme = antChartsTheme(globalSettings.theme);
   // G2.registerTheme("element-link", {
@@ -178,9 +180,13 @@ const Lapchart: React.FC<MyProps> = (props) => {
         ],
 
     animate: false,
+    // Add these properties to help with memory management
+    autoFit: true,
+    height: useHeight, // Set a fixed height to prevent growing
   };
-  // note: there is a bug in Line: see https://github.com/ant-design/ant-design-charts/issues/797
+
   return <Line {...config} />;
+
   // return <Scatter {...config} />;
 };
 

@@ -110,13 +110,12 @@ export const DriverLapsContainer: React.FC = () => {
         </Col>
       </Row>
 
-      <div style={{ height: 600 }}>
-        <Lapchart
-          showCars={[...props.selectedCars]}
-          limitLastLaps={userSettings.limitLastLaps}
-          filterSecs={userSettings.filterSecs}
-        />
-      </div>
+      <Lapchart
+        showCars={[...props.selectedCars]}
+        limitLastLaps={userSettings.limitLastLaps}
+        filterSecs={userSettings.filterSecs}
+        height={600}
+      />
     </>
   );
 };
