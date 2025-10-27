@@ -84,7 +84,7 @@ const Delta: React.FC<MyProps> = (props: MyProps) => {
     min: Math.floor(Math.max(_.minBy(graphDataOrig, (d) => d.gap)?.gap ?? 0, -props.deltaRange)),
     max: Math.ceil(Math.max(_.minBy(graphDataOrig, (d) => d.gap)?.gap ?? 0, props.deltaRange)),
   };
-
+  const useHeight = props.height !== undefined ? props.height : 500;
   const graphTheme = antChartsTheme(globalSettings.theme);
   const config: LineConfig = {
     data: graphDataOrig,
@@ -140,6 +140,8 @@ const Delta: React.FC<MyProps> = (props: MyProps) => {
     interaction: globalWamp.currentLiveId ? {} : { brushFilter: true },
 
     animate: false,
+    autoFit: true,
+    height: useHeight,
     annotations: [
       {
         type: "rangeY",
@@ -161,6 +163,7 @@ const Delta: React.FC<MyProps> = (props: MyProps) => {
         animate: false,
       },
     ],
+
     annotationsOldV1: [
       {
         type: "region",
@@ -188,7 +191,8 @@ const Delta: React.FC<MyProps> = (props: MyProps) => {
   // note: there is a bug in Line: see https://github.com/ant-design/ant-design-charts/issues/797
   return (
     <div>
-      <Line {...config} height={props.height} />
+      {/* <Line {...config} height={props.height} /> */}
+      <Line {...config} />
     </div>
   );
 

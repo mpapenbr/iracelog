@@ -56,7 +56,7 @@ const StintBoxplot: React.FC<MyProps> = (props: MyProps) => {
   const graphTheme = antChartsTheme(globalSettings.theme);
   const config = {
     data: boxData,
-    title: "huhu",
+    title: "Stints",
     axis: {
       y: { labelFormatter: laptimeFormatter },
     },
@@ -71,6 +71,8 @@ const StintBoxplot: React.FC<MyProps> = (props: MyProps) => {
     },
     theme: graphTheme.antd.theme,
     xField: "stint",
+    autoFit: true,
+    height: 500,
     // outliersField: "outliers", // deactivated. see https://github.com/ant-design/ant-design-charts/issues/800
   };
   if (boxData.length === 0) {

@@ -10,6 +10,7 @@ import { getCarStints } from "../live/util";
 
 interface MyProps {
   showCars: string[];
+  height?: number;
 }
 const BoxPlot: React.FC<MyProps> = (props) => {
   const carStints = useAppSelector((state) => state.carStints);
@@ -62,6 +63,7 @@ const BoxPlot: React.FC<MyProps> = (props) => {
     { minLimit: Number.MAX_SAFE_INTEGER, maxLimit: 0 },
   );
   // console.log(bounds);
+  const useHeight = props.height !== undefined ? props.height : 500;
   const animation = globalWamp.currentLiveId ? false : true;
   const graphTheme = antChartsTheme(globalSettings.theme);
   const laptimeFormatter = (d: number) => lapTimeString(d);
@@ -95,6 +97,8 @@ const BoxPlot: React.FC<MyProps> = (props) => {
     },
     // animate: globalWamp.currentLiveId ? false : true,
     animate: false,
+    autoFit: true,
+    height: useHeight,
   };
 
   if (boxData.length === 0) {

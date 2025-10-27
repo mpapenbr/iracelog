@@ -140,7 +140,7 @@ export const DashboardContainer: React.FC = () => {
       },
       { minTime: Number.MAX_SAFE_INTEGER, maxTime: 0 },
     );
-
+  const graphHeight = 500;
   return (
     <div ref={containerRef}>
       <Row gutter={16}>
@@ -197,10 +197,11 @@ export const DashboardContainer: React.FC = () => {
                 showCars={[...props.selectedCars]}
                 limitLastLaps={userSettings.limitLastLaps}
                 filterSecs={0}
+                height={graphHeight}
               />
             </Col>
             <Col span={12}>
-              <BoxPlot showCars={[...props.selectedCars]} />
+              <BoxPlot showCars={[...props.selectedCars]} height={graphHeight} />
             </Col>
           </Row>
           {globalWamp.currentLiveId ? (
@@ -211,6 +212,7 @@ export const DashboardContainer: React.FC = () => {
                   showCars={[...props.selectedCars]}
                   limitLastLaps={userSettings.limitLastLaps}
                   deltaRange={userSettings.deltaRange}
+                  height={graphHeight}
                 />
               </Col>
               <Col span={12}>
@@ -229,6 +231,7 @@ export const DashboardContainer: React.FC = () => {
                   showCars={[...props.selectedCars]}
                   limitLastLaps={0}
                   deltaRange={userSettings.deltaRange}
+                  height={graphHeight}
                 />
               </Col>
             </Row>
