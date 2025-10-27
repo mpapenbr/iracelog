@@ -48,7 +48,9 @@ import reportWebVitals from "./reportWebVitals";
   root.render(
     <React.StrictMode>
       <ApolloProvider client={client}>
+        {/* <ModalProvider> */}
         <App />
+        {/* </ModalProvider> */}
       </ApolloProvider>
     </React.StrictMode>,
   );
