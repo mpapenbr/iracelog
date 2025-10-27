@@ -103,9 +103,27 @@ const HOCConfig = (props: any) => {
 const AppHeaderDiv: React.FC = () => {
   return (
     <Link to="/events">
-      <div style={{ display: "flex", gap: "10px" }}>
-        <h2 style={{ color: "azure", margin: 0 }}>iRacelog</h2>
-        <h4 style={{ color: "azure", margin: 0 }}>v{APP_VERSION_DISPLAY}</h4>
+      <div
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "flex-start",
+          justifyContent: "center",
+          height: "100%",
+        }}
+      >
+        <h2 style={{ color: "azure", margin: 0, lineHeight: "1.2" }}>iRacelog</h2>
+        <div
+          style={{
+            color: "azure",
+            margin: 0,
+            fontSize: "0.75rem",
+            lineHeight: "1",
+            opacity: 0.8,
+          }}
+        >
+          v{APP_VERSION_DISPLAY}
+        </div>
       </div>
     </Link>
   );
@@ -140,9 +158,11 @@ const App: React.FC<{}> = () => {
                 background: "rgba(29, 34, 36, 0.835)",
                 color: "azure",
                 display: "flex",
+                alignItems: "center",
                 gap: "10px",
                 paddingLeft: "10px",
                 paddingRight: "10px",
+                height: "64px",
               }}
             >
               {true ? (
