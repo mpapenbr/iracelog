@@ -1,3 +1,9 @@
+### 0.41.0 (2025-10-29)
+
+##### Other Changes
+
+*  now always below content (7aef2a9c)
+
 ### 0.40.0 (2025-10-19)
 
 ##### Other Changes
