@@ -29,6 +29,7 @@ const Delta: React.FC<MyProps> = (props: MyProps) => {
   interface IGraphData {
     carNum: string;
     lapNo: string; // due to line chart issue https://github.com/ant-design/ant-design-charts/issues/797
+    lapNoRaw: number; // to help filtering
     gap: number;
   }
 
@@ -41,6 +42,7 @@ const Delta: React.FC<MyProps> = (props: MyProps) => {
         if (carEntry !== undefined && refCarEntry !== undefined) {
           if (isNumber(carEntry.gap) && !isNaN(carEntry.gap) && carEntry.lapNo > 0) {
             prev.push({
+              lapNoRaw: current.lapNo,
               lapNo: "" + current.lapNo,
               carNum: "#" + carNum,
               gap: refCarEntry.gap - carEntry.gap,
@@ -58,12 +60,24 @@ const Delta: React.FC<MyProps> = (props: MyProps) => {
     // .map((carNum) => cat10Colors[showCars.indexOf(carNum) % cat10Colors.length]);
     .map((carNum) => assignedCarColors.get(carNum) ?? "black");
 
-  // console.log(localColors);
-  const graphDataOrig = showCars
-    .filter((v) => v !== referenceCarNum)
+  const collectData = (): IGraphData[] => {
+    var allData: IGraphData[] = [];
+    allData = showCars
+      .filter((v) => v !== referenceCarNum)
+      .map((carNum) => dataForCar(carNum))
+      .flatMap((a) => [...a]);
+    if (globalWamp.currentLiveId && props.limitLastLaps > 0) {
+      const maxLapNo = _.maxBy(allData, (d) => d.lapNoRaw)?.lapNoRaw;
+      if (maxLapNo) {
+        const minLapNo = maxLapNo - props.limitLastLaps + 1;
+        allData = allData.filter((d) => d.lapNoRaw >= minLapNo);
+      }
+    }
+    return allData;
+  };
 
-    .map((carNum) => dataForCar(carNum))
-    .flatMap((a) => [...a]);
+  // console.log(localColors);
+  const graphDataOrig = collectData();
   // console.log(graphDataOrig);
   // some strange ant-design/charts bug: https://github.com/ant-design/ant-design-charts/issues/797
   // workaround is to use strings for xaxis...
