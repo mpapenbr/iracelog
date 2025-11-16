@@ -1,6 +1,7 @@
 {
   "name": "iracelog",
   "version": "0.41.1",
+  "versionTagPrefix": "v",
   "private": true,
   "type": "module",
   "dependencies": {
