@@ -1,4 +1,4 @@
-import { Checkbox, Col, InputNumber, Row } from "antd";
+import { Checkbox, Col, InputNumber, Row, Space } from "antd";
 import * as React from "react";
 import LeaderGraph from "../components/antcharts/leadergraph";
 import MultiSelectCarFilter from "../components/live/multiCarSelectFilter";
@@ -82,18 +82,20 @@ export const RaceGraphContainer: React.FC = () => {
       <Row gutter={16}>
         <MultiSelectCarFilter {...props} />
         <Col span={5}>
-          <InputNumber
-            value={userSettings.deltaRange}
-            precision={0}
-            step={10}
-            min={0}
-            style={{ width: "22ch" }}
-            addonAfter={"sec"}
-            addonBefore={"Delta"}
-            // formatter={(v) => sprintf("%d sec", v)}
-            // parser={(v) => (v !== undefined ? parseInt(v.replace("sec", "")) : 0)}
-            onChange={onDeltaRangeChange}
-          />
+          <Space.Compact>
+            <Space.Addon>Delta</Space.Addon>
+            <InputNumber
+              value={userSettings.deltaRange}
+              precision={0}
+              step={10}
+              min={0}
+              style={{ width: "12ch" }}
+              // formatter={(v) => sprintf("%d sec", v)}
+              // parser={(v) => (v !== undefined ? parseInt(v.replace("sec", "")) : 0)}
+              onChange={onDeltaRangeChange}
+            />
+            <Space.Addon>sec</Space.Addon>
+          </Space.Compact>
         </Col>
         <Col span={3}>
           <Checkbox
