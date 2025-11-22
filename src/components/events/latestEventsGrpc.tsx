@@ -6,7 +6,7 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
 import { globalWamp } from "../../commons/globals";
 import { useAppDispatch, useAppSelector } from "../../stores";
-import { EventListData, updateEventData } from "../../stores/grpc/slices/eventDataSlice";
+import { EventData, EventListData, updateEventData } from "../../stores/grpc/slices/eventDataSlice";
 import { useClient } from "../../utils/useClient";
 import { useDeleteEventModal } from "./deleteEvent";
 import { useEditEventModal } from "./editEvent";
@@ -50,7 +50,19 @@ export const LatestEventsGrpc: React.FC = () => {
           return;
         }
         console.log("Events fetched", res);
-        dispatch(updateEventData(res));
+
+        const stateEvents: EventData[] = res.events.map((e) => {
+          const ret = {
+            id: e.id,
+            key: e.key,
+            name: e.name,
+            description: e.description,
+            eventTime: timestampDate(e.eventTime!),
+            trackName: "TrackID: " + e.trackId, // not provided in gRPC response
+          };
+          return ret;
+        });
+        dispatch(updateEventData(stateEvents));
       },
     );
   };
@@ -156,7 +168,7 @@ export const LatestEventsGrpc: React.FC = () => {
                   <></>
                 )}
                 <Descriptions.Item span={2} label={"ID: " + item.event.id}>
-                  {timestampDate(item.event.eventTime!).toLocaleDateString(navigator.language, {
+                  {item.event.eventTime.toLocaleDateString(navigator.language, {
                     year: "numeric",
                     month: "2-digit",
                     day: "2-digit",

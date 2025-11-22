@@ -7,7 +7,6 @@
   "dependencies": {
     "@ant-design/icons": "^6.1.0",
     "@ant-design/plots": "^2.6.6",
-    "@ant-design/v5-patch-for-react-19": "^1.0.3",
     "@apollo/client": "^4.0.9",
     "@buf/mpapenbr_iracelog.bufbuild_es": "2.9.0-20251019125030-8cb75f92a51d.1",
     "@bufbuild/protobuf": "^2.10.1",
