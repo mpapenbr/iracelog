@@ -16,7 +16,6 @@ import { RaceEntriesContainer } from "../container/RaceEntriesContainer";
 import { RaceGraphByReferenceContainer } from "../container/RaceGraphByReferenceContainer";
 import { RaceGraphContainer } from "../container/RaceGraphContainer";
 import { RacePositionsContainer } from "../container/RacePositionsContainer";
-import { SettingsContainer } from "../container/SettingsContainer";
 import { SpeedmapContainer } from "../container/SpeedmapContainer";
 import { StintRankingContainer } from "../container/StintRankingContainer";
 import { StintSummaryContainer } from "../container/StintSummaryContainer";
@@ -54,8 +53,6 @@ export const AnalysisMainPage: React.FC = () => {
   // console.log(eventInfo);
 
   const allItems = [
-    { label: <Link to="/events">Events</Link>, key: "events" },
-    { type: "divider", key: "menuDivider" },
     { label: <Link to="../classification">Classification</Link>, key: "classification" },
     { label: <Link to="../customStandings">Standings (custom)</Link>, key: "customStandings" },
     { label: <Link to="../cod">Circle of doom</Link>, key: "cod", requires: ">=0.4.4" },
@@ -78,7 +75,6 @@ export const AnalysisMainPage: React.FC = () => {
       requires: ">=0.4.4",
     },
     { label: <Link to="../messages">Messages</Link>, key: "messages" },
-    { label: <Link to="../settings">Settings</Link>, key: "settings" },
   ];
   const compareRaceloggerVersion = (arg: string): string => {
     const val = eventInfo.event.raceloggerVersion ?? "0.0.0";
@@ -102,6 +98,7 @@ export const AnalysisMainPage: React.FC = () => {
             onFinished={(success) => {
               if (!success) {
                 notification["error"]({
+                  title: "Error loading event",
                   message: "Load event",
                   description: `The requested event ${params.eventKey} does not exist.`,
                 });
@@ -133,7 +130,6 @@ export const AnalysisMainPage: React.FC = () => {
           <Route path="stintRanking" element={<StintRankingContainer />} />
           <Route path="predict" element={<PredictContainer />} />
           <Route path="messages" element={<RaceMessages />} />
-          <Route path="settings" element={<SettingsContainer />} />
 
           <Route path="speedmap" element={<SpeedmapContainer />} />
           <Route path="weather" element={<WeatherContainer />} />
