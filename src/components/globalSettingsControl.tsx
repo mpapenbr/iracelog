@@ -1,4 +1,4 @@
-import { Checkbox, Col, Radio, RadioChangeEvent, Row, Select } from "antd";
+import { Checkbox, Col, Radio, RadioChangeEvent, Row, Select, Space } from "antd";
 import * as React from "react";
 import { useAppDispatch, useAppSelector } from "../stores";
 import {
@@ -35,55 +35,54 @@ export const GlobalSettings: React.FC = () => {
   const onGlobalTimeMode = (e: RadioChangeEvent) => {
     dispatch(setTimeMode(e.target.value));
   };
+  // Stop event propagation to prevent popover from closing
+  const handleClick = (e: React.MouseEvent) => {
+    e.stopPropagation();
+  };
   return (
-    <>
+    <div onClick={handleClick}>
       <Row>
         <Col span={24}>
-          <p>
+          <Space orientation="vertical" size="middle" style={{ width: "100%" }}>
             <Checkbox checked={stateGlobalSettings.syncSelection} onChange={onGlobalSynchChange}>
               Synchronize selections
             </Checkbox>
-          </p>
-          <p>
+
             <Checkbox
               checked={stateGlobalSettings.filterOrderByPosition}
               onChange={onGlobalFilterOrdering}
             >
               Order cars in filter by race position
             </Checkbox>
-          </p>
-          <p>
+
             <Radio.Group defaultValue={stateGlobalSettings.timeMode} onChange={onGlobalTimeMode}>
               <Radio.Button value="session">Session time</Radio.Button>
               <Radio.Button value="sim">Simualtion time</Radio.Button>
               <Radio.Button value="real">Real time</Radio.Button>
             </Radio.Group>
-          </p>
-          <p>
+
             <Radio.Group defaultValue={stateGlobalSettings.theme} onChange={onGlobalThemeSelect}>
               <Radio.Button value="light">Light</Radio.Button>
               <Radio.Button value="dimmed">Dimmed</Radio.Button>
               <Radio.Button value="dark">Dark</Radio.Button>
             </Radio.Group>
-          </p>
-          <p>
+
             <Checkbox
               checked={stateGlobalSettings.useCompact}
               onChange={onGlobalCompactModeChanged}
             >
               Use compact mode
             </Checkbox>
-          </p>
-          <p>
+
             <Checkbox
               checked={stateGlobalSettings.useInOutTimes}
               onChange={onGlobalInOutLaptimeChanged}
             >
               Use in/out laptimes
             </Checkbox>
-          </p>
+          </Space>
         </Col>
       </Row>
-    </>
+    </div>
   );
 };
