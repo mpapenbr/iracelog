@@ -6,7 +6,7 @@
   "type": "module",
   "dependencies": {
     "@ant-design/icons": "^6.1.0",
-    "@ant-design/plots": "^2.6.6",
+    "@ant-design/plots": "^2.6.8",
     "@apollo/client": "^4.0.11",
     "@buf/mpapenbr_iracelog.bufbuild_es": "2.9.0-20251019125030-8cb75f92a51d.1",
     "@bufbuild/protobuf": "^2.10.2",
@@ -19,7 +19,7 @@
     "@nivo/pie": "^0.99.0",
     "@redux-devtools/extension": "^3.3.0",
     "@reduxjs/toolkit": "^2.11.2",
-    "antd": "^6.1.1",
+    "antd": "^6.1.2",
     "graphql": "^16.12.0",
     "lodash": "^4.17.21",
     "react": "^19.2.3",
