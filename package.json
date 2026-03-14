@@ -1,6 +1,6 @@
 {
   "name": "iracelog",
-  "version": "0.43.1",
+  "version": "0.43.2",
   "versionTagPrefix": "v",
   "private": true,
   "type": "module",
