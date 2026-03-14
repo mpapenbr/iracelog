@@ -16,7 +16,7 @@ jobs:
 
     steps:
       # Drafts release notes as Pull Requests are merged into "main"
-      - uses: release-drafter/release-drafter@v6
+      - uses: release-drafter/release-drafter@v7
         id: rd
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
