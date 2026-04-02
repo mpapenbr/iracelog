@@ -1,0 +1,21 @@
+{
+  "name": "prettier-format",
+  "description": "Auto-format TypeScript and React files with Prettier after edits to maintain consistent code style",
+  "trigger": "PostToolUse",
+  "condition": {
+    "toolNames": ["replace_string_in_file", "multi_replace_string_in_file", "create_file"],
+    "filePatterns": ["**/*.ts", "**/*.tsx", "**/*.js", "**/*.jsx"]
+  },
+  "actions": [
+    {
+      "type": "shell",
+      "command": "npx prettier --write {{modifiedFiles}}",
+      "workingDirectory": "{{workspaceRoot}}",
+      "description": "Format modified TypeScript/React files with Prettier"
+    }
+  ],
+  "options": {
+    "async": true,
+    "continueOnError": true
+  }
+}
