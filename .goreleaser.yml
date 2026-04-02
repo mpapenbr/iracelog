@@ -40,29 +40,8 @@ sboms:
 checksum:
   name_template: "checksums.txt"
 snapshot:
-  name_template: "{{ incpatch .Version }}-next"
+  version_template: "{{ incpatch .Version }}-next"
   
-signs:
-  - cmd: cosign
-    signature: "${artifact}.sigstore.json"
-    args:
-      - sign-blob
-      - "--bundle=${signature}"
-      - "${artifact}"
-      - "--yes" # needed on cosign 2.0.0+
-    artifacts: checksum
-    output: true
-
-# signs our docker image
-# https://goreleaser.com/customization/docker_sign
-docker_signs:
-  - cmd: cosign
-    output: true
-    args:
-      - "sign"
-      - "${artifact}"
-      - "--yes"
-
 release:
   prerelease: auto
   footer: |

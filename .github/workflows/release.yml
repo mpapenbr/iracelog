@@ -102,11 +102,4 @@ jobs:
         # Either define a seperate Personal Access Token or permit the default GITHUB_TOKEN read/write access
         # see section "Workflow permissions" on https://github.com/mpapenbr/iracelog/settings/actions
         
-      - name: attest checksums
-        uses: actions/attest@v4
-        with:
-          subject-checksums: dist/checksums.txt
-      - name: attest digests
-        uses: actions/attest@v4
-        with:
-          subject-checksums: dist/digests.txt
+      
