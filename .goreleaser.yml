@@ -1,55 +1,39 @@
+# yaml-language-server: $schema=https://goreleaser.com/static/schema.json
 version: 2
 
 builds:
   - id: dummy
     skip: true
 
-dockers:
-  - id: web-amd64
-    image_templates:
-      - "ghcr.io/mpapenbr/{{ .ProjectName }}-web:{{ .Tag }}-amd64"
-    build_flag_templates:
-      - "--pull"
-      - "--label=org.opencontainers.image.created={{.Date}}"
-      - "--label=org.opencontainers.image.title={{.ProjectName}}"
-      - "--label=org.opencontainers.image.revision={{.FullCommit}}"
-      - "--label=org.opencontainers.image.version={{.Version}}"
-      - "--label=org.opencontainers.image.source=https://{{.ModulePath}}"
-      - "--label=org.opencontainers.image.url=https://{{.ModulePath}}"
-      - "--label=org.opencontainers.image.description=iRacelog frontend"
-      - "--label=org.opencontainers.image.licenses=MIT license"
-      - "--platform=linux/amd64"
-    use: buildx
+
+dockers_v2:
+  - id: standard
+    images:
+      - "ghcr.io/mpapenbr/{{ .ProjectName }}"
+
+    labels:
+      org.opencontainers.image.created: "{{ .Date }}"
+      org.opencontainers.image.title: "{{ .ProjectName }}"
+      org.opencontainers.image.revision: "{{ .FullCommit }}"
+      org.opencontainers.image.version: "{{ .Version }}"
+      org.opencontainers.image.source: "https://{{ .ModulePath }}"
+      org.opencontainers.image.url: "https://{{ .ModulePath }}"
+
+      org.opencontainers.image.description: "Frontend for iRacelog"
+      org.opencontainers.image.licenses: "MIT License"
+      description: "Frontend for iRacelog"
+      maintainer: "mpapenbr"
+    annotations:
+      "index:org.opencontainers.image.description": "Frontend for iRacelog"
+    platforms:
+      - linux/amd64
+      - linux/arm64
+    sbom: true
     dockerfile: Dockerfile.nginx
     extra_files:
       - docker/my-default.conf
       - docker/dist
 
-  - id: web-arm64
-    image_templates:
-      - "ghcr.io/mpapenbr/{{ .ProjectName }}-web:{{ .Tag }}-arm64"
-    build_flag_templates:
-      - "--pull"
-      - "--label=org.opencontainers.image.created={{.Date}}"
-      - "--label=org.opencontainers.image.title={{.ProjectName}}"
-      - "--label=org.opencontainers.image.revision={{.FullCommit}}"
-      - "--label=org.opencontainers.image.version={{.Version}}"
-      - "--label=org.opencontainers.image.source=https://{{.ModulePath}}"
-      - "--label=org.opencontainers.image.url=https://{{.ModulePath}}"
-      - "--label=org.opencontainers.image.description=iRacelog frontend"
-      - "--label=org.opencontainers.image.licenses=MIT license"
-      - "--platform=linux/arm64"
-    use: buildx
-    dockerfile: Dockerfile.nginx
-    extra_files:
-      - docker/my-default.conf
-      - docker/dist
-
-docker_manifests:
-  - name_template: "ghcr.io/mpapenbr/{{ .ProjectName }}-web:{{ .Tag }}"
-    image_templates:
-      - "ghcr.io/mpapenbr/{{ .ProjectName }}-web:{{ .Tag }}-amd64"
-      - "ghcr.io/mpapenbr/{{ .ProjectName }}-web:{{ .Tag }}-arm64"
 sboms:
   - artifacts: archive
 
@@ -57,6 +41,27 @@ checksum:
   name_template: "checksums.txt"
 snapshot:
   name_template: "{{ incpatch .Version }}-next"
+  
+signs:
+  - cmd: cosign
+    signature: "${artifact}.sigstore.json"
+    args:
+      - sign-blob
+      - "--bundle=${signature}"
+      - "${artifact}"
+      - "--yes" # needed on cosign 2.0.0+
+    artifacts: checksum
+    output: true
+
+# signs our docker image
+# https://goreleaser.com/customization/docker_sign
+docker_signs:
+  - cmd: cosign
+    output: true
+    args:
+      - "sign"
+      - "${artifact}"
+      - "--yes"
 
 release:
   prerelease: auto
