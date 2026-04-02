@@ -9,7 +9,7 @@ builds:
 dockers_v2:
   - id: standard
     images:
-      - "ghcr.io/mpapenbr/{{ .ProjectName }}"
+      - "ghcr.io/mpapenbr/{{ .ProjectName }}-web"
 
     labels:
       org.opencontainers.image.created: "{{ .Date }}"
