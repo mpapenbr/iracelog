@@ -24,7 +24,7 @@ jobs:
           pnpm config set @buf:registry  https://buf.build/gen/npm/v1/
 
       - name: Approve pnpm builds
-        run: pnpm approve-builds --global --yes
+        run: pnpm install --allow-build=esbuild
       - name: Install dependencies
         run: pnpm install 
       - name: Test
