@@ -23,8 +23,10 @@ jobs:
         run: |
           pnpm config set @buf:registry  https://buf.build/gen/npm/v1/
 
+      - name: Approve pnpm builds
+        run: pnpm approve-builds --global --yes
       - name: Install dependencies
-        run: pnpm install --ignore-scripts=false
+        run: pnpm install 
       - name: Test
         run: pnpm test:no-watch --passWithNoTests
         env:
