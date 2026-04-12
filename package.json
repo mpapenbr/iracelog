@@ -19,7 +19,7 @@
     "@nivo/pie": "^0.99.0",
     "@redux-devtools/extension": "^4.0.0",
     "@reduxjs/toolkit": "^2.11.2",
-    "antd": "^6.3.0",
+    "antd": "^6.3.5",
     "graphql": "^16.13.2",
     "lodash": "^4.17.23",
     "react": "^19.2.5",
@@ -66,8 +66,10 @@
     "vite-plugin-svgr": "^5.2.0",
     "vitest": "^4.1.4"
   },
-  "resolutions": {
-    "d3-color": "^3.1.0"
+  "pnpm": {
+    "overrides": {
+      "d3-color": "^3.1.0"
+    }
   },
   "scripts": {
     "start": "vite",
