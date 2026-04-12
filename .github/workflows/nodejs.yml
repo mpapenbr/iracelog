@@ -24,7 +24,7 @@ jobs:
           pnpm config set @buf:registry  https://buf.build/gen/npm/v1/
 
       - name: Install dependencies
-        run: pnpm install
+        run: pnpm install --ignore-scripts=false
       - name: Test
         run: pnpm test:no-watch --passWithNoTests
         env:
