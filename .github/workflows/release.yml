@@ -38,7 +38,7 @@ jobs:
           echo "created=$(date -u +'%Y-%m-%dT%H:%M:%SZ')" >> $GITHUB_OUTPUT
 
       - name: Install pnpm
-        uses: pnpm/action-setup@v5
+        uses: pnpm/action-setup@v6
         with:
           version: 10
       - name: Use Node.js 24
@@ -71,7 +71,7 @@ jobs:
       - name: Download syft
         uses: anchore/sbom-action/download-syft@v0
       - name: Prepare cosign installer
-        uses: sigstore/cosign-installer@v4.1.1
+        uses: sigstore/cosign-installer@v4.1.2
 
       - name: Login to Github Container Registry
         uses: docker/login-action@v4
