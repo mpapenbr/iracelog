@@ -60,7 +60,7 @@ importers:
         specifier: ^16.14.0
         version: 16.14.0
       lodash:
-        specifier: ^4.17.23
+        specifier: ^4.18.1
         version: 4.18.1
       react:
         specifier: ^19.2.6
@@ -78,7 +78,7 @@ importers:
         specifier: ^17.6.0
         version: 17.6.0(react-dom@19.2.6(react@19.2.6))(react@19.2.6)
       recharts:
-        specifier: ^3.7.0
+        specifier: ^3.8.1
         version: 3.8.1(@types/react@19.2.14)(react-dom@19.2.6(react@19.2.6))(react-is@18.3.1)(react@19.2.6)(redux@5.0.1)
       redux:
         specifier: ^5.0.1
@@ -100,7 +100,7 @@ importers:
         version: 5.2.0
     devDependencies:
       '@babel/runtime':
-        specifier: ^7.28.6
+        specifier: ^7.29.2
         version: 7.29.2
       '@testing-library/jest-dom':
         specifier: ^6.9.1
@@ -112,7 +112,7 @@ importers:
         specifier: ^14.6.1
         version: 14.6.1(@testing-library/dom@10.4.0)
       '@types/lodash':
-        specifier: ^4.17.23
+        specifier: ^4.17.24
         version: 4.17.24
       '@types/node':
         specifier: ^25.6.2
@@ -2699,8 +2699,8 @@ packages:
   js-tokens@4.0.0:
     resolution: {integrity: sha512-RdJUflcE3cUzKiMqQgsCu06FPu9UdIJO0beYbPhHN4k6apgJtifcoCtT9bcxOpYBtpD2kCM6Sbzg4CausW/PKQ==}
 
-  js-yaml@4.1.0:
-    resolution: {integrity: sha512-wpxZs9NoxZaJESJGIZTyDEaYpl0FKSA+FB9aJiyemKhMwkxQg63h4T1KJgUGHpTqPDNRcmmYLugrRjJlBtWvRA==}
+  js-yaml@4.1.1:
+    resolution: {integrity: sha512-qQKT4zQxXl8lLwBtHMWwaTcGfFOZviOJet3Oy/xmGk2gZH677CJM9EvtfdSkgWcATZhj/55JZ0rmy3myCT5lsA==}
     hasBin: true
 
   jsdom@29.1.1:
@@ -5761,7 +5761,7 @@ snapshots:
   cosmiconfig@8.3.6(typescript@6.0.3):
     dependencies:
       import-fresh: 3.3.1
-      js-yaml: 4.1.0
+      js-yaml: 4.1.1
       parse-json: 5.2.0
       path-type: 4.0.0
     optionalDependencies:
@@ -6634,7 +6634,7 @@ snapshots:
 
   js-tokens@4.0.0: {}
 
-  js-yaml@4.1.0:
+  js-yaml@4.1.1:
     dependencies:
       argparse: 2.0.1
 
