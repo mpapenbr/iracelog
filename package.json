@@ -2,7 +2,7 @@
   "name": "iracelog",
   "version": "0.43.5",
   "versionTagPrefix": "v",
-  "packageManager": "pnpm@11.5.0",
+  "packageManager": "pnpm@11.3.0",
   "private": true,
   "type": "module",
   "dependencies": {
