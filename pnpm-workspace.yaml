@@ -2,3 +2,4 @@ minimumReleaseAgeExclude:
   - '@eslint/plugin-kit@0.7.2'
   - eslint@10.4.1
   - '@buf/mpapenbr_iracelog.bufbuild_es'
+  - '@types/node@25.9.3'
