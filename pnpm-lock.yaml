@@ -16,7 +16,7 @@ importers:
         version: 2.6.8(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
       '@apollo/client':
         specifier: ^4.2.2
-        version: 4.2.2(graphql@16.14.1)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)(rxjs@7.8.2)
+        version: 4.2.3(graphql@16.14.2)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)(rxjs@7.8.2)
       '@buf/mpapenbr_iracelog.bufbuild_es':
         specifier: 2.12.0-20251019125030-8cb75f92a51d.1
         version: 2.12.0-20251019125030-8cb75f92a51d.1(@bufbuild/protobuf@2.12.0)
@@ -55,7 +55,7 @@ importers:
         version: 6.4.3(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
       graphql:
         specifier: ^16.14.1
-        version: 16.14.1
+        version: 16.14.2
       lodash:
         specifier: ^4.17.23
         version: 4.18.1
@@ -85,7 +85,7 @@ importers:
         version: 7.8.2
       semver:
         specifier: ^7.8.2
-        version: 7.8.2
+        version: 7.8.4
       sprintf-js:
         specifier: ^1.1.3
         version: 1.1.3
@@ -284,10 +284,10 @@ packages:
   '@antv/vendor@1.0.11':
     resolution: {integrity: sha512-LmhPEQ+aapk3barntaiIxJ5VHno/Tyab2JnfdcPzp5xONh/8VSfed4bo/9xKo5HcUAEydko38vYLfj6lJliLiw==}
 
-  '@apollo/client@4.2.2':
-    resolution: {integrity: sha512-tiI91oRHFB43QBDy1Y9gaBYYcz+0YmU7qtziHZfVAdXYyaI+y5NIvfT7fYPUzeAYfT6gXU6/lndcdmsr4MsOBQ==}
+  '@apollo/client@4.2.3':
+    resolution: {integrity: sha512-+auRYBXow2v7cT+wKzvjyMyyEojq+G7Sf80vIR57rtEPcxRFuMXuU9IKjwxZ3muclUgdGKwZXNeuki+g0GabgQ==}
     peerDependencies:
-      graphql: ^16.0.0
+      graphql: ^16.0.0 || ^17.0.0
       graphql-ws: ^5.5.5 || ^6.0.3
       react: ^17.0.0 || ^18.0.0 || >=19.0.0-rc
       react-dom: ^17.0.0 || ^18.0.0 || >=19.0.0-rc
@@ -440,8 +440,8 @@ packages:
     peerDependencies:
       '@csstools/css-tokenizer': ^4.0.0
 
-  '@csstools/css-syntax-patches-for-csstree@1.1.4':
-    resolution: {integrity: sha512-wgsqt92b7C7tQhIdPNxj0n9zuUbQlvAuI1exyzeNrOKOi62SD7ren8zqszmpVREjAOqg8cD2FqYhQfAuKjk4sw==}
+  '@csstools/css-syntax-patches-for-csstree@1.1.5':
+    resolution: {integrity: sha512-oNjBvzLq2GPZtJphCjLqXow/cHySHSgtxvKZb7OqSZ/xHgw6NWNhfad+6AB9cLeVm6eA9d/qMll3JdEHjy6M+A==}
     peerDependencies:
       css-tree: ^3.2.1
     peerDependenciesMeta:
@@ -636,8 +636,8 @@ packages:
   '@oxc-project/types@0.133.0':
     resolution: {integrity: sha512-KzkdCd6Uxqnf6l3HOw1xfatAlUURA0g14cvBYFyJ5SaNOQbOUvBr9PKArcPcrNIeRsBdgcUzOGrhKveVpvOIGA==}
 
-  '@rc-component/async-validator@5.1.0':
-    resolution: {integrity: sha512-n4HcR5siNUXRX23nDizbZBQPO0ZM/5oTtmKZ6/eqL0L2bo747cklFdZGRN2f+c9qWGICwDzrhW0H7tE9PptdcA==}
+  '@rc-component/async-validator@5.1.1':
+    resolution: {integrity: sha512-T03+Wk31Kz/28OC+rLlHtSNwD5Io3OWw6rPFPAp898sqALB/XnTrr3trB3mPoj379v0aRaW6t09HUG6dUyHR3g==}
     engines: {node: '>=14.x'}
 
   '@rc-component/cascader@1.15.0':
@@ -664,11 +664,11 @@ packages:
       react: '>=16.9.0'
       react-dom: '>=16.9.0'
 
-  '@rc-component/context@2.0.1':
-    resolution: {integrity: sha512-HyZbYm47s/YqtP6pKXNMjPEMaukyg7P0qVfgMLzr7YiFNMHbK2fKTAGzms9ykfGHSfyf75nBbgWw+hHkp+VImw==}
+  '@rc-component/context@2.0.2':
+    resolution: {integrity: sha512-uiGpAlblCNlziHPwj4S4Iy/oemeuz/hR03mbiEjTCXwsqOIN3BOzsRMyDwpyO5Fm0vIEEJRUf9ZtbRLbhksuTA==}
     peerDependencies:
-      react: '>=16.9.0'
-      react-dom: '>=16.9.0'
+      react: '>=18.0.0'
+      react-dom: '>=18.0.0'
 
   '@rc-component/dialog@1.9.0':
     resolution: {integrity: sha512-zbAAogkg4kkKum79sLE6M+vq1jSAW25zdkafrahgcTP9t9S//SD634Znd1A4c8F2Gc12ZKnehGLsVaaOvZzD2A==}
@@ -725,12 +725,12 @@ packages:
       react: '>=16.9.0'
       react-dom: '>=16.9.0'
 
-  '@rc-component/mini-decimal@1.1.3':
-    resolution: {integrity: sha512-bk/FJ09fLf+NLODMAFll6CfYrHPBioTedhW6lxDBuuWucJEqFUd4l/D/5JgIi3dina6sYahB8iuPAZTNz2pMxw==}
+  '@rc-component/mini-decimal@1.1.4':
+    resolution: {integrity: sha512-xiuXcaCwyOWpD8a8scdExFl+bntNphAW8XeenL1ig2en0AAZY0Pcp4pC0dI22qJ+NvxKn9RoNIoRdqYU3BLH4w==}
     engines: {node: '>=8.x'}
 
-  '@rc-component/motion@1.3.2':
-    resolution: {integrity: sha512-itfd+GztzJYAb04Z4RkEub1TbJAfZc2Iuy8p44U44xD1F5+fNYFKI3897ijlbIyfvXkTmMm+KGcjkQQGMHywEQ==}
+  '@rc-component/motion@1.3.3':
+    resolution: {integrity: sha512-Xh3IszxvlSv3/PLYFyC2UZi9LNB83yOnkB/LNmRzaypZLvkhqUIPS7MQpGZcCMWrNsXV2p6YTSWbSGvFpEle9A==}
     peerDependencies:
       react: '>=16.9.0'
       react-dom: '>=16.9.0'
@@ -781,8 +781,8 @@ packages:
       moment:
         optional: true
 
-  '@rc-component/portal@2.2.0':
-    resolution: {integrity: sha512-oc6FlA+uXCMiwArHsJyHcIkX4q6uKyndrPol2eWX8YPkAnztHOPsFIRtmWG4BMlGE5h7YIRE3NiaJ5VS8Lb1QQ==}
+  '@rc-component/portal@2.2.1':
+    resolution: {integrity: sha512-ck+r1kW/JSv0wxPji3KN2ss9K6Z0qqwusw/mf/0JobXhZ8hC2ejZwCJObW/SvDi0uhA0VzmCnx0CaCci95tcmA==}
     engines: {node: '>=12.x'}
     peerDependencies:
       react: '>=18.0.0'
@@ -794,8 +794,8 @@ packages:
       react: '>=16.9.0'
       react-dom: '>=16.9.0'
 
-  '@rc-component/qrcode@1.1.1':
-    resolution: {integrity: sha512-LfLGNymzKdUPjXUbRP+xOhIWY4jQ+YMj5MmWAcgcAq1Ij8XP7tRmAXqyuv96XvLUBE/5cA8hLFl9eO1JQMujrA==}
+  '@rc-component/qrcode@1.1.2':
+    resolution: {integrity: sha512-CTXG18eP3sO3gc+96ep9HyVI/RzMup7L59apM/D0wWo1SHRdwOb7xyD4bMbmpu4dPlTch59Kxb8lU7U9ME60fg==}
     engines: {node: '>=8.x'}
     peerDependencies:
       react: '>=16.9.0'
@@ -887,8 +887,8 @@ packages:
       react: '*'
       react-dom: '*'
 
-  '@rc-component/trigger@3.9.0':
-    resolution: {integrity: sha512-X8btpwfrT27AgrZVOz4swclhEHTZcqaHeQMXXBgveagOiakTa36uObXbdwerXffgV8G9dH1fAAE0DHtVQs8EHg==}
+  '@rc-component/trigger@3.9.1':
+    resolution: {integrity: sha512-LNsYvz60mrLJ/kRvKcHE7boUvcQfVMCfRqZ71x3Fo9AOiZ1KKIEqkzMA8DNvz2V3Bcvir/vwQNn7JF1NPODQ7Q==}
     engines: {node: '>=8.x'}
     peerDependencies:
       react: '>=18.0.0'
@@ -1054,8 +1054,8 @@ packages:
   '@rolldown/pluginutils@1.0.1':
     resolution: {integrity: sha512-2j9bGt5Jh8hj+vPtgzPtl72j0yRxHAyumoo6TNfAjsLB04UtpSvPbPcDcBMxz7n+9CYB0c1GxQFxYRg2jimqGw==}
 
-  '@rollup/pluginutils@5.3.0':
-    resolution: {integrity: sha512-5EdhGZtnu3V88ces7s53hhfK5KSASnJZv8Lulpc04cWO3REESroJXg73DFsOmgbU2BhwV0E20bu2IDZb3VKW4Q==}
+  '@rollup/pluginutils@5.4.0':
+    resolution: {integrity: sha512-MfPp06CjRLfXQ3wY0R8vJDYBy/MvVcc9OulEfR0B8Iv9ko+GCNaRZ+EpJYFl27LhKsZK0o420sYCRHCjfCgeUg==}
     engines: {node: '>=14.0.0'}
     peerDependencies:
       rollup: ^1.20.0||^2.0.0||^3.0.0||^4.0.0
@@ -1293,9 +1293,6 @@ packages:
   '@types/react-redux@7.1.34':
     resolution: {integrity: sha512-GdFaVjEbYv4Fthm2ZLvj1VSCedV7TqE5y1kNwnjSdBOTXuRSgowux6J8TAct15T3CKBr63UMk+2CO7ilRhyrAQ==}
 
-  '@types/react@19.2.16':
-    resolution: {integrity: sha512-esJiCAnl0kfpNdE69f3So4WJUXy95dLZydX0KwK46riIHDzHM7O9Vtf9xCHW0PXIqvgqNrswl522kA/5yx+F4w==}
-
   '@types/react@19.2.17':
     resolution: {integrity: sha512-MXfmqaVPEVgkBT/aY0aGCkRWWtByiYQXo3xdQ8r5RzuFrPiRn8Gar2tQdXSUQ2GKV3bkXckek89V8wQBY2Q/Aw==}
 
@@ -1528,8 +1525,8 @@ packages:
     resolution: {integrity: sha512-wvUjBtSGN7+7SjNpq/9M2Tg350UZD3q62IFZLbRAR1bSMlCo1ZaeW+BJ+D090e4hIIZLBcTDWe4Mh4jvUDajzQ==}
     engines: {node: '>= 0.4'}
 
-  axe-core@4.11.4:
-    resolution: {integrity: sha512-KunSNx+TVpkAw/6ULfhnx+HWRecjqZGTOyquAoWHYLRSdK1tB5Ihce1ZW+UY3fj33bYAFWPu7W/GRSmmrCGuxA==}
+  axe-core@4.12.0:
+    resolution: {integrity: sha512-FTavr/7Ba0IptwGOPxnQvdyW2tAsdLBMTBXz7rKH6xJ2skpyxpBxyHkDdBs4lf69yRqYpkqCdfhnwS8YULGOmg==}
     engines: {node: '>=4'}
 
   axobject-query@4.1.0:
@@ -1547,8 +1544,8 @@ packages:
     resolution: {integrity: sha512-I3yl4r9QB5ZRY3XuJVEPfc2XhZO6YweFPI+UovAzn+8/hb3oJ6lnysaFcjVpkCPfVWFUDvoZ8kmVDP7WyRtYtQ==}
     engines: {node: '>= 0.6.0'}
 
-  baseline-browser-mapping@2.10.32:
-    resolution: {integrity: sha512-wbPvpyjJPC0zdfdKXxqEL3Ea+bOMD/87X4lftiJkkaBiuG6ALQy1SLmEd7BSmVCuwCQsBrCamgBoLyfFDD1EPg==}
+  baseline-browser-mapping@2.10.35:
+    resolution: {integrity: sha512-honAfLBde0HAFLdNyBEfuuENkF6zR+ozxqxa/2zJKHBe1qzLqyTSeRKpdPEHAP03rlDGyQOPnCSxnVpVqQo9Mg==}
     engines: {node: '>=6.0.0'}
     hasBin: true
 
@@ -1601,8 +1598,8 @@ packages:
     resolution: {integrity: sha512-Gmy6FhYlCY7uOElZUSbxo2UCDH8owEk996gkbrpsgGtrJLM3J7jGxl9Ic7Qwwj4ivOE5AWZWRMecDdF7hqGjFA==}
     engines: {node: '>=10'}
 
-  caniuse-lite@1.0.30001793:
-    resolution: {integrity: sha512-iwSsYWaCOoh26cV8NwNRViHlrfUvYsHDfRVcbtmw0Kg6PJIZZXwMkj1442FYLBGkeUf1juAsU3DTfxW579mrPA==}
+  caniuse-lite@1.0.30001797:
+    resolution: {integrity: sha512-l8xKG+gwAIExZGl9FrF7KUwuOmk6wbEPC9Xoy/RtnWv1XG0Q4LFlagaLpUv3Kiza3W/wm27zy0yWJEieYKAP6w==}
 
   chai@6.2.2:
     resolution: {integrity: sha512-NUPRluOfOiTKBKvWPtSD4PhFvWCqOi0BGStNWs57X9js7XGTprSmFoz5F0tWhR4WPjNeR9jXqdC7/UpSJTnlRg==}
@@ -1881,8 +1878,8 @@ packages:
     resolution: {integrity: sha512-KIN/nDJBQRcXw0MLVhZE9iQHmG68qAVIBg9CqmUYjmQIhgij9U5MFvrqkUL5FbtyyzZuOeOt0zdeRe4UY7ct+A==}
     engines: {node: '>= 0.4'}
 
-  electron-to-chromium@1.5.364:
-    resolution: {integrity: sha512-G/dYE3+AYhyHwzTwg8UbnXf7zqMERYh7l2jJ3QujhFsH8agSYwtnGAR2aZ7f0AakIKJXd5En/Hre4igIUrdlYw==}
+  electron-to-chromium@1.5.371:
+    resolution: {integrity: sha512-e9htk9mAYL6AzmkEhSvVVw7IWGSBJ/Bqdn2eRyRLrj1g6sncN4WbFt5qnILYoCktktr45pyjIrOiRvBThQ808w==}
 
   emoji-regex@8.0.0:
     resolution: {integrity: sha512-MSjYzcWNOA0ewAHpz0MxpYFvwg6yjy1NG3xteoqz644VCo/RPgnr1/GGt+ic3iJTzQ8Eu3TdM14SawnVUmGE6A==}
@@ -1916,8 +1913,8 @@ packages:
     resolution: {integrity: sha512-Zf5H2Kxt2xjTvbJvP2ZWLEICxA6j+hAmMzIlypy4xcBg1vKVnx89Wy0GbS+kf5cwCVFFzdCFh2XSCFNULS6csw==}
     engines: {node: '>= 0.4'}
 
-  es-iterator-helpers@1.3.2:
-    resolution: {integrity: sha512-HVLACW1TppGYjJ8H6/jqH/pqOtKRw6wMlrB23xfExmFWxFquAIWCmwoLsOyN96K4a5KbmOf5At9ZUO3GZbetAw==}
+  es-iterator-helpers@1.3.3:
+    resolution: {integrity: sha512-0PuBxFi+4uPanB97iDxCLWuHeYud2FALrw5HFZGtAF38UpJDbDC8frwp2cnDyae692CQ0dou60UwWfhgsa4U/g==}
     engines: {node: '>= 0.4'}
 
   es-module-lexer@2.1.0:
@@ -2175,8 +2172,8 @@ packages:
     peerDependencies:
       graphql: ^0.9.0 || ^0.10.0 || ^0.11.0 || ^0.12.0 || ^0.13.0 || ^14.0.0 || ^15.0.0 || ^16.0.0
 
-  graphql@16.14.1:
-    resolution: {integrity: sha512-cQOsSMS/IrDz82PVyRDvf/Q1F/bRbBVjJlh+xYOkI1qw2bWRvWGiWc+m2O0d6l4Bt1fyY+8kzJ8JFWGJqNeDBg==}
+  graphql@16.14.2:
+    resolution: {integrity: sha512-Chq1s4CY7jmh8gO2qvLIJyfCDIN+EHLFW/9iShnp1z8FjBQMoodWP1kDC36VAMXXIvAjj4ARa7ntfAV2BrjsbA==}
     engines: {node: ^12.22.0 || ^14.16.0 || ^16.0.0 || >=17.0.0}
 
   has-bigints@1.1.0:
@@ -2410,8 +2407,8 @@ packages:
   js-tokens@4.0.0:
     resolution: {integrity: sha512-RdJUflcE3cUzKiMqQgsCu06FPu9UdIJO0beYbPhHN4k6apgJtifcoCtT9bcxOpYBtpD2kCM6Sbzg4CausW/PKQ==}
 
-  js-yaml@4.1.1:
-    resolution: {integrity: sha512-qQKT4zQxXl8lLwBtHMWwaTcGfFOZviOJet3Oy/xmGk2gZH677CJM9EvtfdSkgWcATZhj/55JZ0rmy3myCT5lsA==}
+  js-yaml@4.2.0:
+    resolution: {integrity: sha512-ePWsvanv0DWuDRsW8dnt+R4jQ31SCRCQ7hhNcPXZPsoBZiemuZNYGf7adZdqX2D86j6rvKp3RpCxVTSb8WQlOw==}
     hasBin: true
 
   jsdom@29.1.1:
@@ -2634,8 +2631,8 @@ packages:
     resolution: {integrity: sha512-pyFS63ptit/P5WqUkt+UUfe+4oevH+bFeIiPPdfb0pFeYEu/1ELnJu5l+5EcTKYL5M7zaAa7S8ddywgXypqKCw==}
     engines: {node: '>= 0.4'}
 
-  node-releases@2.0.46:
-    resolution: {integrity: sha512-GYVXHE2KnrzAfsAjl4uP++evGFCrAU1jta4ubEjIG7YWt/64Gqv66a30yKwWczVjA6j3bM4nBwH7Pk1JmDHaxQ==}
+  node-releases@2.0.47:
+    resolution: {integrity: sha512-Uzmd6LXpouKo8EUK68IjH4+E01w/hXyV3R3g/geCJo+rXLNfh1xucB+LOzYEOQPSiUK3h/xZf0cQGcSsmyL2Og==}
     engines: {node: '>=18'}
 
   nth-check@3.0.1:
@@ -2933,8 +2930,8 @@ packages:
     resolution: {integrity: sha512-BR7VvDCVHO+q2xBEWskxS6DJE1qRnb7DxzUrogb71CWoSficBxYsiAGd+Kl0mmq/MprG9yArRkyrQxTO6XjMzA==}
     hasBin: true
 
-  semver@7.8.2:
-    resolution: {integrity: sha512-c8jsqUZm3omBOI66G90z1Dyw5z622G8oLG+omfsHBJf3CWQTlOcwOjvOG6wtiNfW6anKm/eA39LMwMtMez2TiQ==}
+  semver@7.8.4:
+    resolution: {integrity: sha512-rUCObTnP32Q08R2uuIrt7r9PlEonuTmtuXYcW6s5kjdlj3xbnwe+21yXptAUYcMAABLkYYTtnmzb3w3EDZfueA==}
     engines: {node: '>=10'}
     hasBin: true
 
@@ -2977,8 +2974,8 @@ packages:
     resolution: {integrity: sha512-WPS/HvHQTYnHisLo9McqBHOJk2FkHO/tlpvldyrnem4aeQp4hai3gythswg6p01oSoTl58rcpiFAjF2br2Ak2A==}
     engines: {node: '>= 0.4'}
 
-  side-channel@1.1.0:
-    resolution: {integrity: sha512-ZX99e6tRweoUXqR+VBrslhda51Nh5MTQwou5tnUDgbtyM0dBgmhEDtWGP/xbKn6hqfPRHujUNwz5fy/wbbhnpw==}
+  side-channel@1.1.1:
+    resolution: {integrity: sha512-6x6dK6zJdpTzF4sQeNYxwtvBzf6Eg4GtlesS94HOvTudUeyK2WXAaIfmDgsyslYrRBeFIlsi54AYsFGUuhmvrQ==}
     engines: {node: '>= 0.4'}
 
   siginfo@2.0.0:
@@ -3049,12 +3046,12 @@ packages:
   string.prototype.repeat@1.0.0:
     resolution: {integrity: sha512-0u/TldDbKD8bFCQ/4f5+mNRrXwZ8hg2w7ZR8wa16e8z9XpePWl3eGEcUD0OXpEH/VJH/2G3gjUtR3ZOiBe2S/w==}
 
-  string.prototype.trim@1.2.10:
-    resolution: {integrity: sha512-Rs66F0P/1kedk5lyYyH9uBzuiI/kNRmwJAR9quK6VOtIpZ2G+hMZd+HQbbv25MgCA6gEffoMZYxlTod4WcdrKA==}
+  string.prototype.trim@1.2.11:
+    resolution: {integrity: sha512-PwvK7BU+CMTJGYQCTZb5RWXIML92lftJLhQz1tBzgKiqGxJaMlBAa48POXaNAC2s4y8jr3EFqrkF9+44neS46w==}
     engines: {node: '>= 0.4'}
 
-  string.prototype.trimend@1.0.9:
-    resolution: {integrity: sha512-G7Ok5C6E/j4SGfyLCloXTrngQIQU3PWtXGst3yM7Bea9FRURf1S42ZHlZZtsNque2FN2PoUhfZXYLNWwEr4dLQ==}
+  string.prototype.trimend@1.0.10:
+    resolution: {integrity: sha512-2+3aDAOmPTmuFwjDnmJG2ctEkQKVki7vOSqaxkv42Mowj1V6PnvuwFCRrR5lChUux1TBskPjfkeTOhqczDMxTw==}
     engines: {node: '>= 0.4'}
 
   string.prototype.trimstart@1.0.8:
@@ -3129,11 +3126,11 @@ packages:
     resolution: {integrity: sha512-Bf+ILmBgretUrdJxzXM0SgXLZ3XfiaUuOj/IKQHuTXip+05Xn+uyEYdVg0kYDipTBcLrCVyUzAPz7QmArb0mmw==}
     engines: {node: '>=14.0.0'}
 
-  tldts-core@7.4.1:
-    resolution: {integrity: sha512-sc2nGvGbixlJRHwTh/qQdPXTxJU1UDJboGPQm4d/01YUJ9r/u6aeIulQvEaxUlvKDN7hb1qCLjax+jhVAPLa/g==}
+  tldts-core@7.4.2:
+    resolution: {integrity: sha512-nwEyF4vl4RSJjwSjBUmOSxc3BFPoIFdlRthJ6e+5v9P3bHNsoD06UjuqMUspqp7vsEZ1beaHi1km+optiE17yA==}
 
-  tldts@7.4.0:
-    resolution: {integrity: sha512-yHBe+zVfzNZ3QfTPW/Z6KK1G2t340gFjMHqI/4KKSt/abzYydzuCnpqdaF5gCCABby+9Yfbj59oR5F2Fd5CBzg==}
+  tldts@7.4.2:
+    resolution: {integrity: sha512-kCwffuaH8ntKtygnWe1b4BJKWiCUH30n5KfoTr6IchcXOwR7chAOFJxFrH3vjANafUYrIA4a7SDL+nn7SiR4Sw==}
     hasBin: true
 
   toggle-selection@1.0.6:
@@ -3194,8 +3191,8 @@ packages:
   undici-types@7.24.6:
     resolution: {integrity: sha512-WRNW+sJgj5OBN4/0JpHFqtqzhpbnV0GuB+OozA9gCL7a993SmU+1JBZCzLNxYsbMfIeDL+lTsphD5jN5N+n0zg==}
 
-  undici@7.26.0:
-    resolution: {integrity: sha512-3O9Tf67pGhgOv9jM35AbhkXAKi13f3oy3aE4CSgr+TckGeY+/iu97ZXN+J7DpHPzLbVApFd1IFhcnBjREYXYcg==}
+  undici@7.27.2:
+    resolution: {integrity: sha512-uZsKNuzQxDMUY6M3pIMvy5tvlGmtq8XJ2oLAkfRKGNu+1VQAIvLy2xIVG5ATZl5wDXl/tddByAWCizRbOme+TA==}
     engines: {node: '>=20.18.1'}
 
   update-browserslist-db@1.2.3:
@@ -3348,8 +3345,8 @@ packages:
     resolution: {integrity: sha512-K4jVyjnBdgvc86Y6BkaLZEN933SwYOuBFkdmBu9ZfkcAbdVbpITnDmjvZ/aQjRXQrv5EPkTnD1s39GiiqbngCw==}
     engines: {node: '>= 0.4'}
 
-  which-typed-array@1.1.21:
-    resolution: {integrity: sha512-zbRA8cVm6io/d5W8uIe2hblzN76/Wm3v/yiythQvr+dpBWeqhPSWIDNj4zOyHi4zKbMK6DN34Xsr9jPHJERAEw==}
+  which-typed-array@1.1.22:
+    resolution: {integrity: sha512-fvO4ExWMFsqyhG3AiPAObMuY1lxaqgYcxbc49CNdWDDECOJNgQyvsOWVwbZc+qf3rzRtxojBK+CMEv0Ld5CYpw==}
     engines: {node: '>= 0.4'}
 
   which@2.0.2:
@@ -3609,14 +3606,14 @@ snapshots:
       d3-time: 3.1.0
       d3-timer: 3.0.1
 
-  '@apollo/client@4.2.2(graphql@16.14.1)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)(rxjs@7.8.2)':
+  '@apollo/client@4.2.3(graphql@16.14.2)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)(rxjs@7.8.2)':
     dependencies:
-      '@graphql-typed-document-node/core': 3.2.0(graphql@16.14.1)
+      '@graphql-typed-document-node/core': 3.2.0(graphql@16.14.2)
       '@wry/caches': 1.0.1
       '@wry/equality': 0.5.7
       '@wry/trie': 0.5.0
-      graphql: 16.14.1
-      graphql-tag: 2.12.6(graphql@16.14.1)
+      graphql: 16.14.2
+      graphql-tag: 2.12.6(graphql@16.14.2)
       optimism: 0.18.1
       rxjs: 7.8.2
       tslib: 2.8.1
@@ -3785,7 +3782,7 @@ snapshots:
     dependencies:
       '@csstools/css-tokenizer': 4.0.0
 
-  '@csstools/css-syntax-patches-for-csstree@1.1.4(css-tree@3.2.1)':
+  '@csstools/css-syntax-patches-for-csstree@1.1.5(css-tree@3.2.1)':
     optionalDependencies:
       css-tree: 3.2.1
 
@@ -3843,9 +3840,9 @@ snapshots:
 
   '@exodus/bytes@1.15.1': {}
 
-  '@graphql-typed-document-node/core@3.2.0(graphql@16.14.1)':
+  '@graphql-typed-document-node/core@3.2.0(graphql@16.14.2)':
     dependencies:
-      graphql: 16.14.1
+      graphql: 16.14.2
 
   '@humanfs/core@0.19.2':
     dependencies:
@@ -4099,7 +4096,7 @@ snapshots:
 
   '@oxc-project/types@0.133.0': {}
 
-  '@rc-component/async-validator@5.1.0':
+  '@rc-component/async-validator@5.1.1':
     dependencies:
       '@babel/runtime': 7.29.7
 
@@ -4122,7 +4119,7 @@ snapshots:
   '@rc-component/collapse@1.2.0(react-dom@19.2.7(react@19.2.7))(react@19.2.7)':
     dependencies:
       '@babel/runtime': 7.29.7
-      '@rc-component/motion': 1.3.2(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
+      '@rc-component/motion': 1.3.3(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
       '@rc-component/util': 1.11.1(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
       clsx: 2.1.1
       react: 19.2.7
@@ -4136,7 +4133,7 @@ snapshots:
       react: 19.2.7
       react-dom: 19.2.7(react@19.2.7)
 
-  '@rc-component/context@2.0.1(react-dom@19.2.7(react@19.2.7))(react@19.2.7)':
+  '@rc-component/context@2.0.2(react-dom@19.2.7(react@19.2.7))(react@19.2.7)':
     dependencies:
       '@rc-component/util': 1.11.1(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
       react: 19.2.7
@@ -4144,8 +4141,8 @@ snapshots:
 
   '@rc-component/dialog@1.9.0(react-dom@19.2.7(react@19.2.7))(react@19.2.7)':
     dependencies:
-      '@rc-component/motion': 1.3.2(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
-      '@rc-component/portal': 2.2.0(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
+      '@rc-component/motion': 1.3.3(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
+      '@rc-component/portal': 2.2.1(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
       '@rc-component/util': 1.11.1(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
       clsx: 2.1.1
       react: 19.2.7
@@ -4153,8 +4150,8 @@ snapshots:
 
   '@rc-component/drawer@1.4.2(react-dom@19.2.7(react@19.2.7))(react@19.2.7)':
     dependencies:
-      '@rc-component/motion': 1.3.2(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
-      '@rc-component/portal': 2.2.0(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
+      '@rc-component/motion': 1.3.3(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
+      '@rc-component/portal': 2.2.1(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
       '@rc-component/util': 1.11.1(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
       clsx: 2.1.1
       react: 19.2.7
@@ -4162,7 +4159,7 @@ snapshots:
 
   '@rc-component/dropdown@1.0.2(react-dom@19.2.7(react@19.2.7))(react@19.2.7)':
     dependencies:
-      '@rc-component/trigger': 3.9.0(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
+      '@rc-component/trigger': 3.9.1(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
       '@rc-component/util': 1.11.1(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
       clsx: 2.1.1
       react: 19.2.7
@@ -4170,7 +4167,7 @@ snapshots:
 
   '@rc-component/form@1.8.2(react-dom@19.2.7(react@19.2.7))(react@19.2.7)':
     dependencies:
-      '@rc-component/async-validator': 5.1.0
+      '@rc-component/async-validator': 5.1.1
       '@rc-component/util': 1.11.1(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
       clsx: 2.1.1
       react: 19.2.7
@@ -4178,8 +4175,8 @@ snapshots:
 
   '@rc-component/image@1.9.0(react-dom@19.2.7(react@19.2.7))(react@19.2.7)':
     dependencies:
-      '@rc-component/motion': 1.3.2(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
-      '@rc-component/portal': 2.2.0(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
+      '@rc-component/motion': 1.3.3(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
+      '@rc-component/portal': 2.2.1(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
       '@rc-component/util': 1.11.1(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
       clsx: 2.1.1
       react: 19.2.7
@@ -4187,7 +4184,7 @@ snapshots:
 
   '@rc-component/input-number@1.6.2(react-dom@19.2.7(react@19.2.7))(react@19.2.7)':
     dependencies:
-      '@rc-component/mini-decimal': 1.1.3
+      '@rc-component/mini-decimal': 1.1.4
       '@rc-component/util': 1.11.1(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
       clsx: 2.1.1
       react: 19.2.7
@@ -4205,7 +4202,7 @@ snapshots:
     dependencies:
       '@rc-component/input': 1.3.1(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
       '@rc-component/menu': 1.3.1(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
-      '@rc-component/trigger': 3.9.0(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
+      '@rc-component/trigger': 3.9.1(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
       '@rc-component/util': 1.11.1(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
       clsx: 2.1.1
       react: 19.2.7
@@ -4213,19 +4210,19 @@ snapshots:
 
   '@rc-component/menu@1.3.1(react-dom@19.2.7(react@19.2.7))(react@19.2.7)':
     dependencies:
-      '@rc-component/motion': 1.3.2(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
+      '@rc-component/motion': 1.3.3(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
       '@rc-component/overflow': 1.0.1(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
-      '@rc-component/trigger': 3.9.0(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
+      '@rc-component/trigger': 3.9.1(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
       '@rc-component/util': 1.11.1(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
       clsx: 2.1.1
       react: 19.2.7
       react-dom: 19.2.7(react@19.2.7)
 
-  '@rc-component/mini-decimal@1.1.3':
+  '@rc-component/mini-decimal@1.1.4':
     dependencies:
       '@babel/runtime': 7.29.7
 
-  '@rc-component/motion@1.3.2(react-dom@19.2.7(react@19.2.7))(react@19.2.7)':
+  '@rc-component/motion@1.3.3(react-dom@19.2.7(react@19.2.7))(react@19.2.7)':
     dependencies:
       '@rc-component/util': 1.11.1(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
       clsx: 2.1.1
@@ -4240,7 +4237,7 @@ snapshots:
 
   '@rc-component/notification@2.0.7(react-dom@19.2.7(react@19.2.7))(react@19.2.7)':
     dependencies:
-      '@rc-component/motion': 1.3.2(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
+      '@rc-component/motion': 1.3.3(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
       '@rc-component/util': 1.11.1(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
       clsx: 2.1.1
       react: 19.2.7
@@ -4266,7 +4263,7 @@ snapshots:
     dependencies:
       '@rc-component/overflow': 1.0.1(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
       '@rc-component/resize-observer': 1.1.2(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
-      '@rc-component/trigger': 3.9.0(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
+      '@rc-component/trigger': 3.9.1(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
       '@rc-component/util': 1.11.1(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
       clsx: 2.1.1
       react: 19.2.7
@@ -4274,7 +4271,7 @@ snapshots:
     optionalDependencies:
       dayjs: 1.11.21
 
-  '@rc-component/portal@2.2.0(react-dom@19.2.7(react@19.2.7))(react@19.2.7)':
+  '@rc-component/portal@2.2.1(react-dom@19.2.7(react@19.2.7))(react@19.2.7)':
     dependencies:
       '@rc-component/util': 1.11.1(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
       clsx: 2.1.1
@@ -4288,7 +4285,7 @@ snapshots:
       react: 19.2.7
       react-dom: 19.2.7(react@19.2.7)
 
-  '@rc-component/qrcode@1.1.1(react-dom@19.2.7(react@19.2.7))(react@19.2.7)':
+  '@rc-component/qrcode@1.1.2(react-dom@19.2.7(react@19.2.7))(react@19.2.7)':
     dependencies:
       '@babel/runtime': 7.29.7
       react: 19.2.7
@@ -4310,7 +4307,7 @@ snapshots:
   '@rc-component/segmented@1.3.0(react-dom@19.2.7(react@19.2.7))(react@19.2.7)':
     dependencies:
       '@babel/runtime': 7.29.7
-      '@rc-component/motion': 1.3.2(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
+      '@rc-component/motion': 1.3.3(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
       '@rc-component/util': 1.11.1(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
       clsx: 2.1.1
       react: 19.2.7
@@ -4319,7 +4316,7 @@ snapshots:
   '@rc-component/select@1.6.15(react-dom@19.2.7(react@19.2.7))(react@19.2.7)':
     dependencies:
       '@rc-component/overflow': 1.0.1(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
-      '@rc-component/trigger': 3.9.0(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
+      '@rc-component/trigger': 3.9.1(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
       '@rc-component/util': 1.11.1(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
       '@rc-component/virtual-list': 1.2.0(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
       clsx: 2.1.1
@@ -4349,7 +4346,7 @@ snapshots:
 
   '@rc-component/table@1.10.2(react-dom@19.2.7(react@19.2.7))(react@19.2.7)':
     dependencies:
-      '@rc-component/context': 2.0.1(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
+      '@rc-component/context': 2.0.2(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
       '@rc-component/resize-observer': 1.1.2(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
       '@rc-component/util': 1.11.1(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
       '@rc-component/virtual-list': 1.2.0(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
@@ -4361,7 +4358,7 @@ snapshots:
     dependencies:
       '@rc-component/dropdown': 1.0.2(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
       '@rc-component/menu': 1.3.1(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
-      '@rc-component/motion': 1.3.2(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
+      '@rc-component/motion': 1.3.3(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
       '@rc-component/resize-observer': 1.1.2(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
       '@rc-component/util': 1.11.1(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
       clsx: 2.1.1
@@ -4370,7 +4367,7 @@ snapshots:
 
   '@rc-component/tooltip@1.4.0(react-dom@19.2.7(react@19.2.7))(react@19.2.7)':
     dependencies:
-      '@rc-component/trigger': 3.9.0(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
+      '@rc-component/trigger': 3.9.1(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
       '@rc-component/util': 1.11.1(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
       clsx: 2.1.1
       react: 19.2.7
@@ -4378,8 +4375,8 @@ snapshots:
 
   '@rc-component/tour@2.4.0(react-dom@19.2.7(react@19.2.7))(react@19.2.7)':
     dependencies:
-      '@rc-component/portal': 2.2.0(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
-      '@rc-component/trigger': 3.9.0(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
+      '@rc-component/portal': 2.2.1(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
+      '@rc-component/trigger': 3.9.1(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
       '@rc-component/util': 1.11.1(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
       clsx: 2.1.1
       react: 19.2.7
@@ -4396,17 +4393,17 @@ snapshots:
 
   '@rc-component/tree@1.3.2(react-dom@19.2.7(react@19.2.7))(react@19.2.7)':
     dependencies:
-      '@rc-component/motion': 1.3.2(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
+      '@rc-component/motion': 1.3.3(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
       '@rc-component/util': 1.11.1(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
       '@rc-component/virtual-list': 1.2.0(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
       clsx: 2.1.1
       react: 19.2.7
       react-dom: 19.2.7(react@19.2.7)
 
-  '@rc-component/trigger@3.9.0(react-dom@19.2.7(react@19.2.7))(react@19.2.7)':
+  '@rc-component/trigger@3.9.1(react-dom@19.2.7(react@19.2.7))(react@19.2.7)':
     dependencies:
-      '@rc-component/motion': 1.3.2(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
-      '@rc-component/portal': 2.2.0(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
+      '@rc-component/motion': 1.3.3(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
+      '@rc-component/portal': 2.2.1(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
       '@rc-component/resize-observer': 1.1.2(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
       '@rc-component/util': 1.11.1(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
       clsx: 2.1.1
@@ -4536,7 +4533,7 @@ snapshots:
 
   '@rolldown/pluginutils@1.0.1': {}
 
-  '@rollup/pluginutils@5.3.0':
+  '@rollup/pluginutils@5.4.0':
     dependencies:
       '@types/estree': 1.0.9
       estree-walker: 2.0.2
@@ -4730,9 +4727,9 @@ snapshots:
 
   '@types/geojson@7946.0.16': {}
 
-  '@types/hoist-non-react-statics@3.3.7(@types/react@19.2.16)':
+  '@types/hoist-non-react-statics@3.3.7(@types/react@19.2.17)':
     dependencies:
-      '@types/react': 19.2.16
+      '@types/react': 19.2.17
       hoist-non-react-statics: 3.3.2
 
   '@types/istanbul-lib-coverage@2.0.6': {}
@@ -4755,14 +4752,10 @@ snapshots:
 
   '@types/react-redux@7.1.34':
     dependencies:
-      '@types/hoist-non-react-statics': 3.3.7(@types/react@19.2.16)
-      '@types/react': 19.2.16
+      '@types/hoist-non-react-statics': 3.3.7(@types/react@19.2.17)
+      '@types/react': 19.2.17
       hoist-non-react-statics: 3.3.2
       redux: 4.2.1
-
-  '@types/react@19.2.16':
-    dependencies:
-      csstype: 3.2.3
 
   '@types/react@19.2.17':
     dependencies:
@@ -4842,7 +4835,7 @@ snapshots:
       '@typescript-eslint/visitor-keys': 8.61.0
       debug: 4.4.3
       minimatch: 10.2.5
-      semver: 7.8.2
+      semver: 7.8.4
       tinyglobby: 0.2.17
       ts-api-utils: 2.5.0(typescript@6.0.3)
       typescript: 6.0.3
@@ -4986,13 +4979,13 @@ snapshots:
       '@rc-component/input-number': 1.6.2(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
       '@rc-component/mentions': 1.9.0(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
       '@rc-component/menu': 1.3.1(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
-      '@rc-component/motion': 1.3.2(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
+      '@rc-component/motion': 1.3.3(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
       '@rc-component/mutate-observer': 2.0.1(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
       '@rc-component/notification': 2.0.7(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
       '@rc-component/pagination': 1.2.0(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
       '@rc-component/picker': 1.10.0(dayjs@1.11.21)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
       '@rc-component/progress': 1.0.2(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
-      '@rc-component/qrcode': 1.1.1(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
+      '@rc-component/qrcode': 1.1.2(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
       '@rc-component/rate': 1.0.1(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
       '@rc-component/resize-observer': 1.1.2(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
       '@rc-component/segmented': 1.3.0(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
@@ -5006,7 +4999,7 @@ snapshots:
       '@rc-component/tour': 2.4.0(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
       '@rc-component/tree': 1.3.2(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
       '@rc-component/tree-select': 1.9.0(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
-      '@rc-component/trigger': 3.9.0(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
+      '@rc-component/trigger': 3.9.1(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
       '@rc-component/upload': 1.1.1(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
       '@rc-component/util': 1.11.1(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
       clsx: 2.1.1
@@ -5111,7 +5104,7 @@ snapshots:
     dependencies:
       possible-typed-array-names: 1.1.0
 
-  axe-core@4.11.4: {}
+  axe-core@4.12.0: {}
 
   axobject-query@4.1.0: {}
 
@@ -5121,7 +5114,7 @@ snapshots:
 
   base64-arraybuffer@1.0.2: {}
 
-  baseline-browser-mapping@2.10.32: {}
+  baseline-browser-mapping@2.10.35: {}
 
   bidi-js@1.0.3:
     dependencies:
@@ -5140,10 +5133,10 @@ snapshots:
 
   browserslist@4.28.2:
     dependencies:
-      baseline-browser-mapping: 2.10.32
-      caniuse-lite: 1.0.30001793
-      electron-to-chromium: 1.5.364
-      node-releases: 2.0.46
+      baseline-browser-mapping: 2.10.35
+      caniuse-lite: 1.0.30001797
+      electron-to-chromium: 1.5.371
+      node-releases: 2.0.47
       update-browserslist-db: 1.2.3(browserslist@4.28.2)
 
   c8@11.0.0:
@@ -5181,7 +5174,7 @@ snapshots:
 
   camelcase@6.3.0: {}
 
-  caniuse-lite@1.0.30001793: {}
+  caniuse-lite@1.0.30001797: {}
 
   chai@6.2.2: {}
 
@@ -5221,7 +5214,7 @@ snapshots:
   cosmiconfig@8.3.6(typescript@6.0.3):
     dependencies:
       import-fresh: 3.3.1
-      js-yaml: 4.1.1
+      js-yaml: 4.2.0
       parse-json: 5.2.0
       path-type: 4.0.0
     optionalDependencies:
@@ -5448,7 +5441,7 @@ snapshots:
       es-errors: 1.3.0
       gopd: 1.2.0
 
-  electron-to-chromium@1.5.364: {}
+  electron-to-chromium@1.5.371: {}
 
   emoji-regex@8.0.0: {}
 
@@ -5513,21 +5506,21 @@ snapshots:
       safe-regex-test: 1.1.0
       set-proto: 1.0.0
       stop-iteration-iterator: 1.1.0
-      string.prototype.trim: 1.2.10
-      string.prototype.trimend: 1.0.9
+      string.prototype.trim: 1.2.11
+      string.prototype.trimend: 1.0.10
       string.prototype.trimstart: 1.0.8
       typed-array-buffer: 1.0.3
       typed-array-byte-length: 1.0.3
       typed-array-byte-offset: 1.0.4
       typed-array-length: 1.0.8
       unbox-primitive: 1.1.0
-      which-typed-array: 1.1.21
+      which-typed-array: 1.1.22
 
   es-define-property@1.0.1: {}
 
   es-errors@1.3.0: {}
 
-  es-iterator-helpers@1.3.2:
+  es-iterator-helpers@1.3.3:
     dependencies:
       call-bind: 1.0.9
       call-bound: 1.0.4
@@ -5617,7 +5610,7 @@ snapshots:
       object.groupby: 1.0.3
       object.values: 1.2.1
       semver: 6.3.1
-      string.prototype.trimend: 1.0.9
+      string.prototype.trimend: 1.0.10
       tsconfig-paths: 3.15.0
     optionalDependencies:
       '@typescript-eslint/parser': 8.61.0(eslint@10.4.1)(typescript@6.0.3)
@@ -5632,7 +5625,7 @@ snapshots:
       array-includes: 3.1.9
       array.prototype.flatmap: 1.3.3
       ast-types-flow: 0.0.8
-      axe-core: 4.11.4
+      axe-core: 4.12.0
       axobject-query: 4.1.0
       damerau-levenshtein: 1.0.8
       emoji-regex: 9.2.2
@@ -5652,7 +5645,7 @@ snapshots:
       array.prototype.flatmap: 1.3.3
       array.prototype.tosorted: 1.1.4
       doctrine: 2.1.0
-      es-iterator-helpers: 1.3.2
+      es-iterator-helpers: 1.3.3
       eslint: 10.4.1
       estraverse: 5.3.0
       hasown: 2.0.4
@@ -5849,12 +5842,12 @@ snapshots:
 
   gopd@1.2.0: {}
 
-  graphql-tag@2.12.6(graphql@16.14.1):
+  graphql-tag@2.12.6(graphql@16.14.2):
     dependencies:
-      graphql: 16.14.1
+      graphql: 16.14.2
       tslib: 2.8.1
 
-  graphql@16.14.1: {}
+  graphql@16.14.2: {}
 
   has-bigints@1.1.0: {}
 
@@ -5926,7 +5919,7 @@ snapshots:
     dependencies:
       es-errors: 1.3.0
       hasown: 2.0.4
-      side-channel: 1.1.0
+      side-channel: 1.1.1
 
   internmap@1.0.1: {}
 
@@ -6035,7 +6028,7 @@ snapshots:
 
   is-typed-array@1.1.15:
     dependencies:
-      which-typed-array: 1.1.21
+      which-typed-array: 1.1.22
 
   is-weakmap@2.0.2: {}
 
@@ -6080,7 +6073,7 @@ snapshots:
 
   js-tokens@4.0.0: {}
 
-  js-yaml@4.1.1:
+  js-yaml@4.2.0:
     dependencies:
       argparse: 2.0.1
 
@@ -6089,7 +6082,7 @@ snapshots:
       '@asamuzakjp/css-color': 5.1.11
       '@asamuzakjp/dom-selector': 7.1.1
       '@bramus/specificity': 2.4.2
-      '@csstools/css-syntax-patches-for-csstree': 1.1.4(css-tree@3.2.1)
+      '@csstools/css-syntax-patches-for-csstree': 1.1.5(css-tree@3.2.1)
       '@exodus/bytes': 1.15.1
       css-tree: 3.2.1
       data-urls: 7.0.0
@@ -6101,7 +6094,7 @@ snapshots:
       saxes: 6.0.0
       symbol-tree: 3.2.4
       tough-cookie: 6.0.1
-      undici: 7.26.0
+      undici: 7.27.2
       w3c-xmlserializer: 5.0.0
       webidl-conversions: 8.0.1
       whatwg-mimetype: 5.0.0
@@ -6237,7 +6230,7 @@ snapshots:
 
   make-dir@4.0.0:
     dependencies:
-      semver: 7.8.2
+      semver: 7.8.4
 
   math-intrinsics@1.1.0: {}
 
@@ -6290,7 +6283,7 @@ snapshots:
       object.entries: 1.1.9
       semver: 6.3.1
 
-  node-releases@2.0.46: {}
+  node-releases@2.0.47: {}
 
   nth-check@3.0.1:
     dependencies:
@@ -6635,7 +6628,7 @@ snapshots:
 
   semver@6.3.1: {}
 
-  semver@7.8.2: {}
+  semver@7.8.4: {}
 
   set-cookie-parser@2.7.2: {}
 
@@ -6689,7 +6682,7 @@ snapshots:
       object-inspect: 1.13.4
       side-channel-map: 1.0.1
 
-  side-channel@1.1.0:
+  side-channel@1.1.1:
     dependencies:
       es-errors: 1.3.0
       object-inspect: 1.13.4
@@ -6772,14 +6765,14 @@ snapshots:
       internal-slot: 1.1.0
       regexp.prototype.flags: 1.5.4
       set-function-name: 2.0.2
-      side-channel: 1.1.0
+      side-channel: 1.1.1
 
   string.prototype.repeat@1.0.0:
     dependencies:
       define-properties: 1.2.1
       es-abstract: 1.24.2
 
-  string.prototype.trim@1.2.10:
+  string.prototype.trim@1.2.11:
     dependencies:
       call-bind: 1.0.9
       call-bound: 1.0.4
@@ -6788,8 +6781,9 @@ snapshots:
       es-abstract: 1.24.2
       es-object-atoms: 1.1.2
       has-property-descriptors: 1.0.2
+      safe-regex-test: 1.1.0
 
-  string.prototype.trimend@1.0.9:
+  string.prototype.trimend@1.0.10:
     dependencies:
       call-bind: 1.0.9
       call-bound: 1.0.4
@@ -6855,17 +6849,17 @@ snapshots:
 
   tinyrainbow@3.1.0: {}
 
-  tldts-core@7.4.1: {}
+  tldts-core@7.4.2: {}
 
-  tldts@7.4.0:
+  tldts@7.4.2:
     dependencies:
-      tldts-core: 7.4.1
+      tldts-core: 7.4.2
 
   toggle-selection@1.0.6: {}
 
   tough-cookie@6.0.1:
     dependencies:
-      tldts: 7.4.0
+      tldts: 7.4.2
 
   tr46@6.0.0:
     dependencies:
@@ -6934,7 +6928,7 @@ snapshots:
 
   undici-types@7.24.6: {}
 
-  undici@7.26.0: {}
+  undici@7.27.2: {}
 
   update-browserslist-db@1.2.3(browserslist@4.28.2):
     dependencies:
@@ -6983,7 +6977,7 @@ snapshots:
 
   vite-plugin-svgr@5.2.0(typescript@6.0.3)(vite@8.0.16(@types/node@25.9.3)):
     dependencies:
-      '@rollup/pluginutils': 5.3.0
+      '@rollup/pluginutils': 5.4.0
       '@svgr/core': 8.1.0(typescript@6.0.3)
       '@svgr/plugin-jsx': 8.1.0(@svgr/core@8.1.0(typescript@6.0.3))
       vite: 8.0.16(@types/node@25.9.3)
@@ -7072,7 +7066,7 @@ snapshots:
       isarray: 2.0.5
       which-boxed-primitive: 1.1.1
       which-collection: 1.0.2
-      which-typed-array: 1.1.21
+      which-typed-array: 1.1.22
 
   which-collection@1.0.2:
     dependencies:
@@ -7081,7 +7075,7 @@ snapshots:
       is-weakmap: 2.0.2
       is-weakset: 2.0.4
 
-  which-typed-array@1.1.21:
+  which-typed-array@1.1.22:
     dependencies:
       available-typed-arrays: 1.0.7
       call-bind: 1.0.9
