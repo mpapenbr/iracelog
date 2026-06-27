@@ -845,7 +845,7 @@ export const iRacingCarData: IrCarInfo[] = [
   {
     carId: 142,
     abbrev: "FVEE",
-    name: "Formula Vee",
+    name: "Formula Vee - Classic",
     hasRainCapableTireTypes: false,
     hasMultipleDryTireTypes: false,
   },
@@ -964,7 +964,7 @@ export const iRacingCarData: IrCarInfo[] = [
   {
     carId: 159,
     abbrev: "BMWGTP",
-    name: "BMW M Hybrid V8",
+    name: "BMW M Hybrid V8 (Evo)",
     hasRainCapableTireTypes: true,
     hasMultipleDryTireTypes: false,
   },
@@ -1202,7 +1202,7 @@ export const iRacingCarData: IrCarInfo[] = [
   {
     carId: 195,
     abbrev: "BMWM2",
-    name: "BMW M2 CS Racing",
+    name: "BMW M2 CS Racing (F87) - 2020",
     hasRainCapableTireTypes: true,
     hasMultipleDryTireTypes: false,
   },
@@ -1303,6 +1303,34 @@ export const iRacingCarData: IrCarInfo[] = [
     name: "NASCAR Truck RAM",
     hasRainCapableTireTypes: false,
     hasMultipleDryTireTypes: false,
+  },
+  {
+    carId: 213,
+    abbrev: "ENRC01",
+    name: "EURO NASCAR V8GP",
+    hasRainCapableTireTypes: true,
+    hasMultipleDryTireTypes: false,
+  },
+  {
+    carId: 214,
+    abbrev: "FVEE2",
+    name: "Formula Vee - Cutlass",
+    hasRainCapableTireTypes: false,
+    hasMultipleDryTireTypes: false,
+  },
+  {
+    carId: 215,
+    abbrev: "FVEE3",
+    name: "Formula Vee - Conqueror",
+    hasRainCapableTireTypes: false,
+    hasMultipleDryTireTypes: false,
+  },
+  {
+    carId: 216,
+    abbrev: "BMWM2R",
+    name: "BMW M2 Racing (G87)",
+    hasRainCapableTireTypes: true,
+    hasMultipleDryTireTypes: true,
   },
 ];
 
