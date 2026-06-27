@@ -43,7 +43,7 @@ const ReferenceCarFilter: React.FC<MyProps> = (props: MyProps) => {
   // console.log("Dings");
   return (
     <>
-      <Col span={4}>
+      <Col xs={24} sm={8} lg={4}>
         <Select
           style={{ width: "100%" }}
           allowClear
@@ -55,7 +55,7 @@ const ReferenceCarFilter: React.FC<MyProps> = (props: MyProps) => {
           {availableCarsOptions}
         </Select>
       </Col>
-      <Col span={10}>
+      <Col xs={24} sm={16} lg={10}>
         <Select
           style={{ width: "100%" }}
           mode="tags"
@@ -69,7 +69,7 @@ const ReferenceCarFilter: React.FC<MyProps> = (props: MyProps) => {
         </Select>
       </Col>
       {props.availableClasses.length > -1 ? (
-        <Col span={4}>
+        <Col xs={24} sm={12} lg={4}>
           <Select
             style={{ width: "100%" }}
             allowClear

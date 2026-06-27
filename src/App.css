@@ -131,6 +131,27 @@ div.iracelog-event-description {
   /* color: rgba(0, 0, 0, 0.45); */
 }
 
+.iracelog-events-list .ant-list-item {
+  align-items: flex-start;
+}
+
+.iracelog-events-list .ant-list-item .ant-list-item-main {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.iracelog-events-list .ant-descriptions {
+  width: 100%;
+}
+
+.iracelog-events-list .ant-descriptions-item-label,
+.iracelog-events-list .ant-descriptions-item-content,
+.iracelog-events-list .iracelog-event-description {
+  white-space: normal;
+  word-break: normal;
+  overflow-wrap: break-word;
+}
+
 tr.standings-light-out {
   background-color: silver;
   font-style: italic;

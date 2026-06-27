@@ -145,7 +145,7 @@ export const DashboardContainer: React.FC = () => {
     <div ref={containerRef}>
       <Row gutter={16}>
         <ReferenceCarFilter {...props} />
-        <Col span={6}>
+        <Col xs={24} sm={12} lg={6}>
           <InputNumber
             // defaultValue={userSettings.deltaRange}
             value={userSettings.deltaRange}
@@ -192,7 +192,7 @@ export const DashboardContainer: React.FC = () => {
             </Row>
           ))}
           <Row gutter={16}>
-            <Col span={12}>
+            <Col xs={24} xl={12}>
               <Lapchart
                 showCars={[...props.selectedCars]}
                 limitLastLaps={userSettings.limitLastLaps}
@@ -200,13 +200,13 @@ export const DashboardContainer: React.FC = () => {
                 height={graphHeight}
               />
             </Col>
-            <Col span={12}>
+            <Col xs={24} xl={12}>
               <BoxPlot showCars={[...props.selectedCars]} height={graphHeight} />
             </Col>
           </Row>
           {globalWamp.currentLiveId ? (
             <Row gutter={16}>
-              <Col span={12}>
+              <Col xs={24} xl={12}>
                 <Delta
                   referenceCarNum={props.selectedReferenceCar}
                   showCars={[...props.selectedCars]}
@@ -215,7 +215,7 @@ export const DashboardContainer: React.FC = () => {
                   height={graphHeight}
                 />
               </Col>
-              <Col span={12}>
+              <Col xs={24} xl={12}>
                 <CircleOfDoom
                   referenceCarNum={""}
                   pitstopTime={0}

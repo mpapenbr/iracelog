@@ -174,6 +174,11 @@ const AppMenu: React.FC = () => {
     );
   };
 
+  const handleSettingsMenuClick = (e: React.MouseEvent<HTMLSpanElement>) => {
+    e.preventDefault();
+    e.stopPropagation();
+  };
+
   const items: MenuProps["items"] = [
     {
       key: "/events",
@@ -188,7 +193,6 @@ const AppMenu: React.FC = () => {
 
     {
       key: "quicksettings",
-      icon: <SettingOutlined />,
       label: (
         <Popover
           content={<GlobalSettings />}
@@ -196,8 +200,15 @@ const AppMenu: React.FC = () => {
           trigger="click"
           open={settingsPopoverOpen}
           onOpenChange={setSettingsPopoverOpen}
+          placement="bottomLeft"
         >
-          <span>Settings</span>
+          <span
+            onClick={handleSettingsMenuClick}
+            style={{ display: "inline-flex", alignItems: "center", gap: 8 }}
+          >
+            <SettingOutlined />
+            <span>Settings</span>
+          </span>
         </Popover>
       ),
     },
@@ -214,10 +225,8 @@ const AppMenu: React.FC = () => {
   ];
 
   const handleClick: MenuProps["onClick"] = (e) => {
-    // Don't navigate if it's the settings menu item
     if (e.key === "quicksettings") {
       e.domEvent.preventDefault();
-      setSettingsPopoverOpen(!settingsPopoverOpen);
       return;
     }
     navigate(e.key);
