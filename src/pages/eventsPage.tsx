@@ -9,20 +9,20 @@ import { API_GRAPHQL_ENABLED } from "../constants";
 export const Events: React.FC = () => {
   return (
     <>
-      <Row gutter={16}>
-        <Col span={12}>
+      <Row gutter={[16, 16]}>
+        <Col xs={24} xl={12}>
           {/* <LatestEventsGrpc /> */}
           {API_GRAPHQL_ENABLED === true ? <LatestEvents /> : <LatestEventsGrpc />}
         </Col>
 
-        <Col span={12}>
-          <Row>
+        <Col xs={24} xl={12}>
+          <Row gutter={[0, 16]}>
             <Col span={24}>
               <LiveEvents />
             </Col>
           </Row>
           {API_GRAPHQL_ENABLED === true ? (
-            <Row>
+            <Row gutter={[0, 16]}>
               <Col span={24}>
                 <SimpleSearchEvents />
               </Col>

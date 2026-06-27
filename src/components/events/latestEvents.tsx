@@ -129,6 +129,7 @@ export const LatestEvents: React.FC = () => {
       {editContextHolder}
       {deleteContextHolder}
       <List
+        className="iracelog-events-list"
         header={<h3>Latest events</h3>}
         dataSource={events}
         size="small"

@@ -306,6 +306,7 @@ export const LiveEvents: React.FC = () => {
   };
   return (
     <List
+      className="iracelog-events-list"
       header={
         <Row justify="space-between">
           <Col span={12}>
