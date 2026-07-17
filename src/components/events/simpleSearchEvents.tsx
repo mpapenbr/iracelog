@@ -143,6 +143,7 @@ export const SimpleSearchEvents: React.FC = () => {
       {editContextHolder}
       {deleteContextHolder}
       <List
+        className="iracelog-events-list"
         header={SearchHeader}
         dataSource={data?.events ?? []}
         size="small"
