@@ -15,8 +15,8 @@ importers:
         specifier: ^2.6.8
         version: 2.6.8(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
       '@apollo/client':
-        specifier: ^4.2.5
-        version: 4.2.5(graphql@17.0.2)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)(rxjs@7.8.2)
+        specifier: ^4.2.6
+        version: 4.2.6(graphql@17.0.2)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)(rxjs@7.8.2)
       '@buf/mpapenbr_iracelog.bufbuild_es':
         specifier: 2.12.0-20251019125030-8cb75f92a51d.1
         version: 2.12.0-20251019125030-8cb75f92a51d.1(@bufbuild/protobuf@2.12.1)
@@ -69,8 +69,8 @@ importers:
         specifier: ^9.3.0
         version: 9.3.0(@types/react@19.2.17)(react@19.2.7)(redux@5.0.1)
       react-router:
-        specifier: 8.1.0
-        version: 8.1.0(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
+        specifier: 8.2.0
+        version: 8.2.0(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
       react-use:
         specifier: ^17.6.1
         version: 17.6.1(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
@@ -284,8 +284,8 @@ packages:
   '@antv/vendor@1.0.11':
     resolution: {integrity: sha512-LmhPEQ+aapk3barntaiIxJ5VHno/Tyab2JnfdcPzp5xONh/8VSfed4bo/9xKo5HcUAEydko38vYLfj6lJliLiw==}
 
-  '@apollo/client@4.2.5':
-    resolution: {integrity: sha512-1VyJ4eAriUFCfK2Btc09PQtxxgrnmoO1Dbg2A1O7MQbsK1ri5GSWBzc7/P6A0KJrkWll/Ojf9HC6ptIET8yv3g==}
+  '@apollo/client@4.2.6':
+    resolution: {integrity: sha512-zAkN947OHLLvSaEZvhXmT2YGPuDSJyIlW3+ylvxbRfSQFJW5PiaGs0PvhhMGfyYvO8gtfg+JjI8jjkczQSwt5w==}
     peerDependencies:
       graphql: ^16.0.0 || ^17.0.0
       graphql-ws: ^5.5.5 || ^6.0.3
@@ -2797,8 +2797,8 @@ packages:
       redux:
         optional: true
 
-  react-router@8.1.0:
-    resolution: {integrity: sha512-Mdfi61uObuvWNN9OhChOC0HV6YWOIfKRzEWOvCHRSuQg8IM+Nv10edaM/2HE8ZixBpUTdQbruyWqC3sDkkh9vw==}
+  react-router@8.2.0:
+    resolution: {integrity: sha512-uP1LgGNHyilL1u+ZkecQk74DJOKOb6q4NLNYLRJcD/fjoogftNb5/Rj/07o/QBFsY/5MbAKPm1peTCQuVPv9cQ==}
     engines: {node: '>=22.22.0'}
     peerDependencies:
       react: '>=19.2.7'
@@ -3606,7 +3606,7 @@ snapshots:
       d3-time: 3.1.0
       d3-timer: 3.0.1
 
-  '@apollo/client@4.2.5(graphql@17.0.2)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)(rxjs@7.8.2)':
+  '@apollo/client@4.2.6(graphql@17.0.2)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)(rxjs@7.8.2)':
     dependencies:
       '@graphql-typed-document-node/core': 3.2.0(graphql@17.0.2)
       '@wry/caches': 1.0.1
@@ -6454,7 +6454,7 @@ snapshots:
       '@types/react': 19.2.17
       redux: 5.0.1
 
-  react-router@8.1.0(react-dom@19.2.7(react@19.2.7))(react@19.2.7):
+  react-router@8.2.0(react-dom@19.2.7(react@19.2.7))(react@19.2.7):
     dependencies:
       cookie-es: 3.1.1
       react: 19.2.7
