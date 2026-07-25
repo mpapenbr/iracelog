@@ -26,7 +26,7 @@
     "react": "^19.2.7",
     "react-dom": "^19.2.7",
     "react-redux": "^9.3.0",
-    "react-router": "8.2.0",
+    "react-router": "8.3.0",
     "react-use": "^17.6.1",
     "recharts": "^3.9.2",
     "redux": "^5.0.1",
