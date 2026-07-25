@@ -8,7 +8,7 @@
   "dependencies": {
     "@ant-design/icons": "^6.3.2",
     "@ant-design/plots": "^2.6.8",
-    "@apollo/client": "^4.2.6",
+    "@apollo/client": "^4.2.7",
     "@buf/mpapenbr_iracelog.bufbuild_es": "2.12.0-20251019125030-8cb75f92a51d.1",
     "@bufbuild/protobuf": "^2.12.1",
     "@connectrpc/connect": "^2.1.2",
@@ -20,7 +20,7 @@
     "@nivo/pie": "^0.99.0",
     "@redux-devtools/extension": "^4.0.0",
     "@reduxjs/toolkit": "^2.12.0",
-    "antd": "^6.5.0",
+    "antd": "^6.5.1",
     "graphql": "^17.0.2",
     "lodash": "^4.17.23",
     "react": "^19.2.7",
