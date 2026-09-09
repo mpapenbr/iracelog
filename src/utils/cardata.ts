@@ -110,7 +110,7 @@ export const iRacingCarData: IrCarInfo[] = [
   {
     carId: 24,
     abbrev: "NW09",
-    name: "[Legacy] ARCA Menards Chevrolet Impala",
+    name: "ARCA Menards Chevrolet Impala",
     hasRainCapableTireTypes: false,
     hasMultipleDryTireTypes: false,
   },
@@ -1013,7 +1013,7 @@ export const iRacingCarData: IrCarInfo[] = [
   {
     carId: 167,
     abbrev: "G4CUP",
-    name: "[Legacy] Gen 4 Cup",
+    name: "Gen 4 Cup",
     hasRainCapableTireTypes: false,
     hasMultipleDryTireTypes: false,
   },
@@ -1305,6 +1305,13 @@ export const iRacingCarData: IrCarInfo[] = [
     hasMultipleDryTireTypes: false,
   },
   {
+    carId: 212,
+    abbrev: "AMGTPV",
+    name: "Aston Martin Valkyrie AMR-LMH",
+    hasRainCapableTireTypes: true,
+    hasMultipleDryTireTypes: false,
+  },
+  {
     carId: 213,
     abbrev: "ENRC01",
     name: "EURO NASCAR V8GP",
@@ -1314,7 +1321,7 @@ export const iRacingCarData: IrCarInfo[] = [
   {
     carId: 214,
     abbrev: "FVEE2",
-    name: "Formula Vee - Cutlass",
+    name: "Formula Vee - Sabre",
     hasRainCapableTireTypes: false,
     hasMultipleDryTireTypes: false,
   },
@@ -1331,6 +1338,27 @@ export const iRacingCarData: IrCarInfo[] = [
     name: "BMW M2 Racing (G87)",
     hasRainCapableTireTypes: true,
     hasMultipleDryTireTypes: true,
+  },
+  {
+    carId: 217,
+    abbrev: "CATERAC",
+    name: "Caterham Academy",
+    hasRainCapableTireTypes: true,
+    hasMultipleDryTireTypes: false,
+  },
+  {
+    carId: 218,
+    abbrev: "CATER420R",
+    name: "Caterham 420R",
+    hasRainCapableTireTypes: true,
+    hasMultipleDryTireTypes: false,
+  },
+  {
+    carId: 219,
+    abbrev: "GEN4GN",
+    name: "Gen 4 Grand National",
+    hasRainCapableTireTypes: false,
+    hasMultipleDryTireTypes: false,
   },
 ];
 
