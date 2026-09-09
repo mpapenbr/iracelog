@@ -8,6 +8,7 @@ export interface IrCarInfo {
 
 // source data: https://members-ng.iracing.com/data/car/get
 // convert to IrCarInfo: cat cardata.json | jq '[.[] | {carId: .car_id, abbrev: .car_name_abbreviated, name: .car_name, hasRainCapableTireTypes: .has_rain_capable_tire_types, hasMultipleDryTireTypes: .has_multiple_dry_tire_types }]' > mycardata.json
+// dummy comment for PR
 export const iRacingCarData: IrCarInfo[] = [
   {
     carId: 1,
