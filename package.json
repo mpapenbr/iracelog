@@ -6,11 +6,11 @@
   "private": true,
   "type": "module",
   "dependencies": {
-    "@ant-design/icons": "^6.3.2",
+    "@ant-design/icons": "^6.3.4",
     "@ant-design/plots": "^2.6.8",
     "@apollo/client": "^4.2.12",
     "@buf/mpapenbr_iracelog.bufbuild_es": "2.12.0-20251019125030-8cb75f92a51d.1",
-    "@bufbuild/protobuf": "^2.14.0",
+    "@bufbuild/protobuf": "^2.14.1",
     "@connectrpc/connect": "^2.1.2",
     "@connectrpc/connect-web": "^2.1.2",
     "@nivo/bar": "^0.99.0",
