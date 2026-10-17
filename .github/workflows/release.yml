@@ -89,7 +89,7 @@ jobs:
           echo "${{ steps.rd.outputs.body }}" > "${{ runner.temp }}/CHANGELOG.md"
 
       - name: Release via goreleaser
-        uses: goreleaser/goreleaser-action@f06c13b6b1a9625abc9e6e439d9c05a8f2190e94 # v7
+        uses: goreleaser/goreleaser-action@a4f02ab5355a589de60d917a659ce617ed19b3de # v7
         # On 2026-03-14 we got error on dirty git state for modified pnpm-lock.yaml
         # For now we skip the validation step and investigate later how to fix the underlying issue
         with:          
