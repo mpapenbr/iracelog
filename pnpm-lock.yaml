@@ -15,8 +15,8 @@ importers:
         specifier: ^2.6.8
         version: 2.6.8(react-dom@19.3.1(react@19.3.1))(react@19.3.1)
       '@apollo/client':
-        specifier: ^4.3.7
-        version: 4.3.7(graphql@17.1.0)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(rxjs@7.8.2)
+        specifier: ^4.3.8
+        version: 4.3.8(graphql@17.1.0)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(rxjs@7.8.2)
       '@buf/mpapenbr_iracelog.bufbuild_es':
         specifier: 2.12.0-20251019125030-8cb75f92a51d.1
         version: 2.12.0-20251019125030-8cb75f92a51d.1(@bufbuild/protobuf@2.17.0)
@@ -45,8 +45,8 @@ importers:
         specifier: ^0.99.0
         version: 0.99.0(react-dom@19.3.1(react@19.3.1))(react@19.3.1)
       '@redux-devtools/extension':
-        specifier: ^4.0.0
-        version: 4.0.0(redux@5.0.1)
+        specifier: ^4.0.1
+        version: 4.0.1(redux@5.0.1)
       '@reduxjs/toolkit':
         specifier: ^2.14.0
         version: 2.14.0(@types/react@19.3.0)(react-redux@9.3.1(@types/react@19.3.0)(react@19.3.1)(redux@5.0.1))(react@19.3.1)
@@ -284,8 +284,8 @@ packages:
   '@antv/vendor@1.0.11':
     resolution: {integrity: sha512-LmhPEQ+aapk3barntaiIxJ5VHno/Tyab2JnfdcPzp5xONh/8VSfed4bo/9xKo5HcUAEydko38vYLfj6lJliLiw==}
 
-  '@apollo/client@4.3.7':
-    resolution: {integrity: sha512-s+aetmVMhR/UkpsnyKqJb9uQBSv0c42Nb2S517H4Zbqc7GTdKNH/Su+Zv6euR+OHL1YosOhUm3DhvuQUi8Mxtg==}
+  '@apollo/client@4.3.8':
+    resolution: {integrity: sha512-g04oCNYjbbjpecZmcUOE0fZLt3vMFwoZJ+o4iu0N3bDDhMR95/ZVzWL9v3mM7WDSPxI0++P2348yAbSWceLoZA==}
     peerDependencies:
       graphql: ^16.0.0 || ^17.0.0
       graphql-ws: ^5.5.5 || ^6.0.3
@@ -360,6 +360,10 @@ packages:
 
   '@babel/runtime@7.29.13':
     resolution: {integrity: sha512-v+oN26xP4YIlQsbQ/CbTH1WG5m/l/DjKKZNy/Kp3f/AFvbgt7Em/D0FeMM3O2hX0YzeN2M16W8lOpyhIkfCBcQ==}
+    engines: {node: '>=6.9.0'}
+
+  '@babel/runtime@7.29.14':
+    resolution: {integrity: sha512-Y5tqevQaUAZhhj82BpYMNC1ssvLQTVAfwKdm8iy8qwmhvC2/CpcAu8OC+QEtjM7pMk7knx83u1Qj8gzkicyelw==}
     engines: {node: '>=6.9.0'}
 
   '@babel/runtime@8.1.0':
@@ -903,8 +907,8 @@ packages:
       react: ^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0
       react-dom: ^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0
 
-  '@redux-devtools/extension@4.0.0':
-    resolution: {integrity: sha512-pLIzgo5MvqdDLe5D1pzHLgmr8THra/DOyRf5MvOEPZnKKDn6RhFbNSS5oXZ3Cal0cpx08kx7sR6zD8QgoXEnZA==}
+  '@redux-devtools/extension@4.0.1':
+    resolution: {integrity: sha512-XlOnGtsaZgL70JY08ijurR+jCZPu0YVgPgHA5gaOlx3qssMmiV1InRVip39i9C7kVW6v/VfLxLs7YLyZFd7QrQ==}
     peerDependencies:
       redux: ^3.1.0 || ^4.0.0 || ^5.0.0
 
@@ -3717,7 +3721,7 @@ snapshots:
       d3-time: 3.1.0
       d3-timer: 3.0.1
 
-  '@apollo/client@4.3.7(graphql@17.1.0)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(rxjs@7.8.2)':
+  '@apollo/client@4.3.8(graphql@17.1.0)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(rxjs@7.8.2)':
     dependencies:
       '@graphql-typed-document-node/core': 3.2.0(graphql@17.1.0)
       '@wry/caches': 1.0.1
@@ -3810,6 +3814,8 @@ snapshots:
       '@babel/types': 7.29.11
 
   '@babel/runtime@7.29.13': {}
+
+  '@babel/runtime@7.29.14': {}
 
   '@babel/runtime@8.1.0': {}
 
@@ -4548,7 +4554,7 @@ snapshots:
       react: 19.3.1
       react-dom: 19.3.1(react@19.3.1)
 
-  '@redux-devtools/extension@4.0.0(redux@5.0.1)':
+  '@redux-devtools/extension@4.0.1(redux@5.0.1)':
     dependencies:
       redux: 5.0.1
 
@@ -4699,7 +4705,7 @@ snapshots:
   '@testing-library/dom@10.4.1':
     dependencies:
       '@babel/code-frame': 7.29.7
-      '@babel/runtime': 7.29.13
+      '@babel/runtime': 7.29.14
       '@types/aria-query': 5.0.4
       aria-query: 5.3.0
       dom-accessibility-api: 0.5.16
